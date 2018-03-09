@@ -1,9 +1,9 @@
-# Selfservice - UI
+# Enduser - UI
 
 > This project is a redesign and technical rebuild of the existing IDM "enduser" UI.
 
 ## Development goals
-1. Parody with the existing "enduser" UI
+1. Feature parity with the existing "enduser" UI
 2. Improved design
 3. Better testing
 
