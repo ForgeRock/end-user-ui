@@ -1,0 +1,95 @@
+@import "static/css/bootstrap/bootstrap";
+
+//For themeing please see https://getbootstrap.com/docs/4.0/getting-started/theming/
+@import "theme";
+
+// Base application styles
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  height: 100%;
+  color: $gray-700;
+}
+
+html, body {
+  height: 100%;
+}
+
+h1, h2 {
+  font-weight: normal;
+}
+
+.navbar-brand {
+  letter-spacing: 1px;
+
+  img {
+    max-width: 150px;
+    padding-top: 2px;
+  }
+}
+
+.fr-header-jumbotron {
+  background-color: transparent;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 300;
+  }
+
+  .btn-success {
+    padding: 10px 20px 10px 20px;
+  }
+}
+
+.btn {
+  .fa {
+    padding-right: 10px;
+  }
+}
+
+// General page transition
+.fade-enter-active, .fade-leave-active {
+  transition-property: opacity;
+  transition-duration: .25s;
+}
+
+.fade-enter-active {
+  transition-delay: .25s;
+}
+
+.fade-enter, .fade-leave-active {
+  opacity: 0
+}
+
+// Base page headers
+.fr-page-header {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+// Notifications
+.notification-wrapper {
+  .alert-icon {
+    height: 70px;
+    font-size: 50px;
+    opacity: .7;
+  }
+
+  .fr-alert-content {
+    margin: 0 50px 0 50px;
+  }
+
+  .close {
+    top: 20px;
+    cursor: pointer;
+  }
+}
+
+// Back bar
+.fr-backbar {
+  a:hover {
+    text-decoration: none;
+  }
+}
