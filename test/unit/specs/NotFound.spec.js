@@ -14,7 +14,7 @@ describe('NotFound.vue', () => {
         messages: translations
     });
 
-    it('Resource page loaded', () => {
+    it('Not found page loaded', () => {
         const wrapper = mount(NotFound, { i18n });
 
         expect(wrapper.name()).to.equal('NotFound');

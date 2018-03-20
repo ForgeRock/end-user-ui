@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-light" id="app">
+    <div class="fr-background" id="app">
         <!--
         Navigation Bar useing Vue Route + Bootstrap Toolbar
         -->

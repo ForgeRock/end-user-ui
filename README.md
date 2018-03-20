@@ -1,15 +1,17 @@
-# Enduser - UI
+# Mirai (Selfservice) - UI
 
-> This project is a redesign and technical rebuild of the existing IDM "enduser" UI.
+> This project is a redesign and technical rebuild of the existing Enduser UI at Forgerock.
 
 ## Development goals
-1. Feature parity with the existing "enduser" UI
+1. Parity with the existing "Enduser" UI
 2. Improved design
-3. Better testing
+3. Improved developer experience
+4. Better testing
 
 ### Setup assumptions
-1. IDM is started and available on 8080 (for development, for deployment it assums IDM exists in the same domain)
-  * Start IDM first -> Simple IDM second
+Currently Mirai is built off of two starting assumptions:
+1. Reliance of IDM endpoints for managing "Enduser" with the eventual integration of platform features
+2. The development environment is configured to hit a rest service located at localhost:8080 (the development server proxy can be configured at config/index)
 
 ## Helpful links
 
@@ -27,7 +29,7 @@
 5. Vue i18n (Translations) - https://kazupon.github.io/vue-i18n/en/
 
 ### CSS Framework
-1. Less - http://lesscss.org/
+1. SCSS (SASS) - https://sass-lang.com/
 2. Bootstrap 4.0 - https://getbootstrap.com/
 
 ## Build Setup
