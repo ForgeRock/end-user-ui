@@ -27,6 +27,7 @@ Currently Mirai is built off of two starting assumptions:
 3. Vue bootstrap - https://bootstrap-vue.js.org/
 4. Axios (AJAX handling) - https://github.com/axios/axios
 5. Vue i18n (Translations) - https://kazupon.github.io/vue-i18n/en/
+6. Vee Validate (Validation) - https://github.com/baianat/vee-validate
 
 ### CSS Framework
 1. SCSS (SASS) - https://sass-lang.com/
