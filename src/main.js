@@ -56,18 +56,36 @@ Vue.use(Notifications);
 // Global mixin for making openIDM REST calls
 Vue.mixin({
     methods: {
-        getRequestService: function () {
-            // TODO Remove hardcoded admin headers
-            // TODO Add interceptor for axios to catch failed IDM requests when session timesout
-            //  Example: instance.interceptors.request.use(function () {});
-            return axios.create({
-                baseURL: '/openidm',
-                timeout: 1000,
-                headers: {
+        getRequestService: function (config) {
+            var baseURL = '/openidm',
+                timeout = 1000,
+                headers = {
                     'X-OpenIDM-Username': 'openidm-admin',
                     'X-OpenIDM-Password': 'openidm-admin',
                     'content-type': 'application/json'
+                };
+
+            // TODO Remove hardcoded admin headers
+            // TODO Add interceptor for axios to catch failed IDM requests when session timesout
+            if (config) {
+                if (config.baseURL) {
+                    baseURL = config.baseURL;
                 }
+
+                if (config.timeout) {
+                    timeout = config.timeout;
+                }
+
+                if (config.headers) {
+                    headers = config.headers;
+                }
+            }
+
+            //  Example: instance.interceptors.request.use(function () {});
+            return axios.create({
+                baseURL: baseURL,
+                timeout: timeout,
+                headers: headers
             });
         }
     }

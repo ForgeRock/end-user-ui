@@ -3,6 +3,18 @@
 //For themeing please see https://getbootstrap.com/docs/4.0/getting-started/theming/
 @import "theme";
 
+:export {
+  baseColor: $blue;
+}
+
+// Center spinner
+.v-spinner {
+  .v-bounce1 {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 // Base application styles
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

@@ -3,7 +3,7 @@
         <!--
         Navigation Bar useing Vue Route + Bootstrap Toolbar
         -->
-        <b-navbar toggleable="md" type="dark" variant="dark">
+        <b-navbar v-if="!this.$route.meta.hideToolbar" toggleable="md" type="dark" variant="dark">
             <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
             <b-navbar-brand to="/"><img src="static/image/forgerock.png" alt="Forgerock" /></b-navbar-brand>
         </b-navbar>
