@@ -1,6 +1,7 @@
 import Router from 'vue-router';
 import Dashboard from '@/components/mains/Dashboard';
 import NotFound from '@/components/mains/NotFound';
+import Login from '@/components/mains/Login';
 import Registration from '@/components/mains/Registration';
 
 /**
@@ -12,6 +13,12 @@ export default new Router({
         {
             path: '/',
             redirect: '/dashboard'
+        },
+        {
+            path: '/login',
+            name: 'Login',
+            component: Login,
+            meta: { hideToolbar: true }
         },
         {
             path: '/dashboard',
