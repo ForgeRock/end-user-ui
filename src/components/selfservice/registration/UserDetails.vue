@@ -2,7 +2,7 @@
     <b-form>
         <b-form-group v-for="(property, key) in userDetails" :key="key">
             <b-input-group>
-                <b-form-input :name="key" v-validate="property.required ? 'required' : ''" :class="{'is-invalid': errors.has(key) }" v-model="saveDetails[key]" :placeholder="property.description"></b-form-input>
+                <b-form-input :name="key" data-vv-validate-on="input" v-validate="property.required ? 'required' : ''" :class="{'is-invalid': errors.has(key) }" v-model="saveDetails[key]" :placeholder="property.description"></b-form-input>
                 <div v-show="errors.has(key)" class="invalid-tooltip">
                     {{errors.first(key)}}
                 </div>
@@ -11,15 +11,10 @@
 
         <b-form-group>
             <b-input-group>
-                <b-form-input type="password" name="password" v-validate="'confirmed:confirmPassword|required'" :class="{'is-invalid': errors.has('password') }" v-model="saveDetails.password" :placeholder="$t('common.placeholders.password')"></b-form-input>
+                <b-form-input type="password" name="password" v-validate="'required'" :class="{'is-invalid': errors.has('password') }" v-model="saveDetails.password" :placeholder="$t('common.placeholders.password')"></b-form-input>
                 <div v-show="errors.has('password')" class="invalid-tooltip">
                     {{errors.first('password')}}
                 </div>
-            </b-input-group>
-        </b-form-group>
-        <b-form-group>
-            <b-input-group>
-                <b-form-input type="password" name="confirmPassword" :class="{'is-invalid': errors.has('password') }" v-model="saveDetails.confirmPassword" :placeholder="$t('common.placeholders.retypePassword')"></b-form-input>
             </b-input-group>
         </b-form-group>
 
@@ -28,6 +23,10 @@
                 <b-form-checkbox plain v-model="saveDetails.preferences[key]">{{preference.description}}</b-form-checkbox>
             </b-input-group>
         </b-form-group>
+
+        <b-button v-if="inline === false" @click="save" :block="true" variant="primary">
+            {{$t("common.form.submit")}}
+        </b-button>
     </b-form>
 </template>
 
@@ -38,7 +37,11 @@
     export default {
         name: 'User-Details',
         props: {
-            selfServiceDetails: { required: true }
+            selfServiceDetails: { required: true },
+            inline: {
+                required: false,
+                default: false
+            }
         },
         data: function () {
             var data = {
@@ -83,7 +86,18 @@
                 };
             },
 
+            save: function () {
+                // Need to ignore this validation because it does not preform in testing due to vue validate
+                /* istanbul ignore next */
+                this.isValid().then((valid) => {
+                    if (valid) {
+                        this.$emit('saveSelfService', this.getData());
+                    }
+                });
+            },
+
             isValid: function () {
+                /* istanbul ignore next */
                 return this.$validator.validateAll();
             }
         }

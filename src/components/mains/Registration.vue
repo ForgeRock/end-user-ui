@@ -1,21 +1,20 @@
 <template>
-    <b-container class="fr-registration">
-        <b-row align-h="center" class="fr-registration-row">
-            <b-col cols="5" align-self="center">
-                <b-card class="fr-registration-card">
-                    <b-img class="fr-logo mb-4 mt-2" src="static/image/forgerock-base-logo.png" fluid :alt="$t('common.form.logo')" />
+    <b-container class="fr-registration h-100 px-0" fluid>
+        <div class="h-100 d-flex">
+            <div class="m-auto fr-selfservice-signin">
+                <b-card class="fr-registration-card border-xs-0 border-sm">
+                    <b-img class="fr-logo mb-3 mt-2" src="static/image/fr-logomark.svg" fluid :alt="$t('common.form.logo')" />
                     <h3 class="font-weight-bold mb-4">{{$t("pages.selfservice.registration.signUp")}}</h3>
 
-                    <component ref="selfServiceStage" v-if="selfServiceType !== null && selfServiceType !=='parameters'" :is="selfServiceType" :selfServiceDetails="selfServiceDetails"></component>
-
+                    <component ref="selfServiceStage" v-if="selfServiceType !== null && selfServiceType !=='parameters'"
+                               :is="selfServiceType"
+                               :selfServiceDetails="selfServiceDetails"
+                               @saveSelfService="saveSelfService">
+                    </component>
                     <bounce-loader v-else :color="loadingColor"></bounce-loader>
-
-                    <b-button v-show="selfServiceType !== null && selfServiceType !=='parameters'" @click="save" :block="true" variant="primary">
-                        {{$t("common.form.submit")}}
-                    </b-button>
                 </b-card>
-            </b-col>
-        </b-row>
+            </div>
+        </div>
     </b-container>
 </template>
 
@@ -25,6 +24,7 @@
     import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
     import idmUserDetails from '../selfservice/registration/UserDetails';
     import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
+    import Consent from '../selfservice/registration/Consent';
 
     export default {
         name: 'Registration',
@@ -32,7 +32,8 @@
             AllInOneRegistration,
             BounceLoader,
             TermsAndConditions,
-            idmUserDetails
+            idmUserDetails,
+            Consent
         },
         data: function () {
             return {
@@ -76,12 +77,14 @@
                 if (type === 'parameters') {
                     this.selfServiceType = null;
 
-                    this.save();
+                    this.saveSelfService({
+                        'input': {}
+                    });
                 } else {
                     this.selfServiceType = type;
                 }
             },
-            save: function () {
+            saveSelfService: function (data) {
                 /* istanbul ignore next */
                 var selfServiceInstance = this.getRequestService({
                         headers: {
@@ -92,53 +95,41 @@
                     }),
                     saveData = {
                         input: {}
-                    },
-                    validationCheck,
-                    currentStage = this.$refs.selfServiceStage;
+                    };
 
                 /* istanbul ignore next */
                 if (this.selfServiceDetails.token) {
                     saveData.token = this.selfServiceDetails.token;
                 }
 
-                /* istanbul ignore next */
-                if (currentStage && currentStage.getData && currentStage.isValid) {
-                    validationCheck = currentStage.isValid();
-                    saveData.input = currentStage.getData();
-                } else {
-                    validationCheck = Promise.resolve();
-                }
+                saveData.input = data;
+
+                this.setRegistrationComponent(null, null);
 
                 /* istanbul ignore next */
-                validationCheck.then(() => {
-                    selfServiceInstance.post('/selfservice/registration?_action=submitRequirements', saveData)
-                        .then((selfServiceDetails) => {
-                            if (selfServiceDetails.data.type === 'localAutoLogin') {
-                                this.$notify({
-                                    group: 'IDMMessages',
-                                    type: 'success',
-                                    title: 'User Creation',
-                                    text: 'Successfully created user.'
-                                });
-
-                                this.setRegistrationComponent(null, null);
-
-                                this.autoLogin(selfServiceDetails.data.additions.credentialJwt);
-                            } else {
-                                this.setRegistrationComponent(selfServiceDetails.data.type, selfServiceDetails.data);
-                            }
-                        })
-                        .catch((error) => {
-                            // todo Fallback when error message undefined
-                            /* istanbul ignore next */
+                selfServiceInstance.post('/selfservice/registration?_action=submitRequirements', saveData)
+                    .then((selfServiceDetails) => {
+                        if (selfServiceDetails.data.type === 'localAutoLogin') {
                             this.$notify({
                                 group: 'IDMMessages',
-                                type: 'error',
-                                title: this.$t('common.errors.registrationError'),
-                                text: error.response.data.message
+                                type: 'success',
+                                title: 'User Creation',
+                                text: 'Successfully created user.'
                             });
+                            this.autoLogin(selfServiceDetails.data.additions.credentialJwt);
+                        } else {
+                            this.setRegistrationComponent(selfServiceDetails.data.type, selfServiceDetails.data);
+                        }
+                    })
+                    .catch((error) => {
+                        /* istanbul ignore next */
+                        this.$notify({
+                            group: 'IDMMessages',
+                            type: 'error',
+                            title: this.$t('common.errors.registrationError'),
+                            text: error.response.data.message
                         });
-                });
+                    });
             },
             autoLogin: function (jwt) {
                 /* istanbul ignore next */
@@ -177,15 +168,28 @@
     @import "../../scss/main.scss";
 
     .fr-registration {
-        height: 100%;
-
         .fr-logo {
-            width: 52px;
-            height: 52px;
+            width: 37px;
+        }
+    }
+
+    // TODO remove when center card component merged
+    // Selfservice form and card
+    .fr-selfservice-signin {
+        width: 100%;
+        margin: 0 auto;
+        @include media-breakpoint-between(sm, xl) {
+            max-width: 420px;
+            padding: 40px 0;
         }
 
-        .fr-registration-row {
-            height: 100%;
+        .card {
+            border: none;
+            @include media-breakpoint-between(sm, xl) {
+                margin: 0;
+                border-radius: $border-radius;
+                border: $border-width solid $border-color;
+            }
         }
     }
 </style>

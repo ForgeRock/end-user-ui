@@ -24,6 +24,10 @@ export default
                     termsAndConditions: {
                         title: 'Terms & Conditions',
                         singlePage: 'By creating an account, you agree to the'
+                    },
+                    consent: {
+                        title: 'Privacy & Consent',
+                        agreement: 'I agree'
                     }
                 }
             }

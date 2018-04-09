@@ -20,11 +20,10 @@ describe('AllInOneRegistration.vue', () => {
             propsData: {
                 selfServiceDetails: {
                     requirements: {
-                        stages: []
+                        stages: ['TermsAndConditions']
                     }
                 }
-            },
-            stubs: ['idmUserDetails', 'TermsAndConditions']
+            }
         });
 
         expect(wrapper.name()).to.equal('All-In-One-Registration');
@@ -36,14 +35,13 @@ describe('AllInOneRegistration.vue', () => {
             propsData: {
                 selfServiceDetails: {
                     requirements: {
-                        stages: ['idmUserDetails', 'TermsAndConditions']
+                        stages: ['TermsAndConditions']
                     }
                 }
-            },
-            stubs: ['idmUserDetails', 'TermsAndConditions']
+            }
         });
 
-        expect(wrapper.vm.stages.idmUserDetails).to.equal(true);
+        expect(wrapper.vm.stages.TermsAndConditions).to.equal(true);
     });
 
     it('AllInOneRegistration gather child data', () => {
@@ -52,31 +50,34 @@ describe('AllInOneRegistration.vue', () => {
             propsData: {
                 selfServiceDetails: {
                     requirements: {
-                        stages: []
+                        stages: ['TermsAndConditions'],
+                        consentEnabled: true
                     }
                 }
-            },
-            stubs: ['idmUserDetails', 'TermsAndConditions']
+            }
         });
 
         expect(wrapper.vm.getData()).to.be.a('object');
     });
 
-    it('AllInOneRegistration gather policy information', (done) => {
+    it('AllInOneRegistration gather policy information and save event', (done) => {
         const wrapper = mount(AllInOneRegistration, {
             i18n,
             propsData: {
                 selfServiceDetails: {
                     requirements: {
-                        stages: []
+                        stages: ['TermsAndConditions']
                     }
                 }
-            },
-            stubs: ['idmUserDetails', 'TermsAndConditions']
+            }
         });
+
+        // Trigger a save to verify after is valid promise
+        wrapper.vm.saveCheck();
 
         wrapper.vm.isValid().then((result) => {
             expect(result.success).to.equal(true);
+            expect(wrapper.emitted().saveSelfService.length).to.equal(1);
             done();
         });
     });

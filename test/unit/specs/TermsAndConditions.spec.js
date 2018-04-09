@@ -82,4 +82,22 @@ describe('TermsAndConditions.vue', () => {
 
         expect(wrapper.contains('a')).to.equal(true);
     });
+
+    it('TermsAndConditions save event emitted', () => {
+        const wrapper = mount(TermsAndConditions, {
+            i18n,
+            propsData: {
+                selfServiceDetails: {
+                    requirements: {
+                        terms: 'test'
+                    }
+                },
+                inline: true
+            }
+        });
+
+        wrapper.vm.save();
+
+        expect(wrapper.emitted().saveSelfService.length).to.equal(1);
+    });
 });

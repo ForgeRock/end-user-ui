@@ -1,8 +1,9 @@
-@import '../../node_modules/bootstrap/scss/bootstrap.scss';
-
 //For themeing please see https://getbootstrap.com/docs/4.0/getting-started/theming/
 @import "theme";
 
+@import '../../node_modules/bootstrap/scss/bootstrap.scss';
+
+// Export colors to make them available in JS
 :export {
   baseColor: $blue;
 }

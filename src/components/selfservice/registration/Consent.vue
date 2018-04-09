@@ -1,17 +1,8 @@
 <template>
-    <div v-if="inline">
-        <p>{{$t("pages.selfservice.registration.termsAndConditions.singlePage")}} <a href="#" @click.prevent="" v-b-modal="'termsModal'">{{$t("pages.selfservice.registration.termsAndConditions.title")}}</a>.</p>
-
-        <b-modal id="termsModal" hide-footer :title="$t('pages.selfservice.registration.termsAndConditions.title')">
-            <div class="d-block text-center">
-                <p>{{selfServiceDetails.requirements.terms}}</p>
-            </div>
-        </b-modal>
-    </div>
-    <div v-else>
-        <h3>{{$t("pages.selfservice.registration.termsAndConditions.title")}}</h3>
+    <div>
+        <h3 v-if="inline === false">{{$t("pages.selfservice.registration.consent.title")}}</h3>
         <div class="d-block text-center">
-            <p>{{selfServiceDetails.requirements.terms}}</p>
+            <p>{{selfServiceDetails.requirements.consent}}</p>
         </div>
 
         <b-button v-if="inline === false" @click="save" :block="true" variant="primary">
@@ -22,7 +13,7 @@
 
 <script>
     export default {
-        name: 'Terms-And-Conditions',
+        name: 'Consent',
         props: {
             selfServiceDetails: { required: true },
             inline: {
@@ -33,7 +24,7 @@
         methods: {
             getData: function () {
                 return {
-                    accept: 'true'
+                    consentGiven: 'true'
                 };
             },
 

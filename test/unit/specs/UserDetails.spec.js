@@ -6,7 +6,7 @@ import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { mount } from '@vue/test-utils';
 
-describe('AllInOneRegistration.vue', () => {
+describe('UserDetails.vue', () => {
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
     Vue.use(VeeValidate);
