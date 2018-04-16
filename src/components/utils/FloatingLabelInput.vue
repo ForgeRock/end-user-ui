@@ -16,7 +16,7 @@
 
     export default {
         name: 'floating-label-input',
-        props: ['label', 'type', 'autofocus'],
+        props: ['label', 'type', 'autofocus', 'fieldName'],
         data () {
             return {
                 inputValue: '',
