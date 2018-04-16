@@ -86,7 +86,7 @@
                         <configuration>
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
-                                <descriptor>src/assembly/enduser.xml</descriptor>
+                                <descriptor>assembly.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>

@@ -41,9 +41,11 @@ const webpackConfig = merge(baseWebpackConfig, {
         warnings: false
       },
       sourceMap: config.build.productionSourceMap,
-      parallel: true
+      parallel: true,
+      extractComments: true
     }),
-    // extract css into its own file
+    new webpack.BannerPlugin('Copyright 2018 ForgeRock AS. All Rights Reserved \n Use of this code requires a commercial software license with ForgeRock AS. or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.'),
+      // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css'),
       // set the following option to `true` if you want to extract CSS from
