@@ -1,6 +1,10 @@
 <template>
     <div class="fr-all-in-one-container">
+        
         <idmUserDetails v-if="stages.idmUserDetails" :inline="true" :selfServiceDetails="selfServiceDetails"></idmUserDetails>
+        <kbaSecurityAnswerDefinitionStage v-if="stages.kbaSecurityAnswerDefinitionStage" :inline="true" :selfServiceDetails="selfServiceDetails"></KBASecurityAnswerDefinitionStage>
+        <TermsAndConditions v-if="stages.termsAndConditions" :inline="true" :selfServiceDetails="selfServiceDetails"></TermsAndConditions>
+
         <template v-if="stages.consent">
             <b-modal ref="consentModal"
                      :title="$t('pages.selfservice.registration.consent.title')">
@@ -31,6 +35,7 @@
 <script>
     import _ from 'lodash';
     import idmUserDetails from './UserDetails';
+    import kbaSecurityAnswerDefinitionStage from './KBASecurityAnswerDefinitionStage';
     import TermsAndConditions from './TermsAndConditions';
     import Consent from './Consent';
 
@@ -41,6 +46,7 @@
         },
         components: {
             idmUserDetails,
+            kbaSecurityAnswerDefinitionStage,
             TermsAndConditions,
             Consent
         },

@@ -3,19 +3,26 @@ export default
     en: {
         common: {
             errors: {
-                'notFound': 'Not Found',
-                'notFoundAdditional': 'Please send help',
-                'authenticationError': 'Authentication Error',
-                'registrationError': 'Registration Error'
+                notFound: 'Not Found',
+                notFoundAdditional: 'Please send help',
+                authenticationError: 'Authentication Error',
+                registrationError: 'Registration Error'
             },
             form: {
-                'submit': 'Submit',
-                'logo': 'logo',
-                'signUp': 'Sign Up'
+                submit: 'Submit',
+                logo: 'logo',
+                signUp: 'Sign Up'
             },
             placeholders: {
-                'password': 'Password',
-                'retypePassword': 'Retype Password'
+                password: 'Password',
+                retypePassword: 'Retype Password'
+            },
+            user: {
+                kba: {
+                    description: 'Select security question(s) below. These questions will help us verify your identity if you forget your password.',
+                    selectQuestion: 'Select a security question...',
+                    custom: 'Provide your own:'
+                }
             }
         },
         pages: {

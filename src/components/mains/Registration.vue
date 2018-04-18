@@ -31,6 +31,7 @@
     import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
     import Consent from '../selfservice/registration/Consent';
     import CenterCard from '@/components/utils/CenterCard';
+    import kbaSecurityAnswerDefinitionStage from '../selfservice/registration/KBASecurityAnswerDefinitionStage.vue';
 
     export default {
         name: 'Registration',
@@ -40,7 +41,8 @@
             TermsAndConditions,
             idmUserDetails,
             Consent,
-            'fr-center-card': CenterCard
+            'fr-center-card': CenterCard,
+            kbaSecurityAnswerDefinitionStage
         },
         data: function () {
             return {

@@ -8,6 +8,7 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
+    "unit:watch": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --auto-watch",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
     "build": "node build/build.js"
