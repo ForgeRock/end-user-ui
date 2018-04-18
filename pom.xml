@@ -5,72 +5,74 @@
   Use of this code requires a commercial software license with ForgeRock AS.
   or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>openidm-project</artifactId>
-    <groupId>org.forgerock.openidm</groupId>
-    <version>6.0.0-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>openidm-project</artifactId>
+        <groupId>org.forgerock.openidm</groupId>
+        <version>6.5.0-SNAPSHOT</version>
+    </parent>
 
-  <artifactId>openidm-ui-mirai</artifactId>
-  <name>Mirai UI</name>
-  <packaging>pom</packaging>
+    <artifactId>openidm-ui-mirai</artifactId>
+    <name>Mirai UI</name>
+    <packaging>pom</packaging>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <frontendMavenPlugin.version>1.6</frontendMavenPlugin.version>
-    <node.version>v9.5.0</node.version>
-    <npm.version>5.6.0</npm.version>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <frontendMavenPlugin.version>1.6</frontendMavenPlugin.version>
+        <node.version>v9.5.0</node.version>
+        <npm.version>5.6.0</npm.version>
+    </properties>
 
-  <dependencies>
-  </dependencies>
+    <dependencies>
+    </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
-								<artifactId>frontend-maven-plugin</artifactId>
+                <artifactId>frontend-maven-plugin</artifactId>
                 <version>${frontendMavenPlugin.version}</version>
-								<configuration>
-										<installDirectory>${node.install.directory}</installDirectory>
-								</configuration>
-								<executions>
-										<execution>
-												<id>install-node-and-npm</id>
-												<goals>
-														<goal>install-node-and-npm</goal>
-												</goals>
-												<phase>initialize</phase>
-												<configuration>
+                <configuration>
+                    <installDirectory>${node.install.directory}</installDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                        <configuration>
                             <nodeVersion>${node.version}</nodeVersion>
                             <npmVersion>${npm.version}</npmVersion>
-														<downloadRoot>http://maven.forgerock.org/repo/forgerock-third-party-virtual/</downloadRoot>
-														<npmDownloadRoot>http://maven.forgerock.org/repo/api/npm/npm-virtual/npm/-/</npmDownloadRoot>
-												</configuration>
-										</execution>
-										<execution>
-												<id>npm-install</id>
-												<goals>
-														<goal>npm</goal>
-												</goals>
-												<phase>initialize</phase>
-												<configuration>
-														<arguments>install</arguments>
-												</configuration>
-										</execution>
-										<execution>
-												<id>npm run build</id>
-												<goals>
-														<goal>npm</goal>
-												</goals>
-												<configuration>
-														<arguments>run build</arguments>
-												</configuration>
-										</execution>
-								</executions>
-						</plugin>
+                            <downloadRoot>http://maven.forgerock.org/repo/forgerock-third-party-virtual/</downloadRoot>
+                            <npmDownloadRoot>http://maven.forgerock.org/repo/api/npm/npm-virtual/npm/-/
+                            </npmDownloadRoot>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm run build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -82,8 +84,9 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
-                                <descriptor>assembly.xml</descriptor>
+                                <descriptor>src/assembly/enduser.xml</descriptor>
                             </descriptors>
                         </configuration>
                     </execution>
