@@ -1,13 +1,15 @@
-import Vue from 'vue';
+import _ from 'lodash';
 import App from './App';
+import axios from 'axios';
+import BootstrapVue from 'bootstrap-vue';
+import Notifications from 'vue-notification';
 import Router from 'vue-router';
 import router from './router';
-import BootstrapVue from 'bootstrap-vue';
-import axios from 'axios';
-import VueI18n from 'vue-i18n';
 import translations from './translations';
-import Notifications from 'vue-notification';
+import UserStore from './store/User';
 import VeeValidate from 'vee-validate';
+import Vue from 'vue';
+import VueI18n from 'vue-i18n';
 
 // Turn off production warning messages
 Vue.config.productionTip = false;
@@ -23,6 +25,41 @@ Vue.use(VueI18n);
 
 // Setup router
 Vue.use(Router);
+
+// Router guard to check authenticated routes
+router.beforeEach((to, from, next) => {
+    if (_.has(to, 'meta.authenticate')) {
+        let userState = UserStore.getUserState();
+
+        if (_.isNull(userState.userId)) {
+            let instance = axios.create({
+                baseURL: '/openidm',
+                timeout: 1000,
+                headers: {
+                    'content-type': 'application/json',
+                    'cache-control': 'no-cache',
+                    'x-requested-with': 'XMLHttpRequest'
+                }
+            });
+
+            instance.post('/authentication?_action=login').then((userDetails) => {
+                UserStore.setUserIdAction(userDetails.data.authorization.id);
+                UserStore.setManagedResourceAction(userDetails.data.authorization.component);
+                UserStore.setRolesAction(userDetails.data.authorization.roles);
+
+                next();
+            },
+            () => {
+                next(false);
+                router.push('login');
+            });
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
+});
 
 // Ready translated locale messages
 const i18n = new VueI18n({
@@ -63,16 +100,13 @@ Vue.use(Notifications);
 Vue.mixin({
     methods: {
         getRequestService: function (config) {
-            var baseURL = '/openidm',
+            let baseURL = '/openidm',
                 timeout = 1000,
                 headers = {
-                    'X-OpenIDM-Username': 'openidm-admin',
-                    'X-OpenIDM-Password': 'openidm-admin',
                     'content-type': 'application/json'
-                };
+                },
+                instance;
 
-            // TODO Remove hardcoded admin headers
-            // TODO Add interceptor for axios to catch failed IDM requests when session timesout
             if (config) {
                 if (config.baseURL) {
                     baseURL = config.baseURL;
@@ -87,12 +121,25 @@ Vue.mixin({
                 }
             }
 
-            //  Example: instance.interceptors.request.use(function () {});
-            return axios.create({
+            instance = axios.create({
                 baseURL: baseURL,
                 timeout: timeout,
                 headers: headers
             });
+
+            if (config && config.authenticator) {
+                instance.interceptors.response.use((response) => {
+                    return response;
+                }, (error) => {
+                    if (error.response.data.code === 401) {
+                        this.$router.push({ path: 'login' });
+                    }
+
+                    return Promise.reject(error);
+                });
+            }
+
+            return instance;
         }
     }
 });
@@ -103,5 +150,8 @@ new Vue({
     router,
     i18n,
     template: '<App/>',
-    components: { App }
+    components: { App },
+    data: {
+        userStore: UserStore
+    }
 });

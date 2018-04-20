@@ -62,11 +62,21 @@
                         },
                         timeout: 5000
                     }),
-                    idmInstance = this.getRequestService();
+                    idmInstance = this.getRequestService({
+                        headers: {
+                            'X-OpenIDM-NoSession': true,
+                            'X-OpenIDM-Password': 'anonymous',
+                            'X-OpenIDM-Username': 'anonymous'
+                        }
+                    });
 
                 /* istanbul ignore next */
                 idmInstance.post('/authentication?_action=logout').then(() => {
-                    loginServiceInstance.post('/authentication?_action=login').then(() => {
+                    loginServiceInstance.post('/authentication?_action=login').then((userDetails) => {
+                        this.$root.userStore.setUserIdAction(userDetails.data.authorization.id);
+                        this.$root.userStore.setManagedResourceAction(userDetails.data.authorization.component);
+                        this.$root.userStore.setRolesAction(userDetails.data.authorization.roles);
+
                         this.$router.push('/');
                     })
                     .catch(() => {
