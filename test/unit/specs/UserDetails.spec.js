@@ -9,7 +9,7 @@ import { mount } from '@vue/test-utils';
 describe('UserDetails.vue', () => {
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
-    Vue.use(VeeValidate);
+    Vue.use(VeeValidate, {inject: false, fastExit: false});
 
     const i18n = new VueI18n({
         locale: 'en',

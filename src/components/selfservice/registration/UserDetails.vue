@@ -1,21 +1,21 @@
 <template>
     <b-form>
         <b-form-group v-for="(property, key) in userDetails" :key="key">
-            <b-input-group>
-                <b-form-input :name="key" data-vv-validate-on="input" v-validate="property.required ? 'required' : ''" :class="{'is-invalid': errors.has(key) }" v-model="saveDetails[key]" :placeholder="property.description"></b-form-input>
-                <div v-show="errors.has(key)" class="invalid-tooltip">
-                    {{errors.first(key)}}
-                </div>
-            </b-input-group>
+            <fr-floating-label-input
+                :fieldName="key"
+                :label="property.description"
+                :validateRules="property.required ? 'required' : ''"
+                type="text"
+                v-model="saveDetails[key]"></fr-floating-label-input>
         </b-form-group>
 
         <b-form-group>
-            <b-input-group>
-                <b-form-input type="password" name="password" v-validate="'required'" :class="{'is-invalid': errors.has('password') }" v-model="saveDetails.password" :placeholder="$t('common.placeholders.password')"></b-form-input>
-                <div v-show="errors.has('password')" class="invalid-tooltip">
-                    {{errors.first('password')}}
-                </div>
-            </b-input-group>
+            <fr-floating-label-input
+                fieldName="password"
+                :label="$t('common.placeholders.password')"
+                :validateRules="'required'"
+                type="password"
+                v-model="saveDetails.password"></fr-floating-label-input>
         </b-form-group>
 
         <b-form-group v-for="(preference, key) in userPreferences" :key="key">
@@ -32,10 +32,17 @@
 
 <script>
     import _ from 'lodash';
+    import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
 
     // TODO Improve validation to handle more then just required / confirm password
     export default {
         name: 'User-Details',
+        components: {
+            'fr-floating-label-input': FloatingLabelInput
+        },
+        $_veeValidate: {
+            validator: 'new'
+        },
         props: {
             selfServiceDetails: { required: true },
             inline: {

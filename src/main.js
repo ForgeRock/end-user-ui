@@ -39,8 +39,14 @@ Vue.use(BootstrapVue);
         <input v-validate="'required|email'" :class="{'input': true, 'is-danger': errors.has('email') }" name="email" type="text" placeholder="Email">
         <span v-show="errors.has('email')" class="help is-danger">{{ errors.first('email') }}</span>
     </p>
+
+    To use VeeValidate in a component include:
+
+    $_veeValidate: {
+        validator: 'new'
+    }
  */
-Vue.use(VeeValidate);
+Vue.use(VeeValidate, {inject: false, fastExit: false});
 
 /*
     Basic Notification Example:

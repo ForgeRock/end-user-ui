@@ -1,21 +1,26 @@
 <template>
-    <b-container class="fr-registration h-100 px-0" fluid>
-        <div class="h-100 d-flex">
-            <div class="m-auto fr-selfservice-signin">
-                <b-card class="fr-registration-card border-xs-0 border-sm">
-                    <b-img class="fr-logo mb-3 mt-2" src="static/image/fr-logomark.svg" fluid :alt="$t('common.form.logo')" />
-                    <h3 class="font-weight-bold mb-4">{{$t("pages.selfservice.registration.signUp")}}</h3>
-
-                    <component ref="selfServiceStage" v-if="selfServiceType !== null && selfServiceType !=='parameters'"
-                               :is="selfServiceType"
-                               :selfServiceDetails="selfServiceDetails"
-                               @saveSelfService="saveSelfService">
-                    </component>
-                    <bounce-loader v-else :color="loadingColor"></bounce-loader>
-                </b-card>
-            </div>
+    <fr-center-card :showLogo="true">
+        <div slot="center-card-header">
+            <h2 class="h2">{{$t("pages.selfservice.registration.signUp")}}</h2>
+            <p class='text-center mb-0'>{{$t('pages.selfservice.registration.signUpMsg')}}</p>
         </div>
-    </b-container>
+
+        <b-card-body slot="center-card-body">
+            <component ref="selfServiceStage" v-if="selfServiceType !== null && selfServiceType !=='parameters'"
+                       :is="selfServiceType"
+                       :selfServiceDetails="selfServiceDetails"
+                       @saveSelfService="saveSelfService">
+            </component>
+            <bounce-loader v-else :color="loadingColor"></bounce-loader>
+        </b-card-body>
+
+        <b-card-footer slot="center-card-footer">
+            {{$t('pages.selfservice.registration.haveAccount')}}
+            <a href="#/login">
+                {{$t('pages.selfservice.registration.signIn')}}
+            </a>
+        </b-card-footer>
+    </fr-center-card>
 </template>
 
 <script>
@@ -25,6 +30,7 @@
     import idmUserDetails from '../selfservice/registration/UserDetails';
     import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
     import Consent from '../selfservice/registration/Consent';
+    import CenterCard from '@/components/utils/CenterCard';
 
     export default {
         name: 'Registration',
@@ -33,7 +39,8 @@
             BounceLoader,
             TermsAndConditions,
             idmUserDetails,
-            Consent
+            Consent,
+            'fr-center-card': CenterCard
         },
         data: function () {
             return {
@@ -163,33 +170,3 @@
         }
     };
 </script>
-
-<style scoped lang="scss">
-    @import "../../scss/main.scss";
-
-    .fr-registration {
-        .fr-logo {
-            width: 37px;
-        }
-    }
-
-    // TODO remove when center card component merged
-    // Selfservice form and card
-    .fr-selfservice-signin {
-        width: 100%;
-        margin: 0 auto;
-        @include media-breakpoint-between(sm, xl) {
-            max-width: 420px;
-            padding: 40px 0;
-        }
-
-        .card {
-            border: none;
-            @include media-breakpoint-between(sm, xl) {
-                margin: 0;
-                border-radius: $border-radius;
-                border: $border-width solid $border-color;
-            }
-        }
-    }
-</style>

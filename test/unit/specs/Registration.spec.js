@@ -12,7 +12,7 @@ describe('Registration.vue', () => {
 
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
-    Vue.use(VeeValidate);
+    Vue.use(VeeValidate, {inject: false, fastExit: false});
 
     beforeEach(function () {
         sandbox = Sinon.sandbox.create();

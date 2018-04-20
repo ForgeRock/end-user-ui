@@ -30,6 +30,9 @@ export default
             selfservice: {
                 registration: {
                     signUp: 'Sign Up',
+                    haveAccount: 'Already have an account?',
+                    signIn: 'Sign in',
+                    signUpMsg: 'Signing up is fast and easy.',
                     termsAndConditions: {
                         title: 'Terms & Conditions',
                         singlePage: 'By creating an account, you agree to the'

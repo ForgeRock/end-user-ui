@@ -2,21 +2,31 @@
     <div class="form-label-group" ref="floatingLabelGroup">
         <input :type="type"
                :id="id"
-               :class="[{'polyfillPlaceholder': floatLabels }, 'form-control']"
+               :class="[{'polyfillPlaceholder': floatLabels, 'is-invalid': errors.has(fieldName) }, 'form-control']"
                :autofocus="autofocus"
                v-model="inputValue"
                :placeholder="label"
-               :name="fieldName">
+               v-validate="validateRules"
+               data-vv-validate-on="submit"
+               :name="fieldName"/>
+
         <label :hidden="hideLabel" :for="id">{{ label }}</label>
+
+        <fr-validation-error :validatorErrors="errors" :fieldName="fieldName"></fr-validation-error>
     </div>
 </template>
 
 <script>
     import _ from 'lodash';
+    import ValidationError from '@/components/utils/ValidationError';
 
     export default {
         name: 'floating-label-input',
-        props: ['label', 'type', 'autofocus', 'fieldName'],
+        components: {
+            'fr-validation-error': ValidationError
+        },
+        props: ['label', 'type', 'autofocus', 'fieldName', 'validateRules'],
+        inject: ['$validator'],
         data () {
             return {
                 inputValue: '',
@@ -29,38 +39,20 @@
             this.id = 'floatingLabelInput' + this._uid;
         },
         mounted: function () {
-            // Edge Requires a large timeout before checking the input's value
             /* istanbul ignore next */
-            if (navigator.userAgent.indexOf('Edge') >= 0) {
-                _.delay(_.bind(() => {
+            _.delay(_.bind(() => {
+                if (navigator.userAgent.indexOf('Edge') >= 0) {
                     if (document.getElementById(`${this.id}`).value.length) {
                         this.floatLabels = true;
                         this.inputValue = document.getElementById(`${this.id}`).value;
-                        _.delay(_.bind(() => {
-                            this.hideLabel = false;
-                        }, this), 100);
-                    } else {
-                        _.delay(_.bind(() => {
-                            this.hideLabel = false;
-                        }, this), 100);
                     }
-                }, this), 100);
-
-            // If Chrome check the value at the end of the execution queue
-            /* istanbul ignore next */
-            } else if (navigator.userAgent.indexOf('Chrome') >= 0) {
-                _.delay(_.bind(() => {
+                } else if (navigator.userAgent.indexOf('Chrome') >= 0) {
                     if (document.querySelectorAll(`#${this.id}:-webkit-autofill`).length > 0) {
                         this.floatLabels = true;
                     }
-
-                    this.hideLabel = false;
-                }, this), 0);
-            } else {
-                _.delay(_.bind(() => {
-                    this.hideLabel = false;
-                }, this), 100);
-            }
+                }
+                this.hideLabel = false;
+            }, this), 400);
         },
         watch: {
             inputValue: function (newVal) {
@@ -72,7 +64,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../../scss/main.scss";
+    @import "../../scss/theme.scss";
     .form-label-group {
         position: relative;
         margin-bottom: 1rem;
@@ -137,5 +129,4 @@
         font-size: 12px;
         color: $gray-700;
     }
-
 </style>
