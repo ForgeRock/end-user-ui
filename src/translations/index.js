@@ -52,6 +52,11 @@ export default
                         agreement: 'I agree'
                     }
                 }
+            },
+            profile: {
+                editPersonalInfo: 'Edit Personal Info',
+                settings: 'Settings',
+                activity: 'Activity'
             }
         }
     }

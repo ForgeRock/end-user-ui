@@ -177,3 +177,32 @@ select.custom-select {
   padding-bottom: $custom-select-padding-y;
   font-size: $custom-select-font-size-lg;
 }
+
+// Nav tabs
+.nav-tabs {
+  margin-bottom: 1.875rem;
+}
+.nav-tabs .nav-link {
+  color: $gray-600;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  background: transparent;
+  border-color: transparent;
+  border-radius: 0;
+  border-bottom: 3px solid $nav-highlight-color;
+  color: $gray-900;
+  border-left: none;
+  border-right: none;
+}
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus {
+  border-color: transparent;
+}
+.nav-tabs .nav-link.active:hover,
+.nav-tabs .nav-link.active:focus {
+  border-bottom: 3px solid $nav-highlight-color;
+}

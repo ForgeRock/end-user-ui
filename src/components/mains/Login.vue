@@ -77,7 +77,7 @@
                         this.$root.userStore.setManagedResourceAction(userDetails.data.authorization.component);
                         this.$root.userStore.setRolesAction(userDetails.data.authorization.roles);
 
-                        this.$router.push('/');
+                        this.$router.push('/profile');
                     })
                     .catch(() => {
                         this.wrongPasswordSubmitted = true;
