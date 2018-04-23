@@ -10,7 +10,7 @@
                         footer-tag="footer">
 
                     <b-card-header>
-                        <b-img v-if="showLogo" class="fr-logo mb-3 mt-2" src="static/image/fr-logomark.svg" fluid :alt="$t('common.form.logo')" />
+                        <b-img v-if="showLogo" class="fr-logo mb-3 mt-2" src="static/image/vertical-logo.svg" fluid :alt="$t('common.form.logo')" />
                         <slot name="center-card-header"></slot>
                     </b-card-header>
 

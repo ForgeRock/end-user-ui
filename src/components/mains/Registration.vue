@@ -149,7 +149,13 @@
                         },
                         timeout: 5000
                     }),
-                    idmInstance = this.getRequestService();
+                    idmInstance = this.getRequestService({
+                        headers: {
+                            'X-OpenIDM-NoSession': true,
+                            'X-OpenIDM-Password': 'anonymous',
+                            'X-OpenIDM-Username': 'anonymous'
+                        }
+                    });
 
                 /* istanbul ignore next */
                 idmInstance.post('/authentication?_action=logout').then(() => {

@@ -1,6 +1,8 @@
 <template>
     <div v-if="inline">
-        <p>{{$t("pages.selfservice.registration.termsAndConditions.singlePage")}} <a href="#" @click.prevent="" v-b-modal="'termsModal'">{{$t("pages.selfservice.registration.termsAndConditions.title")}}</a>.</p>
+        <small class="form-text text-muted">
+            {{$t("pages.selfservice.registration.termsAndConditions.singlePage")}} <a href="#" @click.prevent="" v-b-modal="'termsModal'">{{$t("pages.selfservice.registration.termsAndConditions.title")}}</a>.
+        </small>
 
         <b-modal id="termsModal" hide-footer :title="$t('pages.selfservice.registration.termsAndConditions.title')">
             <div class="d-block text-center">

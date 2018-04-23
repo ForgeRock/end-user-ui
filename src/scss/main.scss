@@ -1,28 +1,24 @@
-//For themeing please see https://getbootstrap.com/docs/4.0/getting-started/theming/
-@import "theme";
+// For themeing please see https://getbootstrap.com/docs/4.0/getting-started/theming/
+// Variable must come before bootstrap (to override them)
+@import "theme-variables";
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
 
-@import '../../node_modules/bootstrap/scss/bootstrap.scss';
+// General custom form adjustments (radio, checkbox, etc...)
+@import "custom-form";
+
 // Export colors to make them available in JS
 :export {
   baseColor: $blue;
 }
 
+
+// Application adjustments (not related to themes
 // Center spinner
 .v-spinner {
   .v-bounce1 {
     margin-left: auto;
     margin-right: auto;
   }
-}
-
-// Base application styles
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  height: 100%;
-  color: $black;
 }
 
 html, body {
@@ -33,15 +29,31 @@ h1, h2 {
   font-weight: normal;
 }
 
-.navbar-brand {
-  letter-spacing: 1px;
+// Base application styles
 
-  img {
-    max-width: 150px;
-    padding-top: 2px;
+// Navbar
+#app {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  height: 100%;
+
+  .navbar {
+    -webkit-box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.11);
+    box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.11);
+
+    .navbar-brand {
+      letter-spacing: 1px;
+
+      img {
+        max-width: 150px;
+        padding-top: 2px;
+      }
+    }
   }
 }
 
+// Jumbotron adjustmenets
 .fr-header-jumbotron {
   background-color: transparent;
 
@@ -59,6 +71,12 @@ h1, h2 {
   .fa {
     padding-right: 10px;
   }
+}
+
+// Basic Form
+.b-form-group .input-group .form-control {
+  border-bottom-right-radius: .25rem;
+  border-top-right-radius: .25rem;
 }
 
 // General page transition
@@ -105,3 +123,7 @@ h1, h2 {
     text-decoration: none;
   }
 }
+
+// Additional component level theme overrides must come after if you want access to bootstrap variables
+// These should also come last so they can override anything in the application
+@import "theme-components";

@@ -1,0 +1,40 @@
+// Override variables here
+// Example variable override
+$white:    #fff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black:    #000;
+
+$body-bg:                           $gray-100;
+$headings-color:                    $gray-900;
+$font-weight-bold:                  600;
+$navbar-padding-y:                  1.125rem;
+$navbar-padding-x:                  1.875rem;
+$input-padding-y:                   .75rem;
+$input-placeholder-color:           $gray-500;
+$input-btn-padding-x:               1.25rem;
+$input-btn-padding-y:               .75rem;
+$card-spacer-y:                     1.875rem;
+$card-spacer-x:                     1.875rem;
+$list-group-item-padding-y:         1.25rem;
+$list-group-item-padding-x:         1.875rem;
+$list-group-hover-bg:               $white;
+$list-group-active-bg:              $white;
+$card-cap-bg:                       transparent;
+$transition-collapse:               height .25s ease-in;
+$custom-control-gutter:             2rem;
+$custom-control-indicator-bg:       #fff;
+
+// Forgerock Variables (more finite color control)
+// Toolbar color
+$fr-toolbar-background: $white !default;
+
+@import "light-variables";
+// @import "dark-variables";

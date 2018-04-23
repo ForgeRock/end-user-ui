@@ -10,7 +10,8 @@ export default
             },
             form: {
                 'submit': 'Submit',
-                'logo': 'logo'
+                'logo': 'logo',
+                'signUp': 'Sign Up'
             },
             placeholders: {
                 'password': 'Password',
@@ -35,7 +36,7 @@ export default
                     signUpMsg: 'Signing up is fast and easy.',
                     termsAndConditions: {
                         title: 'Terms & Conditions',
-                        singlePage: 'By creating an account, you agree to the'
+                        singlePage: 'By clicking "Sign Up" you agree to our '
                     },
                     consent: {
                         title: 'Privacy & Consent',

@@ -1,6 +1,6 @@
 <template>
     <b-form>
-        <b-form-group v-for="(property, key) in userDetails" :key="key">
+        <b-form-group class="mb-0" v-for="(property, key) in userDetails" :key="key">
             <fr-floating-label-input
                 :fieldName="key"
                 :label="property.description"
@@ -9,7 +9,7 @@
                 v-model="saveDetails[key]"></fr-floating-label-input>
         </b-form-group>
 
-        <b-form-group>
+        <b-form-group class="mb-0">
             <fr-floating-label-input
                 fieldName="password"
                 :label="$t('common.placeholders.password')"
@@ -18,11 +18,13 @@
                 v-model="saveDetails.password"></fr-floating-label-input>
         </b-form-group>
 
-        <b-form-group v-for="(preference, key) in userPreferences" :key="key">
-            <b-input-group>
-                <b-form-checkbox plain v-model="saveDetails.preferences[key]">{{preference.description}}</b-form-checkbox>
-            </b-input-group>
-        </b-form-group>
+        <!-- Vue Bootstrap custom radio button seems to have problems so just using none component-->
+        <div class="form-group mb-4">
+            <div v-for="(preference, key) in userPreferences" :key="key" class="custom-control custom-checkbox mb-2">
+                <input v-model="saveDetails.preferences[key]" type="checkbox" class="custom-control-input" :id="key">
+                <label class="custom-control-label" :for="key">{{preference.description}}</label>
+            </div>
+        </div>
 
         <b-button v-if="inline === false" @click="save" :block="true" variant="primary">
             {{$t("common.form.submit")}}

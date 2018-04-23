@@ -64,7 +64,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../../scss/theme.scss";
+    @import "../../scss/theme-variables.scss";
     .form-label-group {
         position: relative;
         margin-bottom: 1rem;

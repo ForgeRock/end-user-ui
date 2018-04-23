@@ -1,9 +1,6 @@
 <template>
     <div class="fr-all-in-one-container">
         <idmUserDetails v-if="stages.idmUserDetails" :inline="true" :selfServiceDetails="selfServiceDetails"></idmUserDetails>
-
-        <TermsAndConditions v-if="stages.termsAndConditions" :inline="true" :selfServiceDetails="selfServiceDetails"></TermsAndConditions>
-
         <template v-if="stages.consent">
             <b-modal ref="consentModal"
                      :title="$t('pages.selfservice.registration.consent.title')">
@@ -24,9 +21,10 @@
             </b-modal>
         </template>
 
-        <b-button @click="saveCheck" :block="true" variant="primary">
-            {{$t("common.form.submit")}}
+        <b-button @click="saveCheck" :block="true" variant="primary" class="mt-2 mb-3">
+            {{$t("common.form.signUp")}}
         </b-button>
+        <TermsAndConditions v-if="stages.termsAndConditions" :inline="true" :selfServiceDetails="selfServiceDetails"></TermsAndConditions>
     </div>
 </template>
 
