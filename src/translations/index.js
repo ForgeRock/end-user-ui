@@ -21,7 +21,9 @@ export default
                 kba: {
                     description: 'Select security question(s) below. These questions will help us verify your identity if you forget your password.',
                     selectQuestion: 'Select a security question...',
-                    custom: 'Provide your own:'
+                    custom: 'Provide your own:',
+                    question: 'Question',
+                    answer: 'Answer'
                 }
             }
         },

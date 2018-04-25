@@ -12,16 +12,16 @@
                 :options="options" ></b-form-select>
 
             <fr-floating-label-input class="mb-3" type="text"
-                v-if="selected[key].selected === numberOfQuestions"
+                v-if="selected[key].selected === customIndex"
                 v-model.trim="answer.customQuestion"
-                :fieldName="'question'"
-                :label="'Question'"
+                :fieldName="$t('common.user.kba.question').toLowerCase()"
+                :label="$t('common.user.kba.question')"
                 :validateRules="'required'"></fr-floating-label-input>
 
             <fr-floating-label-input class="mb-3" type="text"
                 v-model.trim="answer.answer"
-                :fieldName="'answer'"
-                :label="'Answer'"
+                :fieldName="$t('common.user.kba.answer').toLowerCase()"
+                :label="$t('common.user.kba.answer')"
                 :validateRules="'required'"></fr-floating-label-input>
 
             <hr v-if="key !== answers.length - 1">
@@ -60,17 +60,18 @@
                 selected = _.times(numberOfQuestions, () => { return {selected: null}; }),
                 options = _.map(this.selfServiceDetails.requirements.properties.kba.questions, (question) => {
                     return { value: question.id, text: question.question[locale], disabled: false };
-                });
+                }),
+                customIndex = options.length + 1;
 
             // 'placeholder' should be first item in options array and 'custom' should be last
             options.unshift({ value: null, text: this.$t('common.user.kba.selectQuestion'), disabled: true });
-            options.push({ value: numberOfQuestions, text: this.$t('common.user.kba.custom'), disabled: false });
+            options.push({ value: customIndex, text: this.$t('common.user.kba.custom'), disabled: false });
 
             return {
                 selected: selected,
                 options: options,
                 answers: answers,
-                numberOfQuestions: numberOfQuestions
+                customIndex: customIndex
             };
         },
         watch: {
@@ -78,7 +79,7 @@
                 handler: function (value) {
                     // create array of selected options that aren't custom
                     let toDisable = _.map(this.selected, (s) => {
-                        if (s.selected !== null && s.selected !== this.numberOfQuestions) {
+                        if (s.selected !== null && s.selected !== this.customIndex) {
                             return s.selected;
                         }
                     });
@@ -101,7 +102,7 @@
                     let couplet = {};
 
                     // if custom question
-                    if (s.selected === this.numberOfQuestions) {
+                    if (s.selected === this.customIndex) {
                         couplet.customQuestion = this.answers[index].customQuestion;
                     } else {
                         couplet.questionId = s.selected;

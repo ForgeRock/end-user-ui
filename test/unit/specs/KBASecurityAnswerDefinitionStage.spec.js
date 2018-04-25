@@ -4,35 +4,26 @@ import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { mount } from '@vue/test-utils';
+import VeeValidate from 'vee-validate';
 
 describe('KBASecurityAnswerDefinitionStage.vue', () => {
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
+    Vue.use(VeeValidate, { inject: true, fastExit: false });
 
     const i18n = new VueI18n({
         locale: 'en',
         messages: translations
-    });
+    }),
+        v = new VeeValidate.Validator();
 
-    it('KBASecurityAnswerDefinitionStage component loaded', () => {
-        const wrapper = mount(KBASecurityAnswerDefinitionStage, {
-            i18n,
-            propsData: {
-                selfServiceDetails: {
-                    requirements: {
-                        properties: {
-                            kba: {}
-                        }
-                    }
-                }
-            }
-        });
+    let wrapper;
 
-        expect(wrapper.name()).to.equal('KBA-Security-Answer-Definition-Stage');
-    });
-
-    it('creates the correct number of selects and inputs', () => {
-        const wrapper = mount(KBASecurityAnswerDefinitionStage, {
+    beforeEach(() => {
+        wrapper = mount(KBASecurityAnswerDefinitionStage, {
+            provide: () => ({
+                $validator: v
+            }),
             i18n,
             propsData: {
                 selfServiceDetails: {
@@ -60,42 +51,19 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
                 }
             }
         });
+    });
 
+    it('KBASecurityAnswerDefinitionStage component loaded', () => {
+        expect(wrapper.name()).to.equal('KBA-Security-Answer-Definition-Stage');
+    });
+
+    it('creates the correct number of selects and inputs', () => {
         expect(wrapper.vm.$data.selected.length).to.equal(4);
         expect(wrapper.findAll('select').length).to.equal(4);
         expect(wrapper.findAll('input').length).to.equal(4);
     });
 
     it('disables questions when they are selected', () => {
-        const wrapper = mount(KBASecurityAnswerDefinitionStage, {
-            i18n,
-            propsData: {
-                selfServiceDetails: {
-                    requirements: {
-                        properties: {
-                            kba: {
-                                minItems: 4,
-                                questions: [
-                                    {
-                                        question: {
-                                            en: 'What\'s your favorite color?'
-                                        },
-                                        id: '1'
-                                    },
-                                    {
-                                        question: {
-                                            en: 'Who was your first employer?'
-                                        },
-                                        id: '2'
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
         // choose first value in select
         wrapper.vm.selected[0].selected = '1';
         expect(wrapper.vm.options[1].disabled).to.equal(true);
@@ -104,90 +72,17 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
     });
 
     it('adds "question" input when custom option is selected', () => {
-        const wrapper = mount(KBASecurityAnswerDefinitionStage, {
-            i18n,
-            propsData: {
-                selfServiceDetails: {
-                    requirements: {
-                        properties: {
-                            kba: {
-                                minItems: 4,
-                                questions: [
-                                    {
-                                        question: {
-                                            en: 'What\'s your favorite color?'
-                                        },
-                                        id: '1'
-                                    },
-                                    {
-                                        question: {
-                                            en: 'Who was your first employer?'
-                                        },
-                                        id: '2'
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
         // choose "custom" option in select
-        wrapper.vm.selected[0].selected = '4';
+        const select = wrapper.find('select').element;
 
-        expect(wrapper.find('input').element.placeholder).to.equal('Question');
+        select.value = '3';
+        select.dispatchEvent(new Event('change'));
+
+        expect(wrapper.findAll('input[name="question"]').length).to.equal(1);
     });
 
     it('correctly formats save object', () => {
-        const wrapper = mount(KBASecurityAnswerDefinitionStage, {
-                i18n,
-                propsData: {
-                    selfServiceDetails: {
-                        requirements: {
-                            properties: {
-                                kba: {
-                                    minItems: 4,
-                                    questions: [
-                                        {
-                                            question: {
-                                                en: 'What\'s your favorite color?'
-                                            },
-                                            id: '1'
-                                        },
-                                        {
-                                            question: {
-                                                en: 'Who was your first employer?'
-                                            },
-                                            id: '2'
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }),
-            saveObj = {
-                kba: [
-                    {
-                        customQuestion: 'What\'s your favorite food',
-                        answer: 'eggs'
-                    },
-                    {
-                        questionId: '1',
-                        answer: 'red'
-                    },
-                    {
-                        customQuestion: 'What street did you grow up on?',
-                        answer: 'main'
-                    },
-                    {
-                        questionId: '2',
-                        answer: 'google'
-                    }
-                ]
-            };
+        let data;
 
         // fill out form fields
         wrapper.vm.answers = [
@@ -214,14 +109,72 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
         ];
 
         wrapper.vm.selected = [
-            { selected: '4' },
+            { selected: '3' },
             { selected: '1' },
-            { selected: '4' },
+            { selected: '3' },
             { selected: '2' }
         ];
-        wrapper.vm.save();
 
-        expect(wrapper.vm.getData()).to.be.a('object');
-        expect(wrapper.vm.getData()).to.deep.equal(saveObj);
+        wrapper.vm.save();
+        data = wrapper.vm.getData();
+
+        expect(data).to.be.an('object');
+        expect(data.kba).to.be.an('array');
+        expect(data.kba[0]).to.be.an('object');
+        expect(data.kba[0]).to.have.property('questionId');
+        expect(data.kba[0]).to.have.property('answer');
+        expect(data.kba[0].questionId).to.equal('3');
+        expect(data.kba[0].answer).to.equal('eggs');
+        expect(data.kba[1].questionId).to.equal('1');
+        expect(data.kba[1].answer).to.equal('red');
+        expect(data.kba[2].questionId).to.equal('3');
+        expect(data.kba[2].answer).to.equal('main');
+        expect(data.kba[3].questionId).to.equal('2');
+        expect(data.kba[3].answer).to.equal('google');
+    });
+
+    it('allows selecting defined questions', () => {
+        wrapper = mount(KBASecurityAnswerDefinitionStage, {
+            i18n,
+            provide: () => ({
+                $validator: v
+            }),
+            propsData: {
+                selfServiceDetails: {
+                    requirements: {
+                        properties: {
+                            kba: {
+                                minItems: 2,
+                                questions: [
+                                    {
+                                        question: {
+                                            en: 'What\'s your favorite color?'
+                                        },
+                                        id: '1'
+                                    },
+                                    {
+                                        question: {
+                                            en: 'Who was your first employer?'
+                                        },
+                                        id: '2'
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // select defined questions
+        wrapper.vm.selected = [
+            { selected: '1' },
+            { selected: '2' }
+        ];
+
+        // inputs should match the number of questions selected
+        expect(wrapper.findAll('input').length).to.equal(2);
+        // should not find a 'question' input
+        expect(wrapper.findAll('input[name="question"]').length).to.equal(0);
     });
 });
