@@ -4,11 +4,11 @@
 
 // General Theme
 #app {
-  color: $black;
   font-family: 'Roboto', sans-serif;
 
   // Toolbar background color
-  .fr-toolbar-background {
+  .fr-main-navbar {
     background-color: $fr-toolbar-background;
+    color: $fr-toolbar-color;
   }
 }

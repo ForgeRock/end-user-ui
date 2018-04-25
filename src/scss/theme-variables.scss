@@ -31,10 +31,12 @@ $card-cap-bg:                       transparent;
 $transition-collapse:               height .25s ease-in;
 $custom-control-gutter:             2rem;
 $custom-control-indicator-bg:       #fff;
+$custom-select-height:              3rem;
 
 // Forgerock Variables (more finite color control)
 // Toolbar color
 $fr-toolbar-background: $white !default;
+$fr-application-text-color: $gray-900 !default;
+$fr-toolbar-color: $gray-900 !default;
 
-@import "light-variables";
 // @import "dark-variables";

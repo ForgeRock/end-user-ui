@@ -1,6 +1,6 @@
 <template>
-    <div class="form-label-group" ref="floatingLabelGroup">
-        <input :type="type"
+    <div :class="[{'form-label-password': reveal}, 'form-label-group']" ref="floatingLabelGroup">
+        <input :type="inputType"
                :id="id"
                :class="[{'polyfillPlaceholder': floatLabels, 'is-invalid': errors.has(fieldName) }, 'form-control']"
                :autofocus="autofocus"
@@ -9,6 +9,9 @@
                v-validate="validateRules"
                data-vv-validate-on="submit"
                :name="fieldName"/>
+        <div v-if="reveal" class="input-group-prepend">
+            <button @click="revealText" class="btn btn-outline-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
+        </div>
 
         <label :hidden="hideLabel" :for="id">{{ label }}</label>
 
@@ -25,14 +28,16 @@
         components: {
             'fr-validation-error': ValidationError
         },
-        props: ['label', 'type', 'autofocus', 'fieldName', 'validateRules'],
+        props: ['label', 'type', 'autofocus', 'fieldName', 'validateRules', 'reveal'],
         inject: ['$validator'],
         data () {
             return {
                 inputValue: '',
                 id: null,
                 floatLabels: false,
-                hideLabel: true
+                hideLabel: true,
+                inputType: this.type,
+                show: true
             };
         },
         beforeMount: function () {
@@ -54,6 +59,17 @@
                 this.hideLabel = false;
             }, this), 400);
         },
+        methods: {
+            revealText: function () {
+                if (this.inputType === 'password') {
+                    this.inputType = 'text';
+                    this.show = false;
+                } else {
+                    this.inputType = 'password';
+                    this.show = true;
+                }
+            }
+        },
         watch: {
             inputValue: function (newVal) {
                 this.floatLabels = newVal.length > 0;
@@ -65,6 +81,25 @@
 
 <style lang="scss" scoped>
     @import "../../scss/theme-variables.scss";
+    .form-label-password.form-label-group {
+        display: flex;
+
+        .form-control {
+            flex-grow: 1;
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .input-group-prepend {
+            flex-grow: 1;
+
+            button {
+                border-bottom-left-radius: 0;
+                border-top-left-radius: 0;
+            }
+        }
+    }
+
     .form-label-group {
         position: relative;
         margin-bottom: 1rem;

@@ -16,8 +16,8 @@
 
             <b-form class="form-signin" @submit.prevent="submit">
 
-                <fr-floating-label-input v-model="username" :label="$t('pages.login.username')" type="text" autofocus="true"></fr-floating-label-input>
-                <fr-floating-label-input v-model="password" :label="$t('pages.login.password')" type="password"></fr-floating-label-input>
+                <fr-floating-label-input v-model="username" fieldName="username" :label="$t('pages.login.username')" type="text" autofocus="true"></fr-floating-label-input>
+                <fr-floating-label-input v-model="password" fieldName="password" :label="$t('pages.login.password')" :reveal="true" type="password"></fr-floating-label-input>
 
                 <b-button type="submit" variant="primary" class="btn btn-block btn-lg">
                     {{$t('pages.login.signIn')}}

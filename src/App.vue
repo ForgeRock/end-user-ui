@@ -3,7 +3,7 @@
         <!--
         Navigation Bar useing Vue Route + Bootstrap Toolbar
         -->
-        <b-navbar v-if="!this.$route.meta.hideToolbar" toggleable="md" class="fr-toolbar-background">
+        <b-navbar v-if="!this.$route.meta.hideToolbar" toggleable="md" class="fr-main-navbar">
             <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
             <b-navbar-brand to="/"><img src="static/image/horizontal-logo.svg" alt="$t('common.form.logo')" /></b-navbar-brand>
         </b-navbar>

@@ -18,7 +18,7 @@ describe('FloatingLabelInput.vue', () => {
                 label: '',
                 type: '',
                 autofocus: '',
-                fieldName: ''
+                fieldName: 'test'
             }
         });
 
@@ -34,12 +34,37 @@ describe('FloatingLabelInput.vue', () => {
                 label: '',
                 type: '',
                 autofocus: '',
-                fieldName: ''
+                fieldName: 'test'
             }
         });
 
         // wrapper.vm.inputValue
         wrapper.vm.inputValue = 'test';
         expect(wrapper.emitted().input.length).to.equal(1);
+    });
+
+    it('Floating Label password reveal', () => {
+        const wrapper = mount(FloatingLabelInput, {
+            provide: () => ({
+                $validator: v
+            }),
+            propsData: {
+                label: '',
+                type: 'password',
+                autofocus: '',
+                fieldName: 'test',
+                reveal: true
+            }
+        });
+
+        expect(wrapper.findAll('.fa-eye').length).to.equal(1);
+
+        wrapper.vm.revealText();
+
+        expect(wrapper.findAll('.fa-eye-slash').length).to.equal(1);
+
+        wrapper.vm.revealText();
+
+        expect(wrapper.findAll('.fa-eye').length).to.equal(1);
     });
 });

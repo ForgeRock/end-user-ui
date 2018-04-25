@@ -12,6 +12,7 @@
         <b-form-group class="mb-0">
             <fr-floating-label-input
                 fieldName="password"
+                :reveal="true"
                 :label="$t('common.placeholders.password')"
                 :validateRules="'required'"
                 type="password"

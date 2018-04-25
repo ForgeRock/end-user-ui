@@ -109,10 +109,9 @@
 // Replaces the browser default select with a custom one, mostly pulled from
 // http://primercss.io.
 //
-.custom-select {
+select.custom-select {
   display: inline-block;
   width: 100%;
-  height: $custom-select-height;
   padding: $custom-select-padding-y ($custom-select-padding-x + $custom-select-indicator-padding) $custom-select-padding-y $custom-select-padding-x;
   line-height: $custom-select-line-height;
   color: $custom-select-color;
@@ -141,6 +140,10 @@
       color: $input-color;
       background-color: $input-bg;
     }
+  }
+
+  &:not([size]):not([multiple]) {
+    height: calc(#{$custom-select-height} + #{$input-height-border});
   }
 
   &[multiple],
