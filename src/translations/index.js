@@ -15,7 +15,8 @@ export default
             },
             placeholders: {
                 password: 'Password',
-                retypePassword: 'Retype Password'
+                retypePassword: 'Retype Password',
+                emailAddress: 'Email address'
             },
             user: {
                 kba: {
@@ -38,6 +39,13 @@ export default
                 recoverPassword: 'recover your password.'
             },
             selfservice: {
+                signIn: 'Sign in',
+                headers: {
+                    username: {
+                        title: 'Recover Your Username',
+                        description: 'You can recover your username with the email address associated with your account.'
+                    }
+                },
                 registration: {
                     signUp: 'Sign Up',
                     haveAccount: 'Already have an account?',
@@ -51,6 +59,13 @@ export default
                         title: 'Privacy & Consent',
                         agreement: 'I agree'
                     }
+                },
+                forgotUsername: {
+                    advanceStageButtonText: 'Recover Username',
+                    yourUsername: 'Your username is',
+                    unableToRetrieve: 'Unable to retrieve your username',
+                    tryAgain: 'Try finding your username again',
+                    emailSent: 'An email containing your username has been sent to your account.'
                 }
             },
             profile: {

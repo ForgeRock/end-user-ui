@@ -1,5 +1,6 @@
 import Router from 'vue-router';
 import Dashboard from '@/components/mains/Dashboard';
+import ForgotUsername from '@/components/mains/ForgotUsername';
 import NotFound from '@/components/mains/NotFound';
 import Login from '@/components/mains/Login';
 import Profile from '@/components/mains/Profile';
@@ -37,6 +38,12 @@ export default new Router({
             path: '/registration',
             name: 'Registration',
             component: Registration,
+            meta: { hideToolbar: true }
+        },
+        {
+            path: '/forgotUsername',
+            name: 'ForgotUsername',
+            component: ForgotUsername,
             meta: { hideToolbar: true }
         },
         {
