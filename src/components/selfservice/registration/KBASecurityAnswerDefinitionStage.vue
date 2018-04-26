@@ -3,12 +3,12 @@
         <fr-horizontal-rule v-if="inline" insert="<i class='fa fa-lock'></i>"></fr-horizontal-rule>
 
         <p class="text-center">{{$t('common.user.kba.description')}}</p>
-        
-        <b-form-group label-text-align="left" class="mb-0"
-            v-for="(answer, key) in answers" :key="key"> 
 
-            <b-form-select class="mb-3" size="lg" 
-                v-model="selected[key].selected" 
+        <b-form-group label-text-align="left" class="mb-0"
+            v-for="(answer, key) in answers" :key="key">
+
+            <b-form-select class="mb-3" 
+                v-model="selected[key].selected"
                 :options="options" ></b-form-select>
 
             <fr-floating-label-input class="mb-3" type="text"
@@ -18,7 +18,7 @@
                 :label="'Question'"
                 :validateRules="'required'"></fr-floating-label-input>
 
-            <fr-floating-label-input class="mb-3" type="text" 
+            <fr-floating-label-input class="mb-3" type="text"
                 v-model.trim="answer.answer"
                 :fieldName="'answer'"
                 :label="'Answer'"
@@ -35,7 +35,7 @@
     import _ from 'lodash';
     import HorizontalRule from '@/components/utils/HorizontalRule';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
-    
+
     export default {
         name: 'KBA-Security-Answer-Definition-Stage',
         props: {
