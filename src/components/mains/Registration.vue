@@ -6,12 +6,12 @@
         </div>
 
         <b-card-body slot="center-card-body">
-            <component ref="selfServiceStage" v-if="selfServiceType !== null && selfServiceType !=='parameters'"
+            <component ref="selfServiceStage" v-show="showSelfService"
                        :is="selfServiceType"
                        :selfServiceDetails="selfServiceDetails"
                        @saveSelfService="saveSelfService">
             </component>
-            <bounce-loader v-else :color="loadingColor"></bounce-loader>
+            <bounce-loader v-show="showSelfService === false" :color="loadingColor"></bounce-loader>
         </b-card-body>
 
         <b-card-footer slot="center-card-footer">
@@ -48,7 +48,8 @@
             return {
                 selfServiceType: null,
                 selfServiceDetails: null,
-                loadingColor: styles.baseColor
+                loadingColor: styles.baseColor,
+                showSelfService: false
             };
         },
         mounted: function () {
@@ -69,9 +70,11 @@
                 selfServiceInstance.get('/selfservice/registration')
                     .then((selfServiceDetails) => {
                         this.setRegistrationComponent(selfServiceDetails.data.type, selfServiceDetails.data);
+                        this.showSelfService = true;
                     })
                     .catch((error) => {
                         /* istanbul ignore next */
+                        this.showSelfService = false;
                         this.$notify({
                             group: 'IDMMessages',
                             type: 'error',
@@ -85,12 +88,14 @@
 
                 if (type === 'parameters') {
                     this.selfServiceType = null;
+                    this.showSelfService = false;
 
                     this.saveSelfService({
                         'input': {}
                     });
                 } else {
                     this.selfServiceType = type;
+                    this.showSelfService = true;
                 }
             },
             saveSelfService: function (data) {
@@ -112,8 +117,7 @@
                 }
 
                 saveData.input = data;
-
-                this.setRegistrationComponent(null, null);
+                this.showSelfService = false;
 
                 /* istanbul ignore next */
                 selfServiceInstance.post('/selfservice/registration?_action=submitRequirements', saveData)
@@ -131,6 +135,8 @@
                         }
                     })
                     .catch((error) => {
+                        this.showSelfService = true;
+
                         /* istanbul ignore next */
                         this.$notify({
                             group: 'IDMMessages',

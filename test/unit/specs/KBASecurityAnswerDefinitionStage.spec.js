@@ -12,9 +12,9 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
     Vue.use(VeeValidate, { inject: true, fastExit: false });
 
     const i18n = new VueI18n({
-        locale: 'en',
-        messages: translations
-    }),
+            locale: 'en',
+            messages: translations
+        }),
         v = new VeeValidate.Validator();
 
     let wrapper;
