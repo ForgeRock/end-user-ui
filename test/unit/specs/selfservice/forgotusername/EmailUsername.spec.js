@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import EmailUsername from '@/components/selfservice/forgotUsername/EmailUsername';
+import EmailUsername from '@/components/selfservice/forgotusername/EmailUsername';
 import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';

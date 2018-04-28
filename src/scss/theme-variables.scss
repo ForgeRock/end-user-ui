@@ -1,5 +1,5 @@
-// Override variables here
-// Example variable override
+// Application wide variables can be overridden here
+// Forgerock based styles start with fr
 $white:    #fff;
 $gray-100: #f8f9fa;
 $gray-200: #e9ecef;
@@ -12,33 +12,47 @@ $gray-800: #343a40;
 $gray-900: #212529;
 $black:    #000;
 
-$border-radius:                     4px;
-$nav-highlight-color:               #007bff;
+//General
 $body-bg:                           $gray-100;
 $headings-color:                    $gray-900;
 $font-weight-bold:                  600;
-$navbar-padding-y:                  1.125rem;
-$navbar-padding-x:                  1.875rem;
+$transition-collapse:               height .25s ease-in;
+$border-radius:                     4px;
+
+//Card
+$card-spacer-y:                     1.875rem;
+$card-spacer-x:                     1.875rem;
+$card-cap-bg:                       transparent;
+
+// General Input
 $input-padding-y:                   .75rem;
 $input-placeholder-color:           $gray-500;
 $input-btn-padding-x:               .75rem;
 $input-btn-padding-y:               .75rem;
-$card-spacer-y:                     1.875rem;
-$card-spacer-x:                     1.875rem;
+
+// List group
 $list-group-item-padding-y:         1.25rem;
 $list-group-item-padding-x:         1.875rem;
 $list-group-hover-bg:               $white;
 $list-group-active-bg:              $white;
-$card-cap-bg:                       transparent;
-$transition-collapse:               height .25s ease-in;
+
+// Custom form controls
 $custom-control-gutter:             2rem;
 $custom-control-indicator-bg:       #fff;
 $custom-select-height:              3rem;
 
-// Forgerock Variables (more finite color control)
-// Toolbar color
+// Toolbar / Navbar
 $fr-toolbar-background: $white !default;
 $fr-application-text-color: $gray-900 !default;
 $fr-toolbar-color: $gray-900 !default;
+$navbar-padding-y:                  1.125rem;
+$navbar-padding-x:                  1.875rem;
+$nav-highlight-color:               #007bff;
 
+// Alert
+$alert-padding-y:                   1.25rem;
+$alert-padding-x:                   1.25rem;
+$alert-border-width:                0;
+
+// Set pure override variables file here
 // @import "dark-variables";

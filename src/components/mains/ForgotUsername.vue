@@ -27,8 +27,8 @@
     import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
     import Captcha from '../selfservice/common/Captcha';
     import CenterCard from '@/components/utils/CenterCard';
-    import EmailUsername from '../selfservice/forgotUsername/EmailUsername';
-    import RetrieveUsername from '../selfservice/forgotUsername/RetrieveUsername';
+    import EmailUsername from '../selfservice/forgotusername/EmailUsername';
+    import RetrieveUsername from '../selfservice/forgotusername/RetrieveUsername';
     import SelfserviceAPI from '../selfservice/mixins/SelfserviceAPIMixin';
     import UserQuery from '../selfservice/common/UserQuery';
 

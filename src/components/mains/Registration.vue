@@ -78,7 +78,6 @@
                         this.$notify({
                             group: 'IDMMessages',
                             type: 'error',
-                            title: 'Registration Error',
                             text: error.response.data.message
                         });
                     });
@@ -126,8 +125,7 @@
                             this.$notify({
                                 group: 'IDMMessages',
                                 type: 'success',
-                                title: 'User Creation',
-                                text: 'Successfully created user.'
+                                text: this.$t('pages.selfservice.registration.createdAccount')
                             });
                             this.autoLogin(selfServiceDetails.data.additions.credentialJwt);
                         } else {
@@ -141,7 +139,6 @@
                         this.$notify({
                             group: 'IDMMessages',
                             type: 'error',
-                            title: this.$t('common.errors.registrationError'),
                             text: error.response.data.message
                         });
                     });
@@ -175,7 +172,6 @@
                         this.$notify({
                             group: 'IDMMessages',
                             type: 'error',
-                            title: this.$t('common.errors.authenticationError'),
                             text: error.response.data.message
                         });
                     });

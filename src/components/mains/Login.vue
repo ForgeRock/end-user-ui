@@ -14,7 +14,7 @@
                 </div>
             </transition>
 
-            <b-form class="form-signin" @submit.prevent="submit">
+            <b-form class="form-signin mb-3" @submit.prevent="submit">
 
                 <fr-floating-label-input v-model="username" fieldName="username" :label="$t('pages.login.username')" type="text" autofocus="true"></fr-floating-label-input>
                 <fr-floating-label-input v-model="password" fieldName="password" :label="$t('pages.login.password')" :reveal="true" type="password"></fr-floating-label-input>
@@ -23,6 +23,7 @@
                     {{$t('pages.login.signIn')}}
                 </b-button>
             </b-form>
+            <p class="text-center"><a href="#/forgotusername">{{$t('pages.login.forgotUsername')}}</a> · <a href="#/forgotpassword">Forgot password?</a></p>
         </b-card-body>
 
         <b-card-footer slot="center-card-footer">

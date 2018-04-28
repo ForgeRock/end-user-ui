@@ -23,7 +23,7 @@ export default new Router({
             meta: { hideToolbar: true }
         },
         {
-            path: '/Profile',
+            path: '/profile',
             name: 'Profile',
             component: Profile,
             meta: { authenticate: true }
@@ -41,14 +41,15 @@ export default new Router({
             meta: { hideToolbar: true }
         },
         {
-            path: '/forgotUsername',
+            path: '/forgotusername',
             name: 'ForgotUsername',
             component: ForgotUsername,
             meta: { hideToolbar: true }
         },
         {
             path: '*',
-            component: NotFound
+            component: NotFound,
+            meta: { hideToolbar: true }
         }
     ]
 });

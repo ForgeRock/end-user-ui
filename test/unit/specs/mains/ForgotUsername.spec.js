@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import ForgotUsername from '@/components/mains/forgotUsername';
-import EmailUsername from '@/components/selfservice/forgotUsername/EmailUsername';
+import ForgotUsername from '@/components/mains/ForgotUsername';
+import EmailUsername from '@/components/selfservice/forgotusername/EmailUsername';
 import VueI18n from 'vue-i18n';
 import Sinon from 'sinon';
 import BootstrapVue from 'bootstrap-vue';
@@ -42,19 +42,19 @@ describe('ForgotUsername.vue', () => {
         messages: translations
     });
 
-    it('ForgotUsername page loaded', () => {
+    it('forgotusername page loaded', () => {
         const wrapper = mountWrapper();
 
         expect(wrapper.name()).to.equal('Forgot-Username');
     });
 
-    it('ForgotUsername loading screen', () => {
+    it('forgotusername loading screen', () => {
         const wrapper = mountWrapper();
 
         expect(wrapper.contains('.v-spinner')).to.equal(true);
     });
 
-    it('ForgotUsername properly sets child component to emailUsername stage', () => {
+    it('forgotusername properly sets child component to emailUsername stage', () => {
         const wrapper = mountWrapper();
         wrapper.vm.setChildComponent('emailUsername', {
             advanceStage: null,

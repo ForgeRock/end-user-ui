@@ -53,7 +53,7 @@ h1, h2 {
   }
 }
 
-// Jumbotron adjustmenets
+// Jumbotron
 .fr-header-jumbotron {
   background-color: transparent;
 
@@ -91,24 +91,6 @@ h1, h2 {
 .fr-page-header {
   margin-top: 15px;
   margin-bottom: 15px;
-}
-
-// Notifications
-.notification-wrapper {
-  .alert-icon {
-    height: 70px;
-    font-size: 50px;
-    opacity: .7;
-  }
-
-  .fr-alert-content {
-    margin: 0 50px 0 50px;
-  }
-
-  .close {
-    top: 20px;
-    cursor: pointer;
-  }
 }
 
 // Back bar

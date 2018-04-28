@@ -4,9 +4,7 @@ export default
         common: {
             errors: {
                 notFound: 'Not Found',
-                notFoundAdditional: 'Please send help',
-                authenticationError: 'Authentication Error',
-                registrationError: 'Registration Error'
+                notFoundAdditional: 'Please send help'
             },
             form: {
                 submit: 'Submit',
@@ -36,7 +34,9 @@ export default
                 newHere: 'New here?',
                 createAccount: 'Create an account',
                 badPassword: "Sorry, that password isn't right. We can help you ",
-                recoverPassword: 'recover your password.'
+                recoverPassword: 'recover your password.',
+                forgotUsername: 'Forgot username?',
+                forgotPassword: 'Forgot password?'
             },
             selfservice: {
                 signIn: 'Sign in',
@@ -51,6 +51,7 @@ export default
                     haveAccount: 'Already have an account?',
                     signIn: 'Sign in',
                     signUpMsg: 'Signing up is fast and easy.',
+                    createdAccount: 'User account has been created.',
                     termsAndConditions: {
                         title: 'Terms & Conditions',
                         singlePage: 'By clicking "Sign Up" you agree to our '
