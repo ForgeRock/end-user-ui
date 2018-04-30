@@ -13,66 +13,8 @@
             </b-col>
             <b-col class="detailsCol" lg="8">
                 <b-tabs>
-                    <b-tab :title="$t('pages.profile.settings')" active>
-                        <fr-list-group title="EXAMPLE LIST GROUP" subtitle="Example subtitle, remove when real.">
-                            <fr-list-item
-                                :collapsible="true"
-                                :panelShown="false">
-                                <div slot="list-item-header">
-                                    <h6 class="my-0">Test</h6>
-                                    <div class="meta"><small class="text-muted">Test sub-title</small></div>
-                                </div>
-
-                                <div slot="list-item-collapse-body">
-                                    Test Content
-                                    Test Content
-                                    Test Content
-                                </div>
-                            </fr-list-item>
-
-                            <!--<fr-list-item-->
-                                    <!--:collapsible="false"-->
-                                    <!--:panelShown="true">-->
-                                <!--<div slot="list-item-header">-->
-                                    <!--Not Collapsible with Panel-->
-                                    <!--<span class="subtext">2 minutes ago</span>-->
-                                <!--</div>-->
-
-                                <!--<div slot="list-item-collapse-body">-->
-                                    <!--test test-->
-                                <!--</div>-->
-                            <!--</fr-list-item>-->
-
-                            <!--<fr-list-item-->
-                                    <!--:collapsible="true"-->
-                                    <!--:panelShown="false">-->
-                                <!--<div slot="list-item-header">-->
-                                    <!--Collapsible with Panel hidden by default-->
-                                    <!--<span class="subtext">2 minutes ago</span>-->
-                                <!--</div>-->
-
-                                <!--<div slot="list-item-collapse-body">-->
-                                    <!--test test-->
-                                <!--</div>-->
-                            <!--</fr-list-item>-->
-
-                            <!--<fr-list-item-->
-                                    <!--:collapsible="false"-->
-                                    <!--:panelShown="false">-->
-                                <!--<div slot="list-item-header">-->
-                                    <!--Not Collapsible with No-->
-                                    <!--<span class="subtext">2 minutes ago</span>-->
-                                <!--</div>-->
-
-                                <!--<div slot="list-item-collapse-body">-->
-                                    <!--test test-->
-                                <!--</div>-->
-                            <!--</fr-list-item>-->
-
-                        </fr-list-group>
-                    </b-tab>
-                    <b-tab :title="$t('pages.profile.activity')">
-                    </b-tab>
+                    <b-tab :title="$t('pages.profile.settings')" active></b-tab>
+                    <b-tab :title="$t('pages.profile.activity')"></b-tab>
                 </b-tabs>
             </b-col>
         </b-row>
