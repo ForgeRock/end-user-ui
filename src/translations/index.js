@@ -56,6 +56,11 @@ export default
                     username: {
                         title: 'Recover Your Username',
                         description: 'You can recover your username with the email address associated with your account.'
+                    },
+                    reset: {
+                        title: 'Reset Password',
+                        description: 'We will send you an email with instructions on how to reset your password',
+                        emailSent: 'An email has been sent to your inbox with instructions on how to reset your password.'
                     }
                 },
                 registration: {
@@ -79,6 +84,14 @@ export default
                     unableToRetrieve: 'Unable to retrieve your username',
                     tryAgain: 'Try finding your username again',
                     emailSent: 'An email containing your username has been sent to your account.'
+                },
+                passwordReset: {
+                    advanceStageButtonText: 'Send Reset Instructions',
+                    tryAgain: 'Try resetting your password again',
+                    errorMessage: 'Error resetting your password',
+                    successMessage: 'Your password has been reset.',
+                    newPassword: 'New password',
+                    changePassword: 'Change Password'
                 }
             },
             profile: {

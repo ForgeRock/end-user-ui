@@ -23,7 +23,7 @@
                     {{$t('pages.login.signIn')}}
                 </b-button>
             </b-form>
-            <p class="text-center"><a href="#/forgotusername">{{$t('pages.login.forgotUsername')}}</a> · <a href="#/forgotpassword">Forgot password?</a></p>
+            <p class="text-center"><a href="#/forgotusername">{{$t('pages.login.forgotUsername')}}</a> · <a href="#/passwordreset">Forgot password?</a></p>
         </b-card-body>
 
         <b-card-footer slot="center-card-footer">

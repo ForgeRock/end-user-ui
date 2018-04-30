@@ -4,6 +4,7 @@ import ForgotUsername from '@/components/mains/ForgotUsername';
 import NotFound from '@/components/mains/NotFound';
 import Login from '@/components/mains/Login';
 import Profile from '@/components/mains/Profile';
+import PasswordReset from '@/components/mains/PasswordReset';
 import Registration from '@/components/mains/Registration';
 /**
  * Available toolbar configuration
@@ -43,6 +44,18 @@ export default new Router({
             path: '/forgotusername',
             name: 'ForgotUsername',
             component: ForgotUsername,
+            meta: { hideToolbar: true }
+        },
+        {
+            path: '/passwordreset',
+            name: 'PasswordReset',
+            component: PasswordReset,
+            meta: { hideToolbar: true }
+        },
+        {
+            path: '/passwordreset/:queryParams',
+            name: 'PasswordResetForm',
+            component: PasswordReset,
             meta: { hideToolbar: true }
         },
         {
