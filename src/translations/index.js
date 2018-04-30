@@ -9,7 +9,9 @@ export default
             form: {
                 submit: 'Submit',
                 logo: 'logo',
-                signUp: 'Sign Up'
+                signUp: 'Sign Up',
+                cancel: 'Cancel',
+                saveChanges: 'Save changes'
             },
             placeholders: {
                 password: 'Password',
@@ -23,6 +25,10 @@ export default
                     custom: 'Provide your own:',
                     question: 'Question',
                     answer: 'Answer'
+                },
+                profile: {
+                    updateSuccess: 'Successfully updated your profile.',
+                    userDetailsTitle: 'Edit your personal info'
                 }
             }
         },
@@ -76,7 +82,7 @@ export default
                 }
             },
             profile: {
-                editPersonalInfo: 'Edit Personal Info',
+                editPersonalInfo: 'Edit personal info',
                 settings: 'Settings',
                 activity: 'Activity'
             }

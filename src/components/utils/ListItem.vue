@@ -28,7 +28,7 @@
 
 <script>
     export default {
-        name: 'list-group',
+        name: 'List-Item',
         props: {
             'collapsible': {
                 type: Boolean,

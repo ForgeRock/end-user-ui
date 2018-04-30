@@ -6,10 +6,13 @@
                     <b-img src="static/image/profile-default.png" rounded="circle" width="112" height="112" alt="img" class="m-1" />
                     <h4>{{usersName}}</h4>
                     <span class="text-muted">{{email}}</span>
-                    <b-button variant="primary" block class="mt-4" href="/dashboard">
+                    <b-button variant="primary" block class="mt-4" v-b-modal.userDetailsModal>
                         {{$t('pages.profile.editPersonalInfo')}}
                     </b-button>
                 </b-card>
+
+                <fr-edit-personal-info></fr-edit-personal-info>
+
             </b-col>
             <b-col class="detailsCol" lg="8">
                 <b-tabs>
@@ -25,6 +28,7 @@
     import _ from 'lodash';
     import ListGroup from '@/components/utils/ListGroup';
     import ListItem from '@/components/utils/ListItem';
+    import EditPersonalInfo from '@/components/selfservice/profile/EditPersonalInfo';
 
     export default {
         name: 'Profile',
@@ -36,7 +40,8 @@
         },
         components: {
             'fr-list-group': ListGroup,
-            'fr-list-item': ListItem
+            'fr-list-item': ListItem,
+            'fr-edit-personal-info': EditPersonalInfo
         },
         mounted: function () {
             this.loadData();

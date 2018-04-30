@@ -10,6 +10,7 @@ import UserStore from './store/User';
 import VeeValidate from 'vee-validate';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import ToggleButton from 'vue-js-toggle-button';
 
 // Turn off production warning messages
 Vue.config.productionTip = false;
@@ -95,6 +96,8 @@ Vue.use(VeeValidate, {inject: false, fastExit: false});
     });
  */
 Vue.use(Notifications);
+
+Vue.use(ToggleButton);
 
 // Global mixin for making openIDM REST calls
 Vue.mixin({

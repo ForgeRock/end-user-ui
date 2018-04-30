@@ -13,7 +13,7 @@ describe('HorizontalRule.vue', () => {
             }
         });
 
-        expect(wrapper.name()).to.equal('Horiontal-Rule');
+        expect(wrapper.name()).to.equal('Horizontal-Rule');
     });
 
     it('Renders insert prop', () => {

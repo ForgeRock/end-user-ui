@@ -18,6 +18,6 @@ describe('ValidationError.vue', () => {
             }
         });
 
-        expect(wrapper.name()).to.equal('floating-label-input');
+        expect(wrapper.name()).to.equal('Validation-Error');
     });
 });

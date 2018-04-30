@@ -5,7 +5,6 @@ import NotFound from '@/components/mains/NotFound';
 import Login from '@/components/mains/Login';
 import Profile from '@/components/mains/Profile';
 import Registration from '@/components/mains/Registration';
-
 /**
  * Available toolbar configuration
  * hideToolbar - Will hide main toolbar when route accessed

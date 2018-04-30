@@ -8,7 +8,7 @@
 
 <script>
     export default {
-        name: 'Horiontal-Rule',
+        name: 'Horizontal-Rule',
         props: ['insert']
     };
 </script>

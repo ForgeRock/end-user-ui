@@ -17,7 +17,7 @@ describe('CenterCard.vue', () => {
     it('Center Card component loaded without header image', () => {
         const wrapper = mount(FloatingLabelInput, {i18n});
 
-        expect(wrapper.name()).to.equal('center-card');
+        expect(wrapper.name()).to.equal('Center-Card');
         expect(wrapper.contains('.fr-logo')).to.equal(false);
     });
 

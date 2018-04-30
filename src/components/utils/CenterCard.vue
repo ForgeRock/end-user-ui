@@ -25,7 +25,7 @@
 
 <script>
     export default {
-        name: 'center-card',
+        name: 'Center-Card',
         props: {
             'showLogo': {
                 type: Boolean,

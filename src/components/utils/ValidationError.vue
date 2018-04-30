@@ -6,7 +6,7 @@
 
 <script>
     export default {
-        name: 'floating-label-input',
+        name: 'Validation-Error',
         props: ['validatorErrors', 'fieldName']
     };
 </script>

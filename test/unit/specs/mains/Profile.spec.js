@@ -3,7 +3,7 @@ import Profile from '@/components/mains/Profile';
 import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
-import { mount } from '@vue/test-utils';
+import { shallow } from '@vue/test-utils';
 import Sinon from 'sinon';
 
 describe('Profile.vue', () => {
@@ -31,7 +31,7 @@ describe('Profile.vue', () => {
     });
 
     it('Profile page loaded', () => {
-        const wrapper = mount(Profile, {
+        const wrapper = shallow(Profile, {
             i18n
         });
 

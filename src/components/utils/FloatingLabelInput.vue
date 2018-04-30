@@ -24,7 +24,7 @@
     import ValidationError from '@/components/utils/ValidationError';
 
     export default {
-        name: 'floating-label-input',
+        name: 'Floating-Label-Input',
         components: {
             'fr-validation-error': ValidationError
         },

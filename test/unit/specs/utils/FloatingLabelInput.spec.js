@@ -22,7 +22,7 @@ describe('FloatingLabelInput.vue', () => {
             }
         });
 
-        expect(wrapper.name()).to.equal('floating-label-input');
+        expect(wrapper.name()).to.equal('Floating-Label-Input');
     });
 
     it('Floating Label Input emits a change on value change', () => {

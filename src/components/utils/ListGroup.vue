@@ -12,7 +12,7 @@
 
 <script>
     export default {
-        name: 'list-group',
+        name: 'List-Group',
         props: {
             'title': {
                 type: String
