@@ -1,40 +1,100 @@
 <template>
     <div id="app">
-        <!--
-        Navigation Bar useing Vue Route + Bootstrap Toolbar
-        -->
-        <b-navbar v-if="!this.$route.meta.hideToolbar" toggleable="md" class="fr-main-navbar">
-            <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-            <b-navbar-brand to="/"><img src="static/image/horizontal-logo.svg" alt="$t('common.form.logo')" /></b-navbar-brand>
-        </b-navbar>
-        <!--
-          Application View
-        -->
-        <notifications group="IDMMessages" position="bottom left" width="320" :duration="4000">
-            <template slot="body" slot-scope="props">
-                <div :class="[{ 'alert-success': (props.item.type == 'success'), 'alert-warning': (props.item.type == 'warning'), 'alert-danger': (props.item.type == 'error'), 'alert-info': (props.item.type == 'info')}, 'alert', 'alert-dismissible', 'd-flex', 'p-3', 'pr-5', 'position-relative']" role="alert">
-                    <div :class="[{ 'text-success': (props.item.type == 'success'), 'text-warning': (props.item.type == 'warning'), 'text-danger': (props.item.type == 'error'), 'text-info': (props.item.type == 'info')}, 'alert-icon', 'mr-3', 'align-self-top']">
-                        <i :class="[{ 'fa-check-circle-o': (props.item.type == 'success'), 'fa-exclamation-triangle': (props.item.type == 'warning'), 'fa-times-circle': (props.item.type == 'error'), 'fa-info-circle ': (props.item.type == 'info')}, 'fa', 'fa-lg']"></i>
-                    </div>
-                    <div class="fr-alert-content align-self-center">
-                        <p class="mb-0 text-left" v-html="props.item.text"></p>
-                    </div>
-                    <a class="close" @click="props.close">
-                        <i class="fa fa-times"></i>
-                    </a>
-                </div>
-            </template>
-        </notifications>
+        <div id="wrapper" :class="[{'toggled': toggled && !this.$route.meta.hideToolbar}]">
+            <div id="appSidebarWrapper" v-if="!this.$route.meta.hideToolbar">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand">
+                        <a href="#/" class="d-flex">
+                            <img src="static/image/horizontal-logo-white.svg" :alt="$t('common.form.logo')" style="width:131px;" class="align-self-center sidebar-brand-logo" />
+                            <img src="static/image/vertical-logo-white.svg" :alt="$t('common.form.logo')"  style="height:28px;" class="align-self-center sidebar-brand-mark" />
+                        </a>
+                    </li>
+                    <li>
+                        <router-link to="dashboard"><i class="fa fa-fw mr-3 fa-tachometer"></i><span class="sidebar-item-text">{{$t('pages.app.dashboard')}}</span></router-link>
+                    </li>
+                    <li>
+                        <router-link to="profile"><i class="fa fa-fw mr-3 fa-street-view"></i><span class="sidebar-item-text">{{$t('pages.app.profile')}}</span></router-link>
+                    </li>
+                </ul>
+            </div>
+            <div id="appContentWrapper">
+                <!--
+                Navigation Bar useing Vue Route + Bootstrap Toolbar
+                -->
+                <b-navbar v-if="!this.$route.meta.hideToolbar" class="fr-main-navbar">
+                    <b-nav-form>
+                        <b-button variant="link" class="my-2 my-sm-0 p-0 fr-main-nav-toggle" type="button" @click="onToggle">
+                            <i class="fa fa-bars fa-lg m-0"></i>
+                        </b-button>
+                    </b-nav-form>
+                    <!-- Right aligned nav items -->
+                    <b-navbar-nav class="ml-auto">
+                        <b-nav-item-dropdown right>
+                            <template slot="button-content">
+                                {{$t('pages.app.user')}} <b-img src="static/image/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
+                            </template>
+                            <b-dropdown-item href="#">{{$t('pages.app.profile')}}</b-dropdown-item>
+                            <b-dropdown-item @click.prevent="signOut()">{{$t('pages.app.signOut')}}</b-dropdown-item>
+                        </b-nav-item-dropdown>
+                    </b-navbar-nav>
+                </b-navbar>
+                <!--
+                  Application View
+                -->
+                <notifications group="IDMMessages" position="bottom left" width="320" :duration="4000">
+                    <template slot="body" slot-scope="props">
+                        <div :class="[{ 'alert-success': (props.item.type == 'success'), 'alert-warning': (props.item.type == 'warning'), 'alert-danger': (props.item.type == 'error'), 'alert-info': (props.item.type == 'info')}, 'alert', 'alert-dismissible', 'd-flex', 'p-3', 'pr-5', 'position-relative']" role="alert">
+                            <div :class="[{ 'text-success': (props.item.type == 'success'), 'text-warning': (props.item.type == 'warning'), 'text-danger': (props.item.type == 'error'), 'text-info': (props.item.type == 'info')}, 'alert-icon', 'mr-3', 'align-self-top']">
+                                <i :class="[{ 'fa-check-circle-o': (props.item.type == 'success'), 'fa-exclamation-triangle': (props.item.type == 'warning'), 'fa-times-circle': (props.item.type == 'error'), 'fa-info-circle': (props.item.type == 'info')}, 'fa', 'fa-lg']"></i>
+                            </div>
+                            <div class="fr-alert-content align-self-center">
+                                <p class="mb-0 text-left" v-html="props.item.text"></p>
+                            </div>
+                            <a class="close" @click="props.close">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </template>
+                </notifications>
 
-        <transition name="fade" mode="out-in">
-            <router-view/>
-        </transition>
+                <transition name="fade" mode="out-in">
+                    <router-view/>
+                </transition>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: 'app'
+        name: 'App',
+        data: function () {
+            return {
+                toggled: false
+            };
+        },
+        methods: {
+            onToggle: function () {
+                this.toggled = !this.toggled;
+            },
+
+            signOut: function () {
+                let idmInstance = this.getRequestService({
+                    headers: {
+                        'X-OpenIDM-NoSession': true,
+                        'X-OpenIDM-Password': 'anonymous',
+                        'X-OpenIDM-Username': 'anonymous'
+                    }
+                });
+
+                /* istanbul ignore next */
+                idmInstance.post('/authentication?_action=logout').then(() => {
+                    this.$root.userStore.clearStore();
+
+                    this.$router.push('/login');
+                });
+            }
+        }
     };
 </script>
 
@@ -43,4 +103,188 @@
 
   lang="scss" to turn on LESS CSS
 -->
-<style lang="scss"></style>
+<style lang="scss">
+    #app {
+        -webkit-transition: all 0.2s ease;
+        -moz-transition: all 0.2s ease;
+        -o-transition: all 0.2s ease;
+        transition: all 0.2s ease;
+
+        #wrapper {
+            height: 100%;
+
+            #appSidebarWrapper {
+                position: fixed;
+                top: 0;
+                width: 0;
+                height: 100%;
+                z-index: 2;
+                margin-left: -$fr-sidebar-nav-width;
+                overflow: hidden;
+                background: $fr-sidebar-nav-background-color;
+
+                -webkit-transition: all 0.2s ease;
+                -moz-transition: all 0.2s ease;
+                -o-transition: all 0.2s ease;
+                transition: all 0.2s ease;
+
+                a {
+                    text-align: left;
+                }
+
+                .sidebar-brand-logo {
+                    display: block;
+                }
+
+                .sidebar-brand-mark {
+                    display: none;
+                }
+
+                @media(min-width:768px) {
+                    width: $fr-sidebar-nav-minimized-width;
+                    margin-left: 0;
+
+                    .sidebar-brand-logo {
+                        display: none;
+                    }
+
+                    .sidebar-brand-mark {
+                        display: block;
+                    }
+
+                    .sidebar-item-text {
+                        display: none;
+                    }
+                }
+            }
+
+            #appContentWrapper {
+                height: 100%;
+                -webkit-transition: all 0.2s ease;
+                -moz-transition: all 0.2s ease;
+                -o-transition: all 0.2s ease;
+                transition: all 0.2s ease;
+                padding-left: 0;
+
+                @media(min-width:768px) {
+                    padding-left: $fr-sidebar-nav-minimized-width;
+                }
+
+                .fr-main-nav-toggle {
+                    color: $fr-toolbar-color;
+                }
+
+                .navbar-nav {
+                    .dropdown-menu {
+                        position: absolute;
+                        float: left;
+                    }
+
+                    .nav-link {
+                        color: $fr-toolbar-color;
+                    }
+                }
+            }
+
+            &.toggled {
+                #appSidebarWrapper {
+                    width: $fr-sidebar-nav-width;
+                    margin-left: 0;
+
+                    .sidebar-brand-logo {
+                        display: block;
+                    }
+
+                    .sidebar-brand-mark {
+                        display: none;
+                    }
+
+                    @media(min-width:768px) {
+                        .sidebar-brand-logo {
+                            display: block;
+                        }
+
+                        .sidebar-brand-mark {
+                            display: none;
+                        }
+
+                        .sidebar-item-text {
+                            display: inline;
+                        }
+                    }
+                }
+
+                #appContentWrapper {
+                    z-index: 1;
+                    padding-left: $fr-sidebar-nav-width;
+                    margin-right: -$fr-sidebar-nav-width;
+
+                    @media(min-width:768px) {
+                        position: relative;
+                        padding-left: $fr-sidebar-nav-width;
+                        margin-right: 0;
+
+                    }
+                }
+            }
+        }
+
+        /* Sidebar Styles */
+        .sidebar-nav {
+            position: absolute;
+            top: 0;
+            width: $fr-sidebar-nav-width;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li {
+                a {
+                    color: $fr-sidebar-nav-link-color;
+                    display: block;
+                    text-decoration: none;
+                    padding: 10px 20px;
+                    -webkit-transition: all 0.2s ease;
+                    -moz-transition: all 0.2s ease;
+                    -o-transition: all 0.2s ease;
+                    transition: all 0.2s ease;
+
+                    &.router-link-active {
+                        color: $fr-sidebar-nav-link-hover-color;
+                        background: rgba(0, 0, 0, 0.1);
+                    }
+
+                    &:hover {
+                        color: $fr-sidebar-nav-link-hover-color;
+                        background: rgba(0, 0, 0, 0.1);
+                    }
+                }
+            }
+
+            >.sidebar-brand {
+                height: $navbar-height;
+                font-size: 18px;
+                line-height: 72px;
+                background-color: $fr-sidebar-nav-brand-color;
+                width: 100%;
+                top: 0;
+                -webkit-transition: all 0.2s ease;
+                -moz-transition: all 0.2s ease;
+                -o-transition: all 0.2s ease;
+                transition: all 0.2s ease;
+
+                a {
+                    color: $fr-sidebar-nav-link-color;
+                    width: 100%;
+                    height: 100%;
+                    padding: 0 20px;
+
+                    &:hover {
+                        color: $fr-sidebar-nav-link-hover-color;
+                        background: darken($fr-sidebar-nav-background-color, 3.0%);
+                    }
+                }
+            }
+        }
+    }
+</style>

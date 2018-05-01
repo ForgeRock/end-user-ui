@@ -41,6 +41,7 @@ h1, h2 {
   .navbar {
     -webkit-box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.11);
     box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.11);
+    height: $navbar-height;
 
     .navbar-brand {
       letter-spacing: 1px;

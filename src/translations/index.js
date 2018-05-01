@@ -27,6 +27,12 @@ export default
             }
         },
         pages: {
+            app: {
+                profile: 'Profile',
+                dashboard: 'Dashboard',
+                user: 'User',
+                signOut: 'Sign Out'
+            },
             login: {
                 username: 'Username',
                 password: 'Password',

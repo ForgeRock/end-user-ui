@@ -7,25 +7,37 @@ var state = {
 };
 
 export default {
-    getUserState () {
+    getUserState: function () {
         return state;
     },
-    setUserIdAction (newVal) {
+
+    setUserIdAction: function (newVal) {
         state.userId = _.clone(newVal);
     },
-    clearUserIdAction () {
+
+    clearUserIdAction: function () {
         state.userId = null;
     },
-    setManagedResourceAction (newVal) {
+
+    setManagedResourceAction: function (newVal) {
         state.managedResource = _.clone(newVal);
     },
-    clearManagedResourceAction () {
+
+    clearManagedResourceAction: function () {
         state.managedResource = null;
     },
-    setRolesAction (newVal) {
+
+    setRolesAction: function (newVal) {
         state.roles = _.clone(newVal);
     },
-    clearRolesAction () {
+
+    clearRolesAction: function () {
+        state.roles = null;
+    },
+
+    clearStore: function () {
+        state.userId = null;
+        state.managedResource = null;
         state.roles = null;
     }
 };

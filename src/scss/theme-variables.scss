@@ -19,8 +19,7 @@ $font-weight-bold:                  600;
 $transition-collapse:               height .25s ease-in;
 $border-radius:                     4px;
 $border-color:                      rgba(0, 0, 0, 0.125);
-$border-radius:                     4px;
-$nav-highlight-color:               #007bff;
+$fr-typeface:                       "Roboto", sans-serif !default;
 
 //Card
 $card-spacer-y:                     1.875rem;
@@ -45,12 +44,23 @@ $custom-control-indicator-bg:       #fff;
 $custom-select-height:              3rem;
 
 // Toolbar / Navbar
-$fr-toolbar-background: $white !default;
-$fr-application-text-color: $gray-900 !default;
-$fr-toolbar-color: $gray-900 !default;
+$fr-toolbar-background:             $white !default;
+$fr-application-text-color:         $gray-900 !default;
+$fr-toolbar-color:                  $gray-900 !default;
+$fr-toolbar-dropdown-color:         rgba(0, 0, 0, 0.5) !default;
+
 $navbar-padding-y:                  1.125rem;
 $navbar-padding-x:                  1.875rem;
-$nav-highlight-color:               #007bff;
+$nav-highlight-color:               $primary;
+$navbar-height:                     4.5rem;
+
+// Sidebar
+$fr-sidebar-nav-width:                 220px !default;
+$fr-sidebar-nav-minimized-width:       60px !default;
+$fr-sidebar-nav-background-color:      $gray-800 !default;
+$fr-sidebar-nav-brand-color:           $gray-800 !default;
+$fr-sidebar-nav-link-color:            $gray-500 !default;
+$fr-sidebar-nav-link-hover-color:      $white !default;
 
 // Alert
 $alert-padding-y:                   1.25rem;
@@ -58,4 +68,4 @@ $alert-padding-x:                   1.25rem;
 $alert-border-width:                0;
 
 // Set pure override variables file here
-// @import "dark-variables";
+// @import "alternate-theme-variables";

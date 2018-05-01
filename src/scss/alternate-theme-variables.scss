@@ -1,0 +1,21 @@
+//Base
+$theme-colors: (
+        "primary": #bb3d11
+);
+
+$fr-typeface:                         "Helvetica Neue", Arial;
+
+//Profile nav tavs
+$nav-highlight-color:                  #bb3d11;
+
+// Toolbar
+$fr-toolbar-background:                $black;
+$fr-application-text-color:            $gray-100;
+$fr-toolbar-color:                     $gray-100;
+$fr-toolbar-dropdown-color:            $gray-100;
+
+// Side toolbar
+$fr-sidebar-nav-background-color:      $gray-500;
+$fr-sidebar-nav-brand-color:           $gray-500;
+$fr-sidebar-nav-link-color:            $black;
+$fr-sidebar-nav-link-hover-color:      $gray-100;
