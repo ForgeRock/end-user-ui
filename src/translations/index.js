@@ -29,7 +29,9 @@ export default
                 },
                 profile: {
                     updateSuccess: 'Successfully updated your profile.',
-                    userDetailsTitle: 'Edit your personal info'
+                    userDetailsTitle: 'Edit your personal info',
+                    preferencesSubtitle: 'Set your communications preferences.',
+                    preferencesTitle: 'Preferences'
                 }
             }
         },

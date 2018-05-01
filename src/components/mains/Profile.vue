@@ -11,12 +11,14 @@
                     </b-button>
                 </b-card>
 
-                <fr-edit-personal-info></fr-edit-personal-info>
+                <fr-edit-personal-info v-on:update-user="loadData"></fr-edit-personal-info>
 
             </b-col>
             <b-col class="detailsCol" lg="8">
                 <b-tabs>
-                    <b-tab :title="$t('pages.profile.settings')" active></b-tab>
+                    <b-tab :title="$t('pages.profile.settings')" active>
+                        <fr-preferences :userDetails="userDetails"></fr-preferences>
+                    </b-tab>
                     <b-tab :title="$t('pages.profile.activity')"></b-tab>
                 </b-tabs>
             </b-col>
@@ -29,19 +31,22 @@
     import ListGroup from '@/components/utils/ListGroup';
     import ListItem from '@/components/utils/ListItem';
     import EditPersonalInfo from '@/components/selfservice/profile/EditPersonalInfo';
+    import Preferences from '@/components/selfservice/profile/Preferences';
 
     export default {
         name: 'Profile',
         data: function () {
             return {
                 usersName: '',
-                email: ''
+                email: '',
+                userDetails: {}
             };
         },
         components: {
             'fr-list-group': ListGroup,
             'fr-list-item': ListItem,
-            'fr-edit-personal-info': EditPersonalInfo
+            'fr-edit-personal-info': EditPersonalInfo,
+            'fr-preferences': Preferences
         },
         mounted () {
             this.loadData();
@@ -55,6 +60,7 @@
                 /* istanbul ignore next */
                 selfServiceInstance.get(`managed/user/${userId}`)
                     .then((userDetails) => {
+                        this.userDetails = userDetails;
                         this.usersName = _.startCase(userDetails.data.givenName + ' ' + userDetails.data.sn);
                         this.email = userDetails.data.mail;
                     })

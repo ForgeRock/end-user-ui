@@ -30,13 +30,13 @@
 
                                 <div class="mr-auto">
                                     <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                    :height="28"
-                                    :width="56"
-                                    :sync="true"
-                                    :cssColors="true"
-                                    :labels="{checked: 'Yes', unchecked: 'No'}"
-                                    :value="formFields[index].value"
-                                    @change="formFields[index].value = !formFields[index].value"/>
+                                        :height="28"
+                                        :width="56"
+                                        :sync="true"
+                                        :cssColors="true"
+                                        :labels="{checked: 'Yes', unchecked: 'No'}"
+                                        :value="formFields[index].value"
+                                        @change="formFields[index].value = !formFields[index].value"/>
                                 </div>
                             </div>
                         </b-form-group>                                    
@@ -153,6 +153,7 @@
     
                         selfServiceInstance.patch(`managed/user/${userId}`, patches).then((response) => {
                             this.hideModal();
+                            this.$emit('update-user');
 
                             this.$notify({
                                 group: 'IDMMessages',
