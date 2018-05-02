@@ -44,7 +44,7 @@
             'fr-center-card': CenterCard,
             kbaSecurityAnswerDefinitionStage
         },
-        data: function () {
+        data () {
             return {
                 selfServiceType: null,
                 selfServiceDetails: null,
@@ -52,11 +52,11 @@
                 showSelfService: false
             };
         },
-        mounted: function () {
+        mounted () {
             this.loadData();
         },
         methods: {
-            loadData: function () {
+            loadData () {
                 // TODO Abstract to more reusable location
                 /* istanbul ignore next */
                 var selfServiceInstance = this.getRequestService({
@@ -82,7 +82,7 @@
                         });
                     });
             },
-            setRegistrationComponent: function (type, details) {
+            setRegistrationComponent (type, details) {
                 this.selfServiceDetails = details;
 
                 if (type === 'parameters') {
@@ -97,7 +97,7 @@
                     this.showSelfService = true;
                 }
             },
-            saveSelfService: function (data) {
+            saveSelfService (data) {
                 /* istanbul ignore next */
                 var selfServiceInstance = this.getRequestService({
                         headers: {

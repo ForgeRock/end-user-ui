@@ -45,7 +45,7 @@
             'fr-floating-label-input': FloatingLabelInput,
             'fr-center-card': CenterCard
         },
-        data: function () {
+        data () {
             return {
                 username: '',
                 password: '',
@@ -53,7 +53,7 @@
             };
         },
         methods: {
-            submit: function () {
+            submit () {
                 /* istanbul ignore next */
                 var loginServiceInstance = this.getRequestService({
                         headers: {

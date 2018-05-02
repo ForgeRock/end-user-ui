@@ -49,7 +49,7 @@
             TermsAndConditions,
             Consent
         },
-        data: function () {
+        data () {
             var data = {
                 stages: {},
                 consentCheck: true
@@ -62,7 +62,7 @@
             return data;
         },
         methods: {
-            getData: function () {
+            getData () {
                 var data = {};
 
                 /* istanbul ignore next */
@@ -83,7 +83,7 @@
                 return data;
             },
 
-            saveCheck: function () {
+            saveCheck () {
                 if (this.selfServiceDetails.requirements.consentEnabled) {
                     this.isValid().then(() => {
                         this.$refs.consentModal.show();
@@ -96,11 +96,11 @@
                 }
             },
 
-            save: function () {
+            save () {
                 this.$emit('saveSelfService', this.getData());
             },
 
-            isValid: function () {
+            isValid () {
                 var childChecks = [],
                     validPromise = new Promise((resolve, reject) => {
                         if (this.$children) {

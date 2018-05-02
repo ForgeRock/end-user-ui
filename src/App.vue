@@ -19,7 +19,7 @@
             </div>
             <div id="appContentWrapper">
                 <!--
-                Navigation Bar useing Vue Route + Bootstrap Toolbar
+                Navigation Bar using Vue Route + Bootstrap Toolbar
                 -->
                 <b-navbar v-if="!this.$route.meta.hideToolbar" class="fr-main-navbar">
                     <b-nav-form>

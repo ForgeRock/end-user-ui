@@ -40,10 +40,10 @@
                 show: true
             };
         },
-        beforeMount: function () {
+        beforeMount () {
             this.id = 'floatingLabelInput' + this._uid;
         },
-        mounted: function () {
+        mounted () {
             /* istanbul ignore next */
             _.delay(_.bind(() => {
                 if (navigator.userAgent.indexOf('Edge') >= 0) {
@@ -80,7 +80,6 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../../scss/theme-variables.scss";
     .form-label-password.form-label-group {
         display: flex;
 

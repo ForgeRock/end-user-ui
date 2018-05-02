@@ -53,7 +53,7 @@
                 default: false
             }
         },
-        data: function () {
+        data () {
             var data = {
                 userDetails: {},
                 saveDetails: {},
@@ -86,7 +86,7 @@
             return data;
         },
         methods: {
-            getData: function () {
+            getData () {
                 var details = _.clone(this.saveDetails);
 
                 delete details.confirmPassword;
@@ -96,7 +96,7 @@
                 };
             },
 
-            save: function () {
+            save () {
                 // Need to ignore this validation because it does not preform in testing due to vue validate
                 /* istanbul ignore next */
                 this.isValid().then((valid) => {
@@ -106,7 +106,7 @@
                 });
             },
 
-            isValid: function () {
+            isValid () {
                 /* istanbul ignore next */
                 return this.$validator.validateAll();
             }

@@ -68,22 +68,22 @@
             'fr-list-group': ListGroup
         },
         inject: ['$validator'],
-        data: function () {
+        data () {
             return {
                 color: colors.primary,
                 formFields: [],
                 title: this.$t('common.user.profile.userDetailsTitle')
             };
         },
-        mounted: function () {
+        mounted () {
             this.loadData();
         },
         methods: {
-            hideModal: function () {
+            hideModal () {
                 this.$refs.fsModal.hide();
             },
     
-            loadData: function () {
+            loadData () {
                 /* istanbul ignore next */
                 let userId = this.$root.userStore.getUserState().userId,
                     selfServiceInstance = this.getRequestService();
@@ -127,7 +127,7 @@
                     });
                 });
             },
-            saveForm: function () {
+            saveForm () {
                 /* istanbul ignore next */
                 this.isValid().then((valid) => {
                     /* istanbul ignore next */
@@ -171,7 +171,7 @@
                     }
                 });
             },
-            isValid: function () {
+            isValid () {
                 return this.$validator.validateAll();
             }
         }

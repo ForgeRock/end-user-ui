@@ -42,7 +42,7 @@
             'bounce-loader': BounceLoader,
             'fr-center-card': CenterCard
         },
-        data: function () {
+        data () {
             return {
                 selfServiceType: null,
                 selfServiceDetails: null,
@@ -50,17 +50,17 @@
                 apiType: 'username'
             };
         },
-        mounted: function () {
+        mounted () {
             /* istanbul ignore next */
             this.loadData();
         },
         methods: {
-            setChildComponent: function (type, details) {
+            setChildComponent (type, details) {
                 this.selfServiceDetails = details;
 
                 this.selfServiceType = type;
             },
-            apiErrorCallback: function (error) {
+            apiErrorCallback (error) {
                 /* istanbul ignore next */
                 this.setChildComponent('retrieveUsername', { error: error.response.data.message });
             }

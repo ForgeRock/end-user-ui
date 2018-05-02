@@ -11,6 +11,4 @@
     };
 </script>
 
-<style lang="scss" scoped>
-    .fr-validation-requirements {}
-</style>
+<style lang="scss" scoped></style>

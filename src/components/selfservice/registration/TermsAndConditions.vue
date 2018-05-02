@@ -33,17 +33,17 @@
             }
         },
         methods: {
-            getData: function () {
+            getData () {
                 return {
                     accept: 'true'
                 };
             },
 
-            save: function () {
+            save () {
                 this.$emit('saveSelfService', this.getData());
             },
 
-            isValid: function () {
+            isValid () {
                 return Promise.resolve(true);
             }
         }

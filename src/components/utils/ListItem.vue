@@ -44,7 +44,7 @@
                 id: null
             };
         },
-        beforeMount: function () {
+        beforeMount () {
             this.id = 'listItem' + this._uid;
         },
         computed: {
@@ -57,7 +57,6 @@
     };
 </script>
 <style lang="scss" scoped>
-    @import "../../scss/theme-variables.scss";
     .media {
         height: 38px;
 

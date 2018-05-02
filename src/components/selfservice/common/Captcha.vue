@@ -19,17 +19,17 @@
             selfServiceDetails: { required: true },
             apiType: { required: true }
         },
-        created: function () {
+        created () {
             let recaptchaScript = document.createElement('script');
 
             recaptchaScript.setAttribute('src', 'https://www.google.com/recaptcha/api.js');
             document.head.appendChild(recaptchaScript);
         },
-        mounted: function () {
+        mounted () {
             this.loadRecaptcha();
         },
         methods: {
-            loadRecaptcha: function () {
+            loadRecaptcha () {
                 /* istanbul ignore next */
                 setTimeout(() => {
                     if (typeof window.grecaptcha === 'undefined') {
@@ -42,14 +42,14 @@
                     }
                 }, 100);
             },
-            handleCaptchaCallback: function (response) {
+            handleCaptchaCallback (response) {
                 this.recaptchaResponse = response;
                 /* istanbul ignore next */
                 if (this.$listeners.advanceStage) {
                     this.$emit('advanceStage', this.getData());
                 }
             },
-            getData: function () {
+            getData () {
                 return {
                     response: this.recaptchaResponse,
                     'g-recaptcha-response': this.recaptchaResponse

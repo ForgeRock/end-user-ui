@@ -53,7 +53,7 @@
             'fr-floating-label-input': FloatingLabelInput
         },
         inject: ['$validator'],
-        data: function () {
+        data () {
             let locale = this.$i18n.locale,
                 numberOfQuestions = _.toString(this.selfServiceDetails.requirements.properties.kba.minItems),
                 answers = _.times(numberOfQuestions, (n) => { return { answer: null, questionId: null, customQuestion: null }; }),
@@ -76,7 +76,7 @@
         },
         watch: {
             selected: {
-                handler: function (value) {
+                handler (value) {
                     // create array of selected options that aren't custom
                     let toDisable = _.map(this.selected, (s) => {
                         if (s.selected !== null && s.selected !== this.customIndex) {
@@ -97,7 +97,7 @@
             }
         },
         methods: {
-            getData: function () {
+            getData () {
                 let saveArray = _.map(this.selected, (s, index) => {
                     let couplet = {};
 
@@ -113,7 +113,7 @@
 
                 return { kba: saveArray };
             },
-            save: function () {
+            save () {
                 /* istanbul ignore next */
                 this.isValid().then((valid) => {
                     if (valid) {
@@ -121,7 +121,7 @@
                     }
                 });
             },
-            isValid: function () {
+            isValid () {
                 /* istanbul ignore next */
                 return this.$validator.validateAll();
             }

@@ -36,8 +36,6 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "../../scss/main";
-
     // Selfservice form and card
     .fr-center-card {
         width: 100%;

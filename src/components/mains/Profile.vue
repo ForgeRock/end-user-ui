@@ -43,11 +43,11 @@
             'fr-list-item': ListItem,
             'fr-edit-personal-info': EditPersonalInfo
         },
-        mounted: function () {
+        mounted () {
             this.loadData();
         },
         methods: {
-            loadData: function () {
+            loadData () {
                 /* istanbul ignore next */
                 let userId = this.$root.userStore.getUserState().userId,
                     selfServiceInstance = this.getRequestService();

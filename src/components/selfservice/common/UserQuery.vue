@@ -29,18 +29,18 @@
         props: {
             apiType: { required: true }
         },
-        data: function () {
+        data () {
             return {
                 mail: ''
             };
         },
         methods: {
-            getData: function () {
+            getData () {
                 return {
                     queryFilter: `mail eq "${this.mail}"`
                 };
             },
-            save: function () {
+            save () {
                 /* istanbul ignore next */
                 this.$emit('advanceStage', this.getData());
             }

@@ -4,7 +4,7 @@
     export default {
         name: 'Selfservice-API',
         methods: {
-            loadData: function () {
+            loadData () {
                 /* istanbul ignore next */
                 const selfServiceInstance = this.getRequestService({
                     headers: {
@@ -27,7 +27,7 @@
                         });
                     });
             },
-            advanceStage: function (data) {
+            advanceStage (data) {
                 /* istanbul ignore next */
                 const selfServiceInstance = this.getRequestService({
                         headers: {
