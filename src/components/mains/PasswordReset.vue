@@ -29,6 +29,7 @@
     import CenterCard from '@/components/utils/CenterCard';
     import EmailValidation from '../selfservice/common/EmailValidation';
     import ResetStage from '../selfservice/passwordreset/ResetStage';
+    import KbaVerification from '../selfservice/passwordreset/KbaVerification';
     import SelfserviceAPI from '../selfservice/mixins/SelfserviceAPIMixin';
     import UserQuery from '../selfservice/common/UserQuery';
 
@@ -37,6 +38,7 @@
         components: {
             captcha: Captcha,
             emailValidation: EmailValidation,
+            kbaSecurityAnswerVerificationStage: KbaVerification,
             userQuery: UserQuery,
             resetStage: ResetStage,
             'bounce-loader': BounceLoader,
