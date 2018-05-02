@@ -117,7 +117,7 @@
                 /* istanbul ignore next */
                 this.isValid().then((valid) => {
                     if (valid) {
-                        this.$emit('saveSelfService', this.getData());
+                        this.$emit('advanceStage', this.getData());
                     }
                 });
             },

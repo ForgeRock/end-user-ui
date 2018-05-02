@@ -9,7 +9,7 @@
             <component ref="selfServiceStage" v-show="showSelfService"
                        :is="selfServiceType"
                        :selfServiceDetails="selfServiceDetails"
-                       @saveSelfService="saveSelfService">
+                       @advanceStage="saveSelfService">
             </component>
             <bounce-loader v-show="showSelfService === false" :color="loadingColor"></bounce-loader>
         </b-card-body>
@@ -31,6 +31,8 @@
     import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
     import Consent from '../selfservice/registration/Consent';
     import CenterCard from '@/components/utils/CenterCard';
+    import Captcha from '../selfservice/common/Captcha';
+
     import kbaSecurityAnswerDefinitionStage from '../selfservice/registration/KBASecurityAnswerDefinitionStage.vue';
 
     export default {
@@ -42,7 +44,8 @@
             idmUserDetails,
             Consent,
             'fr-center-card': CenterCard,
-            kbaSecurityAnswerDefinitionStage
+            kbaSecurityAnswerDefinitionStage,
+            Captcha
         },
         data () {
             return {

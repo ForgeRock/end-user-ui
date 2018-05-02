@@ -1,8 +1,9 @@
 <template>
     <div class="fr-all-in-one-container">
-        
+
         <idmUserDetails v-if="stages.idmUserDetails" :inline="true" :selfServiceDetails="selfServiceDetails"></idmUserDetails>
         <kbaSecurityAnswerDefinitionStage v-if="stages.kbaSecurityAnswerDefinitionStage" :inline="true" :selfServiceDetails="selfServiceDetails"></KBASecurityAnswerDefinitionStage>
+        <Captcha v-if="stages.captcha" :self-service-details="selfServiceDetails"></Captcha>
 
         <template v-if="stages.consent">
             <b-modal ref="consentModal"
@@ -34,6 +35,7 @@
 <script>
     import _ from 'lodash';
     import idmUserDetails from './UserDetails';
+    import Captcha from '../common/Captcha';
     import kbaSecurityAnswerDefinitionStage from './KBASecurityAnswerDefinitionStage';
     import TermsAndConditions from './TermsAndConditions';
     import Consent from './Consent';
@@ -47,7 +49,8 @@
             idmUserDetails,
             kbaSecurityAnswerDefinitionStage,
             TermsAndConditions,
-            Consent
+            Consent,
+            Captcha
         },
         data () {
             var data = {
@@ -97,7 +100,7 @@
             },
 
             save () {
-                this.$emit('saveSelfService', this.getData());
+                this.$emit('advanceStage', this.getData());
             },
 
             isValid () {

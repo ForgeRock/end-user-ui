@@ -45,7 +45,7 @@ describe('Consent.vue', () => {
 
         wrapper.vm.save();
 
-        expect(wrapper.emitted().saveSelfService.length).to.equal(1);
+        expect(wrapper.emitted().advanceStage.length).to.equal(1);
     });
 
     it('Consent validation', (done) => {

@@ -1,6 +1,6 @@
 <template>
     <div id="captchaBody">
-        <p class='text-center mb-4'>
+        <p class='text-center mb-4' v-if="apiType">
             {{$t(`pages.selfservice.headers.${apiType}.description`)}}
         </p>
         <div class="recaptcha-wrapper ">
@@ -17,7 +17,7 @@
         props: {
             advanceStage: { required: false },
             selfServiceDetails: { required: true },
-            apiType: { required: true }
+            apiType: { required: false }
         },
         created () {
             let recaptchaScript = document.createElement('script');

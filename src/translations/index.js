@@ -8,6 +8,7 @@ export default
             },
             form: {
                 submit: 'Submit',
+                agree: 'I Agree',
                 logo: 'logo',
                 signUp: 'Sign Up',
                 cancel: 'Cancel',

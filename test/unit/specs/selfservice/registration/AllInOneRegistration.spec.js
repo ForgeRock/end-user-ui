@@ -77,7 +77,7 @@ describe('AllInOneRegistration.vue', () => {
 
         wrapper.vm.isValid().then((result) => {
             expect(result.success).to.equal(true);
-            expect(wrapper.emitted().saveSelfService.length).to.equal(1);
+            expect(wrapper.emitted().advanceStage.length).to.equal(1);
             done();
         });
     });

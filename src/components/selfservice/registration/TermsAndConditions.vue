@@ -17,7 +17,7 @@
         </div>
 
         <b-button v-if="inline === false" @click="save" :block="true" variant="primary">
-            {{$t("common.form.submit")}}
+            {{$t("common.form.agree")}}
         </b-button>
     </div>
 </template>
@@ -40,7 +40,7 @@
             },
 
             save () {
-                this.$emit('saveSelfService', this.getData());
+                this.$emit('advanceStage', this.getData());
             },
 
             isValid () {
