@@ -1,5 +1,5 @@
 <template>
-    <fr-center-card :showLogo="true">
+    <fr-center-card :showLogo="true" v-if="selfServiceType !== 'localAutoLogin'">
         <div slot="center-card-header">
             <h2 class="h2">{{$t("pages.selfservice.registration.signUp")}}</h2>
             <p class='text-center mb-0'>{{$t('pages.selfservice.registration.signUpMsg')}}</p>
@@ -24,28 +24,29 @@
 </template>
 
 <script>
-    import styles from '../../scss/main.scss';
     import AllInOneRegistration from '../selfservice/registration/AllInOneRegistration';
     import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
-    import idmUserDetails from '../selfservice/registration/UserDetails';
-    import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
-    import Consent from '../selfservice/registration/Consent';
-    import CenterCard from '@/components/utils/CenterCard';
     import Captcha from '../selfservice/common/Captcha';
-
+    import CenterCard from '@/components/utils/CenterCard';
+    import Consent from '../selfservice/registration/Consent';
+    import emailValidation from '../selfservice/registration/EmailValidation';
     import kbaSecurityAnswerDefinitionStage from '../selfservice/registration/KBASecurityAnswerDefinitionStage.vue';
-
+    import idmUserDetails from '../selfservice/registration/UserDetails';
+    import styles from '../../scss/main.scss';
+    import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
+    
     export default {
         name: 'Registration',
         components: {
+            'fr-center-card': CenterCard,
             AllInOneRegistration,
             BounceLoader,
-            TermsAndConditions,
-            idmUserDetails,
+            Captcha,
             Consent,
-            'fr-center-card': CenterCard,
+            emailValidation,
+            idmUserDetails,
             kbaSecurityAnswerDefinitionStage,
-            Captcha
+            TermsAndConditions
         },
         data () {
             return {
@@ -56,7 +57,14 @@
             };
         },
         mounted () {
-            this.loadData();
+            /* istanbul ignore next */
+            if (this.$route.params.queryParams) {
+                this.queryParams = this.parseQueryParams(this.$route.params.queryParams);
+                this.selfServiceType = 'localAutoLogin';
+                this.saveSelfService({});
+            } else {
+                this.loadData();
+            }
         },
         methods: {
             loadData () {
@@ -73,7 +81,6 @@
                 selfServiceInstance.get('/selfservice/registration')
                     .then((selfServiceDetails) => {
                         this.setRegistrationComponent(selfServiceDetails.data.type, selfServiceDetails.data);
-                        this.showSelfService = true;
                     })
                     .catch((error) => {
                         /* istanbul ignore next */
@@ -114,11 +121,20 @@
                     };
 
                 /* istanbul ignore next */
-                if (this.selfServiceDetails.token) {
+                if (this.selfServiceDetails && this.selfServiceDetails.token) {
                     saveData.token = this.selfServiceDetails.token;
                 }
 
-                saveData.input = data;
+                if (this.$route.params.queryParams) {
+                    if (this.queryParams && this.queryParams.token) {
+                        saveData.token = this.queryParams.token;
+                    }
+                    this.$router.push('/registration');
+                    saveData.input = this.queryParams;
+                } else {
+                    saveData.input = data;
+                }
+
                 this.showSelfService = false;
 
                 /* istanbul ignore next */
@@ -179,6 +195,21 @@
                         });
                     });
                 });
+            },
+            parseQueryParams (queryParams) {
+                /*
+                    example =>
+                    queryParams = '&token=MY_TOKEN&code=MY_CODE'
+                    returns {
+                        token: 'MY_TOKEN',
+                        code: 'MY_CODE'
+                    }
+                */
+                return JSON.parse(
+                    `{
+                        ${decodeURI('"' + queryParams.slice(1).replace(/&/g, '","').replace(/=/g, '":"')) + '"'}
+                    }`
+                );
             }
         }
     };

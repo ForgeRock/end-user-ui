@@ -79,7 +79,8 @@ export default
                     consent: {
                         title: 'Privacy & Consent',
                         agreement: 'I agree'
-                    }
+                    },
+                    emailValidation: 'An email has been sent to the address you entered. Click the link in that email to proceed.'
                 },
                 forgotUsername: {
                     advanceStageButtonText: 'Recover Username',

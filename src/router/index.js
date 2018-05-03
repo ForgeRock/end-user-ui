@@ -41,6 +41,12 @@ export default new Router({
             meta: { hideToolbar: true }
         },
         {
+            path: '/registration/:queryParams',
+            name: 'RegistrationEmailValidation',
+            component: Registration,
+            meta: { hideToolbar: true }
+        },
+        {
             path: '/forgotusername',
             name: 'ForgotUsername',
             component: ForgotUsername,
