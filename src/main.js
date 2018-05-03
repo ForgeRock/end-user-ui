@@ -143,6 +143,13 @@ Vue.mixin({
             }
 
             return instance;
+        },
+        getAnonymousHeaders: function () {
+            return {
+                'X-OpenIDM-NoSession': true,
+                'X-OpenIDM-Password': 'anonymous',
+                'X-OpenIDM-Username': 'anonymous'
+            };
         }
     }
 });

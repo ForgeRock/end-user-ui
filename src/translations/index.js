@@ -33,6 +33,17 @@ export default
                     preferencesSubtitle: 'Set your communications preferences.',
                     preferencesTitle: 'Preferences'
                 }
+            },
+            policyValidationMessages: {
+                'MIN_LENGTH': 'Must be {minLength} characters long',
+                'AT_LEAST_X_CAPITAL_LETTERS': 'Must have at least {numCaps} capital letter(s)',
+                'AT_LEAST_X_NUMBERS': 'Must have at least {numNums} number(s)',
+                'CANNOT_CONTAIN_OTHERS': 'Must not share characters with {disallowedFields}',
+                'test': 'succeed',
+                policyServiceError: 'Unable to register. Please try again later.',
+                successMessages: {
+                    password: 'Your password is secure!'
+                }
             }
         },
         pages: {

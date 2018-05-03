@@ -9,15 +9,7 @@
                 v-model="saveDetails[key]"></fr-floating-label-input>
         </b-form-group>
 
-        <b-form-group class="mb-0">
-            <fr-floating-label-input
-                fieldName="password"
-                :reveal="true"
-                :label="$t('common.placeholders.password')"
-                :validateRules="'required'"
-                type="password"
-                v-model="saveDetails.password"></fr-floating-label-input>
-        </b-form-group>
+        <fr-policy-password-input v-model="saveDetails.password" name="password"></fr-policy-password-input>
 
         <!-- Vue Bootstrap custom radio button seems to have problems so just using none component-->
         <div class="form-group mb-4">
@@ -36,12 +28,14 @@
 <script>
     import _ from 'lodash';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
+    import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
 
     // TODO Improve validation to handle more then just required / confirm password
     export default {
         name: 'User-Details',
         components: {
-            'fr-floating-label-input': FloatingLabelInput
+            'fr-floating-label-input': FloatingLabelInput,
+            'fr-policy-password-input': PolicyPasswordInput
         },
         $_veeValidate: {
             validator: 'new'

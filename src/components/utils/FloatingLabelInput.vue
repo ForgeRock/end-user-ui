@@ -1,21 +1,25 @@
 <template>
-    <div :class="[{'form-label-password': reveal}, 'form-label-group']" ref="floatingLabelGroup">
-        <input :type="inputType"
-               :id="id"
-               :class="[{'polyfillPlaceholder': floatLabels, 'is-invalid': errors.has(fieldName) }, 'form-control']"
-               :autofocus="autofocus"
-               v-model="inputValue"
-               :placeholder="label"
-               v-validate="validateRules"
-               data-vv-validate-on="submit"
-               :name="fieldName"/>
-        <div v-if="reveal" class="input-group-prepend">
-            <button @click="revealText" class="btn btn-outline-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
+    <div class="mb-3">
+        <div :class="[{'form-label-password': reveal}, 'form-label-group', 'mb-0']" ref="floatingLabelGroup">
+            <input :type="inputType"
+                   :id="id"
+                   :class="[{'polyfillPlaceholder': floatLabels, 'is-invalid': errors.has(fieldName) && showErrorState }, 'form-control']"
+                   :autofocus="autofocus"
+                   v-model="inputValue"
+                   :placeholder="label"
+                   v-validate="validateRules"
+                   data-vv-validate-on="submit"
+                   :name="fieldName"/>
+            <div v-if="reveal" class="input-group-prepend">
+                <button @click="revealText" class="btn btn-outline-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
+            </div>
+
+            <label :hidden="hideLabel" :for="id">{{ label }}</label>
+
         </div>
-
-        <label :hidden="hideLabel" :for="id">{{ label }}</label>
-
-        <fr-validation-error :validatorErrors="errors" :fieldName="fieldName"></fr-validation-error>
+        <slot name="validationError">
+            <fr-validation-error :validatorErrors="errors" :fieldName="fieldName"></fr-validation-error>
+        </slot>
     </div>
 </template>
 
@@ -28,7 +32,15 @@
         components: {
             'fr-validation-error': ValidationError
         },
-        props: ['label', 'type', 'autofocus', 'fieldName', 'validateRules', 'reveal'],
+        props: {
+            label: String,
+            type: String,
+            autofocus: String,
+            fieldName: String,
+            validateRules: [String, Object],
+            reveal: Boolean,
+            showErrorState: { type: Boolean, default: true }
+        },
         inject: ['$validator'],
         data () {
             return {

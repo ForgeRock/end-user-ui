@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import KbaVerification from '@/components/selfservice/passwordReset/KbaVerification';
+import KbaVerification from '@/components/selfservice/passwordreset/KbaVerification';
 import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
@@ -63,13 +63,13 @@ describe('KbaVerification.vue', () => {
             expect(data).to.have.property('answer2').that.equals('test value: 1');
         });
 
-        it('should emit "saveSelfService" with `getData` value when #emitValue called', () => {
+        it('should emit "advanceStage" with `getData` value when #emitValue called', () => {
             let emittedValue;
 
             wrapper.vm.emitData();
-            [ emittedValue ] = wrapper.emitted('saveSelfService')[0];
+            [ emittedValue ] = wrapper.emitted('advanceStage')[0];
 
-            expect(wrapper.emitted('saveSelfService').length).to.equal(1);
+            expect(wrapper.emitted('advanceStage').length).to.equal(1);
             expect(emittedValue).to.have.property('answer1').that.equals('test value: 0');
             expect(emittedValue).to.have.property('answer2').that.equals('test value: 1');
         });

@@ -5,6 +5,9 @@ import VeeValidate from 'vee-validate';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { mount } from '@vue/test-utils';
+import sinon from 'sinon';
+
+UserDetails.components['fr-policy-password-input'] = sinon.stub();
 
 describe('UserDetails.vue', () => {
     Vue.use(VueI18n);
