@@ -2,8 +2,6 @@
 import Vue from 'vue';
 import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
 import VueI18n from 'vue-i18n';
-import moxios from 'moxios';
-// import axios from 'axios';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import sinon from 'sinon';
@@ -27,18 +25,12 @@ describe('PasswordPolicyInput.vue', () => {
     let wrapper;
 
     beforeEach(function () {
-        moxios.install();
-
         wrapper = mount(PolicyPasswordInput, {
             i18n,
             provide: () => ({
                 $validator: v
             })
         });
-    });
-
-    afterEach(function () {
-        moxios.uninstall();
     });
 
     describe('proper render', () => {
