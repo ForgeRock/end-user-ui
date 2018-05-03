@@ -21,6 +21,10 @@ describe('Registration.vue', () => {
             this.selfServiceType = null;
             this.serviceDetails = null;
         });
+
+        sandbox.stub(Registration, 'mounted').callsFake(function () {
+            return undefined;
+        });
     });
 
     afterEach(function () {

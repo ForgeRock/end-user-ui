@@ -17,7 +17,7 @@
             <b-col class="detailsCol" lg="8">
                 <b-tabs>
                     <b-tab :title="$t('pages.profile.settings')" active>
-                        <fr-preferences :userDetails="userDetails"></fr-preferences>
+                        <fr-preferences v-if="Object.keys(userDetails).length > 0" :userDetails="userDetails"></fr-preferences>
                     </b-tab>
                     <b-tab :title="$t('pages.profile.activity')"></b-tab>
                 </b-tabs>
