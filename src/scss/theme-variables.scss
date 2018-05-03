@@ -1,16 +1,40 @@
 // Application wide variables can be overridden here
 // Forgerock based styles start with fr
 $white:    #fff;
-$gray-100: #f8f9fa;
-$gray-200: #e9ecef;
-$gray-300: #dee2e6;
-$gray-400: #ced4da;
-$gray-500: #adb5bd;
-$gray-600: #6c757d;
-$gray-700: #495057;
-$gray-800: #343a40;
-$gray-900: #212529;
+$gray-100: #F6F8FA;
+$gray-200: #E7EEF4;
+$gray-300: #D3D8E0;
+$gray-400: #C0C9D5;
+$gray-500: #77869E;
+$gray-600: #5E6D82;
+$gray-700: #455469;
+$gray-800: #324054;
+$gray-900: #23282E;
 $black:    #000;
+
+$blue:    #007bff;
+$indigo:  #6610f2;
+$purple:  #6f42c1;
+$pink:    #e83e8c;
+$red:     #dc3545;
+$orange:  #fd7e14;
+$yellow:  #ffc107;
+$green:   #28a745;
+$teal:    #20c997;
+$cyan:    #17a2b8;
+
+$primary:       $blue;
+$secondary:     $gray-600;
+$success:       $green;
+$info:          $cyan;
+$warning:       $yellow;
+$danger:        $red;
+$light:         $gray-100;
+$dark:          $gray-800;
+
+// Global Variables
+$enable-shadows:                    false;
+$enable-rounded:                    true;
 
 //General
 $body-bg:                           $gray-100;
@@ -19,7 +43,10 @@ $font-weight-bold:                  600;
 $transition-collapse:               height .25s ease-in;
 $border-radius:                     4px;
 $border-color:                      rgba(0, 0, 0, 0.125);
-$fr-typeface:                       "Roboto", sans-serif !default;
+$fr-typeface:                       "Roboto", sans-serif !default; 
+
+//Button
+$btn-padding-y:                     .75rem;
 
 //Card
 $card-spacer-y:                     1.875rem;

@@ -6,6 +6,7 @@ import Login from '@/components/mains/Login';
 import Profile from '@/components/mains/Profile';
 import PasswordReset from '@/components/mains/PasswordReset';
 import Registration from '@/components/mains/Registration';
+// import Styleguide from '../../styleguide/Styleguide';
 /**
  * Available toolbar configuration
  * hideToolbar - Will hide main toolbar when route accessed
@@ -64,6 +65,14 @@ export default new Router({
             component: PasswordReset,
             meta: { hideToolbar: true }
         },
+        /*
+        {
+            path: '/styleguide',
+            name: 'Styleguide',
+            component: Styleguide,
+            meta: { hideToolbar: true }
+        },
+        */
         {
             path: '*',
             component: NotFound,

@@ -40,6 +40,7 @@
     .fr-center-card {
         width: 100%;
         margin: 0 auto;
+        text-align: center;
         @include media-breakpoint-between(sm, xl) {
             max-width: 420px;
             padding: 40px 0;

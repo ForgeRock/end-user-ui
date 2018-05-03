@@ -35,7 +35,7 @@ h1, h2 {
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  text-align: left;
   height: 100%;
 
   .navbar {
@@ -65,6 +65,23 @@ h1, h2 {
 
   .btn-success {
     padding: 10px 20px 10px 20px;
+  }
+}
+
+// Button styles
+.btn-outline-primary {
+  &:hover, :focus, :active {
+    border-color: darken($blue, 10%);
+    background-color: transparent;
+    color: darken($blue, 10%);
+  }
+}
+.btn-outline-secondary {
+  border-color: $gray-400;
+  &:hover, :focus, :active {
+    background: $gray-200;
+    border-color: $gray-400;
+    color: $gray-600;
   }
 }
 

@@ -110,6 +110,13 @@
         -o-transition: all 0.2s ease;
         transition: all 0.2s ease;
 
+        .container {
+            @media(min-width:768px) {
+                padding-left: $grid-gutter-width;
+                padding-right: $grid-gutter-width;
+            }
+        }
+
         #wrapper {
             height: 100%;
 
@@ -184,6 +191,10 @@
                         color: $fr-toolbar-color;
                     }
                 }
+                >.container {
+                    padding-top: $grid-gutter-width;
+                    padding-bottom: $grid-gutter-width * 2;
+                }
             }
 
             &.toggled {
@@ -228,6 +239,8 @@
                 }
             }
         }
+
+
 
         /* Sidebar Styles */
         .sidebar-nav {
