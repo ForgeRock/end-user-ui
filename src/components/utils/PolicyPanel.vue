@@ -1,15 +1,19 @@
 <template>
     <div class="card border-0 mt-3">
-        <ul class="text-left pl-3 " v-if="!isValid">
-            <li v-for="policy in policies"
-            :key="policy.policyId"
-            :class="[{'fr-valid': !includes(policyFailures, policy.name)}, 'text-primary fr-policy-list-item']">
-                <small class="text-body">{{translate(policy)}}</small>
-            </li>
-        </ul>
-        <div v-else class="alert alert-success mt-3" role="alert">
-            <i class="fa fa-check-circle"></i> {{$t('common.policyValidationMessages.successMessages.password')}}
-        </div>
+        <transition name="fade">
+            <template v-if="!isLoading">
+                <ul class="text-left pl-3" v-if="!isValid">
+                    <li v-for="policy in policies"
+                    :key="policy.policyId"
+                    :class="[{'fr-valid': !includes(policyFailures, policy.name)}, 'text-primary fr-policy-list-item']">
+                        <small class="text-body">{{translate(policy)}}</small>
+                    </li>
+                </ul>
+                <div v-else class="alert alert-success mt-3" role="alert">
+                    <i class="fa fa-check-circle"></i> {{$t('common.policyValidationMessages.successMessages.password')}}
+                </div>
+            </template>
+        </transition>
     </div>
 </template>
 
@@ -24,7 +28,10 @@
         },
         computed: {
             isValid () {
-                return _.isEmpty(this.policyFailures);
+                return _.isArray(this.policyFailures) && _.isEmpty(this.policyFailures);
+            },
+            isLoading () {
+                return this.policyFailures === 'loading' || this.policyFailures === false;
             }
         },
         methods: {

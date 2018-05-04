@@ -56,7 +56,7 @@
         },
         computed: {
             policyFailures () {
-                return this.errors.firstByRule('password', 'policy');
+                return _.isUndefined(this.fields.password) ? 'loading' : this.errors.firstByRule('password', 'policy');
             }
         },
         methods: {

@@ -25,6 +25,29 @@ describe('PolicyPanel.vue', () => {
         });
     });
 
+    describe('proper render', () => {
+        it('should not show anything when "policyFailures" is loading', () => {
+            wrapper.setProps({ policyFailures: 'loading' });
+
+            expect(wrapper.contains('ul')).to.equal(false);
+            expect(wrapper.contains('div.alert')).to.equal(false);
+        });
+
+        it('should show policy ul when "policyFailures" is non empty array', () => {
+            wrapper.setProps({ policyFailures: ['test'] });
+
+            expect(wrapper.contains('ul')).to.equal(true);
+            expect(wrapper.contains('div.alert')).to.equal(false);
+        });
+
+        it('should show success alert when "policyFailures" is empty array', () => {
+            wrapper.setProps({ policyFailures: [] });
+
+            expect(wrapper.contains('ul')).to.equal(false);
+            expect(wrapper.contains('div.alert')).to.equal(true);
+        });
+    });
+
     describe('#translate', () => {
         it('should return a properly translated string', () => {
             const expectedString = 'Must be 1 characters long';
