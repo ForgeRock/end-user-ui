@@ -15,7 +15,8 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/dashboard'
+            redirect: '/dashboard',
+            meta: { hideToolbar: true }
         },
         {
             path: '/login',

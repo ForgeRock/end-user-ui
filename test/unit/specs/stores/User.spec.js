@@ -1,73 +1,86 @@
 import UserStore from '@/store/User';
+import _ from 'lodash';
 
 describe('User Store', () => {
     it('userId state management', () => {
-        let userState = UserStore.getUserState();
-
-        expect(userState.userId).to.equal(null);
+        expect(UserStore.state.userId).to.equal(null);
 
         UserStore.setUserIdAction('test');
-        userState = UserStore.getUserState();
 
-        expect(userState.userId).to.equal('test');
+        expect(UserStore.state.userId).to.equal('test');
 
         UserStore.clearUserIdAction();
-        userState = UserStore.getUserState();
 
-        expect(userState.userId).to.equal(null);
+        expect(UserStore.state.userId).to.equal(null);
     });
 
     it('managedResource state management', () => {
-        let userState = UserStore.getUserState();
-
-        expect(userState.managedResource).to.equal(null);
+        expect(UserStore.state.managedResource).to.equal(null);
 
         UserStore.setManagedResourceAction('test');
-        userState = UserStore.getUserState();
 
-        expect(userState.managedResource).to.equal('test');
+        expect(UserStore.state.managedResource).to.equal('test');
 
         UserStore.clearManagedResourceAction();
-        userState = UserStore.getUserState();
 
-        expect(userState.managedResource).to.equal(null);
+        expect(UserStore.state.managedResource).to.equal(null);
     });
 
     it('roles state management', () => {
-        let userState = UserStore.getUserState();
-
-        expect(userState.roles).to.equal(null);
+        expect(UserStore.state.roles).to.equal(null);
 
         UserStore.setRolesAction('test');
-        userState = UserStore.getUserState();
 
-        expect(userState.roles).to.equal('test');
+        expect(UserStore.state.roles).to.equal('test');
 
         UserStore.clearRolesAction();
-        userState = UserStore.getUserState();
 
-        expect(userState.roles).to.equal(null);
+        expect(UserStore.state.roles).to.equal(null);
     });
 
     it('Clear all state management', () => {
-        let userState;
-
         UserStore.setRolesAction('test');
         UserStore.setManagedResourceAction('test');
         UserStore.setUserIdAction('test');
 
-        userState = UserStore.getUserState();
+        expect(UserStore.state.roles).to.equal('test');
+        expect(UserStore.state.managedResource).to.equal('test');
+        expect(UserStore.state.userId).to.equal('test');
 
-        expect(userState.roles).to.equal('test');
-        expect(userState.managedResource).to.equal('test');
-        expect(userState.userId).to.equal('test');
+        UserStore.clearStoreAction();
 
-        UserStore.clearStore();
+        expect(UserStore.state.roles).to.equal(null);
+        expect(UserStore.state.managedResource).to.equal(null);
+        expect(UserStore.state.userId).to.equal(null);
+    });
 
-        userState = UserStore.getUserState();
+    it('profile state management', () => {
+        UserStore.setProfileAction({
+            givenName: 'test',
+            sn: 'test',
+            email: 'test',
+            userName: 'test'
+        });
 
-        expect(userState.roles).to.equal(null);
-        expect(userState.managedResource).to.equal(null);
-        expect(userState.userId).to.equal(null);
+        expect(UserStore.state.givenName).to.equal('test');
+        expect(UserStore.state.sn).to.equal('test');
+        expect(UserStore.state.email).to.equal('test');
+        expect(UserStore.state.userName).to.equal('test');
+
+        UserStore.clearProfileAction();
+
+        expect(_.isNull(UserStore.state.profile)).to.equal(true);
+        expect(UserStore.state.givenName).to.equal('');
+        expect(UserStore.state.sn).to.equal('');
+        expect(UserStore.state.email).to.equal('');
+        expect(UserStore.state.userName).to.equal('');
+
+        UserStore.setProfileAction({});
+
+        expect(_.isObject(UserStore.state.profile)).to.equal(true);
+        expect(UserStore.state.givenName).to.equal('');
+        expect(UserStore.state.sn).to.equal('');
+        expect(UserStore.state.email).to.equal('');
+        expect(UserStore.state.userName).to.equal('');
     });
 });

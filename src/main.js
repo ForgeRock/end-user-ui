@@ -30,10 +30,8 @@ Vue.use(Router);
 // Router guard to check authenticated routes
 router.beforeEach((to, from, next) => {
     if (_.has(to, 'meta.authenticate')) {
-        let userState = UserStore.getUserState();
-
-        if (_.isNull(userState.userId)) {
-            let instance = axios.create({
+        if (_.isNull(UserStore.state.userId)) {
+            let authInstance = axios.create({
                 baseURL: '/openidm',
                 timeout: 1000,
                 headers: {
@@ -43,12 +41,24 @@ router.beforeEach((to, from, next) => {
                 }
             });
 
-            instance.post('/authentication?_action=login').then((userDetails) => {
+            authInstance.post('/authentication?_action=login').then((userDetails) => {
                 UserStore.setUserIdAction(userDetails.data.authorization.id);
                 UserStore.setManagedResourceAction(userDetails.data.authorization.component);
                 UserStore.setRolesAction(userDetails.data.authorization.roles);
 
-                next();
+                authInstance.get(`managed/user/${userDetails.data.authorization.id}`).then((profile) => {
+                    UserStore.setProfileAction(profile.data);
+                    next();
+                })
+                .catch((error) => {
+                    /* istanbul ignore next */
+                    this.$notify({
+                        group: 'IDMMessages',
+                        type: 'error',
+                        title: 'Profile Error',
+                        text: error.response.data.message
+                    });
+                });
             },
             () => {
                 next(false);

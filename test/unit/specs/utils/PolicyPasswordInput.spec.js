@@ -49,17 +49,15 @@ describe('PasswordPolicyInput.vue', () => {
     });
 
     describe('#isPasswordPolicyItem', () => {
-        it('should return true for items that match "password"', () => {
+        it('Should return true for items that match "password" and then items that do not match "password" ', () => {
             let policyDefinition = { name: '/user/password' },
                 policyFailureDefinition = { property: '/user/password' };
 
             expect(wrapper.vm.isPasswordPolicyItem('name', policyDefinition)).to.equal(true);
             expect(wrapper.vm.isPasswordPolicyItem('property', policyFailureDefinition)).to.equal(true);
-        });
 
-        it('should return false for properties that do not match "password"', () => {
-            let policyDefinition = { name: '/user/_id' },
-                policyFailureDefinition = { property: '/user/_id' };
+            policyDefinition = { name: '/user/_id' };
+            policyFailureDefinition = { property: '/user/_id' };
 
             expect(wrapper.vm.isPasswordPolicyItem('name', policyDefinition)).to.equal(false);
             expect(wrapper.vm.isPasswordPolicyItem('property', policyFailureDefinition)).to.equal(false);
@@ -92,7 +90,7 @@ describe('PasswordPolicyInput.vue', () => {
     });
 
     describe('#toPolicyNames', () => {
-        it('should only return the name of a failed password property', () => {
+        it('should only return the name of a failed password property and fail on badly formed input', () => {
             let failedPolicySet = {
                 'failedPolicyRequirements': [
                     {
@@ -112,12 +110,7 @@ describe('PasswordPolicyInput.vue', () => {
             };
 
             expect(wrapper.vm.toPolicyNames(failedPolicySet)).to.deep.equal([ 'AT_LEAST_X_NUMBERS' ]);
-        });
-
-        it('should do something on not well formed input', () => {
-            let failedPolicySet = {};
-
-            expect(wrapper.vm.toPolicyNames(failedPolicySet)).to.deep.equal([]);
+            expect(wrapper.vm.toPolicyNames({})).to.deep.equal([]);
         });
     });
 

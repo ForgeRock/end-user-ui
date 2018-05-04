@@ -16,6 +16,11 @@ describe('Dashboard.vue', () => {
         $route = {
             path: '/test',
             meta: {}
+        },
+        userStore = {
+            state: {
+                userId: null
+            }
         };
 
     it('Base App page loaded', () => {
@@ -23,7 +28,8 @@ describe('Dashboard.vue', () => {
             i18n,
             stubs: ['router-link', 'router-view', 'notifications'],
             mocks: {
-                $route
+                $route,
+                userStore
             }
         });
 
@@ -35,7 +41,8 @@ describe('Dashboard.vue', () => {
             i18n,
             stubs: ['router-link', 'router-view', 'notifications'],
             mocks: {
-                $route
+                $route,
+                userStore
             }
         });
 

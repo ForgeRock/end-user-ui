@@ -39,7 +39,6 @@
                 preferences: {}
             };
         },
-        props: ['userDetails'],
         mounted: function () {
             this.loadData();
         },
@@ -50,11 +49,11 @@
 
                 /* istanbul ignore next */
                 selfServiceInstance.get('/schema/managed/user').then((userSchema) => {
-                    let keys = _.keys(this.userDetails.data.preferences),
+                    let keys = _.keys(this.$root.userStore.state.profile.preferences),
                         preferences = _.cloneDeep(userSchema.data.properties.preferences.properties);
 
                     _.each(keys, (key) => {
-                        preferences[key].value = this.userDetails.data.preferences[key];
+                        preferences[key].value = this.$root.userStore.state.profile.preferences[key];
                         delete preferences[key].type;
                     });
 
@@ -71,7 +70,7 @@
             },
             savePreferences: function (event) {
                 /* istanbul ignore next */
-                let userId = this.$root.userStore.getUserState().userId,
+                let userId = this.$root.userStore.state.userId,
                     selfServiceInstance = this.getRequestService({
                         headers: {
                             'X-OpenIDM-NoSession': true,
@@ -85,6 +84,8 @@
 
                 /* istanbul ignore next */
                 selfServiceInstance.patch(`managed/user/${userId}`, patch).then((response) => {
+                    this.$root.userStore.setProfileAction(response.data);
+
                     this.$notify({
                         group: 'IDMMessages',
                         type: 'success',

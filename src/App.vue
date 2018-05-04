@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <div id="wrapper" :class="[{'toggled': toggled && !this.$route.meta.hideToolbar}]">
-            <div id="appSidebarWrapper" v-if="!this.$route.meta.hideToolbar">
+            <div id="appSidebarWrapper" v-if="!this.$route.meta.hideToolbar && this.$root.userStore.state.userId !== null">
                 <ul class="sidebar-nav">
                     <li class="sidebar-brand">
                         <a href="#/" class="d-flex">
@@ -17,11 +17,11 @@
                     </li>
                 </ul>
             </div>
-            <div id="appContentWrapper">
+            <div id="appContentWrapper" :class="[{'fr-no-toolbar': this.$route.meta.hideToolbar}]">
                 <!--
                 Navigation Bar using Vue Route + Bootstrap Toolbar
                 -->
-                <b-navbar v-if="!this.$route.meta.hideToolbar" class="fr-main-navbar">
+                <b-navbar v-if="!this.$route.meta.hideToolbar && this.$root.userStore.state.userId !== null" class="fr-main-navbar">
                     <b-nav-form>
                         <b-button variant="link" class="my-2 my-sm-0 p-0 fr-main-nav-toggle" type="button" @click="onToggle">
                             <i class="fa fa-bars fa-lg m-0"></i>
@@ -33,35 +33,34 @@
                             <template slot="button-content">
                                 {{$t('pages.app.user')}} <b-img src="static/image/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
                             </template>
-                            <b-dropdown-item href="#">{{$t('pages.app.profile')}}</b-dropdown-item>
+                            <b-dropdown-item href="#/profile">{{$t('pages.app.profile')}}</b-dropdown-item>
                             <b-dropdown-item @click.prevent="signOut()">{{$t('pages.app.signOut')}}</b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>
                 </b-navbar>
-                <!--
-                  Application View
-                -->
-                <notifications group="IDMMessages" position="bottom left" width="320" :duration="4000">
-                    <template slot="body" slot-scope="props">
-                        <div :class="[{ 'alert-success': (props.item.type == 'success'), 'alert-warning': (props.item.type == 'warning'), 'alert-danger': (props.item.type == 'error'), 'alert-info': (props.item.type == 'info')}, 'alert', 'alert-dismissible', 'd-flex', 'p-3', 'pr-5', 'position-relative']" role="alert">
-                            <div :class="[{ 'text-success': (props.item.type == 'success'), 'text-warning': (props.item.type == 'warning'), 'text-danger': (props.item.type == 'error'), 'text-info': (props.item.type == 'info')}, 'alert-icon', 'mr-3', 'align-self-top']">
-                                <i :class="[{ 'fa-check-circle-o': (props.item.type == 'success'), 'fa-exclamation-triangle': (props.item.type == 'warning'), 'fa-times-circle': (props.item.type == 'error'), 'fa-info-circle': (props.item.type == 'info')}, 'fa', 'fa-lg']"></i>
-                            </div>
-                            <div class="fr-alert-content align-self-center">
-                                <p class="mb-0 text-left" v-html="props.item.text"></p>
-                            </div>
-                            <a class="close" @click="props.close">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        </div>
-                    </template>
-                </notifications>
-
                 <transition name="fade" mode="out-in">
                     <router-view/>
                 </transition>
             </div>
         </div>
+        <!--
+          Application View
+        -->
+        <notifications group="IDMMessages" position="bottom left" width="320" :duration="4000">
+            <template slot="body" slot-scope="props">
+                <div :class="[{ 'alert-success': (props.item.type == 'success'), 'alert-warning': (props.item.type == 'warning'), 'alert-danger': (props.item.type == 'error'), 'alert-info': (props.item.type == 'info')}, 'alert', 'alert-dismissible', 'd-flex', 'p-3', 'pr-5', 'position-relative']" role="alert">
+                    <div :class="[{ 'text-success': (props.item.type == 'success'), 'text-warning': (props.item.type == 'warning'), 'text-danger': (props.item.type == 'error'), 'text-info': (props.item.type == 'info')}, 'alert-icon', 'mr-3', 'align-self-top']">
+                        <i :class="[{ 'fa-check-circle-o': (props.item.type == 'success'), 'fa-exclamation-triangle': (props.item.type == 'warning'), 'fa-times-circle': (props.item.type == 'error'), 'fa-info-circle': (props.item.type == 'info')}, 'fa', 'fa-lg']"></i>
+                    </div>
+                    <div class="fr-alert-content align-self-center">
+                        <p class="mb-0 text-left" v-html="props.item.text"></p>
+                    </div>
+                    <a class="close" @click="props.close">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </template>
+        </notifications>
     </div>
 </template>
 
@@ -89,7 +88,7 @@
 
                 /* istanbul ignore next */
                 idmInstance.post('/authentication?_action=logout').then(() => {
-                    this.$root.userStore.clearStore();
+                    this.$root.userStore.clearStoreAction();
 
                     this.$router.push('/login');
                 });
@@ -175,6 +174,12 @@
 
                 @media(min-width:768px) {
                     padding-left: $fr-sidebar-nav-minimized-width;
+                }
+
+                &.fr-no-toolbar {
+                    @media(min-width:768px) {
+                        padding-left: 0;
+                    }
                 }
 
                 .fr-main-nav-toggle {

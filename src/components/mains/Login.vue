@@ -78,7 +78,11 @@
                         this.$root.userStore.setManagedResourceAction(userDetails.data.authorization.component);
                         this.$root.userStore.setRolesAction(userDetails.data.authorization.roles);
 
-                        this.$router.push('/profile');
+                        loginServiceInstance.get(`managed/user/${userDetails.data.authorization.id}`).then((userProfile) => {
+                            this.$root.userStore.setProfileAction(userProfile.data);
+
+                            this.$router.push('/profile');
+                        });
                     })
                     .catch(() => {
                         this.wrongPasswordSubmitted = true;

@@ -4,26 +4,10 @@ import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { shallow } from '@vue/test-utils';
-import Sinon from 'sinon';
 
 describe('Profile.vue', () => {
-    let sandbox = null;
-
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
-
-    beforeEach(function () {
-        sandbox = Sinon.sandbox.create();
-
-        sandbox.stub(Profile.methods, 'loadData').callsFake(function () {
-            this.usersName = 'Emma Enduser';
-            this.email = 'emma.enduser@forgerock.com';
-        });
-    });
-
-    afterEach(function () {
-        sandbox.restore();
-    });
 
     const i18n = new VueI18n({
         locale: 'en',
@@ -31,8 +15,23 @@ describe('Profile.vue', () => {
     });
 
     it('Profile page loaded', () => {
+        let userStore = {
+            state: {
+                givenName: '',
+                sn: '',
+                email: '',
+                userName: ''
+            },
+            getProfileCopyAction () {
+                return {};
+            }
+        };
+
         const wrapper = shallow(Profile, {
-            i18n
+            i18n,
+            mocks: {
+                userStore
+            }
         });
 
         expect(wrapper.name()).to.equal('Profile');

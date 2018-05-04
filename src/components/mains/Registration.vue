@@ -125,6 +125,7 @@
                     saveData.token = this.selfServiceDetails.token;
                 }
 
+                /* istanbul ignore next */
                 if (this.$route.params.queryParams) {
                     if (this.queryParams && this.queryParams.token) {
                         saveData.token = this.queryParams.token;

@@ -85,37 +85,26 @@
     
             loadData () {
                 /* istanbul ignore next */
-                let userId = this.$root.userStore.getUserState().userId,
-                    selfServiceInstance = this.getRequestService();
+                let selfServiceInstance = this.getRequestService();
     
                 /* istanbul ignore next */
-                selfServiceInstance.get(`managed/user/${userId}`).then((userDetails) => {
-                    selfServiceInstance.get('/schema/managed/user').then((userSchema) => {
-                        let {order, properties, required} = userSchema.data,
-                            filteredOrder = _.filter(order, (propName) => {
-                                return properties[propName].viewable &&
-                                    properties[propName].userEditable &&
-                                    properties[propName].type !== 'array' &&
-                                    properties[propName].type !== 'object';
-                            });
+                selfServiceInstance.get('/schema/managed/user').then((userSchema) => {
+                    let {order, properties, required} = userSchema.data,
+                        filteredOrder = _.filter(order, (propName) => {
+                            return properties[propName].viewable &&
+                                properties[propName].userEditable &&
+                                properties[propName].type !== 'array' &&
+                                properties[propName].type !== 'object';
+                        });
 
-                        this.formFields = _.map(filteredOrder, (name) => {
-                            return {
-                                name: name,
-                                title: properties[name].title,
-                                value: userDetails.data[name] || null,
-                                type: properties[name].type,
-                                required: _.includes(required, name)
-                            };
-                        });
-                    })
-                    .catch((error) => {
-                        /* istanbul ignore next */
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'error',
-                            text: error.response.data.message
-                        });
+                    this.formFields = _.map(filteredOrder, (name) => {
+                        return {
+                            name: name,
+                            title: properties[name].title,
+                            value: this.$root.userStore.state.profile[name] || null,
+                            type: properties[name].type,
+                            required: _.includes(required, name)
+                        };
                     });
                 })
                 .catch((error) => {
@@ -152,8 +141,8 @@
                             });
     
                         selfServiceInstance.patch(`managed/user/${userId}`, patches).then((response) => {
+                            this.$root.userStore.setProfileAction(response.data);
                             this.hideModal();
-                            this.$emit('update-user');
 
                             this.$notify({
                                 group: 'IDMMessages',
