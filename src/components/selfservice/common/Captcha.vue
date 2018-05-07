@@ -40,7 +40,7 @@
                             callback: this.handleCaptchaCallback
                         });
                     }
-                }, 100);
+                }, 500);
             },
             handleCaptchaCallback (response) {
                 this.recaptchaResponse = response;

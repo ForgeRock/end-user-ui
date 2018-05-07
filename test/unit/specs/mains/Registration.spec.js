@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Vue from 'vue';
 import Registration from '@/components/mains/Registration';
 import VueI18n from 'vue-i18n';
@@ -17,13 +18,11 @@ describe('Registration.vue', () => {
     beforeEach(function () {
         sandbox = Sinon.sandbox.create();
 
-        sandbox.stub(Registration.methods, 'loadData').callsFake(function () {
+        sandbox.stub(Registration, 'mounted').callsFake(function () {
             this.selfServiceType = null;
             this.serviceDetails = null;
-        });
-
-        sandbox.stub(Registration, 'mounted').callsFake(function () {
-            return undefined;
+            this.advanceStage = _.noop;
+            this.$notify = _.noop;
         });
     });
 
@@ -57,9 +56,36 @@ describe('Registration.vue', () => {
             i18n
         });
 
-        wrapper.vm.setRegistrationComponent('idmUserDetails', {});
+        wrapper.vm.setChildComponent('idmUserDetails', {});
 
         expect(wrapper.vm.selfServiceType).to.equal('idmUserDetails');
         expect(wrapper.contains('form')).to.equal(true);
+    });
+
+    it('Registration properly handles parameters stage', () => {
+        const wrapper = mount(Registration, {
+            i18n
+        });
+
+        wrapper.vm.setChildComponent('parameters', {});
+
+        expect(wrapper.vm.selfServiceType).to.equal(null);
+        expect(wrapper.vm.showSelfService).to.equal(false);
+    });
+
+    it('Registration apiErrorCallback properly sets showSelfService', () => {
+        const wrapper = mount(Registration, {
+            i18n
+        });
+
+        wrapper.vm.apiErrorCallback({
+            response: {
+                data: {
+                    message: 'test'
+                }
+            }
+        });
+
+        expect(wrapper.vm.showSelfService).to.equal(true);
     });
 });

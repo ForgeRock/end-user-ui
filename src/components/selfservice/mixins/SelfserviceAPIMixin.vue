@@ -65,6 +65,21 @@
                             this.apiErrorCallback(error);
                         }
                     });
+            },
+            parseQueryParams (queryParams) {
+                /*
+                    example =>
+                    queryParams = '&token=MY_TOKEN&code=MY_CODE'
+                    returns {
+                        token: 'MY_TOKEN',
+                        code: 'MY_CODE'
+                    }
+                */
+                return JSON.parse(
+                    `{
+                        ${decodeURI('"' + queryParams.slice(1).replace(/&/g, '","').replace(/=/g, '":"')) + '"'}
+                    }`
+                );
             }
         }
     };

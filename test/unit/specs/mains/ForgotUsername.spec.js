@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import ForgotUsername from '@/components/mains/ForgotUsername';
-import EmailUsername from '@/components/selfservice/forgotusername/EmailUsername';
 import VueI18n from 'vue-i18n';
 import Sinon from 'sinon';
 import BootstrapVue from 'bootstrap-vue';
@@ -27,9 +26,6 @@ describe('ForgotUsername.vue', () => {
         sandbox.stub(ForgotUsername, 'mounted').callsFake(function () {
             this.selfServiceType = null;
             this.serviceDetails = null;
-            this.subComponents = {
-                emailUsername: EmailUsername
-            };
         });
     });
 

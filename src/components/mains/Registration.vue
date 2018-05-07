@@ -9,7 +9,7 @@
             <component ref="selfServiceStage" v-show="showSelfService"
                        :is="selfServiceType"
                        :selfServiceDetails="selfServiceDetails"
-                       @advanceStage="saveSelfService">
+                       @advanceStage="advanceStage">
             </component>
             <bounce-loader v-show="showSelfService === false" :color="loadingColor"></bounce-loader>
         </b-card-body>
@@ -32,9 +32,10 @@
     import emailValidation from '../selfservice/registration/EmailValidation';
     import kbaSecurityAnswerDefinitionStage from '../selfservice/registration/KBASecurityAnswerDefinitionStage.vue';
     import idmUserDetails from '../selfservice/registration/UserDetails';
+    import SelfserviceAPI from '../selfservice/mixins/SelfserviceAPIMixin';
     import styles from '../../scss/main.scss';
     import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
-    
+
     export default {
         name: 'Registration',
         components: {
@@ -48,58 +49,38 @@
             kbaSecurityAnswerDefinitionStage,
             TermsAndConditions
         },
+        mixins: [
+            SelfserviceAPI
+        ],
         data () {
             return {
                 selfServiceType: null,
                 selfServiceDetails: null,
                 loadingColor: styles.baseColor,
-                showSelfService: false
+                showSelfService: false,
+                apiType: 'registration'
             };
         },
         mounted () {
             /* istanbul ignore next */
+            // queryParams come from the link emailed to the user for the emailValidation stage
             if (this.$route.params.queryParams) {
-                this.queryParams = this.parseQueryParams(this.$route.params.queryParams);
+                // This stops the flicker by hiding everything in the center-card
                 this.selfServiceType = 'localAutoLogin';
-                this.saveSelfService({});
+                this.advanceStage(this.parseQueryParams(this.$route.params.queryParams));
             } else {
                 this.loadData();
             }
         },
         methods: {
-            loadData () {
-                // TODO Abstract to more reusable location
-                /* istanbul ignore next */
-                var selfServiceInstance = this.getRequestService({
-                    headers: {
-                        'X-OpenIDM-NoSession': true,
-                        'X-OpenIDM-Password': 'anonymous',
-                        'X-OpenIDM-Username': 'anonymous'
-                    }
-                });
-                /* istanbul ignore next */
-                selfServiceInstance.get('/selfservice/registration')
-                    .then((selfServiceDetails) => {
-                        this.setRegistrationComponent(selfServiceDetails.data.type, selfServiceDetails.data);
-                    })
-                    .catch((error) => {
-                        /* istanbul ignore next */
-                        this.showSelfService = false;
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'error',
-                            text: error.response.data.message
-                        });
-                    });
-            },
-            setRegistrationComponent (type, details) {
+            setChildComponent (type, details) {
                 this.selfServiceDetails = details;
 
                 if (type === 'parameters') {
                     this.selfServiceType = null;
                     this.showSelfService = false;
 
-                    this.saveSelfService({
+                    this.advanceStage({
                         'input': {}
                     });
                 } else {
@@ -107,61 +88,19 @@
                     this.showSelfService = true;
                 }
             },
-            saveSelfService (data) {
-                /* istanbul ignore next */
-                var selfServiceInstance = this.getRequestService({
-                        headers: {
-                            'X-OpenIDM-NoSession': true,
-                            'X-OpenIDM-Password': 'anonymous',
-                            'X-OpenIDM-Username': 'anonymous'
-                        }
-                    }),
-                    saveData = {
-                        input: {}
-                    };
+            apiErrorCallback (error) {
+                this.showSelfService = true;
 
                 /* istanbul ignore next */
-                if (this.selfServiceDetails && this.selfServiceDetails.token) {
-                    saveData.token = this.selfServiceDetails.token;
-                }
-
-                /* istanbul ignore next */
-                if (this.$route.params.queryParams) {
-                    if (this.queryParams && this.queryParams.token) {
-                        saveData.token = this.queryParams.token;
-                    }
-                    this.$router.push('/registration');
-                    saveData.input = this.queryParams;
-                } else {
-                    saveData.input = data;
-                }
-
-                this.showSelfService = false;
-
-                /* istanbul ignore next */
-                selfServiceInstance.post('/selfservice/registration?_action=submitRequirements', saveData)
-                    .then((selfServiceDetails) => {
-                        if (selfServiceDetails.data.type === 'localAutoLogin') {
-                            this.$notify({
-                                group: 'IDMMessages',
-                                type: 'success',
-                                text: this.$t('pages.selfservice.registration.createdAccount')
-                            });
-                            this.autoLogin(selfServiceDetails.data.additions.credentialJwt);
-                        } else {
-                            this.setRegistrationComponent(selfServiceDetails.data.type, selfServiceDetails.data);
-                        }
-                    })
-                    .catch((error) => {
-                        this.showSelfService = true;
-
-                        /* istanbul ignore next */
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'error',
-                            text: error.response.data.message
-                        });
-                    });
+                this.$notify({
+                    group: 'IDMMessages',
+                    type: 'error',
+                    text: error.response.data.message
+                });
+                // clean up any queryParams from the url
+                this.$router.push('/registration');
+                // reload the form
+                this.loadData();
             },
             autoLogin: function (jwt) {
                 /* istanbul ignore next */
@@ -185,6 +124,11 @@
                 /* istanbul ignore next */
                 idmInstance.post('/authentication?_action=logout').then(() => {
                     loginServiceInstance.post('/authentication?_action=login').then(() => {
+                        this.$notify({
+                            group: 'IDMMessages',
+                            type: 'success',
+                            text: this.$t('pages.selfservice.registration.createdAccount')
+                        });
                         this.$router.push('/');
                     })
                     .catch((error) => {
@@ -196,21 +140,6 @@
                         });
                     });
                 });
-            },
-            parseQueryParams (queryParams) {
-                /*
-                    example =>
-                    queryParams = '&token=MY_TOKEN&code=MY_CODE'
-                    returns {
-                        token: 'MY_TOKEN',
-                        code: 'MY_CODE'
-                    }
-                */
-                return JSON.parse(
-                    `{
-                        ${decodeURI('"' + queryParams.slice(1).replace(/&/g, '","').replace(/=/g, '":"')) + '"'}
-                    }`
-                );
             }
         }
     };
