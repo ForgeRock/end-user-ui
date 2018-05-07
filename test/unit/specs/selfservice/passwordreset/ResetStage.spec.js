@@ -3,9 +3,12 @@ import ResetStage from '@/components/selfservice/passwordreset/ResetStage';
 import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
+import sinon from 'sinon';
 import { mount } from '@vue/test-utils';
 
 describe('ResetStage.vue', () => {
+    ResetStage.components['fr-policy-password-input'] = sinon.stub();
+
     var mountWrapper = () => {
         return mount(ResetStage, {
             i18n,

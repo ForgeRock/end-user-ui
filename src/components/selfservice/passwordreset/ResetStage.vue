@@ -1,7 +1,3 @@
-<!--
-    *******TODO*******
-    THIS IS A WORKING 'STUB' WE NEED TO ADD POLICY VALIDATION AND FINISH THIS COMPONENT
- -->
 <template>
     <div v-if="selfServiceDetails.tag ==='end'">
         <b-alert show>
@@ -10,20 +6,7 @@
     </div>
     <div v-else-if="typeof selfServiceDetails.error !== 'string'">
         <b-form v-if @keyup.enter="save" @submit.prevent>
-            <b-form-group>
-                <fr-floating-label-input v-model="password" fieldName="password" :label="$t('pages.selfservice.passwordReset.newPassword')" type="password" autofocus="true"></fr-floating-label-input>
-            </b-form-group>
-            <small class="fr-password-requirements form-text text-muted mt-3">
-                <div class="row">
-                    <div class="col text-left">
-                        <ul>
-                            <li>One lower case character</li>
-                            <li>One number</li>
-                            <li>8 characters minimum</li>
-                        </ul>
-                    </div>
-                </div>
-            </small>
+                <fr-policy-password-input v-model="password" name="password" :label="$t('pages.selfservice.passwordReset.newPassword')" ></fr-policy-password-input>
             <b-button @click="save" :block="true" variant="primary">
                 {{$t("pages.selfservice.passwordReset.changePassword")}}
             </b-button>
@@ -43,12 +26,12 @@
 </template>
 
 <script>
-    import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
+    import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
 
     export default {
         name: 'Reset-Stage',
         components: {
-            'fr-floating-label-input': FloatingLabelInput
+            'fr-policy-password-input': PolicyPasswordInput
         },
         props: {
             selfServiceDetails: { required: true }

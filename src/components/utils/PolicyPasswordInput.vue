@@ -6,7 +6,7 @@
             type="password"
             v-validate.initial="'required|policy'"
             v-model="password"
-            :label="$t('common.placeholders.password')"
+            :label="label || $t('common.placeholders.password')"
             :reveal="true"
             :showErrorState="false"
             @input="$emit('input', $event)">
@@ -31,6 +31,7 @@
         },
         props: {
             value: String,
+            label: String,
             exclude: {
                 required: false,
                 type: Array,
