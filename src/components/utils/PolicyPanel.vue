@@ -1,6 +1,6 @@
 <template>
     <div class="card border-0 mt-3">
-        <transition name="fade">
+        <transition name="fade" mode="out-in" :duration="150">
             <template v-if="!isLoading">
                 <ul class="text-left pl-3" v-if="!isValid">
                     <li v-for="policy in policies"
@@ -28,7 +28,7 @@
         },
         computed: {
             isValid () {
-                return _.isArray(this.policyFailures) && _.isEmpty(this.policyFailures);
+                return _.isNull(this.policyFailures);
             },
             isLoading () {
                 return this.policyFailures === 'loading' || this.policyFailures === false;

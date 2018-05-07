@@ -40,8 +40,8 @@ describe('PolicyPanel.vue', () => {
             expect(wrapper.contains('div.alert')).to.equal(false);
         });
 
-        it('should show success alert when "policyFailures" is empty array', () => {
-            wrapper.setProps({ policyFailures: [] });
+        it('should show success alert when "policyFailures" is null', () => {
+            wrapper.setProps({ policyFailures: null });
 
             expect(wrapper.contains('ul')).to.equal(false);
             expect(wrapper.contains('div.alert')).to.equal(true);
