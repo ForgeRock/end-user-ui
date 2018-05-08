@@ -117,7 +117,7 @@
     .list-group-item-action:not(.collapsed):hover,
     .list-group-item-action:not(.collapsed):focus,
     .noncollapse {
-        background-color: $white;
+        background-color: $card-bg;
         border-bottom-color: transparent;
     }
 

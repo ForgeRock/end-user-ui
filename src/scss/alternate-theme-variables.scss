@@ -1,21 +1,136 @@
+$white:    !default;
+$gray-100: #f7f8fc;
+$gray-200: #eaeaed;
+$gray-300: #DADADF;
+$gray-400: #c2c3cc;
+$gray-500: #7e8089;
+$gray-600: #555767;
+$gray-700: #3B3D4F;
+$gray-800: #292C3D;
+$gray-900: #1B1E2F;
+$black:    !default;
+
+$blue:    #4784F1;
+$indigo:  #5E37F8;
+$purple:  #6760FA;
+$pink:    #C65DA9;
+$red:     #de4c4b;
+$orange:  #E78C65;
+$yellow:  #F1BD59;
+$green:   #8AFAA3;
+$teal:    #84E4D9;
+$cyan:    #72BEC8;
+
+$primary:       $purple;
+$secondary:     $gray-500;
+$success:       $green;
+$info:          $blue;
+$warning:       $yellow;
+$danger:        $red;
+$light:         $gray-100;
+$dark:          $gray-900;
+
 //Base
 $theme-colors: (
-        "primary": #bb3d11
+        "primary": $primary,
+        "secondary": $secondary,
+        "success": $success,
+        "info": $info,
+        "warning": $warning,
+        "danger": $danger,
+        "light": $light,
+        "dark": $dark
 );
 
-$fr-typeface:                         "Helvetica Neue", Arial;
+// Global Variables
+$enable-shadows:                    false;
+$enable-rounded:                    true;
 
-//Profile nav tabs
-$nav-highlight-color:                  #bb3d11;
+//General
+$body-bg:                              $gray-800;
+$body-color:                           $gray-200;
+$headings-color:                       $gray-200;
+$text-muted:                           $gray-400;
+$fr-typeface:                          "Roboto", sans-serif ;
+$link-color:                           $gray-300;
+$link-hover-color:                     lighten($link-color, 15%);
+$input-btn-focus-color:                 $gray-900;
+
+$component-active-color:                $gray-900;
+$component-active-bg:                   theme-color("primary");
+
+
+// Inputs
+$input-bg:                              $gray-800;
+$input-disabled-bg:                     transparent;
+$input-color:                           $gray-200;
+$input-border-color:                    $gray-800;
+$input-placeholder-color:               $gray-400;
+$input-focus-bg:                        darken($input-bg,4%);
+$input-focus-box-shadow:                none;
+$input-focus-border-color:              $gray-800;
+$input-focus-color:                     $gray-200;
+$label-color:                           $gray-400;
+$input-btn-color:                       $gray-500;
+$input-btn-active-color:                $white;
+
+// Custom form controls// Custom form controls
+$custom-control-indicator-bg:                $gray-800;
+$custom-control-indicator-checked-bg:        $primary;
+$custom-checkbox-indicator-border-color:     $gray-800;
+$custom-select-focus-border-color:           $gray-800;
+$custom-select-bg:                           $input-bg;
+$custom-select-border-color:                 $input-border-color;
+$custom-select-color:                        $input-color;
+$custom-select-indicator-color:              $gray-400;
+$custom-select-indicator:                    str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='#{$custom-select-indicator-color}' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E"), "#", "%23");
+
+// Switches
+$fr-switch-bg:                          $gray-800;
+$fr-switch-toggled-bg:                  $primary;
+
+// Modals
+$modal-content-bg:                     $gray-700;
+
+// Close
+$close-color:                       $gray-200;
+$close-text-shadow:                 none;
+
+//Profile nav tavs
+$nav-tabs-border-color:                $gray-600;
+$nav-tabs-link-color:                  $gray-400;
+$nav-tabs-link-active-color:           $gray-200;
+$nav-highlight-color:                  $component-active-bg;
+
+// Cards
+$card-cap-bg:                          $gray-700;
+$card-bg:                              $gray-700;
 
 // Toolbar
-$fr-toolbar-background:                $black;
+$fr-toolbar-background:                $gray-700;
 $fr-application-text-color:            $gray-100;
 $fr-toolbar-color:                     $gray-100;
 $fr-toolbar-dropdown-color:            $gray-100;
 
 // Side toolbar
-$fr-sidebar-nav-background-color:      $gray-500;
-$fr-sidebar-nav-brand-color:           $gray-500;
-$fr-sidebar-nav-link-color:            $black;
-$fr-sidebar-nav-link-hover-color:      $gray-100;
+$fr-sidebar-nav-background-color:             $gray-900;
+$fr-sidebar-nav-brand-color:                  $gray-900;
+$fr-sidebar-nav-link-border-color:            transparent;
+$fr-sidebar-nav-link-color:                   $gray-400;
+$fr-sidebar-nav-link-active-border-color:     $yellow;
+$fr-sidebar-nav-link-active-color:            rgba(0, 0, 0, 0.3);
+$fr-sidebar-nav-link-hover-color:             $gray-100;
+
+// Alert
+$alert-padding-y:                   1.25rem;
+$alert-padding-x:                   1.25rem;
+$alert-border-width:                0;
+$fr-alert-text-color:               $white;
+$fr-alert-info-bg-color:            $gray-900;
+$fr-alert-secondary-bg-color:       $gray-900;
+$fr-alert-success-bg-color:         $gray-900;
+$fr-alert-warning-bg-color:         $gray-900;
+$fr-alert-danger-bg-color:          $gray-900;
+$fr-alert-light-bg-color:           $gray-900;
+$fr-alert-dark-bg-color:            $gray-900;
+$fr-alert-box-shadow:               0px 0px 14px 0px rgba(0,0,0,0.75);

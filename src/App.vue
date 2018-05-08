@@ -260,8 +260,9 @@
                 a {
                     color: $fr-sidebar-nav-link-color;
                     display: block;
+                    border-left: 3px solid $fr-sidebar-nav-link-border-color;
                     text-decoration: none;
-                    padding: 10px 20px;
+                    padding: 10px 20px 10px 17px;
                     -webkit-transition: all 0.2s ease;
                     -moz-transition: all 0.2s ease;
                     -o-transition: all 0.2s ease;
@@ -269,12 +270,13 @@
 
                     &.router-link-active {
                         color: $fr-sidebar-nav-link-hover-color;
-                        background: rgba(0, 0, 0, 0.1);
+                        background: $fr-sidebar-nav-link-active-color;
+                        border-left-color: $fr-sidebar-nav-link-active-border-color;
                     }
 
                     &:hover {
                         color: $fr-sidebar-nav-link-hover-color;
-                        background: rgba(0, 0, 0, 0.1);
+                        background: darken($fr-sidebar-nav-link-active-color,3.0%);
                     }
                 }
             }
@@ -295,11 +297,11 @@
                     color: $fr-sidebar-nav-link-color;
                     width: 100%;
                     height: 100%;
-                    padding: 0 20px;
+                    padding: 0 20px 0 17px;
 
                     &:hover {
                         color: $fr-sidebar-nav-link-hover-color;
-                        background: darken($fr-sidebar-nav-background-color, 3.0%);
+                        background: $fr-sidebar-nav-background-color;
                     }
                 }
             }

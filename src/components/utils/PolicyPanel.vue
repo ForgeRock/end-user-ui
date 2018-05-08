@@ -9,7 +9,7 @@
                         <small class="text-body">{{translate(policy)}}</small>
                     </li>
                 </ul>
-                <div v-else class="alert alert-success mt-3" role="alert">
+                <div v-else class="alert alert-success mt-1" role="alert">
                     <i class="fa fa-check-circle"></i> {{$t('common.policyValidationMessages.successMessages.password')}}
                 </div>
             </template>

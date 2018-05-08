@@ -68,23 +68,15 @@ h1, h2 {
   }
 }
 
-// Button styles
-.btn-outline-primary {
-  &:hover, :focus, :active {
-    border-color: darken($blue, 10%);
-    background-color: transparent;
-    color: darken($blue, 10%);
-  }
+// Input Group Button styles
+.input-group .input-group-append {
+    >.btn {
+        border-color: $input-border-color;
+    }
 }
-.btn-outline-secondary {
-  border-color: $gray-400;
-  &:hover, :focus, :active {
-    background: $gray-200;
-    border-color: $gray-400;
-    color: $gray-600;
-  }
+label {
+    color: $label-color;
 }
-
 // Basic Form
 .b-form-group .input-group .form-control {
   border-bottom-right-radius: .25rem;
@@ -120,10 +112,10 @@ h1, h2 {
 
 .fr-toggle-primary {
   &.toggled .v-switch-core {
-    background-color: theme-color("primary");
+    background-color: $fr-switch-toggled-bg;
   }
   .v-switch-core {
-    background-color: $gray-400;
+    background-color: $fr-switch-bg;
   }
 }
 

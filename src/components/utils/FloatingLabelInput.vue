@@ -11,7 +11,7 @@
                    data-vv-validate-on="submit"
                    :name="fieldName"/>
             <div v-if="reveal" class="input-group-append">
-                <button @click="revealText" class="btn btn-outline-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
+                <button @click="revealText" class="btn btn-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
             </div>
 
             <label :hidden="hideLabel" :for="id">{{ label }}</label>
@@ -107,7 +107,14 @@
             button {
                 border-bottom-left-radius: 0;
                 border-top-left-radius: 0;
+                background-color: $input-bg;
+                border-color: $input-border-color;
+                color:$input-btn-color;
             }
+            button:hover {
+              color: $input-btn-active-color;
+            }
+
         }
     }
 
@@ -124,7 +131,7 @@
     .form-label-group > label,
     .form-label-group > .input-group > input,
     .form-label-group > .input-group > label {
-        padding: $input-btn-padding-x;
+        padding: $input-btn-padding-y;
         text-align: left;
     }
 
@@ -137,7 +144,7 @@
         width: 100%;
         margin-bottom: 0; /* Override default `<label>` margin */
         line-height: 1.5;
-        color: $gray-700;
+        color: $label-color;
         border: 1px solid transparent;
         border-radius: .25rem;
         transition: all .1s ease-in-out;
@@ -164,15 +171,15 @@
     }
 
     .form-label-group .polyfillPlaceholder {
-        padding-top: $input-btn-padding-x + $input-btn-padding-x * (2 / 3);
-        padding-bottom: $input-btn-padding-x / 3;
-        color: black;
+        padding-top: $input-btn-padding-y + $input-btn-padding-y * (2 / 3);
+        padding-bottom: $input-btn-padding-y / 3;
+        color: $input-color;
     }
 
     .form-label-group .polyfillPlaceholder ~ label {
-        padding-top: $input-btn-padding-x / 3;
-        padding-bottom: $input-btn-padding-x / 3;
+        padding-top: $input-btn-padding-y / 3;
+        padding-bottom: $input-btn-padding-y / 3;
         font-size: 12px;
-        color: $gray-700;
+        color: $label-color;
     }
 </style>

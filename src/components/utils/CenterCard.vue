@@ -10,6 +10,7 @@
                         footer-tag="footer">
 
                     <b-card-header>
+                        <!--For dark theme use vertical-logo-white.svg version of logo-->
                         <b-img v-if="showLogo" class="fr-logo mb-3 mt-2" src="static/image/vertical-logo.svg" fluid :alt="$t('common.form.logo')" />
                         <slot name="center-card-header"></slot>
                     </b-card-header>
@@ -56,7 +57,6 @@
         }
 
         .card-header {
-            background-color: transparent;
             border: none;
             padding: 40px 50px 0;
         }
@@ -69,7 +69,6 @@
         }
 
         .card-footer {
-            background-color: $white;
             padding: 20px 50px;
         }
 

@@ -1,5 +1,5 @@
 <template>
-    <b-form @submit.prevent id="kbaDefinition">
+    <b-form @submit.prevent id="kbaDefinition" class="mb-4">
         <fr-horizontal-rule v-if="inline" insert="<i class='fa fa-lock'></i>"></fr-horizontal-rule>
 
         <p class="text-center">{{$t('common.user.kba.description')}}</p>
@@ -7,7 +7,7 @@
         <b-form-group label-text-align="left" class="mb-0"
             v-for="(answer, key) in answers" :key="key">
 
-            <b-form-select class="mb-3" 
+            <b-form-select class="mb-3"
                 v-model="selected[key].selected"
                 :options="options" ></b-form-select>
 

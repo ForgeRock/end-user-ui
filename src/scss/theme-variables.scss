@@ -26,11 +26,23 @@ $cyan:    #17a2b8;
 $primary:       $blue;
 $secondary:     $gray-600;
 $success:       $green;
-$info:          $cyan;
+$info:          $blue;
 $warning:       $yellow;
 $danger:        $red;
-$light:         $gray-100;
+$light:         $gray-200;
 $dark:          $gray-800;
+
+//Base
+$theme-colors: (
+        "primary": $primary,
+        "secondary": $secondary,
+        "success": $success,
+        "info": $info,
+        "warning": $warning,
+        "danger": $danger,
+        "light": $light,
+        "dark": $dark
+);
 
 // Global Variables
 $enable-shadows:                    false;
@@ -43,10 +55,8 @@ $font-weight-bold:                  600;
 $transition-collapse:               height .25s ease-in;
 $border-radius:                     4px;
 $border-color:                      rgba(0, 0, 0, 0.125);
-$fr-typeface:                       "Roboto", sans-serif !default; 
+$fr-typeface:                       "Roboto", sans-serif !default;
 
-//Button
-$btn-padding-y:                     .75rem;
 
 //Card
 $card-spacer-y:                     1.875rem;
@@ -56,8 +66,34 @@ $card-cap-bg:                       transparent;
 // General Input
 $input-padding-y:                   .75rem;
 $input-placeholder-color:           $gray-500;
-$input-btn-padding-x:               .75rem;
+$input-btn-padding-x:               1.25rem;
 $input-btn-padding-y:               .75rem;
+$input-bg:                          $white;
+$input-disabled-bg:                 transparent;
+$input-color:                       $gray-900;
+$label-color:                       $gray-500;
+$input-border-color:                !default;
+$input-placeholder-color:           !default;
+$input-focus-bg:                    !default;
+$input-focus-box-shadow:            !default;
+$input-focus-border-color:          !default;
+$input-focus-color:                 !default;
+$input-btn-color:                   $gray-800;
+$input-btn-active-color:            $gray-900;
+
+//Button
+$btn-padding-x:                     $input-btn-padding-x;
+$btn-padding-y:                     $input-btn-padding-y;
+
+// Custom form controls// Custom form controls
+$custom-control-indicator-bg:           $gray-400;
+$custom-control-indicator-checked-bg:   $primary;
+$custom-checkbox-indicator-border-color: $gray-400;
+$custom-select-focus-border-color:      $gray-500;
+
+// Switches
+$fr-switch-bg:                          $gray-800;
+$fr-switch-toggled-bg:                  $primary;
 
 // List group
 $list-group-item-padding-y:         1.25rem;
@@ -81,6 +117,12 @@ $navbar-padding-x:                  1.875rem;
 $nav-highlight-color:               $primary;
 $navbar-height:                     4.5rem;
 
+//Profile nav tavs
+$nav-tabs-border-color:                $gray-600;
+$nav-tabs-link-color:                  $gray-400;
+$nav-tabs-link-active-color:           $gray-200;
+$nav-highlight-color:                  $component-active-bg;
+
 // Sidebar
 $fr-sidebar-nav-width:                 220px !default;
 $fr-sidebar-nav-minimized-width:       60px !default;
@@ -88,11 +130,23 @@ $fr-sidebar-nav-background-color:      $gray-800 !default;
 $fr-sidebar-nav-brand-color:           $gray-800 !default;
 $fr-sidebar-nav-link-color:            $gray-500 !default;
 $fr-sidebar-nav-link-hover-color:      $white !default;
+$fr-sidebar-nav-link-border-color:            transparent;
+$fr-sidebar-nav-link-active-border-color:     transparent;
+$fr-sidebar-nav-link-active-color:            rgba(0, 0, 0, 0.1);
 
 // Alert
 $alert-padding-y:                   1.25rem;
 $alert-padding-x:                   1.25rem;
 $alert-border-width:                0;
+$fr-alert-text-color:               $gray-700;
+$fr-alert-info-bg-color:            lighten($info,40%);
+$fr-alert-secondary-bg-color:       lighten($secondary,40%);
+$fr-alert-success-bg-color:         lighten($success,50%);
+$fr-alert-warning-bg-color:         lighten($warning,40%);
+$fr-alert-danger-bg-color:          lighten($danger,40%);
+$fr-alert-light-bg-color:           lighten($light,40%);
+$fr-alert-dark-bg-color:            lighten($dark,40%);;
+$fr-alert-box-shadow:               !default;
 
 // Set pure override variables file here
-// @import "alternate-theme-variables";
+@import "alternate-theme-variables";

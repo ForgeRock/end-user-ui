@@ -10,12 +10,13 @@
 
   //Alert Styling
   .alert {
-    color: $gray-900;
-    background: darken($info, 7.5%);
+    color: $fr-alert-text-color;
+    background: lighten($info, 50.5%);;
     border-left: 5px solid $info;
     font-size: .875rem;
     line-height: 1.3;
     max-height: 350px;
+    text-align: left;
 
     .alert-heading {
       font-size: 1rem;
@@ -33,22 +34,39 @@
 
     &.alert-success {
       border-left: 5px solid $success;
-      background: lighten($success, 50.5%);
+      background: $fr-alert-success-bg-color;
     }
-
+    &.alert-secondary {
+      border-left: 5px solid $secondary;
+      background: $fr-alert-secondary-bg-color;
+    }
     &.alert-warning {
       border-left: 5px solid $warning;
-      background: lighten($warning, 45.5%);
+      background: $fr-alert-warning-bg-color;
     }
 
     &.alert-danger {
       border-left: 5px solid $danger;
-      background: lighten($danger, 37.5%);
+      background: $fr-alert-danger-bg-color;
     }
 
     &.alert-info {
       border-left: 5px solid $info;
-      background: lighten($info, 45.5%);
+      background: $fr-alert-info-bg-color;
     }
+    &.alert-light {
+      border-left: 5px solid $light;
+      background: $fr-alert-light-bg-color;
+    }
+    &.alert-dark {
+      border-left: 5px solid $dark;
+      background: $fr-alert-dark-bg-color;
+    }
+  }
+  .notifications .alert{
+      margin-left: 1rem;
+      -webkit-box-shadow: $fr-alert-box-shadow;
+      -moz-box-shadow: $fr-alert-box-shadow;
+      box-shadow: $fr-alert-box-shadow;
   }
 }

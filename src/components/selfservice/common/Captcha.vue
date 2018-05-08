@@ -1,5 +1,5 @@
 <template>
-    <div id="captchaBody">
+    <div id="captchaBody" class="mb-4">
         <p class='text-center mb-4' v-if="apiType">
             {{$t(`pages.selfservice.headers.${apiType}.description`)}}
         </p>
