@@ -38,6 +38,7 @@
 <script>
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
     import CenterCard from '@/components/utils/CenterCard';
+    import axios from 'axios';
 
     export default {
         name: 'Login',
@@ -78,11 +79,22 @@
                         this.$root.userStore.setManagedResourceAction(userDetails.data.authorization.component);
                         this.$root.userStore.setRolesAction(userDetails.data.authorization.roles);
 
-                        loginServiceInstance.get(`managed/user/${userDetails.data.authorization.id}`).then((userProfile) => {
-                            this.$root.userStore.setProfileAction(userProfile.data);
+                        axios.all([
+                            loginServiceInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
+                            loginServiceInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, schema) => {
+                                this.$root.userStore.setProfileAction(profile.data);
+                                this.$root.userStore.setSchemaAction(schema.data);
 
-                            this.$router.push('/profile');
-                        });
+                                this.$router.push('/profile');
+                            }))
+                            .catch((error) => {
+                                /* istanbul ignore next */
+                                this.$notify({
+                                    group: 'IDMMessages',
+                                    type: 'error',
+                                    text: error.response.data.message
+                                });
+                            });
                     })
                     .catch(() => {
                         this.wrongPasswordSubmitted = true;

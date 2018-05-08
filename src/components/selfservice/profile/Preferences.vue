@@ -44,29 +44,15 @@
         },
         methods: {
             loadData: function () {
-                /* istanbul ignore next */
-                let selfServiceInstance = this.getRequestService();
+                let keys = _.keys(this.$root.userStore.state.profile.preferences),
+                    preferences = _.cloneDeep(this.$root.userStore.state.schema.properties.preferences.properties);
 
-                /* istanbul ignore next */
-                selfServiceInstance.get('/schema/managed/user').then((userSchema) => {
-                    let keys = _.keys(this.$root.userStore.state.profile.preferences),
-                        preferences = _.cloneDeep(userSchema.data.properties.preferences.properties);
-
-                    _.each(keys, (key) => {
-                        preferences[key].value = this.$root.userStore.state.profile.preferences[key];
-                        delete preferences[key].type;
-                    });
-
-                    this.preferences = preferences;
-                })
-                .catch((error) => {
-                    /* istanbul ignore next */
-                    this.$notify({
-                        group: 'IDMMessages',
-                        type: 'error',
-                        text: error.response.data.message
-                    });
+                _.each(keys, (key) => {
+                    preferences[key].value = this.$root.userStore.state.profile.preferences[key];
+                    delete preferences[key].type;
                 });
+
+                this.preferences = preferences;
             },
             savePreferences: function (event) {
                 /* istanbul ignore next */

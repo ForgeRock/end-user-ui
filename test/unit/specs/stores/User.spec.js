@@ -83,4 +83,16 @@ describe('User Store', () => {
         expect(UserStore.state.email).to.equal('');
         expect(UserStore.state.userName).to.equal('');
     });
+
+    it('schema state management', () => {
+        UserStore.setSchemaAction({
+            name: 'test'
+        });
+
+        expect(UserStore.state.schema.name).to.equal('test');
+
+        UserStore.clearSchemaAction();
+
+        expect(_.isNull(UserStore.state.schema)).to.equal(true);
+    });
 });

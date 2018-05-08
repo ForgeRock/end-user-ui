@@ -21,9 +21,6 @@ describe('Profile.vue', () => {
                 sn: '',
                 email: '',
                 userName: ''
-            },
-            getProfileCopyAction () {
-                return {};
             }
         };
 

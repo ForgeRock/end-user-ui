@@ -84,36 +84,22 @@
             },
     
             loadData () {
-                /* istanbul ignore next */
-                let selfServiceInstance = this.getRequestService();
-    
-                /* istanbul ignore next */
-                selfServiceInstance.get('/schema/managed/user').then((userSchema) => {
-                    let {order, properties, required} = userSchema.data,
-                        filteredOrder = _.filter(order, (propName) => {
-                            return properties[propName].viewable &&
-                                properties[propName].userEditable &&
-                                properties[propName].type !== 'array' &&
-                                properties[propName].type !== 'object';
-                        });
+                let {order, properties, required} = this.$root.userStore.state.schema,
+                    filteredOrder = _.filter(order, (propName) => {
+                        return properties[propName].viewable &&
+                            properties[propName].userEditable &&
+                            properties[propName].type !== 'array' &&
+                            properties[propName].type !== 'object';
+                    });
 
-                    this.formFields = _.map(filteredOrder, (name) => {
-                        return {
-                            name: name,
-                            title: properties[name].title,
-                            value: this.$root.userStore.state.profile[name] || null,
-                            type: properties[name].type,
-                            required: _.includes(required, name)
-                        };
-                    });
-                })
-                .catch((error) => {
-                    /* istanbul ignore next */
-                    this.$notify({
-                        group: 'IDMMessages',
-                        type: 'error',
-                        text: error.response.data.message
-                    });
+                this.formFields = _.map(filteredOrder, (name) => {
+                    return {
+                        name: name,
+                        title: properties[name].title,
+                        value: this.$root.userStore.state.profile[name] || null,
+                        type: properties[name].type,
+                        required: _.includes(required, name)
+                    };
                 });
             },
             saveForm () {

@@ -10,7 +10,7 @@
                    v-validate="validateRules"
                    data-vv-validate-on="submit"
                    :name="fieldName"/>
-            <div v-if="reveal" class="input-group-prepend">
+            <div v-if="reveal" class="input-group-append">
                 <button @click="revealText" class="btn btn-outline-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
             </div>
 
@@ -101,7 +101,7 @@
             border-top-right-radius: 0;
         }
 
-        .input-group-prepend {
+        .input-group-append {
             flex-grow: 1;
 
             button {

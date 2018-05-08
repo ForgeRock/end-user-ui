@@ -46,19 +46,22 @@ router.beforeEach((to, from, next) => {
                 UserStore.setManagedResourceAction(userDetails.data.authorization.component);
                 UserStore.setRolesAction(userDetails.data.authorization.roles);
 
-                authInstance.get(`managed/user/${userDetails.data.authorization.id}`).then((profile) => {
-                    UserStore.setProfileAction(profile.data);
-                    next();
-                })
-                .catch((error) => {
-                    /* istanbul ignore next */
-                    this.$notify({
-                        group: 'IDMMessages',
-                        type: 'error',
-                        title: 'Profile Error',
-                        text: error.response.data.message
+                axios.all([
+                    authInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
+                    authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, schema) => {
+                        UserStore.setProfileAction(profile.data);
+                        UserStore.setSchemaAction(schema.data);
+
+                        next();
+                    }))
+                    .catch((error) => {
+                        /* istanbul ignore next */
+                        this.$notify({
+                            group: 'IDMMessages',
+                            type: 'error',
+                            text: error.response.data.message
+                        });
                     });
-                });
             },
             () => {
                 next(false);

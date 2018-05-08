@@ -1,15 +1,16 @@
 import _ from 'lodash';
 
 /**
- * State - Enduser information
- *      userId - String - Unique system identifier for a user used to get their spefic profile information
- *      managedResource - String - Managed object where profile information lives
- *      roles - Array - Available roles for a user
- *      profile - Object - JSON blob of the users entire profile
- *      firstName - String - Users first name pulled from profile details
- *      sn - Users last name pulled from profile details
- *      email - Users email pulled from profile details,
- *      userName - Users username from profile details
+ * State - Enduser data store information
+ *      @param {string} userId - Unique system identifier for a user used to get their spefic profile information
+ *      @param {string} managedResource - Managed object where profile information lives
+ *      @param {array} roles - Available roles for a user
+ *      @param {object} profile - JSON blob of the managed resource profile details
+ *      @param {object} schema - JSON blob of the managed resource schema
+ *      @param {string} firstName - Users first name pulled from profile details
+ *      @param {string} sn - Users last name pulled from profile details
+ *      @param {string} email - Users email pulled from profile details,
+ *      @param {string} userName - Users username from profile details
  */
 export default {
     state: {
@@ -17,6 +18,7 @@ export default {
         managedResource: null,
         roles: null,
         profile: null,
+        schema: null,
         givenName: '',
         sn: '',
         email: '',
@@ -62,6 +64,14 @@ export default {
         this.state.userName = '';
     },
 
+    setSchemaAction (schema) {
+        this.state.schema = schema;
+    },
+
+    clearSchemaAction () {
+        this.state.schema = null;
+    },
+
     setUserIdAction (newVal) {
         this.state.userId = _.clone(newVal);
     },
@@ -91,6 +101,7 @@ export default {
         this.state.managedResource = null;
         this.state.roles = null;
         this.state.profile = null;
+        this.state.schema = null;
         this.state.givenName = '';
         this.state.sn = '';
         this.state.email = '';

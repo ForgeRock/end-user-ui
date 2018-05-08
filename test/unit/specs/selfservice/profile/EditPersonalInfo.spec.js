@@ -4,41 +4,49 @@ import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { mount } from '@vue/test-utils';
-import Sinon from 'sinon';
 import VeeValidate from 'vee-validate';
 
 describe('EditPersonalInfo.vue', () => {
-    let sandbox = null;
-
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
-
-    beforeEach(function () {
-        sandbox = Sinon.sandbox.create();
-
-        sandbox.stub(EditPersonalInfo.methods, 'loadData').callsFake(function () {
-            this.formFields = [];
-            this.options = ['true', 'false'];
-            this.title = 'Test Title';
-        });
-    });
-
-    afterEach(function () {
-        sandbox.restore();
-    });
 
     const i18n = new VueI18n({
             locale: 'en',
             messages: translations
         }),
-        v = new VeeValidate.Validator();
+        v = new VeeValidate.Validator(),
+        userStore = {
+            state: {
+                givenName: '',
+                sn: '',
+                email: '',
+                userName: '',
+                profile: {
+                    test: 'test'
+                },
+                schema: {
+                    order: ['test'],
+                    properties: {
+                        test: {
+                            viewable: true,
+                            type: 'string',
+                            title: 'test title'
+                        }
+                    },
+                    required: []
+                }
+            }
+        };
 
     it('EditPersonalInfo modal loaded', () => {
         const wrapper = mount(EditPersonalInfo, {
             provide: () => ({
                 $validator: v
             }),
-            i18n
+            i18n,
+            mocks: {
+                userStore
+            }
         });
 
         expect(wrapper.name()).to.equal('Edit-Personal-Info');
@@ -50,10 +58,13 @@ describe('EditPersonalInfo.vue', () => {
             provide: () => ({
                 $validator: v
             }),
-            i18n
+            i18n,
+            mocks: {
+                userStore
+            }
         });
 
-        expect(wrapper.vm.title).to.equal('Test Title');
+        expect(wrapper.vm.title).to.equal('Edit your personal info');
     });
 
     it('TermsAndConditions validation', (done) => {
@@ -61,7 +72,10 @@ describe('EditPersonalInfo.vue', () => {
             provide: () => ({
                 $validator: v
             }),
-            i18n
+            i18n,
+            mocks: {
+                userStore
+            }
         });
 
         wrapper.vm.isValid().then((response) => {
@@ -76,7 +90,10 @@ describe('EditPersonalInfo.vue', () => {
             provide: () => ({
                 $validator: v
             }),
-            i18n
+            i18n,
+            mocks: {
+                userStore
+            }
         });
 
         wrapper.vm.hideModal();

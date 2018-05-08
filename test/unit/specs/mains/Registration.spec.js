@@ -22,7 +22,8 @@ describe('Registration.vue', () => {
             this.selfServiceType = null;
             this.serviceDetails = null;
             this.advanceStage = _.noop;
-            this.$notify = _.noop;
+            this.$notify = () => {};
+            this.$router = [];
         });
     });
 
@@ -77,6 +78,8 @@ describe('Registration.vue', () => {
         const wrapper = mount(Registration, {
             i18n
         });
+
+        wrapper.setMethods({loadData: () => {}});
 
         wrapper.vm.apiErrorCallback({
             response: {
