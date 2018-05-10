@@ -51,6 +51,11 @@
                 }
                 /* istanbul ignore next */
                 saveData.input = data;
+
+                if (this.showSelfService) {
+                    this.showSelfService = false;
+                }
+
                 /* istanbul ignore next */
                 selfServiceInstance.post(`/selfservice/${this.apiType}?_action=submitRequirements`, saveData)
                     .then((selfServiceDetails) => {

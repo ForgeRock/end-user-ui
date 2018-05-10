@@ -1,5 +1,5 @@
 <template>
-    <fr-list-group :title="$t('common.user.profile.preferencesTitle')" :subtitle="$t('common.user.profile.preferencesSubtitle')">
+    <fr-list-group :title="$t('pages.profile.preferences.title')" :subtitle="$t('pages.profile.preferences.subtitle')">
         <fr-list-item v-for="(obj, preference) in preferences" :key="preference"
             :collapsible="false"
             :panelShown="false">
@@ -59,9 +59,9 @@
                 let userId = this.$root.userStore.state.userId,
                     selfServiceInstance = this.getRequestService({
                         headers: {
-                            'X-OpenIDM-NoSession': true,
-                            'X-OpenIDM-Password': 'anonymous',
-                            'X-OpenIDM-Username': 'anonymous'
+                            'content-type': 'application/json',
+                            'cache-control': 'no-cache',
+                            'x-requested-with': 'XMLHttpRequest'
                         }
                     }),
                     toggleState = event.value,

@@ -1,4 +1,4 @@
-$white:    !default;
+// $white:    !default;
 $gray-100: #f7f8fc;
 $gray-200: #eaeaed;
 $gray-300: #DADADF;
@@ -8,7 +8,7 @@ $gray-600: #555767;
 $gray-700: #3B3D4F;
 $gray-800: #292C3D;
 $gray-900: #1B1E2F;
-$black:    !default;
+// $black:    !default;
 
 $blue:    #4784F1;
 $indigo:  #5E37F8;
@@ -85,16 +85,19 @@ $custom-select-color:                        $input-color;
 $custom-select-indicator-color:              $gray-400;
 $custom-select-indicator:                    str-replace(url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='#{$custom-select-indicator-color}' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E"), "#", "%23");
 
+//List group
+$fr-hover-list-color:                  $gray-600;
+
 // Switches
-$fr-switch-bg:                          $gray-800;
-$fr-switch-toggled-bg:                  $primary;
+$fr-switch-bg:                         $gray-800;
+$fr-switch-toggled-bg:                 $primary;
 
 // Modals
 $modal-content-bg:                     $gray-700;
 
 // Close
-$close-color:                       $gray-200;
-$close-text-shadow:                 none;
+$close-color:                          $gray-200;
+$close-text-shadow:                    none;
 
 //Profile nav tavs
 $nav-tabs-border-color:                $gray-600;
@@ -105,6 +108,17 @@ $nav-highlight-color:                  $component-active-bg;
 // Cards
 $card-cap-bg:                          $gray-700;
 $card-bg:                              $gray-700;
+
+// Dropdown
+$dropdown-bg:                          $gray-700;
+$dropdown-link-color:                  $gray-200;
+$dropdown-link-hover-color:            darken($gray-200, 5%);
+$dropdown-link-hover-bg:               $gray-600;
+$dropdown-link-disabled-color:         $gray-600;
+$dropdown-header-color:                $gray-700;
+$dropdown-link-active-color:           $component-active-color;
+$dropdown-link-active-bg:              $component-active-bg;
+
 
 // Toolbar
 $fr-toolbar-background:                $gray-700;

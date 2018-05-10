@@ -20,18 +20,15 @@ export default
                 emailAddress: 'Email address'
             },
             user: {
+                profile: {
+                    updateSuccess: 'Successfully updated your profile.'
+                },
                 kba: {
                     description: 'Select security question(s) below. These questions will help us verify your identity if you forget your password.',
                     selectQuestion: 'Select a security question...',
                     custom: 'Provide your own:',
                     question: 'Question',
                     answer: 'Answer'
-                },
-                profile: {
-                    updateSuccess: 'Successfully updated your profile.',
-                    userDetailsTitle: 'Edit your personal info',
-                    preferencesSubtitle: 'Set your communications preferences.',
-                    preferencesTitle: 'Preferences'
                 }
             },
             policyValidationMessages: {
@@ -112,7 +109,32 @@ export default
             profile: {
                 editPersonalInfo: 'Edit personal info',
                 settings: 'Settings',
-                activity: 'Activity'
+                activity: 'Activity',
+                accountControls: {
+                    title: 'Account Controls',
+                    subtitle: 'Download your account data or delete your account.',
+                    deleteTitle: 'Delete your account',
+                    deleteSubtitle: 'Permanently delete your account.',
+                    deleteAccount: 'Delete Account',
+                    deleteModalTitle: 'Delete your account',
+                    deleteModalHeader: 'Please read this carefully.',
+                    deleteModalDetails: 'You\'re trying to delete your account, which provides access to various services. You\'ll\n no longer be able to use any of those services, and your account and data will be lost.',
+                    deleteModalDownload1: 'You can',
+                    deleteModalDownload2: 'download your data',
+                    deleteModalDownload3: 'before deleting your account.',
+                    deleteModalContentList: 'The following content will be deleted.',
+                    deleteModalContentListItem: 'Access to your profile',
+                    deleteModalAcceptMessage: 'Yes, I want to permanently delete my account',
+                    deleteModalButton: 'Delete Account',
+                    deleteAccountSuccessful: 'Successfully deleted your account.'
+                },
+                preferences: {
+                    title: 'Preferences',
+                    subtitle: 'Set your communications preferences.'
+                },
+                editProfile: {
+                    userDetailsTitle: 'Edit your personal info'
+                }
             }
         }
     }

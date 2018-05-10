@@ -71,13 +71,15 @@ $input-btn-padding-y:               .75rem;
 $input-bg:                          $white;
 $input-disabled-bg:                 transparent;
 $input-color:                       $gray-900;
-$label-color:                       $gray-500;
+$label-color:                       inherit;
+/*
 $input-border-color:                !default;
 $input-placeholder-color:           !default;
 $input-focus-bg:                    !default;
 $input-focus-box-shadow:            !default;
 $input-focus-border-color:          !default;
 $input-focus-color:                 !default;
+*/
 $input-btn-color:                   $gray-800;
 $input-btn-active-color:            $gray-900;
 
@@ -100,6 +102,7 @@ $list-group-item-padding-y:         1.25rem;
 $list-group-item-padding-x:         1.875rem;
 $list-group-hover-bg:               $white;
 $list-group-active-bg:              $white;
+$fr-hover-list-color:               $gray-200;
 
 // Custom form controls
 $custom-control-gutter:             2rem;
@@ -118,10 +121,10 @@ $nav-highlight-color:               $primary;
 $navbar-height:                     4.5rem;
 
 //Profile nav tavs
-$nav-tabs-border-color:                $gray-600;
-$nav-tabs-link-color:                  $gray-400;
-$nav-tabs-link-active-color:           $gray-200;
-$nav-highlight-color:                  $component-active-bg;
+$nav-tabs-border-color:                inherit !default;
+$nav-tabs-link-color:                  inherit !default;
+$nav-tabs-link-active-color:           inherit !default;
+$nav-highlight-color:                  inherit !default;
 
 // Sidebar
 $fr-sidebar-nav-width:                 220px !default;
@@ -145,8 +148,11 @@ $fr-alert-success-bg-color:         lighten($success,50%);
 $fr-alert-warning-bg-color:         lighten($warning,40%);
 $fr-alert-danger-bg-color:          lighten($danger,40%);
 $fr-alert-light-bg-color:           lighten($light,40%);
-$fr-alert-dark-bg-color:            lighten($dark,40%);;
-$fr-alert-box-shadow:               !default;
+$fr-alert-dark-bg-color:            lighten($dark,40%);
+$fr-alert-box-shadow:               transparent !default;
+
+// Modal
+$modal-transition:                  transform .3s ease-out;
 
 // Set pure override variables file here
-@import "alternate-theme-variables";
+// @import "alternate-theme-variables";

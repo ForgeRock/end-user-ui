@@ -1,5 +1,5 @@
 <template>
-    <b-card no-body>
+    <b-card class="mb-4" no-body>
         <b-card-body class="py-4">
             <h5 class="card-title mb-4">{{title}}</h5>
             <h6 class="card-subtitle mb-0 text-muted">{{subtitle}}</h6>

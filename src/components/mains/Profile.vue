@@ -17,6 +17,7 @@
                 <b-tabs>
                     <b-tab :title="$t('pages.profile.settings')" active>
                         <fr-preferences></fr-preferences>
+                        <fr-account-controls></fr-account-controls>
                     </b-tab>
                     <b-tab :title="$t('pages.profile.activity')"></b-tab>
                 </b-tabs>
@@ -27,18 +28,16 @@
 
 <script>
     import _ from 'lodash';
-    import ListGroup from '@/components/utils/ListGroup';
-    import ListItem from '@/components/utils/ListItem';
     import EditPersonalInfo from '@/components/selfservice/profile/EditPersonalInfo';
     import Preferences from '@/components/selfservice/profile/Preferences';
+    import AccountControls from '@/components/selfservice/profile/AccountControls';
 
     export default {
         name: 'Profile',
         components: {
-            'fr-list-group': ListGroup,
-            'fr-list-item': ListItem,
             'fr-edit-personal-info': EditPersonalInfo,
-            'fr-preferences': Preferences
+            'fr-preferences': Preferences,
+            'fr-account-controls': AccountControls
         },
         computed: {
             fullName () {

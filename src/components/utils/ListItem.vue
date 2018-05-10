@@ -13,7 +13,7 @@
         </b-collapse>
     </div>
 
-    <div v-else>
+    <div v-else @click="$emit('row-click')" :class="[{'fr-hover-item': hoverItem}]">
         <b-list-group-item class="noncollapse">
             <div class="media">
                 <slot name="list-item-header"></slot>
@@ -35,6 +35,10 @@
                 default: false
             },
             'panelShown': {
+                type: Boolean,
+                default: false
+            },
+            'hoverItem': {
                 type: Boolean,
                 default: false
             }
@@ -68,6 +72,14 @@
 
     .list-item-cursor {
         cursor: default;
+    }
+
+    .fr-hover-item:hover {
+        cursor: pointer;
+
+        .list-group-item {
+            background-color: $fr-hover-list-color;
+        }
     }
 
     .collapsible:last-of-type > .list-group-item.collapsed {

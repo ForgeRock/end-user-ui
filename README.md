@@ -15,6 +15,10 @@ Currently Mirai is built off of two starting assumptions:
 
 ## Helpful links
 
+### Base Tools
+1. Node - Version 5.0.0 or newer
+2. NPM - Version 8.0.0 or newer
+
 ### Testing
 1. Vue testing utils - https://vue-test-utils.vuejs.org/en/guides/common-tips.html
 2. Sinon - http://legacy.sinonjs.org/docs/
