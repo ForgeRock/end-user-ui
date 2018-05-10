@@ -22,13 +22,13 @@
 
     export default {
         name: 'PolicyPanel',
-        props: [ 'policies', 'policyFailures' ],
+        props: ['policies', 'policyFailures'],
         data () {
             return {};
         },
         computed: {
             isValid () {
-                return _.isNull(this.policyFailures);
+                return _.isArray(this.policyFailures) && _.isEmpty(this.policyFailures);
             },
             isLoading () {
                 return this.policyFailures === 'loading' || this.policyFailures === false;
