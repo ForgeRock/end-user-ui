@@ -75,11 +75,15 @@
                         code: 'MY_CODE'
                     }
                 */
-                return JSON.parse(
-                    `{
-                        ${decodeURI('"' + queryParams.slice(1).replace(/&/g, '","').replace(/=/g, '":"')) + '"'}
-                    }`
-                );
+                if (!queryParams.match('returnParams')) {
+                    return JSON.parse(
+                        `{
+                            ${decodeURI('"' + queryParams.slice(1).replace(/&/g, '","').replace(/=/g, '":"')) + '"'}
+                        }`
+                    );
+                } else {
+                    return { returnParams: _.last(decodeURIComponent(queryParams).split('returnParams=')) };
+                }
             }
         }
     };

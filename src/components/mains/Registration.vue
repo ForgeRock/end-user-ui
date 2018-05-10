@@ -35,6 +35,7 @@
     import SelfserviceAPI from '../selfservice/mixins/SelfserviceAPIMixin';
     import styles from '../../scss/main.scss';
     import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
+    import _ from 'lodash';
 
     export default {
         name: 'Registration',
@@ -83,6 +84,21 @@
                     this.advanceStage({
                         'input': {}
                     });
+                } else if (type === 'openAMAutoLogin' && details.status) {
+                    if (_.has(details, 'additions.successUrl')) {
+                        // If there is a provided success url then follow it.
+                        /* istanbul ignore next */
+                        window.location.href = details.additions.successUrl;
+                    } else {
+                        // Otherwise, redirect to login and send success notification.
+                        this.$router.push('/login');
+                        /* istanbul ignore next */
+                        this.$notify({
+                            group: 'IDMMessages',
+                            type: 'success',
+                            text: this.$t('pages.selfservice.registration.createdAccount')
+                        });
+                    }
                 } else {
                     this.selfServiceType = type;
                     this.showSelfService = true;
