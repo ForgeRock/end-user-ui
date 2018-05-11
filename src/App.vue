@@ -242,8 +242,6 @@
             }
         }
 
-
-
         /* Sidebar Styles */
         .sidebar-nav {
             position: absolute;
@@ -300,6 +298,16 @@
                         color: $fr-sidebar-nav-link-hover-color;
                         background: $fr-sidebar-nav-background-color;
                     }
+                }
+            }
+        }
+    }
+
+    .modal-open {
+        #app {
+            #wrapper {
+                #appSidebarWrapper {
+                    z-index: 0;
                 }
             }
         }

@@ -7,11 +7,7 @@
             loadData () {
                 /* istanbul ignore next */
                 const selfServiceInstance = this.getRequestService({
-                    headers: {
-                        'X-OpenIDM-NoSession': true,
-                        'X-OpenIDM-Password': 'anonymous',
-                        'X-OpenIDM-Username': 'anonymous'
-                    }
+                    headers: this.getAnonymousHeaders()
                 });
                 /* istanbul ignore next */
                 selfServiceInstance.get(`/selfservice/${this.apiType}`)

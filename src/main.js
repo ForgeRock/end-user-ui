@@ -148,7 +148,7 @@ Vue.mixin({
                     return response;
                 }, (error) => {
                     if (error.response.data.code === 401) {
-                        this.$router.push({ path: 'login' });
+                        this.$router.push({path: 'login'});
                     }
 
                     return Promise.reject(error);

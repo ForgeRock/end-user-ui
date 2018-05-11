@@ -22,19 +22,15 @@ describe('PasswordPolicyInput.vue', () => {
         }),
         v = new VeeValidate.Validator();
 
-    let wrapper;
-
-    beforeEach(function () {
-        wrapper = mount(PolicyPasswordInput, {
+    describe('proper render', () => {
+        let wrapper = mount(PolicyPasswordInput, {
             i18n,
             provide: () => ({
                 $validator: v
             }),
             propsData: { policyApi: 'reset' }
         });
-    });
 
-    describe('proper render', () => {
         it('should load the page', () => {
             expect(wrapper.name()).to.equal('PolicyPasswordInput');
         });
@@ -50,6 +46,14 @@ describe('PasswordPolicyInput.vue', () => {
     });
 
     describe('#isPasswordPolicyItem', () => {
+        let wrapper = mount(PolicyPasswordInput, {
+            i18n,
+            provide: () => ({
+                $validator: v
+            }),
+            propsData: { policyApi: 'reset' }
+        });
+
         it('Should return true for items that match "password" and then items that do not match "password" ', () => {
             let policyDefinition = { name: '/user/password' },
                 policyFailureDefinition = { property: '/user/password' };
@@ -66,6 +70,14 @@ describe('PasswordPolicyInput.vue', () => {
     });
 
     describe('#toSimplePolicyObject', () => {
+        let wrapper = mount(PolicyPasswordInput, {
+            i18n,
+            provide: () => ({
+                $validator: v
+            }),
+            propsData: { policyApi: 'reset' }
+        });
+
         it('should turn Policy Definition objcets into an object {name<String>, params<Object>}', () => {
             let policyDefinition = {
                     'policyId': 'at-least-X-numbers',
@@ -91,6 +103,14 @@ describe('PasswordPolicyInput.vue', () => {
     });
 
     describe('#toPolicyNames', () => {
+        let wrapper = mount(PolicyPasswordInput, {
+            i18n,
+            provide: () => ({
+                $validator: v
+            }),
+            propsData: { policyApi: 'reset' }
+        });
+
         it('should only return the name of a failed password property and fail on badly formed input', () => {
             let failedPolicySet = {
                 'failedPolicyRequirements': [
@@ -116,24 +136,31 @@ describe('PasswordPolicyInput.vue', () => {
     });
 
     describe('#makeExclusions', () => {
-        let policyRequirementSet = {
-            'policyRequirements': [
-                'REQUIRED',
-                'MIN_LENGTH'
-            ],
-            'policies': [
-                {
-                    'policyRequirements': [
-                        'REQUIRED'
-                    ]
-                },
-                {
-                    'policyRequirements': [
-                        'MIN_LENGTH'
-                    ]
-                }
-            ]
-        };
+        let wrapper = mount(PolicyPasswordInput, {
+                i18n,
+                provide: () => ({
+                    $validator: v
+                }),
+                propsData: { policyApi: 'reset' }
+            }),
+            policyRequirementSet = {
+                'policyRequirements': [
+                    'REQUIRED',
+                    'MIN_LENGTH'
+                ],
+                'policies': [
+                    {
+                        'policyRequirements': [
+                            'REQUIRED'
+                        ]
+                    },
+                    {
+                        'policyRequirements': [
+                            'MIN_LENGTH'
+                        ]
+                    }
+                ]
+            };
 
         it('should remove policies with strings specified in "exclude" prop', () => {
             wrapper.setProps({ exclude: ['REQUIRED'] });
@@ -155,6 +182,14 @@ describe('PasswordPolicyInput.vue', () => {
     });
 
     describe('#formatPayload', () => {
+        let wrapper = mount(PolicyPasswordInput, {
+            i18n,
+            provide: () => ({
+                $validator: v
+            }),
+            propsData: { policyApi: 'reset' }
+        });
+
         it('should return return a differently shaped object based on policyApi prop', () => {
             expect(wrapper.vm.formatPayload('test')).to.deep.equal({ password: 'test' });
             wrapper.setProps({policyApi: 'registration'});

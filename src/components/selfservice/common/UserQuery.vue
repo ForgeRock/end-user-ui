@@ -7,7 +7,7 @@
             <fr-floating-label-input v-model="mail" fieldName="mail" :label="$t('common.placeholders.emailAddress')" type="text" autofocus="true"></fr-floating-label-input>
         </b-form-group>
 
-        <b-button @click="save" :block="true" variant="primary">
+        <b-button @click="save" size="lg" :block="true" variant="primary">
             <div v-if="apiType === 'username'">
                 {{$t("pages.selfservice.forgotUsername.advanceStageButtonText")}}
             </div>

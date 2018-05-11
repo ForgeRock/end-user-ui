@@ -13,19 +13,15 @@ describe('PolicyPanel.vue', () => {
         messages: translations
     });
 
-    let wrapper;
-
-    beforeEach(() => {
-        wrapper = mount(PolicyPanel, {
+    describe('proper render', () => {
+        let wrapper = mount(PolicyPanel, {
             i18n,
             propsData: {
                 policies: [{name: 'test', params: { args: 'test args' }}],
                 policyFailures: ['test']
             }
         });
-    });
 
-    describe('proper render', () => {
         it('should not show anything when "policyFailures" is loading', () => {
             wrapper.setProps({ policyFailures: 'loading' });
 
@@ -49,6 +45,14 @@ describe('PolicyPanel.vue', () => {
     });
 
     describe('#translate', () => {
+        let wrapper = mount(PolicyPanel, {
+            i18n,
+            propsData: {
+                policies: [{name: 'test', params: { args: 'test args' }}],
+                policyFailures: ['test']
+            }
+        });
+
         it('should return a properly translated string', () => {
             const expectedString = 'Must be 1 characters long';
 

@@ -5,6 +5,21 @@
                     :collapsible="false"
                     :panelShown="false"
                     :hoverItem="true"
+                    @row-click="downloadAccount">
+                <div slot="list-item-header" class="d-inline-flex w-100">
+                    <div class="flex-grow-1">
+                        <div>
+                            {{$t('pages.profile.accountControls.downloadTitle')}}
+                        </div>
+                        <div class="text-muted subtext">{{$t('pages.profile.accountControls.downloadSubtitle')}}</div>
+                    </div>
+                    <a class="align-self-center flex-grow-2 text-right" @click.prevent href="#">{{$t('pages.profile.accountControls.downloadLink')}}</a>
+                </div>
+            </fr-list-item>
+            <fr-list-item
+                    :collapsible="false"
+                    :panelShown="false"
+                    :hoverItem="true"
                     v-b-modal.deleteAccountModal>
                 <div slot="list-item-header" class="d-inline-flex w-100">
                     <div class="flex-grow-1">
@@ -17,7 +32,6 @@
                 </div>
             </fr-list-item>
         </fr-list-group>
-
         <b-modal id="deleteAccountModal" class="fr-full-screen" ref="deleteModal" cancel-variant="outline-secondary">
             <div slot="modal-header" class="d-flex w-100 h-100">
                 <h5 class="modal-title align-self-center text-center">{{$t('pages.profile.accountControls.deleteModalTitle')}}</h5>
@@ -31,7 +45,7 @@
                 </p>
                 <hr/>
                 <p>
-                    {{$t('pages.profile.accountControls.deleteModalDownload1')}} <a @click.prevent href="#">{{$t('pages.profile.accountControls.deleteModalDownload2')}}</a> {{$t('pages.profile.accountControls.deleteModalDownload3')}}
+                    {{$t('pages.profile.accountControls.deleteModalDownload1')}} <a @click.prevent="downloadAccount" href="#">{{$t('pages.profile.accountControls.deleteModalDownload2')}}</a> {{$t('pages.profile.accountControls.deleteModalDownload3')}}
                 </p>
                 <hr/>
                 <h5>{{$t('pages.profile.accountControls.deleteModalContentList')}}</h5>
@@ -57,6 +71,7 @@
 <script>
     import ListGroup from '@/components/utils/ListGroup';
     import ListItem from '@/components/utils/ListItem';
+    import _ from 'lodash';
 
     export default {
         name: 'Account-Controls',
@@ -96,6 +111,58 @@
 
                         this.$router.push('/login');
                     });
+                });
+            },
+            downloadAccount () {
+                let selfServiceInstance = this.getRequestService({
+                    headers: {
+                        'content-type': 'application/json',
+                        'cache-control': 'no-cache',
+                        'x-requested-with': 'XMLHttpRequest'
+                    }
+                });
+
+                /* istanbul ignore next */
+                selfServiceInstance.get(`/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=*,idps/*,_meta/createDate,_meta/lastChanged,_meta/termsAccepted,_meta/loginCount`, []).then((result) => {
+                    let data,
+                        downloadName = '';
+
+                    if (result._meta) {
+                        _.each(result._meta, (value, key) => {
+                            if (key.match('_')) {
+                                delete result._meta[key];
+                            }
+                        });
+                    }
+
+                    if (result.idps) {
+                        _.each(result.idps, (idp) => {
+                            _.each(idp, (value, key) => {
+                                if (key.match('_') && _.isNull(key.match('_meta'))) {
+                                    delete idp[key];
+                                }
+                            });
+                        });
+                    }
+
+                    delete result._rev;
+                    delete result.kbaInfo;
+
+                    data = JSON.stringify(result, null, 4);
+
+                    if (navigator.msSaveBlob) {
+                        return navigator.msSaveBlob(new Blob([data], {type: 'data:application/json'}), downloadName);
+                    } else {
+                        const blob = new Blob([data], {type: 'data:application/json'}),
+                            e = document.createEvent('MouseEvents'),
+                            a = document.createElement('a');
+
+                        a.download = 'userProfile.json';
+                        a.href = window.URL.createObjectURL(blob);
+                        a.dataset.downloadurl = ['data:application/json', a.download, a.href].join(':');
+                        e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                        a.dispatchEvent(e);
+                    }
                 });
             },
             hideModal () {

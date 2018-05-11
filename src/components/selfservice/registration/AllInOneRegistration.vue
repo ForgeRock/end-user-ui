@@ -25,7 +25,7 @@
             </b-modal>
         </template>
 
-        <b-button @click="saveCheck" :block="true" variant="primary" class="mt-2 mb-3">
+        <b-button @click="saveCheck" :block="true" size="lg" variant="primary" class="mt-2 mb-3">
             {{$t("common.form.signUp")}}
         </b-button>
         <TermsAndConditions v-if="stages.termsAndConditions" :inline="true" :selfServiceDetails="selfServiceDetails"></TermsAndConditions>

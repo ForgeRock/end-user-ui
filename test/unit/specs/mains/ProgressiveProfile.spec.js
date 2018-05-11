@@ -5,7 +5,7 @@ import VueI18n from 'vue-i18n';
 import Sinon from 'sinon';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
-import { mount } from '@vue/test-utils';
+import { mount, shallow } from '@vue/test-utils';
 
 describe('ProgressiveProfile.vue', () => {
     var sandbox = null,
@@ -56,7 +56,13 @@ describe('ProgressiveProfile.vue', () => {
     });
 
     it('ProgressiveProfile properly sets child component to conditionaluser stage', () => {
-        const wrapper = mountWrapper();
+        const wrapper = shallow(ProgressiveProfile, {
+            i18n,
+            propsData: {
+                apiType: 'profile'
+            }
+        });
+
         wrapper.vm.setChildComponent('conditionaluser', {
             advanceStage: null,
             selfServiceDetails: null
@@ -66,7 +72,13 @@ describe('ProgressiveProfile.vue', () => {
     });
 
     it('ProgressiveProfile setChildComponent properly sets displayName,purpose, and canSkip', () => {
-        const wrapper = mountWrapper();
+        const wrapper = shallow(ProgressiveProfile, {
+            i18n,
+            propsData: {
+                apiType: 'profile'
+            }
+        });
+
         wrapper.vm.setChildComponent('conditionaluser', {
             requirements: {
                 uiConfig: {

@@ -10,7 +10,7 @@
             <fr-validation-error :validatorErrors="errors" :fieldName="key"></fr-validation-error>
         </div>
 
-        <b-button @click="save" :block="true" variant="primary">
+        <b-button @click="save" :block="true" size="lg" variant="primary">
             {{$t('common.form.submit')}}
         </b-button>
 

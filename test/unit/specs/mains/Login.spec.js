@@ -34,7 +34,10 @@ describe('Login.vue', () => {
 
     it('Login shows error when given bad credentials', (done) => {
         const wrapper = mount(Login, {
-            i18n
+            i18n,
+            mocks: {
+                getAnonymousHeaders: () => { return {}; }
+            }
         });
 
         wrapper.setMethods({

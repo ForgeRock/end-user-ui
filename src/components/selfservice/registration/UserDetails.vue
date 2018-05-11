@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <b-button v-if="inline === false" @click="save" :block="true" variant="primary">
+        <b-button v-if="inline === false" @click="save" :block="true" size="lg" variant="primary">
             {{$t("common.form.submit")}}
         </b-button>
     </b-form>

@@ -132,7 +132,10 @@ export default
                     deleteModalContentListItem: 'Access to your profile',
                     deleteModalAcceptMessage: 'Yes, I want to permanently delete my account',
                     deleteModalButton: 'Delete Account',
-                    deleteAccountSuccessful: 'Successfully deleted your account.'
+                    deleteAccountSuccessful: 'Successfully deleted your account.',
+                    downloadTitle: 'Download your data',
+                    downloadSubtitle: 'Download your account data.',
+                    downloadLink: 'Download'
                 },
                 preferences: {
                     title: 'Preferences',
