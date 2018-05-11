@@ -29,7 +29,8 @@ describe('PasswordPolicyInput.vue', () => {
             i18n,
             provide: () => ({
                 $validator: v
-            })
+            }),
+            propsData: { policyApi: 'reset' }
         });
     });
 
@@ -150,6 +151,14 @@ describe('PasswordPolicyInput.vue', () => {
             let unexcludedPolicies = wrapper.vm.makeExclusions(policyRequirementSet).policies;
 
             expect(unexcludedPolicies).to.deep.equal([{ policyRequirements: ['MIN_LENGTH'] }]);
+        });
+    });
+
+    describe('#formatPayload', () => {
+        it('should return return a differently shaped object based on policyApi prop', () => {
+            expect(wrapper.vm.formatPayload('test')).to.deep.equal({ password: 'test' });
+            wrapper.setProps({policyApi: 'registration'});
+            expect(wrapper.vm.formatPayload('test')).to.deep.equal({ user: { password: 'test' } });
         });
     });
 });

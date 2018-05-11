@@ -30,6 +30,7 @@
             'fr-policy-panel': PolicyPanel
         },
         props: {
+            policyApi: { required: true, type: String },
             value: String,
             label: String,
             exclude: {
@@ -137,16 +138,24 @@
                 });
 
                 return Object.assign({}, policyRequirementSet, {policyRequirements, policies});
+            },
+            formatPayload (password) {
+                if (this.policyApi === 'registration') {
+                    return { user: { password } };
+                } else {
+                    return { password };
+                }
             }
         },
         created () {
             // Initialize the policy service to be used in validation calls and the preliminary get call.
             const headers = this.getAnonymousHeaders(),
-                baseURL = 'openidm/policy/selfservice/registration/',
+                baseURL = `openidm/policy/selfservice/${this.policyApi}/`,
                 policyService = this.getRequestService({ headers, baseURL }),
+                formatPayload = this.formatPayload.bind(this),
                 // Create validation service call and bind to component scope.
                 requestPolicyValidation = function (password) {
-                    let data = { user: { password } };
+                    let data = formatPayload(password);
 
                     /* istanbul ignore next */
                     return policyService
@@ -196,7 +205,7 @@
                     this.$notify({
                         group: 'IDMMessages',
                         type: 'error',
-                        text: this.$t('common.policyValidationMessages.policyServiceError')
+                        text: this.$t(`common.policyValidationMessages.policyServiceError.${this.policyApi}`)
                     });
 
                     this.$router.push('/login');

@@ -6,7 +6,7 @@
     </div>
     <div v-else-if="typeof selfServiceDetails.error !== 'string'">
         <b-form v-if @keyup.enter="save" @submit.prevent>
-                <fr-policy-password-input v-model="password" name="password" :label="$t('pages.selfservice.passwordReset.newPassword')" ></fr-policy-password-input>
+                <fr-policy-password-input policyApi="reset" v-model="password" name="password" :label="$t('pages.selfservice.passwordReset.newPassword')" ></fr-policy-password-input>
             <b-button @click="save" :block="true" variant="primary">
                 {{$t("pages.selfservice.passwordReset.changePassword")}}
             </b-button>

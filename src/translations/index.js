@@ -37,7 +37,10 @@ export default
                 'AT_LEAST_X_NUMBERS': 'Must have at least {numNums} number(s)',
                 'CANNOT_CONTAIN_OTHERS': 'Must not share characters with {disallowedFields}',
                 'test': 'succeed',
-                policyServiceError: 'Unable to register. Please try again later.',
+                policyServiceError: {
+                    registration: 'Unable to register. Please try again later.',
+                    reset: 'Unable to reset your password. Please try again later.'
+                },
                 successMessages: {
                     password: 'Your password is secure!'
                 }
