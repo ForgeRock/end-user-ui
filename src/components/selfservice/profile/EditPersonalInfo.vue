@@ -72,34 +72,51 @@
             return {
                 color: colors.primary,
                 formFields: [],
-                title: this.$t('pages.profile.editProfile.userDetailsTitle')
+                originalFormFields: [],
+                title: this.$t('common.user.profile.userDetailsTitle')
             };
         },
         mounted () {
-            this.loadData();
+            let {order, properties, required} = this.$root.userStore.state.schema,
+                filteredOrder = _.filter(order, (propName) => {
+                    return properties[propName].viewable &&
+                        properties[propName].userEditable &&
+                        properties[propName].type !== 'array' &&
+                        properties[propName].type !== 'object';
+                });
+
+            this.formFields = _.map(filteredOrder, (name) => {
+                return {
+                    name: name,
+                    title: properties[name].title,
+                    value: this.$root.userStore.state.profile[name] || null,
+                    type: properties[name].type,
+                    required: _.includes(required, name)
+                };
+            });
+
+            this.originalFormFields = _.cloneDeep(this.formFields);
         },
         methods: {
             hideModal () {
                 this.$refs.fsModal.hide();
             },
-    
-            loadData () {
-                let {order, properties, required} = this.$root.userStore.state.schema,
-                    filteredOrder = _.filter(order, (propName) => {
-                        return properties[propName].viewable &&
-                            properties[propName].userEditable &&
-                            properties[propName].type !== 'array' &&
-                            properties[propName].type !== 'object';
+            createPatches (o, n) {
+                let originalFrom = _.cloneDeep(o),
+                    newForm = _.cloneDeep(n),
+                    changes = _.filter(newForm, (field, index) => {
+                        if (field.value !== originalFrom[index].value) {
+                            return true;
+                        }
+                        return false;
                     });
 
-                this.formFields = _.map(filteredOrder, (name) => {
-                    return {
-                        name: name,
-                        title: properties[name].title,
-                        value: this.$root.userStore.state.profile[name] || null,
-                        type: properties[name].type,
-                        required: _.includes(required, name)
-                    };
+                return _.map(changes, (formField) => {
+                    if (formField.value === '' || formField.value === null) {
+                        return {operation: 'remove', field: '/' + formField.name};
+                    } else {
+                        return {operation: 'add', field: '/' + formField.name, value: formField.value};
+                    }
                 });
             },
             saveForm () {
@@ -115,19 +132,11 @@
                                     'x-requested-with': 'XMLHttpRequest'
                                 }
                             }),
-                            filter = _.filter(this.formFields, (field) => {
-                                return field.value;
-                            }),
-                            patches = _.map(filter, (field) => {
-                                return {
-                                    operation: 'add',
-                                    field: field.name,
-                                    value: field.value
-                                };
-                            });
-    
+                            patches = this.createPatches(this.originalFormFields, this.formFields);
+
                         selfServiceInstance.patch(`managed/user/${userId}`, patches).then((response) => {
                             this.$root.userStore.setProfileAction(response.data);
+                            this.originalFormFields = _.cloneDeep(this.formFields);
                             this.hideModal();
 
                             this.$notify({

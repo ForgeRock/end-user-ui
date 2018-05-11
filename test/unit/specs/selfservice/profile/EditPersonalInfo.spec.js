@@ -102,4 +102,54 @@ describe('EditPersonalInfo.vue', () => {
             expect(wrapper.find('#userDetailsModal').isVisible()).to.equal(false);
         });
     });
+
+    it('creates patches array correctly', () => {
+        const wrapper = mount(EditPersonalInfo, {
+            provide: () => ({
+                $validator: v
+            }),
+            i18n,
+            mocks: {
+                userStore
+            }
+        });
+
+        let original = [{
+                name: 'description',
+                value: null
+            }, {
+                name: 'telephoneNumber',
+                value: '123-456-7890'
+            }, {
+                name: 'city',
+                value: 'Portland'
+            }, {
+                name: 'postalCode',
+                value: null
+            }],
+            newForm = [{
+                name: 'description',
+                value: 'new description'
+            }, {
+                name: 'telephoneNumber',
+                value: ''
+            }, {
+                name: 'city',
+                value: 'Vancouver'
+            }, {
+                name: 'postalCode',
+                value: null
+            }],
+            patches = wrapper.vm.createPatches(original, newForm);
+
+        expect(patches.length).to.equal(3);
+        expect(patches[0].operation).to.equal('add');
+        expect(patches[0].field).to.equal('/description');
+        expect(patches[0].value).to.equal('new description');
+        expect(patches[1].operation).to.equal('remove');
+        expect(patches[1].field).to.equal('/telephoneNumber');
+        expect(patches[2].operation).to.equal('add');
+        expect(patches[2].field).to.equal('/city');
+        expect(patches[2].value).to.equal('Vancouver');
+    });
 });
