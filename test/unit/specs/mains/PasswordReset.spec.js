@@ -75,11 +75,25 @@ describe('PasswordReset.vue', () => {
         expect(wrapper.vm.selfServiceType).to.equal(null);
     });
 
-    it('PasswordReset parseQueryParams returns correct value', () => {
+    it('PasswordReset parseQueryParams returns correct value without "returnParams"', () => {
         let input = '&token=MY_TOKEN&code=MY_CODE',
             expectedResult = {
                 token: 'MY_TOKEN',
                 code: 'MY_CODE'
+            },
+            actualResult;
+
+        const wrapper = mountWrapper();
+
+        actualResult = wrapper.vm.parseQueryParams(input);
+
+        expect(JSON.stringify(actualResult)).to.equal(JSON.stringify(expectedResult));
+    });
+
+    it('PasswordReset parseQueryParams returns correct value with "returnParams"', () => {
+        let input = '&returnParams=MYRETURNPARAMS',
+            expectedResult = {
+                returnParams: 'MYRETURNPARAMS'
             },
             actualResult;
 

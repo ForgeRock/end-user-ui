@@ -78,12 +78,9 @@
             },
 
             signOut: function () {
+                /* istanbul ignore next */
                 let idmInstance = this.getRequestService({
-                    headers: {
-                        'X-OpenIDM-NoSession': true,
-                        'X-OpenIDM-Password': 'anonymous',
-                        'X-OpenIDM-Username': 'anonymous'
-                    }
+                    headers: this.getAnonymousHeaders()
                 });
 
                 /* istanbul ignore next */

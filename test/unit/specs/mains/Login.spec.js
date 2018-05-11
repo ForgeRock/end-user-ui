@@ -37,21 +37,30 @@ describe('Login.vue', () => {
             i18n
         });
 
-        wrapper.setMethods({getRequestService: function (obj) {
-            if (obj) {
-                return axios.create(obj);
-            } else {
-                return axios.create({
-                    baseURL: '/openidm',
-                    timeout: 1000,
-                    headers: {
-                        'X-OpenIDM-Username': 'openidm-admin',
-                        'X-OpenIDM-Password': 'openidm-admin',
-                        'content-type': 'application/json'
-                    }
-                });
+        wrapper.setMethods({
+            getRequestService: function (obj) {
+                if (obj) {
+                    return axios.create(obj);
+                } else {
+                    return axios.create({
+                        baseURL: '/openidm',
+                        timeout: 1000,
+                        headers: {
+                            'X-OpenIDM-Username': 'openidm-admin',
+                            'X-OpenIDM-Password': 'openidm-admin',
+                            'content-type': 'application/json'
+                        }
+                    });
+                }
+            },
+            getAnonymousHeaders: function () {
+                return {
+                    'X-OpenIDM-NoSession': true,
+                    'X-OpenIDM-Password': 'anonymous',
+                    'X-OpenIDM-Username': 'anonymous'
+                };
             }
-        }});
+        });
 
         wrapper.vm.submit();
 

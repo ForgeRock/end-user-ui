@@ -107,6 +107,9 @@ export default
                     successMessage: 'Your password has been reset.',
                     newPassword: 'New password',
                     changePassword: 'Change Password'
+                },
+                progressiveProfile: {
+                    skipThis: 'Skip this'
                 }
             },
             profile: {

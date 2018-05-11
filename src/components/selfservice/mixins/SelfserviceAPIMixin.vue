@@ -27,14 +27,21 @@
                         });
                     });
             },
-            advanceStage (data) {
+            advanceStage (data, noSession) {
+                /* istanbul ignore next */
+                let headers = this.getAnonymousHeaders();
+                /* istanbul ignore next */
+                if (noSession) {
+                    headers = {
+                        'X-OpenIDM-NoSession': false,
+                        'X-OpenIDM-Password': null,
+                        'X-OpenIDM-Username': null
+                    };
+                }
+
                 /* istanbul ignore next */
                 const selfServiceInstance = this.getRequestService({
-                        headers: {
-                            'X-OpenIDM-NoSession': true,
-                            'X-OpenIDM-Password': 'anonymous',
-                            'X-OpenIDM-Username': 'anonymous'
-                        }
+                        headers: headers
                     }),
                     saveData = {
                         input: {}
@@ -51,7 +58,7 @@
                 }
                 /* istanbul ignore next */
                 saveData.input = data;
-
+                /* istanbul ignore next */
                 if (this.showSelfService) {
                     this.showSelfService = false;
                 }
@@ -59,11 +66,7 @@
                 /* istanbul ignore next */
                 selfServiceInstance.post(`/selfservice/${this.apiType}?_action=submitRequirements`, saveData)
                     .then((selfServiceDetails) => {
-                        if (selfServiceDetails.data.type === 'localAutoLogin') {
-                            this.autoLogin(selfServiceDetails.data.additions.credentialJwt);
-                        } else {
-                            this.setChildComponent(selfServiceDetails.data.type, selfServiceDetails.data);
-                        }
+                        this.setChildComponent(selfServiceDetails.data.type, selfServiceDetails.data);
                     })
                     .catch((error) => {
                         if (!_.isUndefined(this.apiErrorCallback)) {

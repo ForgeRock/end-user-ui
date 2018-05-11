@@ -39,7 +39,8 @@
             fieldName: String,
             validateRules: [String, Object],
             reveal: Boolean,
-            showErrorState: { type: Boolean, default: true }
+            showErrorState: { type: Boolean, default: true },
+            defaultValue: { required: false }
         },
         inject: ['$validator'],
         data () {
@@ -70,6 +71,10 @@
                 }
                 this.hideLabel = false;
             }, this), 400);
+
+            if (this.defaultValue) {
+                this.inputValue = this.defaultValue;
+            }
         },
         methods: {
             revealText: function () {

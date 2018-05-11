@@ -84,6 +84,8 @@
                     this.advanceStage({
                         'input': {}
                     });
+                } else if (details.type === 'localAutoLogin') {
+                    this.autoLogin(details.additions.credentialJwt);
                 } else if (type === 'openAMAutoLogin' && details.status) {
                     if (_.has(details, 'additions.successUrl')) {
                         // If there is a provided success url then follow it.
@@ -93,11 +95,7 @@
                         // Otherwise, redirect to login and send success notification.
                         this.$router.push('/login');
                         /* istanbul ignore next */
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'success',
-                            text: this.$t('pages.selfservice.registration.createdAccount')
-                        });
+                        this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
                     }
                 } else {
                     this.selfServiceType = type;
@@ -130,30 +128,27 @@
                         timeout: 5000
                     }),
                     idmInstance = this.getRequestService({
-                        headers: {
-                            'X-OpenIDM-NoSession': true,
-                            'X-OpenIDM-Password': 'anonymous',
-                            'X-OpenIDM-Username': 'anonymous'
-                        }
+                        headers: this.getAnonymousHeaders()
                     });
 
                 /* istanbul ignore next */
                 idmInstance.post('/authentication?_action=logout').then(() => {
-                    loginServiceInstance.post('/authentication?_action=login').then(() => {
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'success',
-                            text: this.$t('pages.selfservice.registration.createdAccount')
-                        });
-                        this.$router.push('/');
+                    loginServiceInstance.post('/authentication?_action=login').then((userDetails) => {
+                        // Check for progressive profiling.
+                        if (
+                            _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
+                            userDetails.data.authorization.requiredProfileProcesses.length > 0
+                        ) {
+                            let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
+                            this.$router.push(`/profileCompletion/${profileProcess}`);
+                        } else {
+                            this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
+                            this.$router.push('/');
+                        }
                     })
                     .catch((error) => {
                         /* istanbul ignore next */
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'error',
-                            text: error.response.data.message
-                        });
+                        this.displayNotification('error', error.response.data.message);
                     });
                 });
             }

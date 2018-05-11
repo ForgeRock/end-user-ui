@@ -163,6 +163,14 @@ Vue.mixin({
                 'X-OpenIDM-Password': 'anonymous',
                 'X-OpenIDM-Username': 'anonymous'
             };
+        },
+        displayNotification: function (notificationType, message) {
+            /* istanbul ignore next */
+            this.$notify({
+                group: 'IDMMessages',
+                type: notificationType,
+                text: message
+            });
         }
     }
 });

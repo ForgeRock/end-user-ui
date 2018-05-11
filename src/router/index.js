@@ -5,6 +5,7 @@ import NotFound from '@/components/mains/NotFound';
 import Login from '@/components/mains/Login';
 import Profile from '@/components/mains/Profile';
 import PasswordReset from '@/components/mains/PasswordReset';
+import ProgressiveProfile from '@/components/mains/ProgressiveProfile';
 import Registration from '@/components/mains/Registration';
 // import Styleguide from '../../styleguide/Styleguide';
 /**
@@ -64,6 +65,18 @@ export default new Router({
             path: '/passwordreset/:queryParams',
             name: 'PasswordResetForm',
             component: PasswordReset,
+            meta: { hideToolbar: true }
+        },
+        {
+            path: '/profilecompletion',
+            name: 'ProgressiveProfileForm',
+            component: ProgressiveProfile,
+            meta: { hideToolbar: true }
+        },
+        {
+            path: '/profilecompletion/:profileProcess',
+            name: 'ProgressiveProfileInitiate',
+            component: ProgressiveProfile,
             meta: { hideToolbar: true }
         },
         /*
