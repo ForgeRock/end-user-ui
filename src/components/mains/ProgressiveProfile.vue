@@ -74,8 +74,10 @@
                     this.selfServiceDetails.canSkip = true;
                     // If there is are any required attributes the stage cannot be skipped
                     if (
-                        _.has(details.requirements, 'attributes') &&
-                        _.filter(details.requirements.attributes, {isRequired: true}).length >= 1
+                        (
+                            _.has(details.requirements, 'attributes') &&
+                            _.filter(details.requirements.attributes, {isRequired: true}).length >= 1
+                        ) || _.has(details, 'requirements.terms')
                     ) {
                         this.selfServiceDetails.canSkip = false;
                     }

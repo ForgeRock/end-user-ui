@@ -51,7 +51,7 @@ describe('ConditionalUser.vue', () => {
         expect(wrapper.vm.isSingleBooleanForm).to.equal(true);
     });
 
-    it('ConditionalUser getData() returns proper output', () => {
+    it('ConditionalUser getData() returns proper output when attributes are collected', () => {
         var expectedResult = {
                 attributes: {
                     aBooleanAttribute: true,
@@ -63,6 +63,20 @@ describe('ConditionalUser.vue', () => {
         const wrapper = mountWrapper();
 
         wrapper.vm.saveDetails.postalAddress = 'TESTPOSTALADDRESS';
+
+        actualResult = wrapper.vm.getData();
+        expect(JSON.stringify(actualResult)).to.equal(JSON.stringify(expectedResult));
+    });
+
+    it('ConditionalUser getData() returns proper output when terms are updated', () => {
+        var expectedResult = {
+                accept: 'true'
+            },
+            actualResult;
+
+        const wrapper = mountWrapper();
+
+        wrapper.vm.selfServiceDetails.requirements.terms = 'Some fake terms';
 
         actualResult = wrapper.vm.getData();
         expect(JSON.stringify(actualResult)).to.equal(JSON.stringify(expectedResult));
