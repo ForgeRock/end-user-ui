@@ -1,0 +1,29 @@
+#!/usr/bin/env groovy
+
+@Library(value=['forgerock-pipeline-libs', 'QaUtils'], changelog=false)
+
+def pipeline
+
+timestamps {
+
+  node('build&&linux') {
+
+    stage ('Clone repo') {
+
+      checkout scm
+
+      def jobLocation = "${env.WORKSPACE}/jenkins-scripts/pipelines/build"
+
+      if (isPR()) {
+        pipeline = load("${jobLocation}/pr.groovy")
+      } else {
+        pipeline = load("${jobLocation}/postcommit.groovy")
+      }
+
+    }
+
+    pipeline.build()
+
+  }
+
+}
