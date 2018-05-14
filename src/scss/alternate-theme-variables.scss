@@ -87,6 +87,10 @@ $custom-select-indicator:                    str-replace(url("data:image/svg+xml
 
 //List group
 $fr-hover-list-color:                  $gray-600;
+$list-group-bg:                        $gray-700;
+$list-group-hover-bg:                  $gray-600;
+$list-group-active-bg:                 $gray-700;
+$list-group-action-active-bg:          $gray-700;
 
 // Switches
 $fr-switch-bg:                         $gray-800;

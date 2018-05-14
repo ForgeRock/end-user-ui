@@ -73,11 +73,11 @@
             };
         },
         methods: {
-            onToggle: function () {
+            onToggle () {
                 this.toggled = !this.toggled;
             },
 
-            signOut: function () {
+            signOut () {
                 /* istanbul ignore next */
                 let idmInstance = this.getRequestService({
                     headers: this.getAnonymousHeaders()

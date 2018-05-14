@@ -23,7 +23,7 @@ export default new Router({
             path: '/login',
             name: 'Login',
             component: Login,
-            meta: { hideToolbar: true }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/profile',
@@ -42,31 +42,31 @@ export default new Router({
             path: '/registration',
             name: 'Registration',
             component: Registration,
-            meta: { hideToolbar: true }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/registration/:queryParams',
             name: 'RegistrationEmailValidation',
             component: Registration,
-            meta: { hideToolbar: true }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/forgotusername',
             name: 'ForgotUsername',
             component: ForgotUsername,
-            meta: { hideToolbar: true }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/passwordreset',
             name: 'PasswordReset',
             component: PasswordReset,
-            meta: { hideToolbar: true }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/passwordreset/:queryParams',
             name: 'PasswordResetForm',
             component: PasswordReset,
-            meta: { hideToolbar: true }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/profilecompletion',
@@ -91,7 +91,7 @@ export default new Router({
         {
             path: '*',
             component: NotFound,
-            meta: { hideToolbar: true }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         }
     ]
 });

@@ -29,6 +29,12 @@ Vue.use(Router);
 
 // Router guard to check authenticated routes
 router.beforeEach((to, from, next) => {
+    document.body.className = '';
+
+    if (_.has(to, 'meta.bodyClass')) {
+        document.body.className = (document.body.className + to.meta.bodyClass).trim();
+    }
+
     if (_.has(to, 'meta.authenticate')) {
         if (_.isNull(UserStore.state.userId)) {
             let authInstance = axios.create({

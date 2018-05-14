@@ -8,7 +8,7 @@
 
 // Export colors to make them available in JS
 :export {
-  baseColor: $blue;
+  baseColor: $primary;
 }
 
 
@@ -23,6 +23,14 @@
 
 html, body {
   height: 100%;
+}
+
+.fr-body-image {
+  @if $fr-background-image == 'none' {
+
+  } @else {
+    background: $fr-background-image;
+  }
 }
 
 h1, h2 {
