@@ -12,7 +12,9 @@ export default
                 logo: 'logo',
                 signUp: 'Sign Up',
                 cancel: 'Cancel',
-                saveChanges: 'Save changes'
+                saveChanges: 'Save changes',
+                edit: 'Edit',
+                save: 'Save'
             },
             placeholders: {
                 password: 'Password',
@@ -154,6 +156,18 @@ export default
                 },
                 editProfile: {
                     userDetailsTitle: 'Edit your personal info'
+                },
+                accountSecurity: {
+                    title: 'Account Security',
+                    subtitle: 'Update your username, password or security questions to secure your account.',
+                    'password': 'Password',
+                    'securityQuestions': 'Security Questions',
+                    'rememberPassword': 'Can\'t remember your current password?',
+                    'resetPassword': 'Reset your password',
+                    'savePassword': 'Save password',
+                    'custom': 'Custom',
+                    'currentPassword': 'Current password',
+                    'newPassword': 'New password'
                 }
             }
         }
