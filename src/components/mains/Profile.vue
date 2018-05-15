@@ -16,6 +16,7 @@
             <b-col class="detailsCol" lg="8">
                 <b-tabs>
                     <b-tab :title="$t('pages.profile.settings')" active>
+                        <fr-account-security></fr-account-security>
                         <fr-preferences></fr-preferences>
                         <fr-account-controls></fr-account-controls>
                     </b-tab>
@@ -28,10 +29,13 @@
 
 <script>
     import _ from 'lodash';
-    import EditPersonalInfo from '@/components/profile/EditPersonalInfo';
-    import Preferences from '@/components/profile/Preferences';
     import AccountControls from '@/components/profile/AccountControls';
-
+    import AccountSecurity from '@/components/selfservice/profile/AccountSecurity';
+    import EditPersonalInfo from '@/components/profile/EditPersonalInfo';
+    import ListGroup from '@/components/utils/ListGroup';
+    import ListItem from '@/components/utils/ListItem';
+    import Preferences from '@/components/profile/Preferences';
+    
     export default {
         name: 'Profile',
         props: {
@@ -41,9 +45,12 @@
             }
         },
         components: {
+            'fr-account-controls': AccountControls,
+            'fr-account-security': AccountSecurity,
             'fr-edit-personal-info': EditPersonalInfo,
-            'fr-preferences': Preferences,
-            'fr-account-controls': AccountControls
+            'fr-list-group': ListGroup,
+            'fr-list-item': ListItem,
+            'fr-preferences': Preferences
         },
         mounted () {
             if (this.openProfile) {

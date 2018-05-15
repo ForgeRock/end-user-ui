@@ -63,7 +63,6 @@ describe('EditPersonalInfo.vue', () => {
                 userStore
             }
         });
-
         expect(wrapper.vm.title).to.equal('Edit your personal info');
     });
 

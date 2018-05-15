@@ -5,7 +5,7 @@
                 <h6>{{$t('pages.profile.accountSecurity.password')}}</h6>
             </div>
             <div class="d-flex ml-3 align-self-center">
-                <div class="btn btn-sm btn-link float-right btn-cancel">{{$t('common.form.cancel')}}</div>
+                <div class="btn btn-sm btn-link float-right btn-cancel" ref="cancel">{{$t('common.form.cancel')}}</div>
                 <div class="btn btn-sm btn-link float-right btn-edit">{{$t('common.form.edit')}}</div>
             </div>
         </div>
@@ -14,14 +14,14 @@
             <b-form class="w-100">
                 <b-row>
                     <b-col sm="8">
-                        <b-form-group >
+                        <b-form-group>
                             <label for="currentPassword">{{$t('pages.profile.accountSecurity.currentPassword')}}</label>
                             <div class="form-label-password form-label-group mb-0"> 
                                 <b-form-input id="currentPassword" :type="inputCurrent" v-model="currentPassword"></b-form-input>
                                 <div class="input-group-append">
-                                    <button @click="revealCurrent" class="btn btn-secondary" type="button">
+                                    <b-btn @click="revealCurrent" class="btn btn-secondary" type="button">
                                         <i :class="[{'fa-eye-slash': !showCurrent}, {'fa-eye': showCurrent}, 'fa']"></i>
-                                    </button>
+                                    </b-btn>
                                 </div>
                             </div>
                         </b-form-group>
@@ -87,34 +87,30 @@
 
                 /* istanbul ignore next */
                 selfServiceInstance.patch(`managed/user/${userId}`, patch).then((response) => {
+                    /* istanbul ignore next */
+                    this.$notify({
+                        group: 'IDMMessages',
+                        type: 'success',
+                        text: this.$t('common.user.profile.updateSuccess')
+                    });
+
+                    this.loading = false;
                     this.currentPassword = '';
                     this.newPassword = '';
-
-                    /* istanbul ignore next */
-                    setTimeout(() => {
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'success',
-                            text: this.$t('common.user.profile.updateSuccess')
-                        });
-
-                        this.loading = false;
-                    }, 1000);
+                    this.$refs.cancel.click();
                 })
                 .catch((error) => {
                     /* istanbul ignore next */
-                    setTimeout(() => {
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'error',
-                            text: error.response.data.message
-                        });
+                    this.$notify({
+                        group: 'IDMMessages',
+                        type: 'error',
+                        text: error.response.data.message
+                    });
 
-                        this.loading = false;
-                    }, 1000);
+                    this.loading = false;
                 });
             },
-            revealNew: function () {
+            revealNew () {
                 if (this.inputNew === 'password') {
                     this.inputNew = 'text';
                     this.showNew = false;
@@ -123,7 +119,7 @@
                     this.showNew = true;
                 }
             },
-            revealCurrent: function () {
+            revealCurrent () {
                 /* istanbul ignore next */
                 if (this.inputCurrent === 'password') {
                     this.inputCurrent = 'text';
