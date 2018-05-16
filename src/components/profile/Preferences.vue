@@ -18,7 +18,7 @@
                         @change="savePreferences"/>
                 </div>
             </div>
-            
+
         </fr-list-item>
     </fr-list-group>
 </template>
@@ -71,20 +71,11 @@
                 /* istanbul ignore next */
                 selfServiceInstance.patch(`managed/user/${userId}`, patch).then((response) => {
                     this.$root.userStore.setProfileAction(response.data);
-
-                    this.$notify({
-                        group: 'IDMMessages',
-                        type: 'success',
-                        text: this.$t('common.user.profile.updateSuccess')
-                    });
+                    this.displayNotification('success', this.$t('common.user.profile.updateSuccess'));
                 })
                 .catch((error) => {
                     /* istanbul ignore next */
-                    this.$notify({
-                        group: 'IDMMessages',
-                        type: 'error',
-                        text: error.response.data.message
-                    });
+                    this.displayNotification('error', error.response.data.message);
                 });
             }
         }

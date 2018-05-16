@@ -56,11 +56,7 @@ router.beforeEach((to, from, next) => {
                     }))
                     .catch((error) => {
                         /* istanbul ignore next */
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'error',
-                            text: error.response.data.message
-                        });
+                        this.displayNotification('error', error.response.data.message);
                     });
             },
             () => {

@@ -163,11 +163,7 @@
                         .then(({ data }) => this.toPolicyNames(data))
                         .catch(() => {
                             /* istanbul ignore next */
-                            this.$notify({
-                                group: 'IDMMessages',
-                                type: 'error',
-                                text: this.$t('common.policyValidationMessages.policyServiceError')
-                            });
+                            this.displayNotification('error', this.$t('common.policyValidationMessages.policyServiceError'));
                         });
                 }.bind(this);
 
@@ -202,12 +198,7 @@
                 })
                 .catch(() => {
                     /* istanbul ignore next */
-                    this.$notify({
-                        group: 'IDMMessages',
-                        type: 'error',
-                        text: this.$t(`common.policyValidationMessages.policyServiceError.${this.policyApi}`)
-                    });
-
+                    this.displayNotification('error', this.$t(`common.policyValidationMessages.policyServiceError.${this.policyApi}`));
                     this.$router.push('/login');
                 });
         }

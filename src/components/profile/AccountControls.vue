@@ -101,11 +101,7 @@
                     this.$refs.deleteModal.hide();
 
                     selfServiceInstance.post('/authentication?_action=logout').then(() => {
-                        this.$notify({
-                            group: 'IDMMessages',
-                            type: 'success',
-                            text: this.$t('pages.profile.accountControls.deleteAccountSuccessful')
-                        });
+                        this.displayNotification('success', this.$t('pages.profile.accountControls.deleteAccountSuccessful'));
 
                         this.$root.userStore.clearStoreAction();
 

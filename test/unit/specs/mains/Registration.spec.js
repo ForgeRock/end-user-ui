@@ -22,7 +22,7 @@ describe('Registration.vue', () => {
             this.selfServiceType = null;
             this.serviceDetails = null;
             this.advanceStage = _.noop;
-            this.$notify = () => {};
+            this.displayNotification = () => {};
             this.$router = [];
         });
     });

@@ -106,11 +106,7 @@
                 this.showSelfService = true;
 
                 /* istanbul ignore next */
-                this.$notify({
-                    group: 'IDMMessages',
-                    type: 'error',
-                    text: error.response.data.message
-                });
+                this.displayNotification('error', error.response.data.message);
                 // clean up any queryParams from the url
                 this.$router.push('/registration');
                 // reload the form
