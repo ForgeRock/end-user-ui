@@ -68,20 +68,6 @@ describe('ConditionalUser.vue', () => {
         expect(JSON.stringify(actualResult)).to.equal(JSON.stringify(expectedResult));
     });
 
-    it('ConditionalUser getData() returns proper output when terms are updated', () => {
-        var expectedResult = {
-                accept: 'true'
-            },
-            actualResult;
-
-        const wrapper = mountWrapper();
-
-        wrapper.vm.selfServiceDetails.requirements.terms = 'Some fake terms';
-
-        actualResult = wrapper.vm.getData();
-        expect(JSON.stringify(actualResult)).to.equal(JSON.stringify(expectedResult));
-    });
-
     it('ConditionalUser emits advanceStage() on save', (done) => {
         const wrapper = mountWrapper();
 
@@ -89,6 +75,21 @@ describe('ConditionalUser.vue', () => {
         wrapper.vm.save();
 
         expect(wrapper.emitted().advanceStage.length).to.equal(1);
+        done();
+    });
+
+    it('ConditionalUser save() sends proper input to advanceStage when terms are updated', (done) => {
+        var expectedResult = {
+            accept: 'true'
+        };
+
+        const wrapper = mountWrapper();
+
+        wrapper.vm.selfServiceDetails.requirements.terms = 'Some fake terms';
+
+        wrapper.vm.save();
+
+        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult]));
         done();
     });
 });

@@ -72,12 +72,15 @@
                     this.purpose = details.requirements.uiConfig.purpose;
                     // Can skip the stage by default
                     this.selfServiceDetails.canSkip = true;
-                    // If there is are any required attributes the stage cannot be skipped
+                    /* If there are any kba questions, terms and conditions,
+                       or required attributes the stage cannot be skipped */
                     if (
+                        _.has(details, 'requirements.properties.kba') ||
+                        _.has(details, 'requirements.terms') ||
                         (
                             _.has(details.requirements, 'attributes') &&
                             _.filter(details.requirements.attributes, {isRequired: true}).length >= 1
-                        ) || _.has(details, 'requirements.terms')
+                        )
                     ) {
                         this.selfServiceDetails.canSkip = false;
                     }
@@ -105,7 +108,8 @@
                         _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
                         userDetails.data.authorization.requiredProfileProcesses.length > 0
                     ) {
-                        /* istanbul ignore next */
+                        let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
+                        this.apiType = profileProcess;
                         this.loadData();
                     } else {
                         /* istanbul ignore next */

@@ -1,5 +1,5 @@
 <template>
-    <b-form @keyup.enter="save" @submit.prevent>
+    <b-form @keyup.enter="save" @submit.prevent v-if="selfServiceDetails.requirements.uiConfig">
         <b-form-group class="mb-0" v-for="property in selfServiceDetails.requirements.attributes"  :key="property.name">
             <fr-floating-label-input
                 v-if="property.schema.type !== 'boolean'"
@@ -20,10 +20,13 @@
                 </div>
             </template>
         </b-form-group>
+
         <div v-if="selfServiceDetails.requirements.terms"
             v-html="selfServiceDetails.requirements.terms"
-            style="overflow-y: scroll; height:310px;"
-            class="mb-4 bg-light p-3 border border-light rounded text-left"></div>
+            class="mb-4 bg-light p-3 border border-light rounded text-left tc-scrolling-display"></div>
+
+        <fr-kba-update v-if="selfServiceDetails.requirements.definitions" :selfServiceDetails="selfServiceDetails" ref="kbaUpdate"></fr-kba-update>
+
 
         <b-button @click="save" :block="true" variant="primary" class="mt-1">
             {{selfServiceDetails.requirements.uiConfig.buttonText}}
@@ -34,11 +37,13 @@
 <script>
     import _ from 'lodash';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
+    import KBAUpdate from './KBAUpdate';
 
     export default {
         name: 'Conditional-User',
         components: {
-            'fr-floating-label-input': FloatingLabelInput
+            'fr-floating-label-input': FloatingLabelInput,
+            'fr-kba-update': KBAUpdate
         },
         props: {
             selfServiceDetails: { required: true }
@@ -48,6 +53,14 @@
                 saveDetails: {},
                 isSingleBooleanForm: false
             };
+        },
+        beforeMount () {
+            if (_.isEmpty(this.selfServiceDetails.requirements)) {
+                /* Empty requirements means we need to advance the stage with empty input.
+                 to get back an actual set of requirements. This is needed to support multiple
+                 progressiveProfile forms */
+                this.save(true);
+            }
         },
         mounted () {
             /* If there is only one attribute being collected and that attribute is boolean
@@ -75,15 +88,31 @@
             getData () {
                 var details = _.clone(this.saveDetails);
 
-                if (_.has(this.selfServiceDetails, 'requirements.terms')) {
-                    return {accept: 'true'};
-                } else {
-                    return {attributes: details};
-                }
+                return {attributes: details};
             },
-            save () {
-                this.$emit('advanceStage', this.getData());
+            save (advanceEmpty) {
+                if (advanceEmpty) {
+                    this.$emit('advanceStage', {});
+                } else if (_.has(this.selfServiceDetails, 'requirements.terms')) {
+                    this.$emit('advanceStage', {accept: 'true'});
+                } else if (_.has(this.selfServiceDetails, 'requirements.properties.kba')) {
+                    // If this is kbaUpdate we need to validate the inputs.
+                    /* istanbul ignore next */
+                    this.$refs.kbaUpdate.isValid().then((valid) => {
+                        if (valid) {
+                            this.$emit('advanceStage', this.$refs.kbaUpdate.getData());
+                        }
+                    });
+                } else {
+                    this.$emit('advanceStage', this.getData());
+                }
             }
         }
     };
 </script>
+<style lang="scss" scoped>
+    .tc-scrolling-display {
+        overflow-y: scroll;
+        height:310px;
+    }
+</style>
