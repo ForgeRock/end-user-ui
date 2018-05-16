@@ -24,12 +24,12 @@ $teal:    #20c997;
 $cyan:    #17a2b8;
 
 $primary:       $blue;
-$secondary:     $gray-600;
+$secondary:     $gray-500;
 $success:       $green;
 $info:          $blue;
 $warning:       $yellow;
 $danger:        $red;
-$light:         $gray-200;
+$light:         $gray-100;
 $dark:          $gray-800;
 
 //Base
@@ -56,6 +56,9 @@ $transition-collapse:               height .25s ease-in;
 $border-radius:                     4px;
 $border-color:                      rgba(0, 0, 0, 0.125);
 $fr-typeface:                       "Roboto", sans-serif !default;
+
+//Jumbotron
+$jumbotron-bg:                      transparent;
 
 
 //Card
@@ -102,7 +105,7 @@ $list-group-item-padding-y:         1.25rem;
 $list-group-item-padding-x:         1.875rem;
 $list-group-hover-bg:               $white;
 $list-group-active-bg:              $white;
-$fr-hover-list-color:               $gray-200;
+$fr-hover-list-color:               $list-group-active-bg;
 
 // Custom form controls
 $custom-control-gutter:             2rem;
@@ -137,6 +140,12 @@ $fr-sidebar-nav-link-border-color:            transparent;
 $fr-sidebar-nav-link-active-border-color:     transparent;
 $fr-sidebar-nav-link-active-color:            rgba(0, 0, 0, 0.1);
 
+//Dropdown
+$dropdown-link-active-color:        $gray-900;
+$dropdown-link-active-bg:           $gray-100;
+$dropdown-header-color:             $gray-900;
+$dropdown-padding-y:                0;
+
 // Alert
 $alert-padding-y:                   1.25rem;
 $alert-padding-x:                   1.25rem;
@@ -153,6 +162,9 @@ $fr-alert-box-shadow:               transparent !default;
 
 // Modal
 $modal-transition:                  transform .3s ease-out;
+$modal-content-bg:                  $white;
+$fr-modal-header-bg:                $modal-content-bg;
+$fr-modal-footer-bg:                $fr-modal-header-bg;
 
 // Set pure override variables file here
 // @import "alternate-theme-variables";

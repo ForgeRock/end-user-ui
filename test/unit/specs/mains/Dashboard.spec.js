@@ -3,7 +3,7 @@ import Dashboard from '@/components/mains/Dashboard';
 import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
-import { mount } from '@vue/test-utils';
+import { shallow } from '@vue/test-utils';
 
 describe('Dashboard.vue', () => {
     Vue.use(VueI18n);
@@ -15,7 +15,17 @@ describe('Dashboard.vue', () => {
     });
 
     it('Dashboard page loaded', () => {
-        const wrapper = mount(Dashboard, { i18n });
+        let userStore = {
+            getUserState () {
+                return {};
+            }
+        };
+        const wrapper = shallow(Dashboard, {
+            i18n,
+            mocks: {
+                userStore
+            }
+        });
 
         expect(wrapper.name()).to.equal('Dashboard');
     });

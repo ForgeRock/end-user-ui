@@ -11,7 +11,7 @@
                         <div>
                             {{$t('pages.profile.accountControls.downloadTitle')}}
                         </div>
-                        <div class="text-muted subtext">{{$t('pages.profile.accountControls.downloadSubtitle')}}</div>
+                        <small class="text-muted subtext">{{$t('pages.profile.accountControls.downloadSubtitle')}}</small>
                     </div>
                     <a class="align-self-center flex-grow-2 text-right" @click.prevent href="#">{{$t('pages.profile.accountControls.downloadLink')}}</a>
                 </div>
@@ -26,7 +26,7 @@
                         <div>
                             {{$t('pages.profile.accountControls.deleteTitle')}}
                         </div>
-                        <div class="text-muted subtext">{{$t('pages.profile.accountControls.deleteSubtitle')}}</div>
+                        <small class="text-muted subtext">{{$t('pages.profile.accountControls.deleteSubtitle')}}</small>
                     </div>
                     <a class="align-self-center flex-grow-2 text-right" @click.prevent href="#">{{$t('pages.profile.accountControls.deleteAccount')}}</a>
                 </div>
@@ -173,5 +173,5 @@
 </script>
 
 <style lang="scss" scoped>
-    @import '../../../scss/full-screen-modal';
+    @import '../../scss/full-screen-modal';
 </style>

@@ -10,6 +10,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
@@ -31,7 +32,9 @@ const webpackConfig = merge(baseWebpackConfig, {
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
-    // http://vuejs.github.io/vue-loader/en/workflow/production.html
+    new GitRevisionPlugin(),
+
+      // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
       'process.env': env
     }),

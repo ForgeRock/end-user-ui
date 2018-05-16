@@ -6,7 +6,7 @@
                     <b-img src="static/image/profile-default.png" rounded="circle" width="112" height="112" alt="img" class="m-1 mb-3" />
                     <h4>{{fullName}}</h4>
                     <span class="text-muted">{{email}}</span>
-                    <b-button variant="primary" block class="mt-4" v-b-modal.userDetailsModal>
+                    <b-button ref="editProfileButton" variant="primary" block class="mt-4" v-b-modal.userDetailsModal>
                         {{$t('pages.profile.editPersonalInfo')}}
                     </b-button>
                 </b-card>
@@ -28,16 +28,27 @@
 
 <script>
     import _ from 'lodash';
-    import EditPersonalInfo from '@/components/selfservice/profile/EditPersonalInfo';
-    import Preferences from '@/components/selfservice/profile/Preferences';
-    import AccountControls from '@/components/selfservice/profile/AccountControls';
+    import EditPersonalInfo from '@/components/profile/EditPersonalInfo';
+    import Preferences from '@/components/profile/Preferences';
+    import AccountControls from '@/components/profile/AccountControls';
 
     export default {
         name: 'Profile',
+        props: {
+            'openProfile': {
+                required: false,
+                default: false
+            }
+        },
         components: {
             'fr-edit-personal-info': EditPersonalInfo,
             'fr-preferences': Preferences,
             'fr-account-controls': AccountControls
+        },
+        mounted () {
+            if (this.openProfile) {
+                this.$refs.editProfileButton.click();
+            }
         },
         computed: {
             fullName () {

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import EditPersonalInfo from '@/components/selfservice/profile/EditPersonalInfo';
+import EditPersonalInfo from '@/components/profile/EditPersonalInfo';
 import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';

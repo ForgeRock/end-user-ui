@@ -28,6 +28,7 @@ export default new Router({
         {
             path: '/profile',
             name: 'Profile',
+            props: true,
             component: Profile,
             meta: { authenticate: true }
         },

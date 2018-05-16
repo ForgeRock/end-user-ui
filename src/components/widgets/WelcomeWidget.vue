@@ -1,0 +1,41 @@
+<template>
+    <b-jumbotron class="text-center">
+        <template slot="header">
+            <b-img src="static/image/profile-default.png" rounded="circle" width="112" height="112" alt="img" class="m-1 mb-3" />
+            <div>{{$t('pages.dashboard.widgets.welcome.greeting')}}, {{fullName}}</div>
+        </template>
+        <template slot="lead">
+            <div>
+                {{$t('pages.dashboard.widgets.welcome.welcomeMessage')}}
+            </div>
+            <b-button @click="openProfile()" variant="primary" class="mt-2">
+                {{$t('pages.dashboard.widgets.welcome.editProfile')}}
+            </b-button>
+        </template>
+    </b-jumbotron>
+</template>
+
+<script>
+    import _ from 'lodash';
+
+    export default {
+        name: 'Welcome-Widget',
+        props: ['userDetails', 'widgetDetails'],
+        data () {
+            return {};
+        },
+        mounted () {},
+        methods: {
+            openProfile () {
+                this.$router.push({name: 'Profile', params: {openProfile: true}});
+            }
+        },
+        computed: {
+            fullName () {
+                return _.startCase(this.userDetails.givenName + ' ' + this.userDetails.sn);
+            }
+        }
+    };
+</script>
+
+<style lang="scss" scoped></style>

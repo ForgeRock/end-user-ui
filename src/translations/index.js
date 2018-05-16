@@ -53,6 +53,17 @@ export default
                 user: 'User',
                 signOut: 'Sign Out'
             },
+            dashboard: {
+                noWidget: 'No Widgets Available',
+                noWidgetSubText: 'Don\'t worry, you still have a <a href="/#/profile">profile</a>.',
+                widgets: {
+                    welcome: {
+                        greeting: 'Hello',
+                        welcomeMessage: 'The ForgeRock End User UI helps users manage their account data, consent, workflows, and shared resources.',
+                        editProfile: 'Edit Your Profile'
+                    }
+                }
+            },
             login: {
                 username: 'Username',
                 password: 'Password',

@@ -1,22 +1,48 @@
 <template>
     <b-container fluid>
-        <template>
-            <div class="fr-header-jumbotron jumbotron">
-                <h1>Dashboard</h1>
+        <b-row v-if="widgets.length">
+            <div v-for="(widget, index) in widgets" :class="{'col-sm-4': widget.size === 'small', 'col-sm-6': widget.size === 'medium', 'col-sm-12': widget.size === 'large', 'mt-4': true}" :key="widget.type + index">
+                <component :is="widget.type" :userDetails="userDetails" :details="widget.details"></component>
             </div>
-        </template>
+        </b-row>
+        <b-jumbotron v-else class="mt-4 text-center">
+            <div class="d-flex justify-content-center mt-3">
+                <i class="fa fa-binoculars align-self-center flex-fow-1 mr-4 mb-3" style="font-size:52px;"></i>
+                <div class="flex-fow-1">
+                    <h2>{{$t('pages.dashboard.noWidget')}}</h2>
+                    <p v-html="$t('pages.dashboard.noWidgetSubText')"></p>
+                </div>
+            </div>
+        </b-jumbotron>
     </b-container>
 </template>
 
 <script>
+    import Welcome from '@/components/widgets/WelcomeWidget';
+
     export default {
         name: 'Dashboard',
-        data () {
-            return {};
+        components: {
+            Welcome
         },
-        mounted () {},
-        methods: {}
+        data () {
+            return {
+                widgets: [],
+                userDetails: this.$root.userStore.getUserState()
+            };
+        },
+        mounted () {
+            this.loadData();
+        },
+        methods: {
+            loadData () {
+                // Hardcoded welcome widget until removal of previous enduser to avoid
+                // Widget conflicts
+                this.widgets = [{
+                    type: 'Welcome',
+                    size: 'large'
+                }];
+            }
+        }
     };
 </script>
-
-<style lang="scss" scoped></style>

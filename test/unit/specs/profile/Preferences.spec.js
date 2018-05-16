@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import Preferences from '@/components/selfservice/profile/Preferences';
+import Preferences from '@/components/profile/Preferences';
 import BootstrapVue from 'bootstrap-vue';
 import { shallow } from '@vue/test-utils';
 import translations from '@/translations';

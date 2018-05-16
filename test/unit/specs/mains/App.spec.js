@@ -5,7 +5,7 @@ import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { shallow } from '@vue/test-utils';
 
-describe('Dashboard.vue', () => {
+describe('Base App', () => {
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
 

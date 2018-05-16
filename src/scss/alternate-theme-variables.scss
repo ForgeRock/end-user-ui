@@ -52,8 +52,8 @@ $body-color:                           $gray-200;
 $headings-color:                       $gray-200;
 $text-muted:                           $gray-400;
 $fr-typeface:                          "Roboto", sans-serif ;
-$link-color:                           $gray-300;
-$link-hover-color:                     lighten($link-color, 15%);
+$link-color:                           lighten($primary, 17%);
+$link-hover-color:                     lighten($link-color, 9%);
 $input-btn-focus-color:                 $gray-900;
 
 $component-active-color:                $gray-900;
@@ -94,6 +94,8 @@ $fr-switch-toggled-bg:                 $primary;
 
 // Modals
 $modal-content-bg:                     $gray-700;
+$fr-modal-header-bg:                   $modal-content-bg;
+$fr-modal-footer-bg:                   $fr-modal-header-bg;
 
 // Close
 $close-color:                          $gray-200;
@@ -115,7 +117,7 @@ $dropdown-link-color:                  $gray-200;
 $dropdown-link-hover-color:            darken($gray-200, 5%);
 $dropdown-link-hover-bg:               $gray-600;
 $dropdown-link-disabled-color:         $gray-600;
-$dropdown-header-color:                $gray-700;
+$dropdown-header-color:                $gray-200;
 $dropdown-link-active-color:           $component-active-color;
 $dropdown-link-active-bg:              $component-active-bg;
 

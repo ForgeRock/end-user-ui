@@ -58,7 +58,7 @@ describe('User Store', () => {
         UserStore.setProfileAction({
             givenName: 'test',
             sn: 'test',
-            email: 'test',
+            mail: 'test',
             userName: 'test'
         });
 

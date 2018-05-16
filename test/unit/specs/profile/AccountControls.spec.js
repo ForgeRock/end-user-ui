@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import AccountControls from '@/components/selfservice/profile/AccountControls';
+import AccountControls from '@/components/profile/AccountControls';
 import BootstrapVue from 'bootstrap-vue';
 import { mount } from '@vue/test-utils';
 import translations from '@/translations';

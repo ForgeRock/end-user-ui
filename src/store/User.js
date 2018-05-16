@@ -41,8 +41,8 @@ export default {
             this.state.sn = '';
         }
 
-        if (profile.email) {
-            this.state.email = profile.email;
+        if (profile.mail) {
+            this.state.email = profile.mail;
         } else {
             this.state.email = '';
         }

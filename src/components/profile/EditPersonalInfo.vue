@@ -8,8 +8,7 @@
 
         <b-container>
             <b-row>
-                <b-col></b-col>
-                <b-col cols="8">
+                <b-col sm="8" offset-sm="2">
                     <b-form class="mb-3" v-for="(field, index) in formFields" :key="index">
                         <b-form-group v-if="field.type !== 'boolean'">
                             <label class="float-left" :for="field.title">{{field.title}}</label>
@@ -42,7 +41,6 @@
                         </b-form-group>                                    
                     </b-form>
                 </b-col>
-                <b-col></b-col>
             </b-row>
         </b-container>
     
@@ -73,7 +71,7 @@
                 color: colors.primary,
                 formFields: [],
                 originalFormFields: [],
-                title: this.$t('common.user.profile.userDetailsTitle')
+                title: this.$t('pages.profile.editProfile.userDetailsTitle')
             };
         },
         mounted () {
@@ -164,6 +162,6 @@
 </script>
 
 <style lang="scss">
-    @import '../../../scss/full-screen-modal';
+    @import '../../scss/full-screen-modal';
 </style>
 
