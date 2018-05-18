@@ -58,7 +58,7 @@
             if (_.isEmpty(this.selfServiceDetails.requirements)) {
                 /* Empty requirements means we need to advance the stage with empty input.
                  to get back an actual set of requirements. This is needed to support multiple
-                 progressiveProfile forms */
+                 progressiveProfile forms  */
                 this.save(true);
             }
         },
@@ -91,7 +91,7 @@
                 return {attributes: details};
             },
             save (advanceEmpty) {
-                if (advanceEmpty) {
+                if (advanceEmpty === true) {
                     this.$emit('advanceStage', {});
                 } else if (_.has(this.selfServiceDetails, 'requirements.terms')) {
                     this.$emit('advanceStage', {accept: 'true'});

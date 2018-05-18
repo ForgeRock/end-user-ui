@@ -78,6 +78,32 @@ describe('ConditionalUser.vue', () => {
         done();
     });
 
+    it('ConditionalUser save() sends proper input to advanceStage when submit button is pressed', (done) => {
+        var expectedResult = {
+            attributes: {
+                aBooleanAttribute: true
+            }
+        };
+
+        const wrapper = mountWrapper();
+
+        wrapper.vm.save({});
+
+        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult]));
+        done();
+    });
+
+    it('ConditionalUser save() sends proper input to advanceStage when there is an empty requirements object', (done) => {
+        var expectedResult = {};
+
+        const wrapper = mountWrapper();
+
+        wrapper.vm.save(true);
+
+        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult]));
+        done();
+    });
+
     it('ConditionalUser save() sends proper input to advanceStage when terms are updated', (done) => {
         var expectedResult = {
             accept: 'true'
