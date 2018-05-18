@@ -30,7 +30,8 @@ export default
                     selectQuestion: 'Select a security question...',
                     custom: 'Provide your own:',
                     question: 'Question',
-                    answer: 'Answer'
+                    answer: 'Answer',
+                    saveQuestions: 'Save questions'
                 }
             },
             policyValidationMessages: {

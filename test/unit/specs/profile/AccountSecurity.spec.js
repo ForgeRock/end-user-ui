@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import AccountSecurity from '@/components/selfservice/profile/AccountSecurity';
+import AccountSecurity from '@/components/profile/AccountSecurity';
 import BootstrapVue from 'bootstrap-vue';
 import {mount} from '@vue/test-utils';
 import Sinon from 'sinon';

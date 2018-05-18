@@ -31,7 +31,7 @@
 <script>
     import _ from 'lodash';
     import AccountControls from '@/components/profile/AccountControls';
-    import AccountSecurity from '@/components/selfservice/profile/AccountSecurity';
+    import AccountSecurity from '@/components/profile/AccountSecurity';
     import EditPersonalInfo from '@/components/profile/EditPersonalInfo';
     import Preferences from '@/components/profile/Preferences';
     import Consent from '@/components/profile/Consent';

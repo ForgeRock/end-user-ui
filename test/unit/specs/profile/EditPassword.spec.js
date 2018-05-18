@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import EditPassword from '@/components/selfservice/profile/EditPassword';
+import EditPassword from '@/components/profile/EditPassword';
 import BootstrapVue from 'bootstrap-vue';
 import {shallow} from '@vue/test-utils';
 import translations from '@/translations';

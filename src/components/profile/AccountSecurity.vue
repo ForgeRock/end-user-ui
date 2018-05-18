@@ -8,8 +8,8 @@
 </template>
 
 <script>
-    import EditKBA from '@/components/selfservice/profile/EditKBA';
-    import EditPassword from '@/components/selfservice/profile/EditPassword';
+    import EditKBA from '@/components/profile/EditKBA';
+    import EditPassword from '@/components/profile/EditPassword';
     import ListGroup from '@/components/utils/ListGroup';
 
     export default {

@@ -52,6 +52,21 @@ exports.cssLoaders = function (options) {
     }
   }
 
+  function calculateSassResources() {
+    var resources = [
+        path.resolve(__dirname, '../node_modules/bootstrap/scss/_functions.scss'),
+        path.resolve(__dirname, '../node_modules/bootstrap/scss/_mixins.scss'),
+        path.resolve(__dirname, '../node_modules/bootstrap/scss/_variables.scss'),
+        path.resolve(__dirname, '../src/scss/theme-variables.scss')
+    ];
+
+    if(process.env.npm_config_theme) {
+        resources.push(path.resolve(__dirname, '../src/scss/' +process.env.npm_config_theme+'-theme.scss'))
+    }
+
+    return resources;
+  }
+
   // https://vue-loader.vuejs.org/en/configurations/extract-css.html
   return {
     css: generateLoaders(),
@@ -62,11 +77,7 @@ exports.cssLoaders = function (options) {
         {
             loader: 'sass-resources-loader',
             options: {
-                resources: [path.resolve(__dirname, '../node_modules/bootstrap/scss/_functions.scss'),
-                    path.resolve(__dirname, '../node_modules/bootstrap/scss/_mixins.scss'),
-                    path.resolve(__dirname, '../node_modules/bootstrap/scss/_variables.scss'),
-                    path.resolve(__dirname, '../src/scss/theme-variables.scss')
-                ]
+                resources: calculateSassResources()
             }
         }
     ),

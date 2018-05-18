@@ -58,3 +58,14 @@ npm run unit
 # run all tests
 npm test
 ```
+
+## How to theme
+1) Create a custom file in the scss folder. Use a name such as red-theme.scss. (For an example theme, see dart-theme.scss.)
+2) To build with the custom theme, add --theme=red to your build command:
+
+```
+npm run dev --theme=red
+or
+npm run build --theme=red
+```
+3) Note: Theming relies on scss variable overrides. If you provide a css override to a variable, your build will include corresponding changes to ForgeRock / Bootstrap components.

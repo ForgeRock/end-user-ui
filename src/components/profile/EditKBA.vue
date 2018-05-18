@@ -49,7 +49,7 @@
                         </fieldset>
                         
                         <b-button type="button" variant="primary" @click="onSaveKBA">
-                            {{$t('common.form.save')}}
+                            {{$t('common.user.kba.saveQuestions')}}
                             <div class="ld ld-ring ld-spin"></div>
                         </b-button>
                     </b-col>
