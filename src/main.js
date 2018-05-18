@@ -139,17 +139,15 @@ Vue.mixin({
                 headers: headers
             });
 
-            if (config && config.authenticator) {
-                instance.interceptors.response.use((response) => {
-                    return response;
-                }, (error) => {
-                    if (error.response.data.code === 401) {
-                        this.$router.push({path: 'login'});
-                    }
+            instance.interceptors.response.use((response) => {
+                return response;
+            }, (error) => {
+                if (error.response.data.code === 401) {
+                    this.$router.push({path: 'login'});
+                }
 
-                    return Promise.reject(error);
-                });
-            }
+                return Promise.reject(error);
+            });
 
             return instance;
         },
