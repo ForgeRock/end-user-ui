@@ -4,6 +4,9 @@ import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { shallow } from '@vue/test-utils';
+import sinon from 'sinon';
+
+Profile.components['fr-consent'] = sinon.stub();
 
 describe('Profile.vue', () => {
     Vue.use(VueI18n);
@@ -20,7 +23,8 @@ describe('Profile.vue', () => {
                 givenName: '',
                 sn: '',
                 email: '',
-                userName: ''
+                userName: '',
+                profile: sinon.stub()
             }
         };
 

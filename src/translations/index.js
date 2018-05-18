@@ -168,6 +168,19 @@ export default
                     'custom': 'Custom',
                     'currentPassword': 'Current password',
                     'newPassword': 'New password'
+                },
+                consent: {
+                    allow: 'Allow',
+                    allowConsentHeader: 'Allow Access',
+                    accessType: 'Access Type',
+                    accountAccess: 'Account Access',
+                    authorized: 'Authorized',
+                    confirmDeny: '<strong>{mappingName}</strong> will no longer have access to your data.',
+                    deny: 'Deny',
+                    denyConsentHeader: 'Deny Access',
+                    notAuthorized: 'Not Authorized',
+                    subtitle: 'Control how your data is shared with third parties.',
+                    title: 'Personal Data Sharing'
                 }
             }
         }
