@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import AccountSecurity from '@/components/profile/AccountSecurity';
 import BootstrapVue from 'bootstrap-vue';
-import {mount} from '@vue/test-utils';
+import {shallow} from '@vue/test-utils';
 import Sinon from 'sinon';
 import translations from '@/translations';
 
@@ -31,7 +31,7 @@ describe('AccountSecurity.vue', () => {
     });
 
     it('AccountSecurity page loaded', () => {
-        const wrapper = mount(AccountSecurity, {
+        const wrapper = shallow(AccountSecurity, {
             i18n
         });
 

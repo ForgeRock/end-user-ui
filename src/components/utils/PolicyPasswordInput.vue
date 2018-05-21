@@ -1,19 +1,25 @@
 <template>
     <b-form-group class="mb-0">
-        <fr-floating-label-input
-            name="password"
-            fieldName="password"
-            type="password"
-            v-validate.initial="'required|policy'"
-            v-model="password"
-            :label="label || $t('common.placeholders.password')"
-            :reveal="true"
-            :showErrorState="false"
-            @input="$emit('input', $event)">
+        <slot v-if="!customInput" name="input-with-validation-panel">
+            <fr-floating-label-input
+                name="password"
+                fieldName="password"
+                type="password"
+                v-validate.initial="'required|policy'"
+                v-model="password"
+                :label="label || $t('common.placeholders.password')"
+                :reveal="true"
+                :showErrorState="false"
+                @input="$emit('input', $event)">
 
-            <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="policyFailures"></fr-policy-panel>
-        </fr-floating-label-input>
+                <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="policyFailures"></fr-policy-panel>
+            </fr-floating-label-input>
+        </slot>
 
+        <template v-else>
+            <slot name="custom-input"></slot>
+            <fr-policy-panel :policies="policies" :policyFailures="policyFailures"></fr-policy-panel>
+        </template>
     </b-form-group>
 </template>
 
@@ -67,7 +73,9 @@
                 } else {
                     return failures;
                 }
-            }
+            },
+            customInput () { return !_.isUndefined(this.$slots['custom-input']); }
+
         },
         methods: {
             /**
@@ -140,17 +148,20 @@
                 return Object.assign({}, policyRequirementSet, {policyRequirements, policies});
             },
             formatPayload (password) {
-                if (this.policyApi === 'registration') {
+                if (this.policyApi.match('registration')) {
                     return { user: { password } };
                 } else {
                     return { password };
                 }
+            },
+            getAction () {
+                return this.policyApi.match('selfservice') ? 'validateObject' : 'validateProperty';
             }
         },
         created () {
             // Initialize the policy service to be used in validation calls and the preliminary get call.
             const headers = this.getAnonymousHeaders(),
-                baseURL = `openidm/policy/selfservice/${this.policyApi}/`,
+                baseURL = `openidm/policy/${this.policyApi}/`,
                 policyService = this.getRequestService({ headers, baseURL }),
                 formatPayload = this.formatPayload.bind(this),
                 // Create validation service call and bind to component scope.
@@ -159,7 +170,7 @@
 
                     /* istanbul ignore next */
                     return policyService
-                        .post('?_action=validateObject', data)
+                        .post(`?_action=${this.getAction()}`, data)
                         .then(({ data }) => this.toPolicyNames(data))
                         .catch(() => {
                             /* istanbul ignore next */

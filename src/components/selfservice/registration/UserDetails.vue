@@ -9,7 +9,7 @@
                 v-model="saveDetails[key]"></fr-floating-label-input>
         </b-form-group>
 
-        <fr-policy-password-input policyApi="registration" v-model="saveDetails.password" name="password"></fr-policy-password-input>
+        <fr-policy-password-input policyApi="selfservice/registration" v-model="saveDetails.password" name="password"></fr-policy-password-input>
 
         <!-- Vue Bootstrap custom radio button seems to have problems so just using none component-->
         <div class="form-group mb-4">

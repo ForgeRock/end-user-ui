@@ -190,10 +190,27 @@ describe('PasswordPolicyInput.vue', () => {
             propsData: { policyApi: 'reset' }
         });
 
-        it('should return return a differently shaped object based on policyApi prop', () => {
+        it('should return a differently shaped object based on policyApi prop', () => {
             expect(wrapper.vm.formatPayload('test')).to.deep.equal({ password: 'test' });
             wrapper.setProps({policyApi: 'registration'});
             expect(wrapper.vm.formatPayload('test')).to.deep.equal({ user: { password: 'test' } });
+        });
+    });
+    describe('#getAction', () => {
+        let wrapper = mount(PolicyPasswordInput, {
+            i18n,
+            provide: () => ({
+                $validator: v
+            }),
+            propsData: {
+                policyApi: 'reset'
+            }
+        });
+
+        it('should return different action when "policy" is selfsevice', () => {
+            expect(wrapper.vm.getAction()).to.equal('validateProperty');
+            wrapper.setProps({policyApi: 'selfservice'});
+            expect(wrapper.vm.getAction()).to.equal('validateObject');
         });
     });
 });

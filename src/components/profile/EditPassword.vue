@@ -26,17 +26,21 @@
                             </div>
                         </b-form-group>
 
-                        <b-form-group class="mb-3">
-                            <label for="newPassword">{{$t('pages.profile.accountSecurity.newPassword')}}</label>
-                            <div class="form-label-password form-label-group mb-0"> 
-                                <b-form-input id="newPassword" :type="inputNew" v-model="newPassword"></b-form-input>
-                                <div class="input-group-append">
-                                    <button @click="revealNew" class="btn btn-secondary" type="button">
-                                        <i :class="[{'fa-eye-slash': !showNew}, {'fa-eye': showNew}, 'fa']"></i>
-                                    </button>
+                        <fr-password-policy-input :policyApi="`managed/user/${userId}`" v-model="newPassword">
+
+                            <b-form-group class="mb-3" slot="custom-input">
+                                <label for="newPassword">{{$t('pages.profile.accountSecurity.newPassword')}}</label>
+                                <div class="form-label-password form-label-group mb-0"> 
+                                    <b-form-input id="newPassword" :type="inputNew" v-model="newPassword" name="password" v-validate.initial="'required|policy'"></b-form-input>
+                                    <div class="input-group-append">
+                                        <button @click="revealNew" class="btn btn-secondary" type="button">
+                                            <i :class="[{'fa-eye-slash': !showNew}, {'fa-eye': showNew}, 'fa']"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </b-form-group>
+                            </b-form-group>
+                        
+                        </fr-password-policy-input>
 
                         <fr-loading-button type="button" variant="primary" class="ld-ext-right mb-3" 
                             :label="$t('pages.profile.accountSecurity.savePassword')"
@@ -52,13 +56,16 @@
 </template>
 <script>
     import ListItem from '@/components/utils/ListItem';
+    import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
     import LoadingButton from '@/components/utils/LoadingButton';
 
     export default {
+        inject: ['$validator'],
         name: 'Edit-Password',
         components: {
             'fr-list-item': ListItem,
-            'fr-loading-button': LoadingButton
+            'fr-loading-button': LoadingButton,
+            'fr-password-policy-input': PolicyPasswordInput
         },
         data () {
             return {
@@ -68,14 +75,14 @@
                 showNew: true,
                 showCurrent: true,
                 inputCurrent: 'password',
-                inputNew: 'password'
+                inputNew: 'password',
+                userId: this.$root.userStore.getUserState().userId
             };
         },
         methods: {
             onSavePassword () {
                 /* istanbul ignore next */
-                let userId = this.$root.userStore.getUserState().userId,
-                    selfServiceInstance = this.getRequestService({
+                let selfServiceInstance = this.getRequestService({
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
                             'X-OpenIDM-Reauth-Password': this.currentPassword
@@ -86,7 +93,7 @@
                 this.loading = true;
 
                 /* istanbul ignore next */
-                selfServiceInstance.patch(`managed/user/${userId}`, patch).then((response) => {
+                selfServiceInstance.patch(`managed/user/${this.userId}`, patch).then((response) => {
                     /* istanbul ignore next */
                     this.$notify({
                         group: 'IDMMessages',
@@ -120,7 +127,6 @@
                 }
             },
             revealCurrent () {
-                /* istanbul ignore next */
                 if (this.inputCurrent === 'password') {
                     this.inputCurrent = 'text';
                     this.showCurrent = false;
