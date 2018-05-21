@@ -1,5 +1,5 @@
 <template>
-    <b-modal id="userDetailsModal" class="fr-full-screen" ref="fsModal" cancel-variant="outline-secondary" @keydown.enter.native="saveForm">
+    <b-modal id="userDetailsModal" class="fr-full-screen" ref="fsModal" cancel-variant="outline-secondary" @keydown.enter.native.prevent="saveForm">
 
         <div slot="modal-header" class="d-flex w-100 h-100">
             <h5 class="modal-title align-self-center text-center">{{title}}</h5>

@@ -151,4 +151,20 @@ describe('EditPersonalInfo.vue', () => {
         expect(patches[2].field).to.equal('/city');
         expect(patches[2].value).to.equal('Vancouver');
     });
+
+    it('allows enter to fire save', () => {
+        const wrapper = mount(EditPersonalInfo, {
+                provide: () => ({
+                    $validator: v
+                }),
+                i18n,
+                mocks: {
+                    userStore
+                }
+            }),
+            spy = sinon.spy(wrapper.vm, 'saveForm');
+
+        wrapper.find('#userDetailsModal').trigger('keydown.enter');
+        expect(spy.called);
+    });
 });
