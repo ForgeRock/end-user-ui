@@ -3,7 +3,7 @@
         <b-row class="my-5" >
             <b-col class="profileCol mb-4" lg="4">
                 <b-card class="text-center mb-4">
-                    <b-img src="static/image/profile-default.png" rounded="circle" width="112" height="112" alt="img" class="m-1 mb-3" />
+                    <b-img src="static/images/profile-default.png" rounded="circle" width="112" height="112" alt="img" class="m-1 mb-3" />
                     <h4>{{fullName}}</h4>
                     <span class="text-muted">{{email}}</span>
                     <b-button ref="editProfileButton" variant="primary" block class="mt-4" v-b-modal.userDetailsModal>

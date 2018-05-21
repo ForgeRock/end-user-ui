@@ -1,7 +1,7 @@
 <template>
     <b-jumbotron class="text-center">
         <template slot="header">
-            <b-img src="static/image/profile-default.png" rounded="circle" width="112" height="112" alt="img" class="m-1 mb-3" />
+            <b-img src="static/images/profile-default.png" rounded="circle" width="112" height="112" alt="img" class="m-1 mb-3" />
             <div>{{$t('pages.dashboard.widgets.welcome.greeting')}}, {{fullName}}</div>
         </template>
         <template slot="lead">

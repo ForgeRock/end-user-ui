@@ -5,8 +5,8 @@
                 <ul class="sidebar-nav">
                     <li class="sidebar-brand">
                         <a href="#/" class="d-flex">
-                            <img src="static/image/horizontal-logo-white.svg" :alt="$t('common.form.logo')" style="width:131px;" class="align-self-center sidebar-brand-logo" />
-                            <img src="static/image/vertical-logo-white.svg" :alt="$t('common.form.logo')"  style="height:28px;" class="align-self-center sidebar-brand-mark" />
+                            <img src="static/images/horizontal-logo-white.svg" :alt="$t('common.form.logo')" style="width:131px;" class="align-self-center sidebar-brand-logo" />
+                            <img src="static/images/vertical-logo-white.svg" :alt="$t('common.form.logo')"  style="height:28px;" class="align-self-center sidebar-brand-mark" />
                         </a>
                     </li>
                     <li>
@@ -31,7 +31,7 @@
                     <b-navbar-nav class="ml-auto">
                         <b-nav-item-dropdown right>
                             <template slot="button-content">
-                                {{$t('pages.app.user')}} <b-img src="static/image/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
+                                {{$t('pages.app.user')}} <b-img src="static/images/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
                             </template>
                             <b-dropdown-item href="#/profile">{{$t('pages.app.profile')}}</b-dropdown-item>
                             <b-dropdown-item @click.prevent="signOut()">{{$t('pages.app.signOut')}}</b-dropdown-item>

@@ -1,15 +1,17 @@
 <template>
     <b-form>
+        <fr-social-buttons v-if="!isSocialReg" :signin='false'></fr-social-buttons>
         <b-form-group class="mb-0" v-for="(property, key) in userDetails" :key="key">
             <fr-floating-label-input
-                :fieldName="key"
-                :label="property.description"
-                :validateRules="property.required ? 'required' : ''"
-                type="text"
-                v-model="saveDetails[key]"></fr-floating-label-input>
+                    :defaultValue="property.socialValue"
+                    :fieldName="key"
+                    :label="property.description"
+                    :validateRules="property.required ? 'required' : ''"
+                    type="text"
+                    v-model="saveDetails[key]"></fr-floating-label-input>
         </b-form-group>
 
-        <fr-policy-password-input policyApi="selfservice/registration" v-model="saveDetails.password" name="password"></fr-policy-password-input>
+        <fr-policy-password-input v-if="!isSocialReg" policyApi="selfservice/registration" v-model="saveDetails.password" name="password"></fr-policy-password-input>
 
         <!-- Vue Bootstrap custom radio button seems to have problems so just using none component-->
         <div class="form-group mb-4">
@@ -29,13 +31,15 @@
     import _ from 'lodash';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
     import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
+    import SocialButtons from '@/components/mains/SocialButtons';
 
     // TODO Improve validation to handle more then just required / confirm password
     export default {
         name: 'User-Details',
         components: {
             'fr-floating-label-input': FloatingLabelInput,
-            'fr-policy-password-input': PolicyPasswordInput
+            'fr-policy-password-input': PolicyPasswordInput,
+            'fr-social-buttons': SocialButtons
         },
         $_veeValidate: {
             validator: 'new'
@@ -51,11 +55,19 @@
             var data = {
                 userDetails: {},
                 saveDetails: {},
-                userPreferences: {}
+                userPreferences: {},
+                isSocialReg: _.get(this.selfServiceDetails, 'tag') !== 'initial'
             };
 
             if (this.selfServiceDetails.requirements && this.selfServiceDetails.requirements.registrationProperties) {
                 data.userDetails = this.selfServiceDetails.requirements.registrationProperties.properties;
+
+                if (_.has(this.selfServiceDetails, 'requirements.properties.user.default') &&
+                    !_.isUndefined(this.selfServiceDetails, 'requirements.properties.user.default')) {
+                    _.each(this.selfServiceDetails.requirements.properties.user.default, (value, key) => {
+                        data.userDetails[key].socialValue = value;
+                    });
+                }
 
                 _.each(this.selfServiceDetails.requirements.registrationProperties.required, (prop) => {
                     data.userDetails[prop].required = true;
@@ -81,9 +93,13 @@
         },
         methods: {
             getData () {
-                var details = _.clone(this.saveDetails);
+                let details = _.clone(this.saveDetails);
 
                 delete details.confirmPassword;
+
+                if (this.isSocialReg) {
+                    delete details.password;
+                }
 
                 return {
                     user: details

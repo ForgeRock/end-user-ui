@@ -14,6 +14,8 @@
                 </div>
             </transition>
 
+            <fr-social-buttons signin></fr-social-buttons>
+
             <b-form class="form-signin mb-3" @submit.prevent="submit">
 
                 <fr-floating-label-input v-model="username" fieldName="username" :label="$t('pages.login.username')" type="text" autofocus="true"></fr-floating-label-input>
@@ -40,12 +42,14 @@
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
     import CenterCard from '@/components/utils/CenterCard';
     import axios from 'axios';
+    import SocialButtons from '@/components/mains/SocialButtons';
 
     export default {
         name: 'Login',
         components: {
             'fr-floating-label-input': FloatingLabelInput,
-            'fr-center-card': CenterCard
+            'fr-center-card': CenterCard,
+            'fr-social-buttons': SocialButtons
         },
         data () {
             return {
@@ -53,6 +57,11 @@
                 password: '',
                 wrongPasswordSubmitted: false
             };
+        },
+        mounted () {
+            if (window.location.search && window.location.search.includes('state')) {
+                this.$router.push('/oauthReturn');
+            }
         },
         methods: {
             submit () {

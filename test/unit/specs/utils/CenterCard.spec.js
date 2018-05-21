@@ -14,14 +14,14 @@ describe('CenterCard.vue', () => {
         messages: translations
     });
 
-    it('Center Card component loaded without header image', () => {
+    it('Center Card component loaded without header images', () => {
         const wrapper = mount(FloatingLabelInput, {i18n});
 
         expect(wrapper.name()).to.equal('Center-Card');
         expect(wrapper.contains('.fr-logo')).to.equal(false);
     });
 
-    it('Center Card component loaded with header image', () => {
+    it('Center Card component loaded with header images', () => {
         const wrapper = mount(FloatingLabelInput, {
             i18n,
             propsData: {

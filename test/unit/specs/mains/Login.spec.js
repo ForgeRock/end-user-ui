@@ -5,7 +5,7 @@ import moxios from 'moxios';
 import axios from 'axios';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
-import { mount } from '@vue/test-utils';
+import { shallow } from '@vue/test-utils';
 
 describe('Login.vue', () => {
     Vue.use(VueI18n);
@@ -25,7 +25,7 @@ describe('Login.vue', () => {
     });
 
     it('Login page loaded', () => {
-        const wrapper = mount(Login, {
+        const wrapper = shallow(Login, {
             i18n
         });
 
@@ -33,7 +33,7 @@ describe('Login.vue', () => {
     });
 
     it('Login shows error when given bad credentials', (done) => {
-        const wrapper = mount(Login, {
+        const wrapper = shallow(Login, {
             i18n,
             mocks: {
                 getAnonymousHeaders: () => { return {}; }

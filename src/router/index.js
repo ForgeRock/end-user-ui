@@ -3,6 +3,7 @@ import Dashboard from '@/components/mains/Dashboard';
 import ForgotUsername from '@/components/mains/ForgotUsername';
 import NotFound from '@/components/mains/NotFound';
 import Login from '@/components/mains/Login';
+import OAuthReturn from '@/components/mains/OAuthReturn';
 import Profile from '@/components/mains/Profile';
 import PasswordReset from '@/components/mains/PasswordReset';
 import ProgressiveProfile from '@/components/mains/ProgressiveProfile';
@@ -18,6 +19,11 @@ export default new Router({
             path: '/',
             redirect: '/dashboard',
             meta: { hideToolbar: true }
+        },
+        {
+            path: '/oauthReturn',
+            component: OAuthReturn,
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/login',
@@ -42,7 +48,8 @@ export default new Router({
             path: '/registration',
             name: 'Registration',
             component: Registration,
-            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
+            props: true
         },
         {
             path: '/registration/:queryParams',

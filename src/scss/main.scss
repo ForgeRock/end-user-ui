@@ -112,9 +112,11 @@ h1, h2 {
         border-color: $input-border-color;
     }
 }
+
 label {
     color: $label-color;
 }
+
 // Basic Form
 .b-form-group .input-group .form-control {
   border-bottom-right-radius: .25rem;
@@ -154,6 +156,41 @@ label {
   }
   .v-switch-core {
     background-color: $fr-switch-bg;
+  }
+}
+
+// Form Break
+.fr-form-break {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  width: 100%;
+  margin: 14px 0;
+  >:first-child, >:last-child {
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    flex: 1;
+    position: relative;
+  }
+  >:first-child:before, >:last-child:before {
+    content: ' ';
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    right: 0px;
+    height: 1px;
+    background-color: $gray-200;
+    -webkit-box-shadow: 0 1px 0 fade(#FFF, 20%);
+    -moz-box-shadow: 0 1px 0 fade(#FFF, 20%);
+    box-shadow: 0 1px 0 fade(#FFF, 20%);
+  }
+  >:first-child {
+    margin-right: 10px;
+  }
+  :last-child {
+    margin-left: 10px;
   }
 }
 

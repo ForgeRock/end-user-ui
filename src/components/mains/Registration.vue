@@ -1,26 +1,35 @@
 <template>
-    <fr-center-card :showLogo="true" v-if="selfServiceType !== 'localAutoLogin'">
-        <div slot="center-card-header">
-            <h2 class="h2">{{$t("pages.selfservice.registration.signUp")}}</h2>
-            <p class='text-center mb-0'>{{$t('pages.selfservice.registration.signUpMsg')}}</p>
+    <b-container fluid class="h-100 px-0" v-if="!showSelfService">
+        <div class="h-100 d-flex">
+            <div class="m-auto fr-center-card">
+                <bounce-loader :color="loadingColor"></bounce-loader>
+            </div>
         </div>
+    </b-container>
 
-        <b-card-body slot="center-card-body">
-            <component ref="selfServiceStage" v-show="showSelfService"
-                       :is="selfServiceType"
-                       :selfServiceDetails="selfServiceDetails"
-                       @advanceStage="advanceStage">
-            </component>
-            <bounce-loader v-show="showSelfService === false" :color="loadingColor"></bounce-loader>
-        </b-card-body>
+    <div v-else>
+        <fr-center-card :showLogo="true" v-if="selfServiceType !== 'localAutoLogin'">
+            <div slot="center-card-header">
+                <h2 class="h2">{{$t("pages.selfservice.registration.signUp")}}</h2>
+                <p class='text-center mb-0'>{{$t('pages.selfservice.registration.signUpMsg')}}</p>
+            </div>
 
-        <b-card-footer slot="center-card-footer">
-            {{$t('pages.selfservice.registration.haveAccount')}}
-            <a href="#/login">
-                {{$t('pages.selfservice.registration.signIn')}}
-            </a>
-        </b-card-footer>
-    </fr-center-card>
+            <b-card-body slot="center-card-body">
+                <component ref="selfServiceStage" v-show="showSelfService"
+                           :is="selfServiceType"
+                           :selfServiceDetails="selfServiceDetails"
+                           @advanceStage="advanceStage">
+                </component>
+            </b-card-body>
+
+            <b-card-footer slot="center-card-footer">
+                {{$t('pages.selfservice.registration.haveAccount')}}
+                <a href="#/login">
+                    {{$t('pages.selfservice.registration.signIn')}}
+                </a>
+            </b-card-footer>
+        </fr-center-card>
+    </div>
 </template>
 
 <script>
@@ -50,6 +59,7 @@
             kbaSecurityAnswerDefinitionStage,
             TermsAndConditions
         },
+        props: ['clientToken'],
         mixins: [
             SelfserviceAPI
         ],
@@ -59,13 +69,14 @@
                 selfServiceDetails: null,
                 loadingColor: styles.baseColor,
                 showSelfService: false,
-                apiType: 'registration'
+                apiType: 'registration',
+                clientTokenUsed: false
             };
         },
         mounted () {
-            /* istanbul ignore next */
-            // queryParams come from the link emailed to the user for the emailValidation stage
             if (this.$route.params.queryParams) {
+                /* istanbul ignore next */
+                // queryParams come from the link emailed to the user for the emailValidation stage
                 // This stops the flicker by hiding everything in the center-card
                 this.selfServiceType = 'localAutoLogin';
                 this.advanceStage(this.parseQueryParams(this.$route.params.queryParams));
@@ -84,8 +95,38 @@
                     this.advanceStage({
                         'input': {}
                     });
+                } else if (this.clientToken && !this.clientTokenUsed) {
+                    this.advanceStage({
+                        'clientToken': this.clientToken,
+                        'oauthRegister': 'true'
+                    });
+                    this.clientTokenUsed = true;
                 } else if (details.type === 'localAutoLogin') {
-                    this.autoLogin(details.additions.credentialJwt);
+                    if (_.has(details, 'additions.oauthLogin') && details.additions.oauthLogin) {
+                        /* istanbul ignore next */
+                        const socialLoginInstance = this.getRequestService({
+                            headers: {
+                                'X-OpenIDM-NoSession': 'false',
+                                'X-OpenIDM-OAuth-Login': 'true',
+                                'X-OpenIDM-DataStoreToken': this.clientToken,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        /* istanbul ignore next */
+                        socialLoginInstance.post('/authentication?_action=login')
+                            .then(() => {
+                                this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
+                                window.history.pushState('', '', '/');
+                                this.$router.push('/profile');
+                            })
+                            .catch(() => {
+                                window.history.pushState('', '', '/');
+                                this.$router.push('/login');
+                            });
+                    } else {
+                        this.autoLogin(details.additions.credentialJwt);
+                    }
                 } else if (type === 'openAMAutoLogin' && details.status) {
                     if (_.has(details, 'additions.successUrl')) {
                         // If there is a provided success url then follow it.
@@ -142,10 +183,10 @@
                             this.$router.push('/');
                         }
                     })
-                    .catch((error) => {
-                        /* istanbul ignore next */
-                        this.displayNotification('error', error.response.data.message);
-                    });
+                        .catch((error) => {
+                            /* istanbul ignore next */
+                            this.displayNotification('error', error.response.data.message);
+                        });
                 });
             }
         }

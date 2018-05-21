@@ -6,7 +6,7 @@ import VeeValidate from 'vee-validate';
 import Sinon from 'sinon';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
-import { mount } from '@vue/test-utils';
+import { mount, shallow } from '@vue/test-utils';
 
 describe('Registration.vue', () => {
     var sandbox = null;
@@ -53,14 +53,13 @@ describe('Registration.vue', () => {
     });
 
     it('Registration properly load user details stage', () => {
-        const wrapper = mount(Registration, {
+        const wrapper = shallow(Registration, {
             i18n
         });
 
         wrapper.vm.setChildComponent('idmUserDetails', {});
 
         expect(wrapper.vm.selfServiceType).to.equal('idmUserDetails');
-        expect(wrapper.contains('form')).to.equal(true);
     });
 
     it('Registration properly handles parameters stage', () => {

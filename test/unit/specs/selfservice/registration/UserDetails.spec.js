@@ -4,7 +4,7 @@ import VueI18n from 'vue-i18n';
 import VeeValidate from 'vee-validate';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
-import { mount } from '@vue/test-utils';
+import { shallow } from '@vue/test-utils';
 import sinon from 'sinon';
 
 UserDetails.components['fr-policy-password-input'] = sinon.stub();
@@ -20,7 +20,7 @@ describe('UserDetails.vue', () => {
     });
 
     it('User Details component loaded', () => {
-        const wrapper = mount(UserDetails, {
+        const wrapper = shallow(UserDetails, {
             i18n,
             propsData: {
                 selfServiceDetails: {}
@@ -33,10 +33,11 @@ describe('UserDetails.vue', () => {
     it('User Details gather data', () => {
         let data;
 
-        const wrapper = mount(UserDetails, {
+        const wrapper = shallow(UserDetails, {
             i18n,
             propsData: {
                 selfServiceDetails: {
+                    tag: 'initial',
                     requirements: {
                         registrationPreferences: {
                             test: {

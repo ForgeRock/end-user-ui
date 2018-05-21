@@ -124,6 +124,11 @@ export default
                 },
                 progressiveProfile: {
                     skipThis: 'Skip this'
+                },
+                social: {
+                    signIn: 'Sign in with',
+                    signUp: 'Sign up with',
+                    or: 'or'
                 }
             },
             profile: {
