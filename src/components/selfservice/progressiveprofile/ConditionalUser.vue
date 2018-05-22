@@ -87,6 +87,12 @@
         methods: {
             getData () {
                 var details = _.clone(this.saveDetails);
+                // loop over the form attributes and set empty strings to null
+                _.each(details, (val, key) => {
+                    if (val === '') {
+                        details[key] = null;
+                    }
+                });
 
                 return {attributes: details};
             },

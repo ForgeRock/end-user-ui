@@ -68,6 +68,23 @@ describe('ConditionalUser.vue', () => {
         expect(JSON.stringify(actualResult)).to.equal(JSON.stringify(expectedResult));
     });
 
+    it('ConditionalUser getData() returns proper output when an attribute is set to empty string', () => {
+        var expectedResult = {
+                attributes: {
+                    aBooleanAttribute: true,
+                    postalAddress: null
+                }
+            },
+            actualResult;
+
+        const wrapper = mountWrapper();
+
+        wrapper.vm.saveDetails.postalAddress = '';
+
+        actualResult = wrapper.vm.getData();
+        expect(JSON.stringify(actualResult)).to.equal(JSON.stringify(expectedResult));
+    });
+
     it('ConditionalUser emits advanceStage() on save', (done) => {
         const wrapper = mountWrapper();
 
