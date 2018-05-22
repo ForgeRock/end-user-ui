@@ -12,6 +12,7 @@
                     <b-form class="mb-3" v-for="(field, index) in formFields" :key="index">
                         <b-form-group v-if="field.type !== 'boolean'">
                             <label class="float-left" :for="field.title">{{field.title}}</label>
+                            <small v-if="field.optional" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
 
                             <input v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
                                 :name="field.name"
@@ -89,7 +90,8 @@
                     title: properties[name].title,
                     value: this.$root.userStore.state.profile[name] || null,
                     type: properties[name].type,
-                    required: _.includes(required, name)
+                    required: _.includes(required, name),
+                    optional: !_.includes(required, name)
                 };
             });
 

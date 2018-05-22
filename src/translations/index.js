@@ -156,7 +156,8 @@ export default
                     subtitle: 'Set your communications preferences.'
                 },
                 editProfile: {
-                    userDetailsTitle: 'Edit your personal info'
+                    userDetailsTitle: 'Edit your personal info',
+                    optional: '(optional)'
                 },
                 accountSecurity: {
                     title: 'Account Security',
