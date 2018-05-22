@@ -69,3 +69,20 @@ or
 npm run build --theme=red
 ```
 3) Note: Theming relies on scss variable overrides. If you provide a css override to a variable, your build will include corresponding changes to ForgeRock / Bootstrap components.
+
+## Translations
+Currently translations work by making use of the info/uiconfig endpoint in IDM. The info/uiconfig endpoint returns the current browsers configured language.
+
+Steps to use a new translation:
+1) Configure your browser to the desired language (fr - french for this example)
+2) Add new language with appropriate JSON key paths to translations/index
+
+```
+fr: {
+    common: {
+        notFound: 'Pas trouvé'
+    }
+}
+```
+
+3) Language will by default fallback to en (english) for any missing JSON key path

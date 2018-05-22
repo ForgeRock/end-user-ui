@@ -78,10 +78,13 @@ router.beforeEach((to, from, next) => {
 });
 
 // Ready translated locale messages
+// IDM Context default
 const i18n = new VueI18n({
-    locale: 'en',
-    messages: translations
-});
+        locale: 'en',
+        fallbackLocale: 'en',
+        messages: translations
+    }),
+    idmDefaultContext = '/openidm';
 
 // Globally load bootstrap vue components for use
 Vue.use(BootstrapVue);
@@ -118,7 +121,7 @@ Vue.use(ToggleButton);
 Vue.mixin({
     methods: {
         getRequestService: function (config) {
-            let baseURL = '/openidm',
+            let baseURL = idmDefaultContext,
                 timeout = 1000,
                 headers = {
                     'content-type': 'application/json'
@@ -175,14 +178,43 @@ Vue.mixin({
     }
 });
 
-/* eslint-disable no-new */
-new Vue({
-    el: '#app',
-    router,
-    i18n,
-    template: '<App/>',
-    components: { App },
-    data: {
-        userStore: UserStore
-    }
-});
+/*
+    We will load the application regardless
+ */
+var startApp = function () {
+        let translationInstance = axios.create({
+            baseURL: idmDefaultContext,
+            timeout: 1000,
+            headers: {
+                'X-OpenIDM-NoSession': true,
+                'X-OpenIDM-Password': 'anonymous',
+                'X-OpenIDM-Username': 'anonymous'
+            }
+        });
+
+        translationInstance.get('/info/uiconfig').then((info) => {
+            if (info.data.configuration.lang) {
+                i18n.locale = info.data.configuration.lang;
+            }
+
+            return loadApp();
+        })
+        .catch(() => {
+            return loadApp();
+        });
+    },
+    loadApp = function () {
+        /* eslint-disable no-new */
+        return new Vue({
+            el: '#app',
+            router,
+            i18n,
+            template: '<App/>',
+            components: { App },
+            data: {
+                userStore: UserStore
+            }
+        });
+    };
+
+startApp();
