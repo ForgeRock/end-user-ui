@@ -11,14 +11,14 @@
                     </b-button>
                 </b-card>
 
-                <fr-edit-personal-info></fr-edit-personal-info>
+                <fr-edit-personal-info @updateProfile="updateProfile" :schema="schema" :profile="profile"></fr-edit-personal-info>
             </b-col>
             <b-col class="detailsCol" lg="8">
                 <b-tabs>
                     <b-tab :title="$t('pages.profile.settings')" active>
-                        <fr-account-security></fr-account-security>
-                        <fr-preferences></fr-preferences>
-                        <fr-consent :consentedMappings="profile.consentedMappings"></fr-consent>
+                        <fr-account-security @updateProfile="updateProfile"></fr-account-security>
+                        <fr-preferences @updateProfile="updateProfile"></fr-preferences>
+                        <fr-consent :consentedMappings="profile.consentedMappings" @updateProfile="updateProfile"></fr-consent>
                         <fr-account-controls></fr-account-controls>
                     </b-tab>
                     <b-tab :title="$t('pages.profile.activity')"></b-tab>
@@ -65,6 +65,39 @@
             },
             profile () {
                 return this.$root.userStore.state.profile;
+            },
+            schema () {
+                return this.$root.userStore.state.schema;
+            }
+        },
+        methods: {
+            updateProfile (payload, config = {}) {
+                /* istanbul ignore next */
+                let successMsg = config.successMsg || this.$t('common.user.profile.updateSuccess'),
+                    userId = this.$root.userStore.state.userId,
+                    headers = config.headers || {
+                        'content-type': 'application/json',
+                        'cache-control': 'no-cache',
+                        'x-requested-with': 'XMLHttpRequest'
+                    },
+                    selfServiceInstance = this.getRequestService({ headers });
+
+                /* istanbul ignore next */
+                selfServiceInstance.patch(`managed/user/${userId}`, payload).then((response) => {
+                    this.$root.userStore.setProfileAction(response.data);
+                    this.displayNotification('success', successMsg);
+                    if (config.onSuccess) {
+                        config.onSuccess();
+                    }
+                })
+                .catch((error) => {
+                    /* istanbul ignore next */
+                    let errorMsg = config.errorMsg || error.response.data.message;
+                    this.displayNotification('error', errorMsg);
+                    if (config.onError) {
+                        config.onError();
+                    }
+                });
             }
         }
     };

@@ -88,4 +88,46 @@ describe('EditPassword.vue', () => {
         expect(wrapper.vm.inputCurrent).to.equal('password');
         expect(wrapper.vm.showCurrent).to.equal(true);
     });
+
+    describe('#resetComponent', () => {
+        it('should reset data and visual elements', () => {
+            const wrapper = shallow(EditPassword, {
+                    provide: () => ({
+                        $validator: v
+                    }),
+                    i18n
+                }),
+                click = sinon.spy();
+
+            wrapper.vm.$refs = { cancel: { click } };
+            wrapper.vm.resetComponent();
+
+            expect(wrapper.vm.loading).to.equal(false);
+            expect(wrapper.vm.currentPassword).to.equal('');
+            expect(wrapper.vm.newPassword).to.equal('');
+            expect(click.called).to.equal(true);
+        });
+    });
+
+    describe('#onSavePassword', () => {
+        it('should emit "patch" with payload and config', () => {
+            const wrapper = shallow(EditPassword, {
+                provide: () => ({
+                    $validator: v
+                }),
+                i18n
+            });
+
+            wrapper.setData({currentPassword: 'test current', newPassword: 'test new'});
+            wrapper.vm.onSavePassword();
+
+            let patchEvent = wrapper.emitted().updateProfile,
+                [payload, config] = patchEvent[0];
+
+            expect(patchEvent).to.be.an('Array').with.property('length').that.equals(1);
+            expect(payload[0]).to.have.property('value').that.equals('test new');
+            expect(config).to.have.property('headers');
+            expect(config.headers).to.have.property('X-OpenIDM-Reauth-Password').that.equals('test current');
+        });
+    });
 });

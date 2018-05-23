@@ -7,6 +7,7 @@ import { shallow } from '@vue/test-utils';
 import sinon from 'sinon';
 
 Profile.components['fr-consent'] = sinon.stub();
+Profile.components['fr-edit-personal-info'] = sinon.stub();
 
 describe('Profile.vue', () => {
     Vue.use(VueI18n);

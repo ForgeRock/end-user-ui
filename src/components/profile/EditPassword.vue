@@ -80,42 +80,21 @@
             };
         },
         methods: {
+            resetComponent () {
+                this.loading = false;
+                this.currentPassword = '';
+                this.newPassword = '';
+                this.$refs.cancel.click();
+            },
             onSavePassword () {
-                /* istanbul ignore next */
-                let selfServiceInstance = this.getRequestService({
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-OpenIDM-Reauth-Password': this.currentPassword
-                        }
-                    }),
-                    patch = [{operation: 'add', field: '/password', value: this.newPassword}];
+                const headers = {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-OpenIDM-Reauth-Password': this.currentPassword
+                    },
+                    payload = [{operation: 'add', field: '/password', value: this.newPassword}],
+                    onSuccess = this.resetComponent.bind(this);
 
-                this.loading = true;
-
-                /* istanbul ignore next */
-                selfServiceInstance.patch(`managed/user/${this.userId}`, patch).then((response) => {
-                    /* istanbul ignore next */
-                    this.$notify({
-                        group: 'IDMMessages',
-                        type: 'success',
-                        text: this.$t('common.user.profile.updateSuccess')
-                    });
-
-                    this.loading = false;
-                    this.currentPassword = '';
-                    this.newPassword = '';
-                    this.$refs.cancel.click();
-                })
-                .catch((error) => {
-                    /* istanbul ignore next */
-                    this.$notify({
-                        group: 'IDMMessages',
-                        type: 'error',
-                        text: error.response.data.message
-                    });
-
-                    this.loading = false;
-                });
+                this.$emit('updateProfile', payload, { headers, onSuccess });
             },
             revealNew () {
                 if (this.inputNew === 'password') {

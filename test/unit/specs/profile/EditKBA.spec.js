@@ -75,4 +75,34 @@ describe('EditKBA.vue', () => {
 
         expect(wrapper.vm.selectOptions.length).to.equal(4);
     });
+
+    describe('#generatePatch', () => {
+        let wrapper;
+
+        beforeEach(() => {
+            wrapper = mount(EditKBA, {
+                i18n
+            });
+        });
+
+        it('should correctly generate patches for custom questions', () => {
+            wrapper.setData({selected: [{custom: 'test', answer: 'test answer'}]});
+
+            let patch = wrapper.vm.generatePatch();
+
+            expect(patch).to.be.an('Array');
+            expect(patch.length).to.equal(1);
+            expect(_.first(patch)).to.be.an('Object').with.property('value').that.deep.equals([{ answer: 'test answer', customQuestion: 'test' }]);
+        });
+
+        it('should correctly generate patches for provided questions', () => {
+            wrapper.setData({selected: [{selected: 'test', answer: 'test answer'}]});
+
+            let patch = wrapper.vm.generatePatch();
+
+            expect(patch).to.be.an('Array');
+            expect(patch.length).to.equal(1);
+            expect(_.first(patch)).to.be.an('Object').with.property('value').that.deep.equals([{ answer: 'test answer', questionId: 'test' }]);
+        });
+    });
 });

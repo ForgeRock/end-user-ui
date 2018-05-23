@@ -5,6 +5,7 @@ import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { mount } from '@vue/test-utils';
 import VeeValidate from 'vee-validate';
+import _ from 'lodash';
 
 describe('EditPersonalInfo.vue', () => {
     Vue.use(VueI18n);
@@ -30,7 +31,8 @@ describe('EditPersonalInfo.vue', () => {
                         test: {
                             viewable: true,
                             type: 'string',
-                            title: 'test title'
+                            title: 'test title',
+                            userEditable: true
                         }
                     },
                     required: []
@@ -38,45 +40,38 @@ describe('EditPersonalInfo.vue', () => {
             }
         };
 
-    it('EditPersonalInfo modal loaded', () => {
-        const wrapper = mount(EditPersonalInfo, {
+    let wrapper;
+
+    beforeEach(() => {
+        wrapper = mount(EditPersonalInfo, {
             provide: () => ({
                 $validator: v
             }),
             i18n,
             mocks: {
                 userStore
+            },
+            propsData: {
+                schema: _.cloneDeep(userStore.state.schema),
+                profile: _.cloneDeep(userStore.state.profile)
             }
         });
+    });
 
+    afterEach(() => {
+        wrapper = null;
+    });
+
+    it('EditPersonalInfo modal loaded', () => {
         expect(wrapper.name()).to.equal('Edit-Personal-Info');
         expect(wrapper.isVisible()).to.equal(true);
     });
 
     it('renders a title', () => {
-        const wrapper = mount(EditPersonalInfo, {
-            provide: () => ({
-                $validator: v
-            }),
-            i18n,
-            mocks: {
-                userStore
-            }
-        });
         expect(wrapper.vm.title).to.equal('Edit your personal info');
     });
 
     it('TermsAndConditions validation', (done) => {
-        const wrapper = mount(EditPersonalInfo, {
-            provide: () => ({
-                $validator: v
-            }),
-            i18n,
-            mocks: {
-                userStore
-            }
-        });
-
         wrapper.vm.isValid().then((response) => {
             expect(response).to.equal(true);
 
@@ -85,16 +80,6 @@ describe('EditPersonalInfo.vue', () => {
     });
 
     it('hides modal on close', () => {
-        const wrapper = mount(EditPersonalInfo, {
-            provide: () => ({
-                $validator: v
-            }),
-            i18n,
-            mocks: {
-                userStore
-            }
-        });
-
         wrapper.vm.hideModal();
 
         Vue.nextTick(() => {
@@ -103,16 +88,6 @@ describe('EditPersonalInfo.vue', () => {
     });
 
     it('creates patches array correctly', () => {
-        const wrapper = mount(EditPersonalInfo, {
-            provide: () => ({
-                $validator: v
-            }),
-            i18n,
-            mocks: {
-                userStore
-            }
-        });
-
         let original = [{
                 name: 'description',
                 value: null
@@ -153,18 +128,24 @@ describe('EditPersonalInfo.vue', () => {
     });
 
     it('allows enter to fire save', () => {
-        const wrapper = mount(EditPersonalInfo, {
-                provide: () => ({
-                    $validator: v
-                }),
-                i18n,
-                mocks: {
-                    userStore
-                }
-            }),
-            spy = sinon.spy(wrapper.vm, 'saveForm');
+        const spy = sinon.spy(wrapper.vm, 'saveForm');
 
         wrapper.find('#userDetailsModal').trigger('keydown.enter');
         expect(spy.called);
+    });
+    describe('#generateFormFields', () => {
+        it('should create the proper fields based on schema', () => {
+            let formFields = wrapper.vm.generateFormFields(),
+                firstFormField = _.first(formFields);
+
+            expect(formFields).to.be.an('Array');
+            expect(formFields.length).to.equal(1);
+            expect(firstFormField).to.be.an('object')
+                .and.to.include({name: 'test'})
+                .and.to.include({title: 'test title'})
+                .and.to.include({value: 'test'})
+                .and.to.include({type: 'string'})
+                .and.to.include({required: false});
+        });
     });
 });

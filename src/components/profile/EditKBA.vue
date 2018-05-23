@@ -5,7 +5,7 @@
                 <h6 class="my-0">{{$t('pages.profile.accountSecurity.securityQuestions')}}</h6>
             </div>
             <div class="d-flex ml-3 align-self-center">
-                <div class="btn btn-link btn-sm float-right btn-cancel">{{$t('common.form.cancel')}}</div>
+                <div class="btn btn-link btn-sm float-right btn-cancel" ref="cancel">{{$t('common.form.cancel')}}</div>
                 <div class="btn btn-link btn-sm float-right btn-edit">{{$t('common.form.edit')}}</div>
             </div>
         </div>
@@ -104,58 +104,38 @@
                 this.selectOptions.unshift({value: null, text: this.$t('common.user.kba.selectQuestion'), disabled: true});
                 this.selectOptions.push({value: this.customIndex, text: this.$t('common.user.kba.custom'), disabled: false});
             },
+            generatePatch () {
+                let values = _.map(this.selected, (field) => {
+                    if (field.custom) {
+                        return {
+                            answer: field.answer,
+                            customQuestion: field.custom
+                        };
+                    } else {
+                        return {
+                            answer: field.answer,
+                            questionId: field.selected
+                        };
+                    }
+                });
+
+                return [{
+                    operation: 'replace',
+                    field: '/kbaInfo',
+                    value: values
+                }];
+            },
+            onSuccess () {
+            },
             onSaveKBA () {
                 /* istanbul ignore next */
                 this.isValid().then((valid) => {
-                    /* istanbul ignore next */
-                    if (valid) {
-                        let userId = this.$root.userStore.getUserState().userId,
-                            selfServiceInstance = this.getRequestService({
-                                headers: {
-                                    'X-OpenIDM-NoSession': true,
-                                    'X-OpenIDM-Password': 'anonymous',
-                                    'X-OpenIDM-Username': 'anonymous'
-                                }
-                            }),
-                            values = _.map(this.selected, (field) => {
-                                if (field.custom) {
-                                    return {
-                                        answer: field.answer,
-                                        customQuestion: field.custom
-                                    };
-                                } else {
-                                    return {
-                                        answer: field.answer,
-                                        questionId: field.selected
-                                    };
-                                }
-                            }),
-                            patch = [{
-                                operation: 'replace',
-                                field: '/kbaInfo',
-                                value: values
-                            }];
-    
-                        selfServiceInstance.patch(`managed/user/${userId}`, patch).then((response) => {
-                            _.each(this.selected, (s) => {
-                                s.answer = '';
-                            });
-
-                            this.$notify({
-                                group: 'IDMMessages',
-                                type: 'success',
-                                text: this.$t('common.user.profile.updateSuccess')
-                            });
-                        })
-                        .catch((error) => {
-                            /* istanbul ignore next */
-                            this.$notify({
-                                group: 'IDMMessages',
-                                type: 'error',
-                                text: error.response.data.message
-                            });
+                    this.$emit('updateProfile', this.generatePatch(), { onSuccess () {
+                        _.each(this.selected, (s) => {
+                            s.answer = '';
                         });
-                    }
+                        this.$refs.cancel.click();
+                    }});
                 });
             },
             isValid () {
@@ -183,7 +163,8 @@
                     });
                 },
                 deep: true
-            }
+            },
+            kbaData: { deep: true, handler: _.noop }
         }
     };
 </script>

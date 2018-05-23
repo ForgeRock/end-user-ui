@@ -37,4 +37,20 @@ describe('AccountSecurity.vue', () => {
 
         expect(wrapper.name()).to.equal('Account-Security');
     });
+
+    describe('#sendUpdateProfile', () => {
+        it('should emit an "updateProfile" event with the payload and config', () => {
+            const wrapper = shallow(AccountSecurity, {
+                i18n
+            });
+
+            wrapper.vm.sendUpdateProfile('test payload', 'test config');
+            expect(wrapper.emitted().updateProfile.length).to.equal(1);
+
+            let [payload, config] = wrapper.emitted().updateProfile[0];
+
+            expect(payload).to.equal('test payload');
+            expect(config).to.equal('test config');
+        });
+    });
 });

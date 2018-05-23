@@ -144,28 +144,7 @@
                 return [{ field, operation, value }];
             },
             toggleConsent (mapping, event) {
-                /* istanbul ignore next */
-                let userId = this.$root.userStore.state.userId,
-                    selfServiceInstance = this.getRequestService({
-                        headers: {
-                            'content-type': 'application/json',
-                            'cache-control': 'no-cache',
-                            'x-requested-with': 'XMLHttpRequest'
-                        }
-                    }),
-                    patch = this.generatePatch(mapping);
-
-                /* istanbul ignore next */
-                selfServiceInstance.patch(`managed/user/${userId}`, patch).then((response) => {
-                    this.$root.userStore.setProfileAction(response.data);
-
-                    /* istanbul ignore next */
-                    this.displayNotification('success', this.$t('common.user.profile.updateSuccess'));
-                })
-                .catch((error) => {
-                    /* istanbul ignore next */
-                    this.displayNotification('error', error.response.data.message);
-                });
+                this.$emit('updateProfile', this.generatePatch(mapping));
             }
         }
     };

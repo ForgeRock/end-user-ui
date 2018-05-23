@@ -128,4 +128,21 @@ describe('Profile Consent Component', () => {
             expect(addOp.value).to.have.property('consentDate').that.is.a('String').that.equals(mapping.consentDate);
         });
     });
+
+    describe('#toggleConsent', () => {
+        it('should emit "updateProfile" and call generatePatch', () => {
+            let stub = sinon.stub(),
+                payload;
+
+            stub.returns('test payload');
+
+            wrapper.setMethods({ generatePatch: stub });
+            wrapper.vm.toggleConsent();
+
+            expect(wrapper.emitted().updateProfile.length).to.equal(1);
+
+            payload = wrapper.emitted().updateProfile[0][0];
+            expect(payload).to.equal('test payload');
+        });
+    });
 });

@@ -9,7 +9,7 @@
         <b-container>
             <b-row>
                 <b-col sm="8" offset-sm="2">
-                    <b-form class="mb-3" v-for="(field, index) in formFields" :key="index">
+                    <b-form class="mb-3" v-for="(field, index) in formFields" :key="index" data-vv-scope="personal-info-form">
                         <b-form-group v-if="field.type !== 'boolean'">
                             <label class="float-left" :for="field.title">{{field.title}}</label>
                             <small v-if="field.optional" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
@@ -67,37 +67,40 @@
             'fr-list-group': ListGroup
         },
         inject: ['$validator'],
+        props: {
+            schema: { type: Object, required: true },
+            profile: { type: Object, required: true }
+        },
         data () {
+            let formFields = this.generateFormFields();
             return {
                 color: colors.primary,
-                formFields: [],
-                originalFormFields: [],
+                formFields,
+                originalFormFields: _.cloneDeep(formFields),
                 title: this.$t('pages.profile.editProfile.userDetailsTitle')
             };
         },
-        mounted () {
-            let {order, properties, required} = this.$root.userStore.state.schema,
-                filteredOrder = _.filter(order, (propName) => {
-                    return properties[propName].viewable &&
-                        properties[propName].userEditable &&
-                        properties[propName].type !== 'array' &&
-                        properties[propName].type !== 'object';
-                });
-
-            this.formFields = _.map(filteredOrder, (name) => {
-                return {
-                    name: name,
-                    title: properties[name].title,
-                    value: this.$root.userStore.state.profile[name] || null,
-                    type: properties[name].type,
-                    required: _.includes(required, name),
-                    optional: !_.includes(required, name)
-                };
-            });
-
-            this.originalFormFields = _.cloneDeep(this.formFields);
-        },
         methods: {
+            generateFormFields () {
+                let {order, properties, required} = this.schema,
+                    filteredOrder = _.filter(order, (propName) => {
+                        return properties[propName].viewable &&
+                            properties[propName].userEditable &&
+                            properties[propName].type !== 'array' &&
+                            properties[propName].type !== 'object';
+                    }),
+                    formFields = _.map(filteredOrder, (name) => {
+                        return {
+                            name: name,
+                            title: properties[name].title,
+                            value: this.profile[name] || null,
+                            type: properties[name].type,
+                            required: _.includes(required, name)
+                        };
+                    });
+
+                return formFields;
+            },
             hideModal () {
                 this.$refs.fsModal.hide();
             },
@@ -122,33 +125,14 @@
             saveForm () {
                 /* istanbul ignore next */
                 this.isValid().then((valid) => {
-                    /* istanbul ignore next */
                     if (valid) {
-                        let userId = this.$root.userStore.state.userId,
-                            selfServiceInstance = this.getRequestService({
-                                headers: {
-                                    'content-type': 'application/json',
-                                    'cache-control': 'no-cache',
-                                    'x-requested-with': 'XMLHttpRequest'
-                                }
-                            }),
-                            patches = this.createPatches(this.originalFormFields, this.formFields);
-
-                        selfServiceInstance.patch(`managed/user/${userId}`, patches).then((response) => {
-                            this.$root.userStore.setProfileAction(response.data);
-                            this.originalFormFields = _.cloneDeep(this.formFields);
-                            this.hideModal();
-                            this.displayNotification('success', this.$t('common.user.profile.updateSuccess'));
-                        })
-                        .catch((error) => {
-                            /* istanbul ignore next */
-                            this.displayNotification('error', error.response.data.message);
-                        });
+                        this.$emit('updateProfile', this.createPatches(this.originalFormFields, this.formFields));
+                        this.hideModal();
                     }
                 });
             },
             isValid () {
-                return this.$validator.validateAll();
+                return this.$validator.validateAll('personal-info-form');
             }
         }
     };

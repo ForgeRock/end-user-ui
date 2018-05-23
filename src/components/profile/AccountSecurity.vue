@@ -1,8 +1,8 @@
 <template>
     <fr-list-group :title="$t('pages.profile.accountSecurity.title')" :subtitle="$t('pages.profile.accountSecurity.subtitle')">
         
-        <fr-edit-password></fr-edit-password>
-        <fr-edit-kba v-if="isOnKBA" :kbaData="kbaData"></fr-edit-kba>
+        <fr-edit-password @updateProfile="sendUpdateProfile"></fr-edit-password>
+        <fr-edit-kba v-if="isOnKBA" :kbaData="kbaData" @updateProfile="sendUpdateProfile"></fr-edit-kba>
         
     </fr-list-group>
 </template>
@@ -24,6 +24,11 @@
             'fr-list-group': ListGroup,
             'fr-edit-kba': EditKBA,
             'fr-edit-password': EditPassword
+        },
+        methods: {
+            sendUpdateProfile (payload, config) {
+                this.$emit('updateProfile', payload, config);
+            }
         },
         mounted () {
             /* istanbul ignore next */

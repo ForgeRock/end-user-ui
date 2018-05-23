@@ -15,7 +15,7 @@
                         :sync="true"
                         :cssColors="true"
                         :value="obj.value"
-                        @change="savePreferences"/>
+                        @change="savePreferences(preference, $event.value)"/>
                 </div>
             </div>
 
@@ -34,16 +34,16 @@
             'fr-list-group': ListGroup,
             'fr-list-item': ListItem
         },
-        data: function () {
+        data () {
             return {
                 preferences: {}
             };
         },
-        mounted: function () {
+        mounted () {
             this.loadData();
         },
         methods: {
-            loadData: function () {
+            loadData () {
                 let keys = _.keys(this.$root.userStore.state.profile.preferences),
                     preferences = _.cloneDeep(this.$root.userStore.state.schema.properties.preferences.properties);
 
@@ -54,29 +54,11 @@
 
                 this.preferences = preferences;
             },
-            savePreferences: function (event) {
-                /* istanbul ignore next */
-                let userId = this.$root.userStore.state.userId,
-                    selfServiceInstance = this.getRequestService({
-                        headers: {
-                            'content-type': 'application/json',
-                            'cache-control': 'no-cache',
-                            'x-requested-with': 'XMLHttpRequest'
-                        }
-                    }),
-                    toggleState = event.value,
-                    preferenceName = event.srcEvent.srcElement.parentElement.id,
-                    patch = [{operation: 'replace', field: '/preferences/' + preferenceName, value: toggleState}];
-
-                /* istanbul ignore next */
-                selfServiceInstance.patch(`managed/user/${userId}`, patch).then((response) => {
-                    this.$root.userStore.setProfileAction(response.data);
-                    this.displayNotification('success', this.$t('common.user.profile.updateSuccess'));
-                })
-                .catch((error) => {
-                    /* istanbul ignore next */
-                    this.displayNotification('error', error.response.data.message);
-                });
+            generatePatch (preference, value) {
+                return [{operation: 'replace', field: '/preferences/' + preference, value}];
+            },
+            savePreferences (preference, value) {
+                this.$emit('updateProfile', this.generatePatch(preference, value));
             }
         }
     };
