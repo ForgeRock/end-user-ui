@@ -161,8 +161,7 @@
         created () {
             // Initialize the policy service to be used in validation calls and the preliminary get call.
             const headers = this.getAnonymousHeaders(),
-                baseURL = `openidm/policy/${this.policyApi}/`,
-                policyService = this.getRequestService({ headers, baseURL }),
+                policyService = this.getRequestService({headers}),
                 formatPayload = this.formatPayload.bind(this),
                 // Create validation service call and bind to component scope.
                 requestPolicyValidation = function (password) {
@@ -170,7 +169,7 @@
 
                     /* istanbul ignore next */
                     return policyService
-                        .post(`?_action=${this.getAction()}`, data)
+                        .post(`/policy/${this.policyApi}/?_action=${this.getAction()}`, data)
                         .then(({ data }) => this.toPolicyNames(data))
                         .catch(() => {
                             /* istanbul ignore next */
@@ -197,7 +196,7 @@
 
             // Get the initial policy list from the policy service.
             /* istanbul ignore next */
-            policyService.get()
+            policyService.get(`/policy/${this.policyApi}`)
                 .then(({data}) => _.head(data.properties.filter(this.isPasswordPolicyItem('name'))))
                 .then((policyRequirementSet) => {
                     return this.makeExclusions(policyRequirementSet);

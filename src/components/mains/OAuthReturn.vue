@@ -60,7 +60,7 @@
 
                     socialLoginInstance.post('/authentication?_action=login')
                         .then((response) => {
-                            window.history.pushState('', '', '/');
+                            window.history.pushState('', '', window.location.pathname);
                             this.$router.push('/profile');
                         })
                         .catch(() => {
@@ -71,7 +71,7 @@
                         });
                 })
                 .catch((error) => {
-                    window.history.pushState('', '', '/');
+                    window.history.pushState('', '', window.location.pathname);
                     this.$router.push('/login');
                     this.displayNotification('error', error.response.data.message);
                 });

@@ -117,11 +117,11 @@
                         socialLoginInstance.post('/authentication?_action=login')
                             .then(() => {
                                 this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
-                                window.history.pushState('', '', '/');
+                                window.history.pushState('', '', window.location.pathname);
                                 this.$router.push('/profile');
                             })
                             .catch(() => {
-                                window.history.pushState('', '', '/');
+                                window.history.pushState('', '', window.location.pathname);
                                 this.$router.push('/login');
                             });
                     } else {
