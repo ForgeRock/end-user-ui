@@ -4,10 +4,10 @@
             <div id="appSidebarWrapper" v-if="!this.$route.meta.hideToolbar && this.$root.userStore.state.userId !== null">
                 <ul class="sidebar-nav">
                     <li class="sidebar-brand">
-                        <a href="#/" class="d-flex">
+                        <router-link class="d-flex" active-class="" to="dashboard">
                             <img src="static/images/horizontal-logo-white.svg" :alt="$t('common.form.logo')" style="width:131px;" class="align-self-center sidebar-brand-logo" />
                             <img src="static/images/vertical-logo-white.svg" :alt="$t('common.form.logo')"  style="height:28px;" class="align-self-center sidebar-brand-mark" />
-                        </a>
+                        </router-link>
                     </li>
                     <li>
                         <router-link to="dashboard"><i class="fa fa-fw mr-3 fa-tachometer"></i><span class="sidebar-item-text">{{$t('pages.app.dashboard')}}</span></router-link>
@@ -33,7 +33,7 @@
                             <template slot="button-content">
                                 {{$t('pages.app.user')}} <b-img src="static/images/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
                             </template>
-                            <b-dropdown-item href="#/profile">{{$t('pages.app.profile')}}</b-dropdown-item>
+                            <b-dropdown-item active-class="fr-no-active" exact-active-class="fr-no-active" to="profile">{{$t('pages.app.profile')}}</b-dropdown-item>
                             <b-dropdown-item @click.prevent="signOut()">{{$t('pages.app.signOut')}}</b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>

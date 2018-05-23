@@ -12,6 +12,9 @@ describe('ProgressiveProfile.vue', () => {
         mountWrapper = () => {
             return mount(ProgressiveProfile, {
                 i18n,
+                stubs: {
+                    'router-link': true
+                },
                 propsData: {
                     apiType: 'profile'
                 }
@@ -58,6 +61,9 @@ describe('ProgressiveProfile.vue', () => {
     it('ProgressiveProfile properly sets child component to conditionaluser stage', () => {
         const wrapper = shallow(ProgressiveProfile, {
             i18n,
+            stubs: {
+                'router-link': true
+            },
             propsData: {
                 apiType: 'profile'
             }
@@ -74,6 +80,9 @@ describe('ProgressiveProfile.vue', () => {
     it('ProgressiveProfile setChildComponent properly sets displayName,purpose, and canSkip', () => {
         const wrapper = shallow(ProgressiveProfile, {
             i18n,
+            stubs: {
+                'router-link': true
+            },
             propsData: {
                 apiType: 'profile'
             }

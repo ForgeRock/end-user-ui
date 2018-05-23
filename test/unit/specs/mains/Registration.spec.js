@@ -38,7 +38,10 @@ describe('Registration.vue', () => {
 
     it('Registration page loaded', () => {
         const wrapper = mount(Registration, {
-            i18n
+            i18n,
+            stubs: {
+                'router-link': true
+            }
         });
 
         expect(wrapper.name()).to.equal('Registration');
@@ -46,7 +49,10 @@ describe('Registration.vue', () => {
 
     it('Registration loading screen', () => {
         const wrapper = mount(Registration, {
-            i18n
+            i18n,
+            stubs: {
+                'router-link': true
+            }
         });
 
         expect(wrapper.contains('.v-spinner')).to.equal(true);
@@ -54,7 +60,10 @@ describe('Registration.vue', () => {
 
     it('Registration properly load user details stage', () => {
         const wrapper = shallow(Registration, {
-            i18n
+            i18n,
+            stubs: {
+                'router-link': true
+            }
         });
 
         wrapper.vm.setChildComponent('idmUserDetails', {});
@@ -64,7 +73,10 @@ describe('Registration.vue', () => {
 
     it('Registration properly handles parameters stage', () => {
         const wrapper = mount(Registration, {
-            i18n
+            i18n,
+            stubs: {
+                'router-link': true
+            }
         });
 
         wrapper.vm.setChildComponent('parameters', {});
@@ -75,7 +87,10 @@ describe('Registration.vue', () => {
 
     it('Registration apiErrorCallback properly sets showSelfService', () => {
         const wrapper = mount(Registration, {
-            i18n
+            i18n,
+            stubs: {
+                'router-link': true
+            }
         });
 
         wrapper.setMethods({loadData: () => {}});

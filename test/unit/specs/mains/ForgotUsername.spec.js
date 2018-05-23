@@ -11,6 +11,9 @@ describe('ForgotUsername.vue', () => {
         mountWrapper = () => {
             return mount(ForgotUsername, {
                 i18n,
+                stubs: {
+                    'router-link': true
+                },
                 propsData: {
                     apiType: 'username'
                 }

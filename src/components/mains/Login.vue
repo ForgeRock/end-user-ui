@@ -8,9 +8,7 @@
             <transition name="slide-fade">
                 <div v-if="wrongPasswordSubmitted" class="alert alert-danger mb-4 text-left" role="alert">
                     {{$t('pages.login.badPassword')}}
-                    <a href="#/registration" class="alert-link">
-                        {{$t('pages.login.recoverPassword')}}
-                    </a>
+                    <router-link to="PasswordReset">{{$t('pages.login.recoverPassword')}}</router-link>
                 </div>
             </transition>
 
@@ -25,14 +23,12 @@
                     {{$t('pages.login.signIn')}}
                 </b-button>
             </b-form>
-            <p class="text-center"><a href="#/forgotusername">{{$t('pages.login.forgotUsername')}}</a> · <a href="#/passwordreset">Forgot password?</a></p>
+            <p class="text-center"><router-link action="" to="ForgotUsername">{{$t('pages.login.forgotUsername')}}</router-link> · <router-link to="PasswordReset">{{$t('pages.login.forgotPassword')}}</router-link></p>
         </b-card-body>
 
         <b-card-footer slot="center-card-footer">
             {{$t('pages.login.newHere')}}
-            <a href="#/registration">
-                {{$t('pages.login.createAccount')}}
-            </a>
+            <router-link action="" to="Registration">{{$t('pages.login.createAccount')}}</router-link>
         </b-card-footer>
     </fr-center-card>
 </template>

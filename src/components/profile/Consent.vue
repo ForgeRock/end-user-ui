@@ -4,8 +4,8 @@
             :collapsible="mapping.consented"
             :panelShown="false">
 
-            <template slot="list-item-header">
-                    <b-img :src="mapping.icon" class="mr-3" width="24" height="24" :alt="mapping.name" @error="imageLoadErrorHandler"/>
+            <template slot="list-item-header" class="overflow:hidden;">
+                    <b-img :src="getImgUrl(mapping.icon)" style="overflow:hidden;" class="mr-3" width="24" height="24" :alt="mapping.name" />
                     <div class="media-body" style="width: 100%">
                         <div class="d-block">
                             <h6 class="my-0">{{mapping.displayName}}</h6>
@@ -112,7 +112,16 @@
         },
         methods: {
             imageLoadErrorHandler (event) {
-                event.target.src = 'static/image/mapping-default.svg';
+                event.target.src = 'static/images/mapping-default.svg';
+            },
+            getImgUrl (icon) {
+                if (_.isNull(icon) || _.isUndefined(icon)) {
+                    return 'static/images/mapping-default.svg';
+                } else if (icon.length === 0) {
+                    return 'static/images/mapping-default.svg';
+                } else {
+                    return icon;
+                }
             },
             showModal (name) {
                 _.first(this.$refs[name]).show();

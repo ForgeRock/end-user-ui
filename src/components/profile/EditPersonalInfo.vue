@@ -66,7 +66,9 @@
             'fr-validation-error': ValidationError,
             'fr-list-group': ListGroup
         },
-        inject: ['$validator'],
+        $_veeValidate: {
+            validator: 'new'
+        },
         props: {
             schema: { type: Object, required: true },
             profile: { type: Object, required: true }

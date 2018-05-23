@@ -26,7 +26,10 @@ describe('Login.vue', () => {
 
     it('Login page loaded', () => {
         const wrapper = shallow(Login, {
-            i18n
+            i18n,
+            stubs: {
+                'router-link': true
+            }
         });
 
         expect(wrapper.name()).to.equal('Login');
@@ -35,6 +38,9 @@ describe('Login.vue', () => {
     it('Login shows error when given bad credentials', (done) => {
         const wrapper = shallow(Login, {
             i18n,
+            stubs: {
+                'router-link': true
+            },
             mocks: {
                 getAnonymousHeaders: () => { return {}; }
             }

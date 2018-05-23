@@ -123,7 +123,7 @@
                     let data,
                         downloadName = '';
 
-                    if (result._meta) {
+                    if (result.data._meta) {
                         _.each(result._meta, (value, key) => {
                             if (key.match('_')) {
                                 delete result._meta[key];
@@ -131,7 +131,7 @@
                         });
                     }
 
-                    if (result.idps) {
+                    if (result.data.idps) {
                         _.each(result.idps, (idp) => {
                             _.each(idp, (value, key) => {
                                 if (key.match('_') && _.isNull(key.match('_meta'))) {
@@ -141,10 +141,10 @@
                         });
                     }
 
-                    delete result._rev;
-                    delete result.kbaInfo;
+                    delete result.data._rev;
+                    delete result.data.kbaInfo;
 
-                    data = JSON.stringify(result, null, 4);
+                    data = JSON.stringify(result.data, null, 4);
 
                     if (navigator.msSaveBlob) {
                         return navigator.msSaveBlob(new Blob([data], {type: 'data:application/json'}), downloadName);

@@ -47,7 +47,7 @@
                             :loading="loading"
                             @click="onSavePassword"></fr-loading-button>
 
-                        <div class="text-nowrap pb-2">{{$t('pages.profile.accountSecurity.rememberPassword')}} <a href="#/passwordReset">{{$t('pages.profile.accountSecurity.resetPassword')}}</a></div>
+                        <div class="text-nowrap pb-2">{{$t('pages.profile.accountSecurity.rememberPassword')}} <router-link to="PasswordReset">{{$t('pages.profile.accountSecurity.resetPassword')}}</router-link></div>
                     </b-col>
                 </b-row>
             </b-form>
@@ -60,7 +60,9 @@
     import LoadingButton from '@/components/utils/LoadingButton';
 
     export default {
-        inject: ['$validator'],
+        $_veeValidate: {
+            validator: 'new'
+        },
         name: 'Edit-Password',
         components: {
             'fr-list-item': ListItem,
