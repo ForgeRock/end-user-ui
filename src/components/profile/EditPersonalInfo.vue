@@ -12,7 +12,7 @@
                     <b-form class="mb-3" v-for="(field, index) in formFields" :key="index" data-vv-scope="personal-info-form">
                         <b-form-group v-if="field.type !== 'boolean'">
                             <label class="float-left" :for="field.title">{{field.title}}</label>
-                            <small v-if="field.optional" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
+                            <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
 
                             <input v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
                                 :name="field.name"

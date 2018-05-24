@@ -48,10 +48,10 @@
                             <hr v-if="id !== selected.length - 1" class="mb-3 mt-4">
                         </fieldset>
                         
-                        <b-button type="button" variant="primary" @click="onSaveKBA">
-                            {{$t('common.user.kba.saveQuestions')}}
-                            <div class="ld ld-ring ld-spin"></div>
-                        </b-button>
+                        <fr-loading-button type="button" variant="primary" class="ld-ext-right mb-3" 
+                            :label="$t('common.user.kba.saveQuestions')"
+                            :loading="loading"
+                            @click="onSaveKBA"></fr-loading-button>
                     </b-col>
                 </b-row>
             </b-form>
@@ -62,12 +62,14 @@
 <script>
     import _ from 'lodash';
     import ListItem from '@/components/utils/ListItem';
+    import LoadingButton from '@/components/utils/LoadingButton';
     import ValidationError from '@/components/utils/ValidationError';
 
     export default {
         name: 'Edit-KBA',
         components: {
             'fr-list-item': ListItem,
+            'fr-loading-button': LoadingButton,
             'fr-validation-error': ValidationError
         },
         $_veeValidate: {
@@ -79,7 +81,8 @@
                 questions: {},
                 selectOptions: [],
                 selected: [],
-                customIndex: null
+                customIndex: null,
+                loading: false
             };
         },
         mounted () {
@@ -125,17 +128,20 @@
                     value: values
                 }];
             },
-            onSuccess () {
+            resetComponent () {
+                this.loading = false;
+                _.each(this.selected, (s) => {
+                    s.answer = '';
+                });
+                this.$refs.cancel.click();
             },
             onSaveKBA () {
                 /* istanbul ignore next */
+                const onSuccess = this.resetComponent.bind(this);
+
                 this.isValid().then((valid) => {
-                    this.$emit('updateProfile', this.generatePatch(), { onSuccess () {
-                        _.each(this.selected, (s) => {
-                            s.answer = '';
-                        });
-                        this.$refs.cancel.click();
-                    }});
+                    this.loading = true;
+                    this.$emit('updateProfile', this.generatePatch(), { onSuccess });
                 });
             },
             isValid () {
