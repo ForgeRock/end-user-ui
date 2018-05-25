@@ -24,7 +24,7 @@
 
             <b-card-footer slot="center-card-footer">
                 {{$t('pages.selfservice.registration.haveAccount')}}
-                <router-link action="" to="Login">{{$t('pages.selfservice.registration.signIn')}}</router-link>
+                <router-link action="" to="login">{{$t('pages.selfservice.registration.signIn')}}</router-link>
             </b-card-footer>
         </fr-center-card>
     </div>

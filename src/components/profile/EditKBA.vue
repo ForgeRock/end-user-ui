@@ -140,8 +140,10 @@
                 const onSuccess = this.resetComponent.bind(this);
 
                 this.isValid().then((valid) => {
-                    this.loading = true;
-                    this.$emit('updateProfile', this.generatePatch(), { onSuccess });
+                    if (valid) {
+                        this.loading = true;
+                        this.$emit('updateProfile', this.generatePatch(), { onSuccess });
+                    }
                 });
             },
             isValid () {

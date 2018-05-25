@@ -9,37 +9,38 @@
         <b-container>
             <b-row>
                 <b-col sm="8" offset-sm="2">
-                    <b-form class="mb-3" v-for="(field, index) in formFields" :key="index" data-vv-scope="personal-info-form">
-                        <b-form-group v-if="field.type !== 'boolean'">
-                            <label class="float-left" :for="field.title">{{field.title}}</label>
-                            <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
+                    <b-form class="mb-3" name="edit-personal-form">
+                        <template v-for="(field, index) in formFields">
+                            <b-form-group :key="index" v-if="field.type !== 'boolean'">
+                                <label class="float-left" :for="field.title">{{field.title}}</label>
+                                <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
 
-                            <input v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
-                                :name="field.name"
-                                :type="field.type"
-                                :class="[{'is-invalid': errors.has(field.name)}, 'form-control']"
-                                v-model.trim="formFields[index].value">
+                                <input v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
+                                       :name="field.name"
+                                       :type="field.type"
+                                       :class="[{'is-invalid': errors.has(field.name)}, 'form-control']"
+                                       v-model.trim="formFields[index].value">
+                                <fr-validation-error :validatorErrors="errors" :fieldName="field.name"></fr-validation-error>
+                            </b-form-group>
 
-                            <fr-validation-error :validatorErrors="errors" :fieldName="field.name"></fr-validation-error>
-                        </b-form-group>
+                            <!-- for boolean values -->
+                            <b-form-group :key="index" v-else>
+                                <div class="d-flex flex-column">
+                                    <label class="mr-auto" :for="field.title">{{field.title}}</label>
 
-                        <!-- for boolean values -->
-                        <b-form-group v-else>
-                            <div class="d-flex flex-column">
-                                <label class="mr-auto" :for="field.title">{{field.title}}</label>
-
-                                <div class="mr-auto">
-                                    <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                        :height="28"
-                                        :width="56"
-                                        :sync="true"
-                                        :cssColors="true"
-                                        :labels="{checked: 'Yes', unchecked: 'No'}"
-                                        :value="formFields[index].value"
-                                        @change="formFields[index].value = !formFields[index].value"/>
+                                    <div class="mr-auto">
+                                        <toggle-button class="mt-2 p-0 fr-toggle-primary"
+                                                       :height="28"
+                                                       :width="56"
+                                                       :sync="true"
+                                                       :cssColors="true"
+                                                       :labels="{checked: 'Yes', unchecked: 'No'}"
+                                                       :value="formFields[index].value"
+                                                       @change="formFields[index].value = !formFields[index].value"/>
+                                    </div>
                                 </div>
-                            </div>
-                        </b-form-group>
+                            </b-form-group>
+                        </template>
                     </b-form>
                 </b-col>
             </b-row>
@@ -134,7 +135,7 @@
                 });
             },
             isValid () {
-                return this.$validator.validateAll('personal-info-form');
+                return this.$validator.validateAll();
             }
         }
     };
