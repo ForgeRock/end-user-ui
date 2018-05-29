@@ -7,6 +7,7 @@ import Router from 'vue-router';
 import router from './router';
 import translations from './translations';
 import UserStore from './store/User';
+import ApplicationStore from './store/Application';
 import VeeValidate from 'vee-validate';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
@@ -182,7 +183,7 @@ Vue.mixin({
     We will load the application regardless
  */
 var startApp = function () {
-        let translationInstance = axios.create({
+        let idmInstance = axios.create({
             baseURL: idmDefaultContext,
             timeout: 1000,
             headers: {
@@ -192,16 +193,20 @@ var startApp = function () {
             }
         });
 
-        translationInstance.get('/info/uiconfig').then((info) => {
-            if (info.data.configuration.lang) {
-                i18n.locale = info.data.configuration.lang;
-            }
+        axios.all([
+            idmInstance.get('/info/uiconfig'),
+            idmInstance.get('info/features?_queryFilter=true')]).then(axios.spread((translation, availability) => {
+                if (translation.data.configuration.lang) {
+                    i18n.locale = translation.data.configuration.lang;
+                }
 
-            return loadApp();
-        })
-        .catch(() => {
-            return loadApp();
-        });
+                ApplicationStore.setEnduserSelfservice(availability.data.result);
+
+                return loadApp();
+            }))
+            .catch(() => {
+                return loadApp();
+            });
     },
     loadApp = function () {
         /* eslint-disable no-new */
@@ -212,7 +217,8 @@ var startApp = function () {
             template: '<App/>',
             components: { App },
             data: {
-                userStore: UserStore
+                userStore: UserStore,
+                applicationStore: ApplicationStore
             }
         });
     };

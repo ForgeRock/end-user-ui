@@ -20,13 +20,24 @@ describe('Login.vue', () => {
     });
 
     const i18n = new VueI18n({
-        locale: 'en',
-        messages: translations
-    });
+            locale: 'en',
+            messages: translations
+        }),
+        applicationStore = {
+            state: {
+                workflow: false,
+                passwordReset: false,
+                usernameRecovery: false,
+                registration: false
+            }
+        };
 
     it('Login page loaded', () => {
         const wrapper = shallow(Login, {
             i18n,
+            mocks: {
+                applicationStore
+            },
             stubs: {
                 'router-link': true
             }
@@ -42,7 +53,8 @@ describe('Login.vue', () => {
                 'router-link': true
             },
             mocks: {
-                getAnonymousHeaders: () => { return {}; }
+                getAnonymousHeaders: () => { return {}; },
+                applicationStore
             }
         });
 

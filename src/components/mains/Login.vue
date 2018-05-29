@@ -23,13 +23,17 @@
                     {{$t('pages.login.signIn')}}
                 </b-button>
             </b-form>
-            <p class="text-center"><router-link action="" to="forgotusername">{{$t('pages.login.forgotUsername')}}</router-link> · <router-link to="passwordreset">{{$t('pages.login.forgotPassword')}}</router-link></p>
+            <p class="text-center"><router-link v-if="this.$root.applicationStore.state.usernameRecovery" action="" to="forgotusername">{{$t('pages.login.forgotUsername')}}</router-link>
+                <span v-if="this.$root.applicationStore.state.usernameRecovery && this.$root.applicationStore.state.passwordReset">·</span>
+                <router-link v-if="this.$root.applicationStore.state.passwordReset" to="passwordreset">{{$t('pages.login.forgotPassword')}}</router-link>
+            </p>
         </b-card-body>
-
-        <b-card-footer slot="center-card-footer">
-            {{$t('pages.login.newHere')}}
-            <router-link action="" to="registration">{{$t('pages.login.createAccount')}}</router-link>
-        </b-card-footer>
+        <template v-if="this.$root.applicationStore.state.registration">
+            <b-card-footer slot="center-card-footer">
+                {{$t('pages.login.newHere')}}
+                <router-link action="" to="registration">{{$t('pages.login.createAccount')}}</router-link>
+            </b-card-footer>
+        </template>
     </fr-center-card>
 </template>
 

@@ -14,7 +14,15 @@ describe('EditPassword.vue', () => {
             locale: 'en',
             messages: translations
         }),
-        v = new VeeValidate.Validator();
+        v = new VeeValidate.Validator(),
+        applicationStore = {
+            state: {
+                workflow: false,
+                passwordReset: false,
+                usernameRecovery: false,
+                registration: false
+            }
+        };
 
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
@@ -45,6 +53,9 @@ describe('EditPassword.vue', () => {
             provide: () => ({
                 $validator: v
             }),
+            mocks: {
+                applicationStore
+            },
             i18n
         });
 
@@ -56,6 +67,9 @@ describe('EditPassword.vue', () => {
             provide: () => ({
                 $validator: v
             }),
+            mocks: {
+                applicationStore
+            },
             i18n
         });
 
@@ -75,6 +89,9 @@ describe('EditPassword.vue', () => {
             provide: () => ({
                 $validator: v
             }),
+            mocks: {
+                applicationStore
+            },
             i18n
         });
 
@@ -95,6 +112,9 @@ describe('EditPassword.vue', () => {
                     provide: () => ({
                         $validator: v
                     }),
+                    mocks: {
+                        applicationStore
+                    },
                     i18n
                 }),
                 click = sinon.spy();
@@ -115,6 +135,9 @@ describe('EditPassword.vue', () => {
                 provide: () => ({
                     $validator: v
                 }),
+                mocks: {
+                    applicationStore
+                },
                 i18n
             });
 
