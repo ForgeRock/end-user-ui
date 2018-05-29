@@ -110,6 +110,8 @@
                     ) {
                         let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
                         this.apiType = profileProcess;
+                        // Change the url to reflect the new profile process
+                        this.$router.push(`/profileCompletion/${profileProcess}`);
                         this.loadData();
                     } else {
                         /* istanbul ignore next */
