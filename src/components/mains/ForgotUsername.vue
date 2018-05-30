@@ -1,25 +1,30 @@
 <template>
-    <fr-center-card :showLogo="true">
+    <fr-center-card :showLogo="true" v-if="selfServiceType !== null">
         <div slot="center-card-header">
             <h2 class="h2">{{$t(`pages.selfservice.headers.username.title`)}}</h2>
         </div>
 
         <b-card-body slot="center-card-body">
             <component ref="selfServiceStage"
-                v-if="selfServiceType !== null"
                 :is="selfServiceType"
                 :selfServiceDetails="selfServiceDetails"
                 @advanceStage="advanceStage"
                 :apiType="apiType">
             </component>
-
-            <bounce-loader v-else :color="loadingColor"></bounce-loader>
         </b-card-body>
 
         <b-card-footer slot="center-card-footer">
             <b-link href="#/login">{{$t("pages.selfservice.signIn")}}</b-link>
         </b-card-footer>
     </fr-center-card>
+
+    <b-container fluid class="h-100 px-0"  v-else>
+        <div class="h-100 d-flex">
+            <div class="m-auto fr-center-card">
+                <bounce-loader :color="loadingColor"></bounce-loader>
+            </div>
+        </div>
+    </b-container>
 </template>
 
 <script>

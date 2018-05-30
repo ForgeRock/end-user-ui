@@ -55,7 +55,7 @@ describe('ProgressiveProfile.vue', () => {
     it('ProgressiveProfile loading screen', () => {
         const wrapper = mountWrapper();
 
-        wrapper.vm.showForm = true;
+        wrapper.vm.showForm = false;
 
         expect(wrapper.contains('.v-spinner')).to.equal(true);
     });

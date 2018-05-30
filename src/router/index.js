@@ -79,13 +79,13 @@ export default new Router({
             path: '/profilecompletion',
             name: 'ProgressiveProfileForm',
             component: ProgressiveProfile,
-            meta: { hideToolbar: true }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/profilecompletion/:profileProcess',
             name: 'ProgressiveProfileInitiate',
             component: ProgressiveProfile,
-            meta: { hideToolbar: true }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         /*
         {

@@ -9,14 +9,11 @@
                 {{purpose}}
             </p>
             <component ref="selfServiceStage"
-                v-if="selfServiceType !== null && selfServiceDetails.tag !== 'end'"
                 :is="selfServiceType"
                 :selfServiceDetails="selfServiceDetails"
                 @advanceStage="advanceStage"
                 :apiType="apiType">
             </component>
-
-            <bounce-loader v-else :color="loadingColor"></bounce-loader>
         </b-card-body>
 
         <b-card-footer slot="center-card-footer" v-if="selfServiceDetails !== null && selfServiceDetails.canSkip">
@@ -25,6 +22,14 @@
             </a>
         </b-card-footer>
     </fr-center-card>
+
+    <b-container fluid class="h-100 px-0"  v-else>
+        <div class="h-100 d-flex">
+            <div class="m-auto fr-center-card">
+                <bounce-loader :color="loadingColor"></bounce-loader>
+            </div>
+        </div>
+    </b-container>
 </template>
 
 <script>
