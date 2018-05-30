@@ -44,11 +44,10 @@ describe('ConditionalUser.vue', () => {
         messages: translations
     });
 
-    it('ConditionalUser component loaded and isSingleBooleanForm is set', () => {
+    it('ConditionalUser component loaded', () => {
         const wrapper = mountWrapper();
 
         expect(wrapper.name()).to.equal('Conditional-User');
-        expect(wrapper.vm.isSingleBooleanForm).to.equal(true);
     });
 
     it('ConditionalUser getData() returns proper output when attributes are collected', () => {
@@ -85,17 +84,16 @@ describe('ConditionalUser.vue', () => {
         expect(JSON.stringify(actualResult)).to.equal(JSON.stringify(expectedResult));
     });
 
-    it('ConditionalUser emits advanceStage() on save', (done) => {
+    it('ConditionalUser emits advanceStage() on save', () => {
         const wrapper = mountWrapper();
 
         // Trigger a save to verify after is valid promise
         wrapper.vm.save();
 
         expect(wrapper.emitted().advanceStage.length).to.equal(1);
-        done();
     });
 
-    it('ConditionalUser save() sends proper input to advanceStage when submit button is pressed', (done) => {
+    it('ConditionalUser save() sends proper input to advanceStage when submit button is pressed', () => {
         var expectedResult = {
             attributes: {
                 aBooleanAttribute: true
@@ -107,10 +105,9 @@ describe('ConditionalUser.vue', () => {
         wrapper.vm.save({});
 
         expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult]));
-        done();
     });
 
-    it('ConditionalUser save() sends proper input to advanceStage when there is an empty requirements object', (done) => {
+    it('ConditionalUser save() sends proper input to advanceStage when there is an empty requirements object', () => {
         var expectedResult = {};
 
         const wrapper = mountWrapper();
@@ -118,10 +115,9 @@ describe('ConditionalUser.vue', () => {
         wrapper.vm.save(true);
 
         expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult]));
-        done();
     });
 
-    it('ConditionalUser save() sends proper input to advanceStage when terms are updated', (done) => {
+    it('ConditionalUser save() sends proper input to advanceStage when terms are updated', () => {
         var expectedResult = {
             accept: 'true'
         };
@@ -133,6 +129,33 @@ describe('ConditionalUser.vue', () => {
         wrapper.vm.save();
 
         expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult]));
-        done();
+    });
+
+    it('ConditionalUser sets isSingleBooleanForm properly', () => {
+        const wrapper = mountWrapper();
+
+        wrapper.vm.handleBooleanValues();
+
+        expect(wrapper.vm.isSingleBooleanForm).to.equal(true);
+
+        // add another boolean property
+        wrapper.vm.selfServiceDetails.requirements.attributes.push({
+            name: 'anotherBooleanAttribute',
+            isRequired: true,
+            schema: {
+                type: 'boolean'
+            }
+        });
+
+        wrapper.vm.handleBooleanValues();
+
+        expect(wrapper.vm.isSingleBooleanForm).to.equal(false);
+    });
+
+    it('ConditionalUser component tries to advance stage when selfServiceDetails is updated', () => {
+        const wrapper = mountWrapper();
+
+        wrapper.vm.selfServiceDetails.requirements = {};
+        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([{}]));
     });
 });

@@ -1,5 +1,5 @@
 <template>
-    <fr-center-card :showLogo="true">
+    <fr-center-card :showLogo="true" v-if="showForm">
         <div slot="center-card-header">
             <h2 class="h2">{{displayName}}</h2>
         </div>
@@ -53,7 +53,8 @@
                 loadingColor: styles.baseColor,
                 apiType: null,
                 purpose: null,
-                displayName: null
+                displayName: null,
+                showForm: false
             };
         },
         mounted () {
@@ -68,6 +69,7 @@
                 this.selfServiceType = type;
 
                 if (_.has(details, 'requirements.uiConfig')) {
+                    this.showForm = true;
                     this.displayName = details.requirements.uiConfig.displayName;
                     this.purpose = details.requirements.uiConfig.purpose;
                     // Can skip the stage by default
@@ -85,6 +87,7 @@
                         this.selfServiceDetails.canSkip = false;
                     }
                 } else if (details.tag === 'end' && details.status.success) {
+                    this.showForm = false;
                     /* istanbul ignore next */
                     this.setUser();
                 }

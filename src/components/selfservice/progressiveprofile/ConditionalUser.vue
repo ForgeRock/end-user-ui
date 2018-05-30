@@ -54,35 +54,8 @@
                 isSingleBooleanForm: false
             };
         },
-        beforeMount () {
-            if (_.isEmpty(this.selfServiceDetails.requirements)) {
-                /* Empty requirements means we need to advance the stage with empty input.
-                 to get back an actual set of requirements. This is needed to support multiple
-                 progressiveProfile forms  */
-                this.save(true);
-            }
-        },
         mounted () {
-            /* If there is only one attribute being collected and that attribute is boolean
-                we will hide the single checkbox in the checked state so when the submit button
-                is clicked the attribute will be saved as true. */
-            if (
-                _.has(this.selfServiceDetails, 'requirements.attributes') &&
-                this.selfServiceDetails.requirements.attributes.length === 1 &&
-                _.filter(this.selfServiceDetails.requirements.attributes, (prop) => {
-                    return prop.schema.type === 'boolean';
-                }).length === 1
-            ) {
-                this.isSingleBooleanForm = true;
-            }
-
-            // Special handling here for existing boolean values
-            _.each(this.selfServiceDetails.requirements.attributes, (property) => {
-                if (property.schema.type === 'boolean') {
-                    this.$refs[property.name][0].checked = this.isSingleBooleanForm || property.value;
-                    this.saveDetails[property.name] = this.isSingleBooleanForm || property.value;
-                }
-            });
+            this.handleBooleanValues();
         },
         methods: {
             getData () {
@@ -112,6 +85,50 @@
                 } else {
                     this.$emit('advanceStage', this.getData());
                 }
+            },
+            handleBooleanValues () {
+                /* If there is only one attribute being collected and that attribute is boolean
+                    we will hide the single checkbox in the checked state so when the submit button
+                    is clicked the attribute will be saved as true. */
+                if (
+                    _.has(this.selfServiceDetails, 'requirements.attributes') &&
+                    this.selfServiceDetails.requirements.attributes.length === 1 &&
+                    _.filter(this.selfServiceDetails.requirements.attributes, (prop) => {
+                        return prop.schema.type === 'boolean';
+                    }).length === 1
+                ) {
+                    this.isSingleBooleanForm = true;
+                } else {
+                    this.isSingleBooleanForm = false;
+                }
+                // Special handling here for existing boolean values
+                _.each(this.selfServiceDetails.requirements.attributes, (property) => {
+                    if (this.isSingleBooleanForm) {
+                        this.saveDetails[property.name] = true;
+                    } else if (property.schema.type === 'boolean') {
+                        this.saveDetails[property.name] = property.value;
+                    }
+                });
+            }
+        },
+        watch: {
+            selfServiceDetails: {
+                handler (val) {
+                    /* When selfServiceDetails changes we know this is either
+                       the first time this component is loaded or in the case
+                       of multiple progressive profile forms it means we have
+                       a new form and it needs to 're-initialize' itself */
+                    if (_.isEmpty(this.selfServiceDetails.requirements)) {
+                        /* Empty requirements means we need to advance the stage with empty input.
+                         to get back an actual set of requirements. This is needed to support multiple
+                         progressiveProfile forms  */
+                        this.save(true);
+                    } else {
+                        this.saveDetails = {};
+                        this.handleBooleanValues();
+                    }
+                },
+                deep: true
             }
         }
     };
