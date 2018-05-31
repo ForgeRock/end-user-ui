@@ -57,7 +57,14 @@ export default
                 profile: 'Profile',
                 dashboard: 'Dashboard',
                 user: 'User',
-                signOut: 'Sign Out'
+                signOut: 'Sign Out',
+                notifications: {
+                    noNotifications: 'No notifications available',
+                    title: 'Notifications',
+                    clearAll: 'Clear All',
+                    removedAll: 'Removed all notifications',
+                    removed: 'Removed notification'
+                }
             },
             dashboard: {
                 noWidget: 'No Widgets Available',

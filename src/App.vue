@@ -28,7 +28,8 @@
                         </b-button>
                     </b-nav-form>
                     <!-- Right aligned nav items -->
-                    <b-navbar-nav class="ml-auto">
+                    <b-navbar-nav class="ml-auto flex-row">
+                        <fr-notification></fr-notification>
                         <b-nav-item-dropdown right>
                             <template slot="button-content">
                                 {{$t('pages.app.user')}} <b-img src="static/images/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
@@ -65,8 +66,13 @@
 </template>
 
 <script>
+    import ToolbarNotification from '@/components/utils/ToolbarNotification';
+
     export default {
         name: 'App',
+        components: {
+            'fr-notification': ToolbarNotification
+        },
         data: function () {
             return {
                 toggled: false
