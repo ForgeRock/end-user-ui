@@ -5,7 +5,7 @@
             :panelShown="false">
 
             <template slot="list-item-header" class="overflow:hidden;">
-                    <b-img :src="getImgUrl(mapping.icon)" style="overflow:hidden;" class="mr-3" width="24" height="24" :alt="mapping.name" />
+                    <fr-fallback-image :src="mapping.icon" class="mr-3" width="24" height="24" :alt="mapping.name" fallback="fa-gear"></fr-fallback-image>
                     <div class="media-body" style="width: 100%">
                         <div class="d-block">
                             <h6 class="my-0">{{mapping.displayName}}</h6>
@@ -55,6 +55,7 @@
 <script>
     import _ from 'lodash';
     import moment from 'moment';
+    import FallbackImage from '@/components/utils/FallbackImage';
     import ListGroup from '@/components/utils/ListGroup';
     import ListItem from '@/components/utils/ListItem';
     import AccessLevel from './AccessLevel';
@@ -64,7 +65,8 @@
         components: {
             'fr-list-group': ListGroup,
             'fr-list-item': ListItem,
-            'fr-access-level': AccessLevel
+            'fr-access-level': AccessLevel,
+            'fr-fallback-image': FallbackImage
         },
         props: [ 'consentedMappings' ],
         data () {
@@ -111,18 +113,6 @@
                 });
         },
         methods: {
-            imageLoadErrorHandler (event) {
-                event.target.src = 'static/images/mapping-default.svg';
-            },
-            getImgUrl (icon) {
-                if (_.isNull(icon) || _.isUndefined(icon)) {
-                    return 'static/images/mapping-default.svg';
-                } else if (icon.length === 0) {
-                    return 'static/images/mapping-default.svg';
-                } else {
-                    return icon;
-                }
-            },
             showModal (name) {
                 _.first(this.$refs[name]).show();
             },
