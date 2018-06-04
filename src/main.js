@@ -124,9 +124,11 @@ Vue.mixin({
         getRequestService: function (config) {
             let baseURL = idmDefaultContext,
                 timeout = 1000,
-                headers = {
-                    'content-type': 'application/json'
-                },
+                headers = _.extend({
+                    'content-type': 'application/json',
+                    'cache-control': 'no-cache',
+                    'x-requested-with': 'XMLHttpRequest'
+                }, this.$root.applicationStore.state.authHeaders || {}),
                 instance;
 
             if (config) {
@@ -162,11 +164,13 @@ Vue.mixin({
             return instance;
         },
         getAnonymousHeaders: function () {
-            return {
+            let headers = this.$root.applicationStore.state.authHeaders || {
                 'X-OpenIDM-NoSession': true,
                 'X-OpenIDM-Password': 'anonymous',
                 'X-OpenIDM-Username': 'anonymous'
             };
+
+            return headers;
         },
         displayNotification: function (notificationType, message) {
             /* istanbul ignore next */
@@ -174,6 +178,35 @@ Vue.mixin({
                 group: 'IDMMessages',
                 type: notificationType,
                 text: message
+            });
+        },
+        logoutUser: function () {
+            /* istanbul ignore next */
+            let idmInstance = this.getRequestService({
+                    headers: this.getAnonymousHeaders()
+                }),
+                logoutUrl = _.clone(this.$root.applicationStore.state.authLogoutUrl);
+
+            /* istanbul ignore next */
+            idmInstance.post('/authentication?_action=logout').then(() => {
+                this.$root.userStore.clearStoreAction();
+
+                if (logoutUrl) {
+                    let logoutInstance = axios.create({
+                        baseURL: logoutUrl,
+                        timeout: 1000,
+                        headers: {
+                            'content-type': 'application/json'
+                        }
+                    });
+
+                    this.$root.applicationStore.clearAuthHeadersAction();
+                    this.$root.applicationStore.clearAuthLogoutUrlAction();
+
+                    logoutInstance.get();
+                }
+
+                this.$router.push('/login');
             });
         }
     }

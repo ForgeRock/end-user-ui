@@ -3,6 +3,7 @@
         <button class="btn btn-lg btn-light btn-block fr-btn-social mb-3"
                 type="button"
                 v-for="(provider, index) in providers"
+                v-if="provider.uiConfig"
                 :key="index"
                 :style="socialButtonStyles[index]"
                 @click="goToIDP(provider.provider)"
@@ -53,7 +54,17 @@
                     .then((response) => {
                         this.providers = response.data.providers || [];
                         _.each(this.providers, (provider, index) => {
-                            this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
+                            /* If this is fullStack we need to tell the app to use oauth
+                               headers on authenticated requests after being logged inspect
+                               then immediately redirect to am's login. */
+                            if (provider.provider === 'OPENAM' && this.providers.length === 1) {
+                                if (!window.location.search) {
+                                    sessionStorage.setItem('setAuthHeaders', true);
+                                    this.goToIDP('OPENAM');
+                                }
+                            } else {
+                                this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
+                            }
                         });
                     })
                     .catch((error) => {

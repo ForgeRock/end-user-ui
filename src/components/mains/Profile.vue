@@ -75,12 +75,7 @@
                 /* istanbul ignore next */
                 let successMsg = config.successMsg || this.$t('common.user.profile.updateSuccess'),
                     userId = this.$root.userStore.state.userId,
-                    headers = config.headers || {
-                        'content-type': 'application/json',
-                        'cache-control': 'no-cache',
-                        'x-requested-with': 'XMLHttpRequest'
-                    },
-                    selfServiceInstance = this.getRequestService({ headers });
+                    selfServiceInstance = this.getRequestService();
 
                 /* istanbul ignore next */
                 selfServiceInstance.patch(`managed/user/${userId}`, payload).then((response) => {

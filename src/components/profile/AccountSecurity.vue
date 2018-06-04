@@ -1,9 +1,9 @@
 <template>
     <fr-list-group :title="$t('pages.profile.accountSecurity.title')" :subtitle="$t('pages.profile.accountSecurity.subtitle')">
-        
+
         <fr-edit-password @updateProfile="sendUpdateProfile"></fr-edit-password>
         <fr-edit-kba v-if="isOnKBA" :kbaData="kbaData" @updateProfile="sendUpdateProfile"></fr-edit-kba>
-        
+
     </fr-list-group>
 </template>
 
@@ -33,11 +33,7 @@
         mounted () {
             /* istanbul ignore next */
             let selfServiceInstance = this.getRequestService({
-                headers: {
-                    'X-OpenIDM-NoSession': true,
-                    'X-OpenIDM-Password': 'anonymous',
-                    'X-OpenIDM-Username': 'anonymous'
-                }
+                headers: this.getAnonymousHeaders()
             });
 
             // TODO - replace this with call to 'Liveness Service'

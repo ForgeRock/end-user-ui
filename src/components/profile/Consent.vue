@@ -33,7 +33,7 @@
                             <p v-if="mapping.consented" v-html="$t('pages.profile.consent.confirmDeny', {mappingName: mapping.displayName})"></p>
                             <fr-access-level v-else :fields="mapping.fields"></fr-access-level>
                         </b-container>
-                        
+
                         <div slot="modal-footer">
                             <div class="float-right">
                                 <b-btn variant="outline-secondary" @click.stop.prevent="hideModal(mapping.name)">{{$t('common.form.cancel')}}</b-btn>
@@ -99,14 +99,8 @@
             }
         },
         created () {
-            const headers = {
-                'content-type': 'application/json',
-                'cache-control': 'no-cache',
-                'x-requested-with': 'XMLHttpRequest'
-            };
-
             /* istanbul ignore next */
-            this.getRequestService({headers})
+            this.getRequestService()
                 .post('consent?_action=getConsentMappings')
                 .then(({data}) => {
                     this.consentableMappings = data;

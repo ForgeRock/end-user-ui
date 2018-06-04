@@ -6,13 +6,17 @@ import _ from 'lodash';
  *      @param {boolean} passwordReset - Flag to allow the UI to know the password reset feature is available
  *      @param {boolean} usernameRecovery - Flag to allow the UI to know the username recovery feature is available
  *      @param {boolean} registration - Flag to allow the UI to know the registration feature is available
+ *      @param {object} authHeaders - Request headers needed for authenticated requests in fullStack mode
+ *      @param {object} authLogoutUrl - logoutUrl for user logged in via fullStack
  */
 export default {
     state: {
         workflow: false,
         passwordReset: false,
         usernameRecovery: false,
-        registration: false
+        registration: false,
+        authHeaders: null,
+        authLogoutUrl: null
     },
 
     setWorkflowAction (available) {
@@ -61,10 +65,28 @@ export default {
         });
     },
 
+    setAuthHeadersAction (headers) {
+        this.state.authHeaders = headers;
+    },
+
+    clearAuthHeadersAction () {
+        this.state.authHeaders = null;
+    },
+
+    setAuthLogoutUrlAction (logoutUrl) {
+        this.state.authLogoutUrl = logoutUrl;
+    },
+
+    clearAuthLogoutUrlAction () {
+        this.state.authLogoutUrl = null;
+    },
+
     clearEnduserSelfservice () {
         this.state.workflow = false;
         this.state.passwordReset = false;
         this.state.usernameRecovery = false;
         this.state.registration = false;
+        this.state.authHeaders = null;
+        this.state.authLogoutUrl = null;
     }
 };

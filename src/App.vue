@@ -34,7 +34,7 @@
                                 {{$t('pages.app.user')}} <b-img src="static/images/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
                             </template>
                             <b-dropdown-item active-class="fr-no-active" exact-active-class="fr-no-active" to="profile">{{$t('pages.app.profile')}}</b-dropdown-item>
-                            <b-dropdown-item @click.prevent="signOut()">{{$t('pages.app.signOut')}}</b-dropdown-item>
+                            <b-dropdown-item @click.prevent="logoutUser()">{{$t('pages.app.signOut')}}</b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>
                 </b-navbar>
@@ -75,20 +75,6 @@
         methods: {
             onToggle () {
                 this.toggled = !this.toggled;
-            },
-
-            signOut () {
-                /* istanbul ignore next */
-                let idmInstance = this.getRequestService({
-                    headers: this.getAnonymousHeaders()
-                });
-
-                /* istanbul ignore next */
-                idmInstance.post('/authentication?_action=logout').then(() => {
-                    this.$root.userStore.clearStoreAction();
-
-                    this.$router.push('/login');
-                });
             }
         }
     };

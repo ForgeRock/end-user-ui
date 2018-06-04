@@ -88,35 +88,17 @@
         methods: {
             deleteAccount () {
                 /* istanbul ignore next */
-                let selfServiceInstance = this.getRequestService({
-                    headers: {
-                        'content-type': 'application/json',
-                        'cache-control': 'no-cache',
-                        'x-requested-with': 'XMLHttpRequest'
-                    }
-                });
+                let selfServiceInstance = this.getRequestService();
 
                 /* istanbul ignore next */
                 selfServiceInstance.delete(`managed/user/${this.$root.userStore.state.userId}`).then(() => {
                     this.$refs.deleteModal.hide();
-
-                    selfServiceInstance.post('/authentication?_action=logout').then(() => {
-                        this.displayNotification('success', this.$t('pages.profile.accountControls.deleteAccountSuccessful'));
-
-                        this.$root.userStore.clearStoreAction();
-
-                        this.$router.push('/login');
-                    });
+                    this.displayNotification('success', this.$t('pages.profile.accountControls.deleteAccountSuccessful'));
+                    this.logoutUser();
                 });
             },
             downloadAccount () {
-                let selfServiceInstance = this.getRequestService({
-                    headers: {
-                        'content-type': 'application/json',
-                        'cache-control': 'no-cache',
-                        'x-requested-with': 'XMLHttpRequest'
-                    }
-                });
+                let selfServiceInstance = this.getRequestService();
 
                 /* istanbul ignore next */
                 selfServiceInstance.get(`/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=*,idps/*,_meta/createDate,_meta/lastChanged,_meta/termsAccepted,_meta/loginCount`, []).then((result) => {
