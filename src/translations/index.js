@@ -74,7 +74,8 @@ export default
                 signIn: 'Sign In',
                 newHere: 'New here?',
                 createAccount: 'Create an account',
-                badPassword: "Sorry, that password isn't right. We can help you ",
+                badPassword: "Sorry, that password isn't right.",
+                weCanHelp: 'We can help you',
                 recoverPassword: 'recover your password.',
                 forgotUsername: 'Forgot username?',
                 forgotPassword: 'Forgot password?'
