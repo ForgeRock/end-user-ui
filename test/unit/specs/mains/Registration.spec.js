@@ -107,7 +107,7 @@ describe('Registration.vue', () => {
     });
 
     it('should properly compute title and subtitle', () => {
-        const wrapper = mount(Registration, {
+        const wrapper = shallow(Registration, {
                 i18n,
                 stubs: {
                     'router-link': true

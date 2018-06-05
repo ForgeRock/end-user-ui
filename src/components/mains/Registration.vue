@@ -1,32 +1,34 @@
 <template>
-    <b-container fluid class="h-100 px-0" v-if="!showSelfService">
-        <div class="h-100 d-flex">
-            <div class="m-auto fr-center-card">
-                <bounce-loader :color="loadingColor"></bounce-loader>
+    <div class="h-100">
+        <b-container fluid class="h-100 px-0" v-show="!showSelfService">
+            <div class="h-100 d-flex">
+                <div class="m-auto fr-center-card">
+                    <bounce-loader :color="loadingColor"></bounce-loader>
+                </div>
             </div>
+        </b-container>
+
+        <div v-show="showSelfService">
+            <fr-center-card :showLogo="true" v-if="selfServiceType !== 'localAutoLogin'">
+                <div slot="center-card-header">
+                    <h2 v-show="title.length > 0" class="h2">{{title}}</h2>
+                    <p v-show="subtitle.length > 0" class='text-center mb-0'>{{subtitle}}</p>
+                </div>
+
+                <b-card-body slot="center-card-body">
+                    <component ref="selfServiceStage" v-show="showSelfService"
+                               :is="selfServiceType"
+                               :selfServiceDetails="selfServiceDetails"
+                               @advanceStage="advanceStage">
+                    </component>
+                </b-card-body>
+
+                <b-card-footer slot="center-card-footer">
+                    {{$t('pages.selfservice.registration.haveAccount')}}
+                    <router-link action="" to="login">{{$t('pages.selfservice.registration.signIn')}}</router-link>
+                </b-card-footer>
+            </fr-center-card>
         </div>
-    </b-container>
-
-    <div v-else>
-        <fr-center-card :showLogo="true" v-if="selfServiceType !== 'localAutoLogin'">
-            <div slot="center-card-header">
-                <h2 v-show="title.length > 0" class="h2">{{title}}</h2>
-                <p v-show="subtitle.length > 0" class='text-center mb-0'>{{subtitle}}</p>
-            </div>
-
-            <b-card-body slot="center-card-body">
-                <component ref="selfServiceStage" v-show="showSelfService"
-                           :is="selfServiceType"
-                           :selfServiceDetails="selfServiceDetails"
-                           @advanceStage="advanceStage">
-                </component>
-            </b-card-body>
-
-            <b-card-footer slot="center-card-footer">
-                {{$t('pages.selfservice.registration.haveAccount')}}
-                <router-link action="" to="login">{{$t('pages.selfservice.registration.signIn')}}</router-link>
-            </b-card-footer>
-        </fr-center-card>
     </div>
 </template>
 
