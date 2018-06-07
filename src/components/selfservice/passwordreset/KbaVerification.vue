@@ -11,7 +11,7 @@
         </div>
 
         <b-button @click="save" :block="true" size="lg" variant="primary">
-            {{$t('common.form.submit')}}
+            {{$tc('common.user.kba.submitAnswers', selfServiceDetails.requirements.required.length)}}
         </b-button>
 
     </b-form>

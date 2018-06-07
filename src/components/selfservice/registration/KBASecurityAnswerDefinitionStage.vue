@@ -27,7 +27,7 @@
             <hr v-if="key !== answers.length - 1">
         </b-form-group>
 
-        <b-button v-if="!inline" @click="save" :block="true" size="lg" variant="primary">{{$t("common.form.submit")}}</b-button>
+        <b-button v-if="!inline" @click="save" :block="true" size="lg" variant="primary">{{$t("pages.selfservice.registration.completeRegistration")}}</b-button>
     </b-form>
 </template>
 

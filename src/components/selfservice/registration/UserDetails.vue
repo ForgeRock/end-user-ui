@@ -22,7 +22,7 @@
         </div>
 
         <b-button v-if="inline === false" @click="save" :block="true" size="lg" variant="primary">
-            {{$t("common.form.submit")}}
+            {{$t("common.form.signUp")}}
         </b-button>
     </b-form>
 </template>

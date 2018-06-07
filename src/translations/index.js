@@ -31,7 +31,8 @@ export default
                     custom: 'Provide your own:',
                     question: 'Question',
                     answer: 'Answer',
-                    saveQuestions: 'Save questions'
+                    saveQuestions: 'Save questions',
+                    submitAnswers: 'Verify Answer | Verify Answers'
                 }
             },
             policyValidationMessages: {
@@ -105,7 +106,8 @@ export default
                         title: 'Privacy & Consent',
                         agreement: 'I agree'
                     },
-                    emailValidation: 'An email has been sent to the address you entered. Click the link in that email to proceed.'
+                    emailValidation: 'An email has been sent to the address you entered. Click the link in that email to proceed.',
+                    completeRegistration: 'Complete Registration'
                 },
                 forgotUsername: {
                     advanceStageButtonText: 'Recover Username',
