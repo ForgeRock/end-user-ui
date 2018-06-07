@@ -107,7 +107,21 @@ export default
                         agreement: 'I agree'
                     },
                     emailValidation: 'An email has been sent to the address you entered. Click the link in that email to proceed.',
-                    completeRegistration: 'Complete Registration'
+                    completeRegistration: 'Complete Registration',
+                    stageTitle: {
+                        captcha: 'Verify You\'re Human',
+                        consent: '',
+                        emailValidation: '',
+                        kbaSecurityAnswerDefinitionStage: 'Create Security Questions',
+                        termsAndConditions: ''
+                    },
+                    stageSubtitle: {
+                        captcha: 'No robots allowed',
+                        consent: '',
+                        emailValidation: '',
+                        kbaSecurityAnswerDefinitionStage: '',
+                        termsAndConditions: ''
+                    }
                 },
                 forgotUsername: {
                     advanceStageButtonText: 'Recover Username',
@@ -122,7 +136,8 @@ export default
                     errorMessage: 'Error resetting your password',
                     successMessage: 'Your password has been reset.',
                     newPassword: 'New password',
-                    changePassword: 'Change Password'
+                    changePassword: 'Change Password',
+                    kbaVerificationStageDescription: 'Verify your identity by answering security questions'
                 },
                 progressiveProfile: {
                     skipThis: 'Skip this'

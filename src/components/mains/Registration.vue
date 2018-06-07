@@ -10,8 +10,8 @@
     <div v-else>
         <fr-center-card :showLogo="true" v-if="selfServiceType !== 'localAutoLogin'">
             <div slot="center-card-header">
-                <h2 class="h2">{{$t("pages.selfservice.registration.signUp")}}</h2>
-                <p class='text-center mb-0'>{{$t('pages.selfservice.registration.signUpMsg')}}</p>
+                <h2 v-show="title.length > 0" class="h2">{{title}}</h2>
+                <p v-show="subtitle.length > 0" class='text-center mb-0'>{{subtitle}}</p>
             </div>
 
             <b-card-body slot="center-card-body">
@@ -44,6 +44,14 @@
     import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
     import _ from 'lodash';
 
+    const customTitleComponents = [
+        'captcha',
+        'consent',
+        'emailValidation',
+        'kbaSecurityAnswerDefinitionStage',
+        'termsAndConditions'
+    ];
+
     export default {
         name: 'Registration',
         components: {
@@ -70,6 +78,22 @@
                 apiType: 'registration',
                 clientTokenUsed: false
             };
+        },
+        computed: {
+            title () {
+                if (_.includes(customTitleComponents, this.selfServiceType)) {
+                    return this.$t(`pages.selfservice.registration.stageTitle.${this.selfServiceType}`);
+                } else {
+                    return this.$t('pages.selfservice.registration.signUp');
+                }
+            },
+            subtitle () {
+                if (_.includes(customTitleComponents, this.selfServiceType)) {
+                    return this.$t(`pages.selfservice.registration.stageSubtitle.${this.selfServiceType}`);
+                } else {
+                    return this.$t('pages.selfservice.registration.signUpMsg');
+                }
+            }
         },
         mounted () {
             if (this.$route.params.queryParams) {

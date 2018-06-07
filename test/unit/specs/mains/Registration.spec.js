@@ -105,4 +105,26 @@ describe('Registration.vue', () => {
 
         expect(wrapper.vm.showSelfService).to.equal(true);
     });
+
+    it('should properly compute title and subtitle', () => {
+        const wrapper = mount(Registration, {
+                i18n,
+                stubs: {
+                    'router-link': true
+                }
+            }),
+            customTitleComponents = [
+                'captcha',
+                'consent',
+                'emailValidation',
+                'kbaSecurityAnswerDefinitionStage',
+                'termsAndConditions'
+            ];
+
+        customTitleComponents.forEach((component) => {
+            wrapper.setData({selfServiceType: component});
+            expect(wrapper.vm.title).to.equal(wrapper.vm.$t(`pages.selfservice.registration.stageTitle.${component}`));
+            expect(wrapper.vm.subtitle).to.equal(wrapper.vm.$t(`pages.selfservice.registration.stageSubtitle.${component}`));
+        });
+    });
 });

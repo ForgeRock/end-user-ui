@@ -1,6 +1,8 @@
 <template>
     <b-form @keyup.enter="save" @submit.prevent>
-
+        <p class='text-center mb-4'>
+            {{$t(`pages.selfservice.passwordReset.kbaVerificationStageDescription`)}}
+        </p>
         <div class="form-group text-left"
             v-for="(value, key) in answers"
             :key="key">
