@@ -207,6 +207,13 @@ export default
                     subtitle: 'Control how your data is shared with third parties.',
                     title: 'Personal Data Sharing'
                 }
+            },
+            uma: {
+                activity: {
+                    'Authorisation_Granted': 'You shared',
+                    'Policy_Created': 'You created',
+                    'Policy_Updated': 'You updated sharing setting for'
+                }
             }
         }
     }
