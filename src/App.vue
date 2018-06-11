@@ -15,6 +15,9 @@
                     <li>
                         <router-link to="profile"><i class="fa fa-fw mr-3 fa-street-view"></i><span class="sidebar-item-text">{{$t('pages.app.profile')}}</span></router-link>
                     </li>
+                    <li>
+                        <router-link to="sharing"><i class="fa fa-fw mr-3 fa-share"></i><span class="sidebar-item-text">{{$t('pages.app.sharing')}}</span></router-link>
+                    </li>
                 </ul>
             </div>
             <div id="appContentWrapper" :class="[{'fr-no-toolbar': this.$route.meta.hideToolbar}]">
@@ -98,7 +101,7 @@
         -o-transition: all 0.2s ease;
         transition: all 0.2s ease;
 
-        .container {
+        .container, .container-fluid {
             @media(min-width:768px) {
                 padding-left: $grid-gutter-width;
                 padding-right: $grid-gutter-width;

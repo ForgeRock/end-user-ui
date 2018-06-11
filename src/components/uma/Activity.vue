@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-for="activityGroup in activityGroups">
-            <fr-list-group> 
+            <fr-list-group>
                 <div class="card-body m-0 py-4" slot="list-group-header">
                     <h6 class="card-title mb-0">{{formatDateTitle(activityGroup.day)}}</h6>
                 </div>
@@ -46,20 +46,22 @@
             }
         },
         data () {
-            let sortedHistory = this.umaHistory.sort((a, b) => a.eventTime - b.eventTime).reverse(),
-                groups = _.groupBy(sortedHistory, (event) => {
-                    return moment(event.eventTime).format('YYYY-MM-DD');
-                }),
-                activityGroups = _.keys(groups).map((day) => {
-                    return { day, activities: groups[day] };
-                }),
-                sortedActivityGroups = _.sortBy(activityGroups, ({day}) => {
+            return {};
+        },
+        computed: {
+            activityGroups () {
+                let sortedHistory = this.umaHistory.sort((a, b) => a.eventTime - b.eventTime).reverse(),
+                    groups = _.groupBy(sortedHistory, (event) => {
+                        return moment(event.eventTime).format('YYYY-MM-DD');
+                    }),
+                    activityGroups = _.keys(groups).map((day) => {
+                        return { day, activities: groups[day] };
+                    });
+
+                return _.sortBy(activityGroups, ({day}) => {
                     return moment(day);
                 }).reverse();
-
-            return {
-                activityGroups: sortedActivityGroups
-            };
+            }
         },
         methods: {
             formatDateTitle (dateString) {

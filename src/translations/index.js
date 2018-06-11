@@ -25,7 +25,11 @@ export default
             },
             user: {
                 profile: {
-                    updateSuccess: 'Successfully updated your profile.'
+                    updateSuccess: 'Updated your profile.'
+                },
+                sharing: {
+                    shareSuccess: 'Shared your resource.',
+                    unshareSuccess: 'Unshared your resource.'
                 },
                 kba: {
                     description: 'Select security question(s) below. These questions will help us verify your identity if you forget your password.',
@@ -56,6 +60,7 @@ export default
             app: {
                 profile: 'Profile',
                 dashboard: 'Dashboard',
+                sharing: 'Sharing',
                 user: 'User',
                 signOut: 'Sign Out',
                 notifications: {
@@ -237,6 +242,28 @@ export default
                     'Authorisation_Granted': 'You shared',
                     'Policy_Created': 'You created',
                     'Policy_Updated': 'You updated sharing setting for'
+                },
+                resources: {
+                    noDataState: 'You haven\'t shared anything yet.',
+                    search: 'Search...',
+                    viewAs: 'View as',
+                    list: 'List',
+                    grid: 'Grid',
+                    cancel: 'Cancel',
+                    share: 'Share',
+                    unshare: 'Unshare',
+                    unshareAll: 'Unshare all',
+                    shareWith: 'Share with...',
+                    resourceNotShared: 'Resource not shared',
+                    sharedWithPeople: 'Shared with {numberOf} people',
+                    sharedWithPerson: 'Shared with 1 person',
+                    warningMessage: 'Sharing disabled. You\'ll still keep a copy.',
+                    unshareResource: 'Unshare "{resourceName}" ?',
+                    sameShareError: 'Cannot reshare resource with {requestingParty}.  Unshare with requesting party before changing permissions',
+                    noRequestingParty: 'No requesting party defined.'
+                },
+                notifications: {
+                    requests: 'Requests'
                 }
             }
         }

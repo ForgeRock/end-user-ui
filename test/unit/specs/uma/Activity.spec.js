@@ -4,15 +4,17 @@ import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { mount } from '@vue/test-utils';
+import sinon from 'sinon';
+
+Activity.components['fr-fallback-image'] = sinon.stub();
 
 const history = [
-    { 'eventTime': 1528304489098, 'activity': 'test' },
-    { 'eventTime': 1527877853977, 'activity': 'test' },
-    { 'eventTime': 1527877854977, 'activity': 'test' }
+    { 'eventTime': 1528304489098, 'activity': 'test', type: 'Policy_Created' },
+    { 'eventTime': 1527877853977, 'activity': 'test', type: 'Policy_Created' },
+    { 'eventTime': 1527877854977, 'activity': 'test', type: 'Policy_Created' }
 ];
 
 describe('Uma Activity Component', () => {
-    Vue.use(BootstrapVue);
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
 
@@ -22,7 +24,7 @@ describe('Uma Activity Component', () => {
     });
     let wrapper;
 
-    beforeEach(() => {
+    before(() => {
         wrapper = mount(Activity, {
             i18n,
             propsData: {
@@ -31,7 +33,7 @@ describe('Uma Activity Component', () => {
         });
     });
 
-    afterEach(() => {
+    after(() => {
         wrapper = undefined;
     });
 

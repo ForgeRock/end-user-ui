@@ -20,7 +20,7 @@
         },
         mounted () {
             /* istanbul ignore next */
-            axios.get(`/${this.src}`).then(({status}) => {
+            axios.get(`${this.src}`).then(({status}) => {
                 this.imageFound = status === 200;
             }).catch((error) => {
                 if (error) {

@@ -9,6 +9,8 @@ import PasswordReset from '@/components/mains/PasswordReset';
 import ProgressiveProfile from '@/components/mains/ProgressiveProfile';
 import Registration from '@/components/mains/Registration';
 import AccountClaiming from '@/components/selfservice/registration/AccountClaiming';
+import Sharing from '@/components/mains/Sharing';
+
 // import Styleguide from '../../styleguide/Styleguide';
 /**
  * Available toolbar configuration
@@ -109,6 +111,14 @@ export default new Router({
             name: 'ProgressiveProfileInitiate',
             component: ProgressiveProfile,
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
+        },
+        {
+            path: '/sharing',
+            name: 'Sharing',
+            component: Sharing,
+            meta: {
+                authenticate: true
+            }
         },
         /*
         {

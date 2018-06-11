@@ -22,7 +22,6 @@
                         <fr-consent :consentedMappings="profile.consentedMappings" @updateProfile="updateProfile"></fr-consent>
                         <fr-account-controls></fr-account-controls>
                     </b-tab>
-                    <b-tab :title="$t('pages.profile.activity')"></b-tab>
                 </b-tabs>
             </b-col>
         </b-row>
