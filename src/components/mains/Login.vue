@@ -99,6 +99,7 @@
                                     this.$root.userStore.setProfileAction(profile.data);
                                     this.$root.userStore.setSchemaAction(schema.data);
 
+                                    window.history.pushState('', '', window.location.pathname);
                                     this.$router.push('/profile');
                                 }))
                                 .catch((error) => {

@@ -7,7 +7,8 @@
             loadData () {
                 /* istanbul ignore next */
                 const selfServiceInstance = this.getRequestService({
-                    headers: this.getAnonymousHeaders()
+                    headers: this.getAnonymousHeaders(),
+                    timeout: 3000
                 });
                 /* istanbul ignore next */
                 selfServiceInstance.get(`/selfservice/${this.apiType}`)
@@ -33,7 +34,8 @@
 
                 /* istanbul ignore next */
                 const selfServiceInstance = this.getRequestService({
-                        headers: headers
+                        headers: _.extend(headers, {'X-Requested-With': 'XMLHttpRequest'}),
+                        timeout: 5000
                     }),
                     saveData = {
                         input: {}

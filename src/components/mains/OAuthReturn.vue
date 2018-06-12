@@ -10,14 +10,12 @@
 
 <script>
     import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
-    import CenterCard from '@/components/utils/CenterCard';
     import styles from '../../scss/main.scss';
     import _ from 'lodash';
 
     export default {
         name: 'OAuth-Return',
         components: {
-            'fr-center-card': CenterCard,
             'bounce-loader': BounceLoader
         },
         data () {
@@ -35,6 +33,8 @@
                 return map;
             }, {});
 
+            window.history.pushState('', '', window.location.pathname);
+
             /* istanbul ignore next */
             const socialInstance = this.getRequestService({
                 headers: _.extend(this.getAnonymousHeaders(), {
@@ -45,6 +45,7 @@
 
             /* istanbul ignore next */
             localStorage.removeItem('dataStoreToken');
+
             /* istanbul ignore next */
             socialInstance.post('/identityProviders?_action=handlePostAuth', queryParams)
                 .then((response) => {
@@ -60,6 +61,9 @@
 
                     socialLoginInstance.post('/authentication?_action=login')
                         .then((response) => {
+                            let originalToken = localStorage.getItem('accountClaimingToken');
+                            localStorage.removeItem('accountClaimingToken');
+
                             /* If setAuthHeaders is true we know this if fullStack mode.
                                We need to set the headers to be used on all this user's authenticated requests.
                                Basically re-logging in on every request with a valid am token. We also need to
@@ -78,24 +82,35 @@
                             // Check for progressive profiling.
                             if (
                                 _.has(response, 'data.authorization.requiredProfileProcesses') &&
+                                _.isString(response.data.authorization.requiredProfileProcesses) &&
                                 response.data.authorization.requiredProfileProcesses.length > 0
                             ) {
                                 let profileProcess = response.data.authorization.requiredProfileProcesses[0].split('/')[1];
                                 this.$router.push(`/profileCompletion/${profileProcess}`);
                             } else {
-                                window.history.pushState('', '', window.location.pathname);
-                                this.$router.push('/profile');
+                                if (_.isNull(originalToken)) {
+                                    this.$router.push('/profile');
+                                } else {
+                                    this.$router.push({
+                                        name: 'AccountClaiming',
+                                        params: {
+                                            clientToken: dataStoreToken,
+                                            originalToken: originalToken
+                                        }
+                                    });
+                                }
                             }
                         })
                         .catch(() => {
-                            // TODO: ATTEMPT SOCIAL ACCOUNT LINKING OPENIDM-10441
-
-                            // ELSE JUST DO REGISTRATION:
-                            this.$router.push({name: 'Registration', params: {clientToken: response.data.token}});
+                            this.$router.push({
+                                name: 'AccountClaiming',
+                                params: {
+                                    clientToken: dataStoreToken
+                                }
+                            });
                         });
                 })
                 .catch((error) => {
-                    window.history.pushState('', '', window.location.pathname);
                     this.$router.push('/login');
                     this.displayNotification('error', error.response.data.message);
                 });

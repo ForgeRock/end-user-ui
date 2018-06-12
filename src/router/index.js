@@ -8,6 +8,7 @@ import Profile from '@/components/mains/Profile';
 import PasswordReset from '@/components/mains/PasswordReset';
 import ProgressiveProfile from '@/components/mains/ProgressiveProfile';
 import Registration from '@/components/mains/Registration';
+import AccountClaiming from '@/components/selfservice/registration/AccountClaiming';
 // import Styleguide from '../../styleguide/Styleguide';
 /**
  * Available toolbar configuration
@@ -15,6 +16,13 @@ import Registration from '@/components/mains/Registration';
  */
 export default new Router({
     routes: [
+        // Facebook returns this after the hash and it is not a configuration option that can be turned off.
+        // Added this so social doesn't 404 on facebook login.
+        {
+            path: '/_=_',
+            redirect: '/login',
+            meta: { hideToolbar: true }
+        },
         {
             path: '/',
             redirect: '/dashboard',
@@ -48,6 +56,13 @@ export default new Router({
             path: '/registration',
             name: 'Registration',
             component: Registration,
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
+            props: true
+        },
+        {
+            path: '/accountClaiming',
+            name: 'AccountClaiming',
+            component: AccountClaiming,
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
             props: true
         },

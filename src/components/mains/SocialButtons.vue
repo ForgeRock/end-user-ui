@@ -17,7 +17,7 @@
             <span class="ml-1" v-else>{{$t("pages.selfservice.social.signUp")}} {{provider.uiConfig.buttonDisplayName}}</span>
         </button>
 
-        <div class="fr-form-break text-muted mb-3">
+        <div class="fr-form-break text-muted mb-3" v-if="this.filterProviders.length === 0">
             <div></div>
             <div>{{$t("pages.selfservice.social.or")}}</div>
             <div></div>
@@ -31,7 +31,11 @@
     export default {
         name: 'Social-Buttons',
         props: {
-            'signin': Boolean
+            'signin': Boolean,
+            'filterProviders': {
+                type: Array,
+                default: () => { return []; }
+            }
         },
         data () {
             return {
@@ -52,7 +56,12 @@
                 /* istanbul ignore next */
                 socialInstance.get('/authentication')
                     .then((response) => {
-                        this.providers = response.data.providers || [];
+                        this.providers = _.filter(response.data.providers || [], (provider, index) => {
+                            if (this.filterProviders.length === 0 || _.includes(this.filterProviders, provider.provider)) {
+                                return true;
+                            }
+                        });
+
                         _.each(this.providers, (provider, index) => {
                             /* If this is fullStack we need to tell the app to use oauth
                                headers on authenticated requests after being logged inspect
@@ -68,7 +77,7 @@
                         });
                     })
                     .catch((error) => {
-                        console.log(error);
+                        this.displayNotification('error', error.response.data.message);
                     });
             },
             hover (index, style) {

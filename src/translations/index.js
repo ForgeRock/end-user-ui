@@ -133,6 +133,15 @@ export default
                         termsAndConditions: ''
                     }
                 },
+                accountClaiming: {
+                    title: 'You have an existing account',
+                    passwordDesc: 'To continue, please sign in with you email <strong>{account}</strong> to link accounts.',
+                    socialDesc: 'To continue, please sign in to your {providers} account to link accounts.',
+                    link: 'Link Accounts',
+                    return: 'Back to sign in',
+                    linked: 'Accounts Linked!',
+                    error: 'Unable to link accounts'
+                },
                 forgotUsername: {
                     advanceStageButtonText: 'Recover Username',
                     yourUsername: 'Your username is',
