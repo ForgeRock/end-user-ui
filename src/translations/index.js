@@ -14,7 +14,9 @@ export default
                 cancel: 'Cancel',
                 saveChanges: 'Save changes',
                 edit: 'Edit',
-                save: 'Save'
+                save: 'Save',
+                remove: 'Remove',
+                confirm: 'Confirm'
             },
             placeholders: {
                 password: 'Password',
@@ -177,6 +179,12 @@ export default
                 preferences: {
                     title: 'Preferences',
                     subtitle: 'Set your communications preferences.'
+                },
+                trustedDevices: {
+                    title: 'Trusted Devices',
+                    subtitle: 'Devices you have signed in on.',
+                    removeConfirmation: 'Are you sure you want to remove "{deviceName}" from your list of trusted devices?',
+                    removeSuccess: '"{deviceName}" successfully removed from your list of trusted devices'
                 },
                 editProfile: {
                     userDetailsTitle: 'Edit your personal info',

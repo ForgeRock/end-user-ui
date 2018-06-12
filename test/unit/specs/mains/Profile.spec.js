@@ -20,19 +20,31 @@ describe('Profile.vue', () => {
 
     it('Profile page loaded', () => {
         let userStore = {
-            state: {
-                givenName: '',
-                sn: '',
-                email: '',
-                userName: '',
-                profile: sinon.stub()
-            }
-        };
+                state: {
+                    givenName: '',
+                    sn: '',
+                    email: '',
+                    userName: '',
+                    profile: sinon.stub()
+                }
+            },
+            applicationStore = {
+                state: {
+                    workflow: false,
+                    passwordReset: false,
+                    usernameRecovery: false,
+                    registration: false,
+                    authHeaders: null,
+                    authLogoutUrl: null,
+                    amDataEndpoints: null
+                }
+            };
 
         const wrapper = shallow(Profile, {
             i18n,
             mocks: {
-                userStore
+                userStore,
+                applicationStore
             }
         });
 

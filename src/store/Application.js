@@ -8,6 +8,7 @@ import _ from 'lodash';
  *      @param {boolean} registration - Flag to allow the UI to know the registration feature is available
  *      @param {object} authHeaders - Request headers needed for authenticated requests in fullStack mode
  *      @param {object} authLogoutUrl - logoutUrl for user logged in via fullStack
+ *      @param {object} amDataEndpoints - AM endpoints required for fullStack
  */
 export default {
     state: {
@@ -16,7 +17,16 @@ export default {
         usernameRecovery: false,
         registration: false,
         authHeaders: null,
-        authLogoutUrl: null
+        authLogoutUrl: null,
+        amDataEndpoints: null
+    },
+
+    setAmDataEndpointsAction (amDataEndpoints) {
+        this.state.amDataEndpoints = amDataEndpoints;
+    },
+
+    clearAmDataEndpointsAction () {
+        this.state.amDataEndpoints = null;
     },
 
     setWorkflowAction (available) {
@@ -88,5 +98,6 @@ export default {
         this.state.registration = false;
         this.state.authHeaders = null;
         this.state.authLogoutUrl = null;
+        this.state.amDataEndpoints = null;
     }
 };
