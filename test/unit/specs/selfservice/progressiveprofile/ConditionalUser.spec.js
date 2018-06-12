@@ -104,7 +104,7 @@ describe('ConditionalUser.vue', () => {
 
         wrapper.vm.save({});
 
-        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult]));
+        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult, true]));
     });
 
     it('ConditionalUser save() sends proper input to advanceStage when there is an empty requirements object', () => {
@@ -114,7 +114,7 @@ describe('ConditionalUser.vue', () => {
 
         wrapper.vm.save(true);
 
-        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult]));
+        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult, true]));
     });
 
     it('ConditionalUser save() sends proper input to advanceStage when terms are updated', () => {
@@ -128,7 +128,7 @@ describe('ConditionalUser.vue', () => {
 
         wrapper.vm.save();
 
-        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult]));
+        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([expectedResult, true]));
     });
 
     it('ConditionalUser sets isSingleBooleanForm properly', () => {
@@ -156,6 +156,6 @@ describe('ConditionalUser.vue', () => {
         const wrapper = mountWrapper();
 
         wrapper.vm.selfServiceDetails.requirements = {};
-        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([{}]));
+        expect(JSON.stringify(wrapper.emitted().advanceStage[0])).to.equal(JSON.stringify([{}, true]));
     });
 });

@@ -71,19 +71,19 @@
             },
             save (advanceEmpty) {
                 if (advanceEmpty === true) {
-                    this.$emit('advanceStage', {});
+                    this.$emit('advanceStage', {}, true);
                 } else if (_.has(this.selfServiceDetails, 'requirements.terms')) {
-                    this.$emit('advanceStage', {accept: 'true'});
+                    this.$emit('advanceStage', {accept: 'true'}, true);
                 } else if (_.has(this.selfServiceDetails, 'requirements.properties.kba')) {
                     // If this is kbaUpdate we need to validate the inputs.
                     /* istanbul ignore next */
                     this.$refs.kbaUpdate.isValid().then((valid) => {
                         if (valid) {
-                            this.$emit('advanceStage', this.$refs.kbaUpdate.getData());
+                            this.$emit('advanceStage', this.$refs.kbaUpdate.getData(), true);
                         }
                     });
                 } else {
-                    this.$emit('advanceStage', this.getData());
+                    this.$emit('advanceStage', this.getData(), true);
                 }
             },
             handleBooleanValues () {

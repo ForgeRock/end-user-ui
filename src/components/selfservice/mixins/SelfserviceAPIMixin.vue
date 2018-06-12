@@ -19,11 +19,11 @@
                         this.displayNotification('error', error.response.data.message);
                     });
             },
-            advanceStage (data, noSession) {
+            advanceStage (data, noSessionFalse) {
                 /* istanbul ignore next */
                 let headers = this.getAnonymousHeaders();
                 /* istanbul ignore next */
-                if (noSession) {
+                if (noSessionFalse) {
                     headers = {
                         'X-OpenIDM-NoSession': false,
                         'X-OpenIDM-Password': null,
