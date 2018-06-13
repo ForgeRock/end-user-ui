@@ -124,11 +124,11 @@ Vue.mixin({
         getRequestService: function (config) {
             let baseURL = idmDefaultContext,
                 timeout = 1000,
-                headers = _.extend({
+                headers = {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache',
                     'x-requested-with': 'XMLHttpRequest'
-                }, this.$root.applicationStore.state.authHeaders || {}),
+                },
                 instance;
 
             if (config) {
@@ -140,10 +140,12 @@ Vue.mixin({
                     timeout = config.timeout;
                 }
 
-                if (config.headers) {
+                if (config.headers && !_.isEmpty(config.headers)) {
                     headers = config.headers;
                 }
             }
+
+            headers = _.extend(headers, this.$root.applicationStore.state.authHeaders || {});
 
             instance = axios.create({
                 baseURL: baseURL,

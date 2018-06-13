@@ -78,12 +78,15 @@
                 /* istanbul ignore next */
                 let successMsg = config.successMsg || this.$t('common.user.profile.updateSuccess'),
                     userId = this.$root.userStore.state.userId,
-                    selfServiceInstance = this.getRequestService();
+                    selfServiceInstance = this.getRequestService({
+                        headers: config.headers
+                    });
 
                 /* istanbul ignore next */
                 selfServiceInstance.patch(`managed/user/${userId}`, payload).then((response) => {
                     this.$root.userStore.setProfileAction(response.data);
                     this.displayNotification('success', successMsg);
+
                     if (config.onSuccess) {
                         config.onSuccess();
                     }
@@ -92,6 +95,7 @@
                     /* istanbul ignore next */
                     let errorMsg = config.errorMsg || error.response.data.message;
                     this.displayNotification('error', errorMsg);
+
                     if (config.onError) {
                         config.onError();
                     }

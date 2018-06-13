@@ -5,7 +5,7 @@
                 <h6>{{$t('pages.profile.accountSecurity.password')}}</h6>
             </div>
             <div class="d-flex ml-3 align-self-center">
-                <div class="btn btn-sm btn-link float-right btn-cancel" ref="cancel">{{$t('common.form.cancel')}}</div>
+                <div class="btn btn-sm btn-link float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
                 <div class="btn btn-sm btn-link float-right btn-edit">{{$t('common.form.edit')}}</div>
             </div>
         </div>
@@ -82,6 +82,10 @@
             };
         },
         methods: {
+            clearComponent () {
+                this.currentPassword = '';
+                this.newPassword = '';
+            },
             resetComponent () {
                 this.loading = false;
                 this.currentPassword = '';

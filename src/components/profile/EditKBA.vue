@@ -5,7 +5,7 @@
                 <h6 class="my-0">{{$t('pages.profile.accountSecurity.securityQuestions')}}</h6>
             </div>
             <div class="d-flex ml-3 align-self-center">
-                <div class="btn btn-link btn-sm float-right btn-cancel" ref="cancel">{{$t('common.form.cancel')}}</div>
+                <div class="btn btn-link btn-sm float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
                 <div class="btn btn-link btn-sm float-right btn-edit">{{$t('common.form.edit')}}</div>
             </div>
         </div>
@@ -34,7 +34,7 @@
                             </div>
 
                             <div class="form-group mb-0">
-                                <label for="inputAnswer1">{{$t('common.user.kba.answer')}}</label>
+                                <label>{{$t('common.user.kba.answer')}}</label>
                                 <b-form-input type="text" class="form-control"
                                     v-model.trim="select.answer" 
                                     v-validate="'required'"
@@ -107,6 +107,7 @@
                 this.selectOptions.unshift({value: null, text: this.$t('common.user.kba.selectQuestion'), disabled: true});
                 this.selectOptions.push({value: this.customIndex, text: this.$t('common.user.kba.custom'), disabled: false});
             },
+
             generatePatch () {
                 let values = _.map(this.selected, (field) => {
                     if (field.custom) {
@@ -128,24 +129,33 @@
                     value: values
                 }];
             },
-            resetComponent () {
-                this.loading = false;
-                _.each(this.selected, (s) => {
-                    s.answer = '';
-                });
-                this.$refs.cancel.click();
-            },
-            onSaveKBA () {
-                /* istanbul ignore next */
-                const onSuccess = this.resetComponent.bind(this);
 
+            clearComponent () {
+                this.loading = false;
+
+                this.questions = {};
+                this.selectOptions = [];
+                this.selected = [];
+                this.customIndex = null;
+
+                this.questions = this.kbaData.questions;
+                this.initializeForm(this.kbaData.minimumAnswersToDefine);
+
+                this.errors.clear();
+            },
+
+            onSaveKBA () {
                 this.isValid().then((valid) => {
                     if (valid) {
                         this.loading = true;
-                        this.$emit('updateProfile', this.generatePatch(), { onSuccess });
+
+                        this.$emit('updateProfile', this.generatePatch(), { onSuccess: () => {
+                            this.$refs.cancel.click();
+                        }});
                     }
                 });
             },
+
             isValid () {
                 /* istanbul ignore next */
                 return this.$validator.validateAll();
