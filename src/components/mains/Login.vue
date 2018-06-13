@@ -58,12 +58,6 @@
                 wrongPasswordSubmitted: false
             };
         },
-        beforeMount () {
-            /* istanbul ignore next */
-            if (window.location.search && window.location.search.includes('state')) {
-                this.$router.push('/oauthReturn');
-            }
-        },
         methods: {
             submit () {
                 /* istanbul ignore next */

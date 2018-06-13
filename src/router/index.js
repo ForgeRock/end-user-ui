@@ -36,8 +36,16 @@ export default new Router({
         {
             path: '/login',
             name: 'Login',
+            alias: ['/_=_'], // Need alias for catching Facebook odd oAuth return
             component: Login,
-            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
+            beforeEnter: (to, from, next) => {
+                if (window.location.search && window.location.search.includes('state')) {
+                    next('/oauthReturn');
+                } else {
+                    next();
+                }
+            }
         },
         {
             path: '/profile',
