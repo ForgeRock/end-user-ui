@@ -1,5 +1,5 @@
 <template>
-    <b-modal id="userDetailsModal" class="fr-full-screen" ref="fsModal" cancel-variant="outline-secondary" @keydown.enter.native.prevent="saveForm">
+    <b-modal id="userDetailsModal" class="fr-full-screen" ref="fsModal" cancel-variant="outline-secondary" @show="setModal" @keydown.enter.native.prevent="saveForm">
 
         <div slot="modal-header" class="d-flex w-100 h-100">
             <h5 class="modal-title align-self-center text-center">{{title}}</h5>
@@ -75,11 +75,10 @@
             profile: { type: Object, required: true }
         },
         data () {
-            let formFields = this.generateFormFields();
             return {
                 color: colors.primary,
-                formFields,
-                originalFormFields: _.cloneDeep(formFields),
+                formFields: [],
+                originalFormFields: [],
                 title: this.$t('pages.profile.editProfile.userDetailsTitle')
             };
         },
@@ -106,6 +105,12 @@
             },
             hideModal () {
                 this.$refs.fsModal.hide();
+            },
+            setModal () {
+                let formFields = this.generateFormFields();
+
+                this.formFields = formFields;
+                this.originalFormFields = _.cloneDeep(formFields);
             },
             createPatches (o, n) {
                 let originalFrom = _.cloneDeep(o),
