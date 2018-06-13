@@ -1,41 +1,40 @@
 <template>
-    <fr-list-group v-show="devices" :title="$t('pages.profile.trustedDevices.title')" :subtitle="$t('pages.profile.trustedDevices.subtitle')">
-        <template v-if="devices.length > 0">
-            <fr-list-item v-for="(device, id) in devices" :key="id"
+    <fr-list-group v-show="oauthApplications" :title="$t('pages.profile.oauthApplications.title')" :subtitle="$t('pages.profile.oauthApplications.subtitle')">
+        <template v-if="oauthApplications.length > 0">
+            <fr-list-item v-for="(application, id) in oauthApplications" :key="id"
                 :collapsible="false"
                 :panelShown="false">
-
                 <div slot="list-item-header" class="d-inline-flex w-100">
                     <div class="d-flex mr-3 align-self-top">
-                        <fr-fallback-image :src="device.logo_uri" fallback="fa-television m-auto pt-1 pb-1"></fr-fallback-image>
+                        <img :src="application.logo_uri || 'static/images/authorized-app.svg'" width="25"/>
                     </div>
                     <div class="flex-grow-1">
                         <div>
-                            {{device.name}}
+                            {{application._id}}
                         </div>
-                        <small class="text-muted subtext">{{device.lastSelectedDate}}</small>
+                        <small class="text-muted subtext">{{$t('pages.profile.oauthApplications.expires')}} {{new Date(application.expiryDateTime).toUTCString()}}</small>
                     </div>
-                    <a class="align-self-center flex-grow-2 text-right" @click.prevent="showConfirmationModal(device)" href="#">{{$t('common.form.remove')}}</a>
+                    <a class="align-self-center flex-grow-2 text-right" @click.prevent="showConfirmationModal(application)" href="#">{{$t('common.form.remove')}}</a>
                 </div>
             </fr-list-item>
         </template>
         <template v-else>
             <b-list-group-item class="noncollapse text-center">
-                {{$t('pages.profile.trustedDevices.noDevices')}}
+                {{$t('pages.profile.oauthApplications.noApplications')}}
             </b-list-group-item>
         </template>
 
 
-        <b-modal id="trustedDevicesConfirmationModal" class="" ref="fsModal" cancel-variant="outline-secondary">
+        <b-modal id="authAppConfirmationModal" class="" ref="fsModal" cancel-variant="outline-secondary">
             <div slot="modal-header" class="d-flex w-100 h-100">
                 <h6 class="my-0">{{ $t('common.form.confirm') }}</h6>
                 <button type="button" aria-label="Close" class="close" @click="$refs.fsModal.hide()"><i class="fa fa-times"></i></button>
             </div>
-            {{ $t('pages.profile.trustedDevices.removeConfirmation', {deviceName: confirmDevice.name }) }}
+            {{ $t('pages.profile.oauthApplications.removeConfirmation', {applicationName: confirmApplication.name }) }}
             <div slot="modal-footer">
                 <div class="float-right">
                     <b-btn variant="outline-secondary" @click="$refs.fsModal.hide()">{{$t('common.form.cancel')}}</b-btn>
-                    <b-btn type="button" variant="danger" @click="removeDevice(confirmDevice.id)">{{$t('common.form.remove')}}</b-btn>
+                    <b-btn type="button" variant="danger" @click="removeApplication(confirmApplication.id)">{{$t('common.form.remove')}}</b-btn>
                 </div>
             </div>
         </b-modal>
@@ -48,7 +47,7 @@
     import FallbackImage from '@/components/utils/FallbackImage';
 
     export default {
-        name: 'Trusted-Devices',
+        name: 'Authorized-Applications',
         components: {
             'fr-list-group': ListGroup,
             'fr-list-item': ListItem,
@@ -56,8 +55,8 @@
         },
         data () {
             return {
-                devices: {},
-                confirmDevice: {
+                oauthApplications: {},
+                confirmApplication: {
                     name: '',
                     id: null
                 }
@@ -73,33 +72,32 @@
                 let userName = this.$root.userStore.state.userName,
                     query = '?_queryId=*',
                     selfServiceInstance = this.getRequestService(),
-                    url = this.$root.applicationStore.state.amDataEndpoints.baseUrl + userName + this.$root.applicationStore.state.amDataEndpoints.trustedDevices + query;
+                    url = this.$root.applicationStore.state.amDataEndpoints.baseUrl + userName + this.$root.applicationStore.state.amDataEndpoints.oauthApplications + query;
 
                 /* istanbul ignore next */
                 // by default CORS requests don't allow cookies, the 'withCredentials: true' flag allows it
                 selfServiceInstance.get(url, { withCredentials: true }).then((response) => {
-                    this.devices = response.data.result;
+                    this.oauthApplications = response.data.result;
                 })
                 .catch((error) => {
                     /* istanbul ignore next */
                     this.displayNotification('error', error.response.data.message);
                 });
             },
-            showConfirmationModal (device) {
-                this.confirmDevice.id = device.uuid;
-                this.confirmDevice.name = device.name;
+            showConfirmationModal (application) {
+                this.confirmApplication.id = application._id;
                 this.$refs.fsModal.show();
             },
-            removeDevice (deviceId) {
+            removeApplication (applicationId) {
                 /* istanbul ignore next */
                 let userName = this.$root.userStore.state.userName,
                     selfServiceInstance = this.getRequestService(),
-                    url = this.$root.applicationStore.state.amDataEndpoints.baseUrl + userName + this.$root.applicationStore.state.amDataEndpoints.trustedDevices + deviceId;
+                    url = this.$root.applicationStore.state.amDataEndpoints.baseUrl + userName + this.$root.applicationStore.state.amDataEndpoints.oauthApplications + applicationId;
 
                 /* istanbul ignore next */
                 // by default CORS requests don't allow cookies, the 'withCredentials: true' flag allows it
                 selfServiceInstance.delete(url, { withCredentials: true }).then(() => {
-                    this.displayNotification('success', this.$t('pages.profile.trustedDevices.removeSuccess', { deviceName: this.confirmDevice.name }));
+                    this.displayNotification('success', this.$t('pages.profile.oauthApplications.removeSuccess', { applicationName: this.confirmApplication.id }));
                     this.loadData();
                     this.$refs.fsModal.hide();
                 })

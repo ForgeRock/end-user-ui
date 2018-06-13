@@ -201,11 +201,20 @@ export default
                     title: 'Preferences',
                     subtitle: 'Set your communications preferences.'
                 },
+                oauthApplications: {
+                    title: 'Authorized Applications',
+                    subtitle: 'These apps can access your account.',
+                    removeConfirmation: 'Are you sure you want to remove "{applicationName}" from your list of authorized applications?',
+                    removeSuccess: '"{applicationName}" successfully removed.',
+                    expires: 'Expires: ',
+                    noApplications: 'No Authorized Applications'
+                },
                 trustedDevices: {
                     title: 'Trusted Devices',
-                    subtitle: 'Devices you have signed in on.',
+                    subtitle: 'Devices you have signed in with.',
                     removeConfirmation: 'Are you sure you want to remove "{deviceName}" from your list of trusted devices?',
-                    removeSuccess: '"{deviceName}" successfully removed from your list of trusted devices'
+                    removeSuccess: '"{deviceName}" successfully removed.',
+                    noDevices: 'No Trusted Devices'
                 },
                 editProfile: {
                     userDetailsTitle: 'Edit your personal info',

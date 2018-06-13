@@ -17,6 +17,7 @@
                 <b-tabs>
                     <b-tab :title="$t('pages.profile.settings')" active>
                         <fr-account-security @updateProfile="updateProfile"></fr-account-security>
+                        <fr-authorized-applications v-if="$root.applicationStore.state.amDataEndpoints"></fr-authorized-applications>
                         <fr-trusted-devices v-if="$root.applicationStore.state.amDataEndpoints"></fr-trusted-devices>
                         <fr-preferences @updateProfile="updateProfile"></fr-preferences>
                         <fr-consent :consentedMappings="profile.consentedMappings" @updateProfile="updateProfile"></fr-consent>
@@ -35,6 +36,7 @@
     import EditPersonalInfo from '@/components/profile/EditPersonalInfo';
     import Preferences from '@/components/profile/Preferences';
     import TrustedDevices from '@/components/profile/TrustedDevices';
+    import AuthorizedApplications from '@/components/profile/AuthorizedApplications';
     import Consent from '@/components/profile/Consent';
 
     export default {
@@ -51,6 +53,7 @@
             'fr-edit-personal-info': EditPersonalInfo,
             'fr-preferences': Preferences,
             'fr-trusted-devices': TrustedDevices,
+            'fr-authorized-applications': AuthorizedApplications,
             'fr-consent': Consent
         },
         mounted () {
