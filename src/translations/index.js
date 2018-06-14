@@ -2,10 +2,6 @@ export default
 {
     en: {
         common: {
-            errors: {
-                notFound: 'Not Found',
-                notFoundAdditional: 'Please send help'
-            },
             form: {
                 submit: 'Submit',
                 agree: 'I Agree',
@@ -70,6 +66,10 @@ export default
                     removedAll: 'Removed all notifications',
                     removed: 'Removed notification'
                 }
+            },
+            notFound: {
+                couldNotFind: 'We couldn\'t find the page you were looking for.',
+                returnToDashboard: 'Return to dashboard'
             },
             dashboard: {
                 noWidget: 'No Widgets Available',
