@@ -1,7 +1,7 @@
 <template>
     <b-container fluid>
         <template v-if="requestsLoaded">
-            <b-tabs class='mt-4' v-if="false"> <!--resources && resources.length > 0"> -->
+            <b-tabs class='mt-4' v-if="resources && resources.length > 0">
                 <b-tab title='Resources' active>
                     <fr-resources
                         @renderShareModal="renderShareModal"
@@ -9,7 +9,7 @@
                         :resources="resources"></fr-resources>
                 </b-tab>
                 <b-tab title='Activity' v-if="activity && activity.length > 0">
-                    <fr-activity :umaHistory="activity"></fr-activity>
+                    <fr-activity :umaHistory="umaHistory"></fr-activity>
                 </b-tab>
                 <b-tab title='Requests'>
                     <template slot="title">
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+    import _ from 'lodash';
     import Activity from '@/components/uma/Activity';
     import CenterCard from '@/components/utils/CenterCard';
     import Requests from '@/components/uma/Requests';
@@ -70,13 +71,27 @@
         computed: {
             amDataEndpoints () {
                 return this.$root.applicationStore.state.amDataEndpoints;
+            },
+            umaHistory () {
+                return _.map(this.activity, (res) => {
+                    let resource = _.find(this.resources, {_id: res.resourceSetId});
+
+                    if (_.has(resource, 'uri')) {
+                        res.icon_url = resource.uri;
+                    }
+
+                    return res;
+                });
             }
         },
-        mounted () {
-            this.getResources();
-            this.getActivity();
+        beforeMount () {
+            this.loadData();
         },
         methods: {
+            loadData () {
+                this.getResources();
+                this.getActivity();
+            },
             getResources () {
                 /* istanbul ignore next */
                 let userName = this.$root.userStore.state.userName,
@@ -158,7 +173,7 @@
                         config.onSuccess();
                     }
                     this.displayNotification('success', successMsg);
-                    this.getResources();
+                    this.loadData();
                 })
                 .catch((error) => {
                     if (error.response.status === 409) {
@@ -179,7 +194,7 @@
                 /* istanbul ignore next */
                 selfServiceInstance.delete(url, { withCredentials: true }).then((response) => {
                     this.displayNotification('success', successMsg);
-                    this.getResources();
+                    this.loadData();
                 })
                 .catch((error) => {
                     /* istanbul ignore next */
@@ -187,22 +202,20 @@
                 });
             },
             modifyResource (resourceId, payload, config = {}) {
-                let successMsg = config.unshare ? this.$t('common.user.sharing.unshareSuccess') : this.$t('common.user.sharing.shareSuccess'),
+                let successMsg = config.unshare ? this.$t('common.user.sharing.unshareSuccess') : this.$t('common.user.sharing.modifySuccess'),
                     userName = this.$root.userStore.state.userName,
                     url = this.amDataEndpoints.baseUrl + userName + '/uma/policies/' + resourceId,
-                    selfServiceInstance = this.getRequestService();
+                    selfServiceInstance = this.getRequestService(),
+                    headers = { 'Accept-API-Version': 'protocol=1.0,resource=1.0' };
 
-                selfServiceInstance.delete(url, { withCredentials: true })
-                .then((res) => {
-                    return selfServiceInstance.put(url, payload, { withCredentials: true });
-                })
+                selfServiceInstance.put(url, payload, { withCredentials: true, headers })
                 .then((res) => {
                     if (config.onSuccess) {
                         config.onSuccess();
                     }
 
                     this.displayNotification('success', successMsg);
-                    this.getResources();
+                    this.loadData();
                 })
                 .catch((error) => {
                     /* istanbul ignore next */

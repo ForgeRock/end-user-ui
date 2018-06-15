@@ -15,7 +15,7 @@
                     <li>
                         <router-link to="profile"><i class="fa fa-fw mr-3 fa-street-view"></i><span class="sidebar-item-text">{{$t('pages.app.profile')}}</span></router-link>
                     </li>
-                    <li>
+                    <li v-if="$root.applicationStore.state.amDataEndpoints">
                         <router-link to="sharing"><i class="fa fa-fw mr-3 fa-share"></i><span class="sidebar-item-text">{{$t('pages.app.sharing')}}</span></router-link>
                     </li>
                 </ul>

@@ -25,7 +25,8 @@ export default
                 },
                 sharing: {
                     shareSuccess: 'Shared your resource.',
-                    unshareSuccess: 'Unshared your resource.'
+                    unshareSuccess: 'Unshared your resource.',
+                    modifySuccess: 'Successfully modified resource permissions'
                 },
                 kba: {
                     description: 'Select security question(s) below. These questions will help us verify your identity if you forget your password.',
@@ -248,8 +249,8 @@ export default
             },
             uma: {
                 activity: {
-                    'Authorisation_Granted': 'You shared',
-                    'Policy_Created': 'You created',
+                    'Authorisation_Granted': 'You created',
+                    'Policy_Created': 'You shared',
                     'Policy_Updated': 'You updated sharing setting for'
                 },
                 resources: {

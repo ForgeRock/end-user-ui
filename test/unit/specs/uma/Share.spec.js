@@ -54,6 +54,19 @@ describe('Sharing.vue', () => {
         });
     });
 
+    it('Emits "modifyResource" event', () => {
+        const wrapper = shallow(Share, {
+            i18n,
+            propsData: propsData
+        });
+
+        wrapper.vm.modifyResource('bob', 'view');
+
+        Vue.nextTick(() => {
+            expect(wrapper.emitted('modifyResource').length).to.equal(1);
+        });
+    });
+
     it('Emits "shareResource" event', () => {
         const propsData = {
                 resource: {

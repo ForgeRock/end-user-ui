@@ -43,7 +43,7 @@
                           </template>
                           <form class="px-4 py-2" @click.stop>
                                 <div class="form-check mb-1" v-for="(value, scope) in newScopes" :key="scope">
-                                    <input type="checkbox" class="form-check-input mr-1" id="viewCheck" :checked="value" disabled>
+                                    <input type="checkbox" class="form-check-input mr-1" id="viewCheck" :checked="permission.scopes.includes(scope)" @click="modifyResource(permission.subject, scope)">
                                     <label class="form-check-label" for="viewCheck">{{scope}}</label>
                                 </div>
                             </form>
@@ -174,6 +174,28 @@
                 }
 
                 this.hideModal();
+            },
+            modifyResource (subject, changedScope) {
+                let newPermissions = _.map(this.resource.policy.permissions,
+                    (permission) => {
+                        if (permission.subject === subject) {
+                            let scopesLength = permission.scopes.length;
+
+                            permission.scopes = _.filter(permission.scopes, (scope) => { return scope !== changedScope; });
+
+                            if (scopesLength === permission.scopes.length) {
+                                permission.scopes.push(changedScope);
+                            }
+                        }
+
+                        return permission;
+                    }),
+                    payload = {
+                        'policyId': this.resource._id,
+                        'permissions': newPermissions
+                    };
+
+                this.$emit('modifyResource', this.resource._id, payload);
             }
         }
     };
