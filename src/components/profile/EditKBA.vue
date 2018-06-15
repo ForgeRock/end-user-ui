@@ -39,6 +39,7 @@
                                     v-model.trim="select.answer" 
                                     v-validate="'required'"
                                     data-vv-validate-on="submit"
+                                    :data-vv-as="$t('common.user.kba.answer')"
                                     :name="$t('common.user.kba.answer') + select.index"
                                     :class="[{'is-invalid': errors.has($t('common.user.kba.answer') + select.index)}, 'form-control']"></b-form-input>
 

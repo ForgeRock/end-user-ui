@@ -8,6 +8,7 @@
                    v-model="inputValue"
                    :placeholder="label"
                    v-validate="validateRules"
+                   :data-vv-as="label"
                    data-vv-validate-on="submit"
                    :name="fieldName"/>
             <div v-if="reveal" class="input-group-append">

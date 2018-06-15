@@ -19,6 +19,7 @@
                                        :name="field.name"
                                        :type="field.type"
                                        :class="[{'is-invalid': errors.has(field.name)}, 'form-control']"
+                                       :data-vv-as="field.title"
                                        v-model.trim="formFields[index].value">
                                 <fr-validation-error :validatorErrors="errors" :fieldName="field.name"></fr-validation-error>
                             </b-form-group>

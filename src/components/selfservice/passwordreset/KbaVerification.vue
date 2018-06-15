@@ -8,7 +8,7 @@
             :key="key">
             <label class="col-form-label pt-0 pb-2" :for="key">{{questionText[key]}}</label>
 
-            <input :key="key" v-validate="'required'" autofocus="true" :class="{'form-control': true, 'is-invalid': errors.has(key)}" :name="key" :id="key"  v-model.trim="answers[key]" />
+            <input :key="key" v-validate="'required'" :data-vv-as="$t('common.user.kba.answer')" autofocus="true" :class="{'form-control': true, 'is-invalid': errors.has(key)}" :name="key" :id="key"  v-model.trim="answers[key]" />
             <fr-validation-error :validatorErrors="errors" :fieldName="key"></fr-validation-error>
         </div>
 
