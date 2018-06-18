@@ -38,7 +38,6 @@
 </template>
 
 <script>
-    import _ from 'lodash';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
     import CenterCard from '@/components/utils/CenterCard';
     import axios from 'axios';
@@ -80,13 +79,7 @@
                         this.$root.userStore.setManagedResourceAction(userDetails.data.authorization.component);
                         this.$root.userStore.setRolesAction(userDetails.data.authorization.roles);
                         // Check for progressive profiling.
-                        if (
-                            _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
-                            userDetails.data.authorization.requiredProfileProcesses.length > 0
-                        ) {
-                            let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
-                            this.$router.push(`/profileCompletion/${profileProcess}`);
-                        } else {
+                        this.progressiveProfileCheck(userDetails, () => {
                             axios.all([
                                 loginServiceInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
                                 loginServiceInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, schema) => {
@@ -100,7 +93,7 @@
                                     /* istanbul ignore next */
                                     this.displayNotification('error', error.response.data.message);
                                 });
-                        }
+                        });
                     })
                     .catch(() => {
                         this.wrongPasswordSubmitted = true;

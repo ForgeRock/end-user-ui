@@ -139,10 +139,12 @@
 
                         /* istanbul ignore next */
                         socialLoginInstance.post('/authentication?_action=login')
-                            .then(() => {
-                                this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
-                                window.history.pushState('', '', window.location.pathname);
-                                this.$router.push('/profile');
+                            .then((userDetails) => {
+                                this.progressiveProfileCheck(userDetails, () => {
+                                    this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
+                                    window.history.pushState('', '', window.location.pathname);
+                                    this.$router.push('/profile');
+                                });
                             })
                             .catch(() => {
                                 window.history.pushState('', '', window.location.pathname);
@@ -196,16 +198,10 @@
                 idmInstance.post('/authentication?_action=logout').then(() => {
                     loginServiceInstance.post('/authentication?_action=login').then((userDetails) => {
                         // Check for progressive profiling.
-                        if (
-                            _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
-                            userDetails.data.authorization.requiredProfileProcesses.length > 0
-                        ) {
-                            let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
-                            this.$router.push(`/profileCompletion/${profileProcess}`);
-                        } else {
+                        this.progressiveProfileCheck(userDetails, () => {
                             this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
                             this.$router.push('/');
-                        }
+                        });
                     })
                         .catch((error) => {
                             /* istanbul ignore next */

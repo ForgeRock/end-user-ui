@@ -80,14 +80,7 @@
                             }
 
                             // Check for progressive profiling.
-                            if (
-                                _.has(response, 'data.authorization.requiredProfileProcesses') &&
-                                _.isString(response.data.authorization.requiredProfileProcesses) &&
-                                response.data.authorization.requiredProfileProcesses.length > 0
-                            ) {
-                                let profileProcess = response.data.authorization.requiredProfileProcesses[0].split('/')[1];
-                                this.$router.push(`/profileCompletion/${profileProcess}`);
-                            } else {
+                            this.progressiveProfileCheck(response, () => {
                                 if (_.isNull(originalToken)) {
                                     this.$router.push('/profile');
                                 } else {
@@ -99,7 +92,7 @@
                                         }
                                     });
                                 }
-                            }
+                            });
                         })
                         .catch(() => {
                             this.$router.push({

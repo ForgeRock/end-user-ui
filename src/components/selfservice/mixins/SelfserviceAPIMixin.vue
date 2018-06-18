@@ -16,15 +16,25 @@
                         this.setChildComponent(selfServiceDetails.data.type, selfServiceDetails.data);
                     })
                     .catch((error) => {
-                        /* istanbul ignore next */
-                        this.displayNotification('error', error.response.data.message);
+                        /*
+                            If we are in progressive profiling mode we need to route back to login.
+                            This can happen if a user reloads the progressive profile page while
+                            in fullStack mode. We need to hit the login route again to start the
+                            process over.
+                        */
+                        if (_.has(this.$router.currentRoute, 'params.profileProcess')) {
+                            this.$router.push('/login');
+                        } else {
+                            /* istanbul ignore next */
+                            this.displayNotification('error', error.response.data.message);
+                        }
                     });
             },
             advanceStage (data, noSessionFalse) {
                 /* istanbul ignore next */
                 let headers = this.getAnonymousHeaders();
                 /* istanbul ignore next */
-                if (noSessionFalse) {
+                if (noSessionFalse && !this.$root.applicationStore.state.authHeaders) {
                     headers = {
                         'X-OpenIDM-NoSession': false,
                         'X-OpenIDM-Password': null,

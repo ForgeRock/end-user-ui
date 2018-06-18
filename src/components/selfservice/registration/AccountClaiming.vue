@@ -147,9 +147,12 @@
                     });
 
                     socialLoginInstance.post('/authentication?_action=login')
-                        .then(() => {
-                            this.$router.push('/profile');
-                            this.displayNotification('success', this.$t('pages.selfservice.accountClaiming.linked'));
+                        .then((userDetails) => {
+                            // Check for progressive profiling.
+                            this.progressiveProfileCheck(userDetails, () => {
+                                this.$router.push('/profile');
+                                this.displayNotification('success', this.$t('pages.selfservice.accountClaiming.linked'));
+                            });
                         })
                         .catch((error) => {
                             this.$router.push('/login');

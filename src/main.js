@@ -41,30 +41,32 @@ router.beforeEach((to, from, next) => {
             let authInstance = axios.create({
                 baseURL: '/openidm',
                 timeout: 1000,
-                headers: {
+                headers: _.extend({
                     'content-type': 'application/json',
                     'cache-control': 'no-cache',
                     'x-requested-with': 'XMLHttpRequest'
-                }
+                }, ApplicationStore.state.authHeaders || {})
             });
 
             authInstance.post('/authentication?_action=login').then((userDetails) => {
                 UserStore.setUserIdAction(userDetails.data.authorization.id);
                 UserStore.setManagedResourceAction(userDetails.data.authorization.component);
                 UserStore.setRolesAction(userDetails.data.authorization.roles);
+                // Check for progressive profiling.
+                this.progressiveProfileCheck(userDetails, () => {
+                    axios.all([
+                        authInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
+                        authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, schema) => {
+                            UserStore.setProfileAction(profile.data);
+                            UserStore.setSchemaAction(schema.data);
 
-                axios.all([
-                    authInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
-                    authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, schema) => {
-                        UserStore.setProfileAction(profile.data);
-                        UserStore.setSchemaAction(schema.data);
-
-                        next();
-                    }))
-                    .catch((error) => {
-                        /* istanbul ignore next */
-                        this.displayNotification('error', error.response.data.message);
-                    });
+                            next();
+                        }))
+                        .catch((error) => {
+                            /* istanbul ignore next */
+                            this.displayNotification('error', error.response.data.message);
+                        });
+                });
             },
             () => {
                 next(false);
@@ -210,6 +212,27 @@ Vue.mixin({
 
                 this.$router.push('/login');
             });
+        },
+        progressiveProfileCheck (userDetails, continueLogin, updateApiType) {
+            if (
+                _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
+                !_.isNull(userDetails.data.authorization.requiredProfileProcesses) &&
+                userDetails.data.authorization.requiredProfileProcesses.length > 0
+            ) {
+                let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
+
+                if (updateApiType) {
+                    this.apiType = profileProcess;
+                }
+
+                this.$router.push(`/profileCompletion/${profileProcess}`);
+                // If we update the apiType we need to reload the selfServiceDetails with the fresh info.
+                if (updateApiType) {
+                    this.loadData();
+                }
+            } else {
+                continueLogin();
+            }
         }
     }
 });

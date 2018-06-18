@@ -112,16 +112,7 @@
                 /* istanbul ignore next */
                 loginServiceInstance.post('/authentication?_action=login').then((userDetails) => {
                     // Check for progressive profiling.
-                    if (
-                        _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
-                        userDetails.data.authorization.requiredProfileProcesses.length > 0
-                    ) {
-                        let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
-                        this.apiType = profileProcess;
-                        // Change the url to reflect the new profile process
-                        this.$router.push(`/profileCompletion/${profileProcess}`);
-                        this.loadData();
-                    } else {
+                    this.progressiveProfileCheck(userDetails, () => {
                         /* istanbul ignore next */
                         axios.all([
                             loginServiceInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
@@ -135,7 +126,7 @@
                                 /* istanbul ignore next */
                                 this.displayNotification('error', error.response.data.message);
                             });
-                    }
+                    }, true);
                 })
                 .catch((error) => {
                     /* istanbul ignore next */
