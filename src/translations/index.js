@@ -275,6 +275,15 @@ export default
                 notifications: {
                     requests: 'Requests'
                 }
+            },
+            workflow: {
+                startProcess: 'Start a Process',
+                noProcess: 'No processes at this time',
+                noAssignedTasks: 'No assigned tasks at this time',
+                noGroupTasks: 'Your group has no tasks at this time',
+                start: 'Start',
+                myTasks: 'My tasks',
+                unassignedTasks: 'Unassigned Tasks'
             }
         }
     }

@@ -19,11 +19,13 @@
 
 <script>
     import Welcome from '@/components/widgets/WelcomeWidget';
+    import Workflow from '@/components/widgets/WorkflowControlWidget';
 
     export default {
         name: 'Dashboard',
         components: {
-            Welcome
+            Welcome,
+            Workflow
         },
         data () {
             return {
@@ -38,10 +40,17 @@
             loadData () {
                 // Hardcoded welcome widget until removal of previous enduser to avoid
                 // Widget conflicts
-                this.widgets = [{
+                this.widgets.push({
                     type: 'Welcome',
                     size: 'large'
-                }];
+                });
+
+                if (this.$root.applicationStore.state.workflow) {
+                    this.widgets.push({
+                        type: 'Workflow',
+                        size: 'large'
+                    });
+                }
             }
         }
     };

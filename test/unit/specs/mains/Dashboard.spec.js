@@ -16,14 +16,21 @@ describe('Dashboard.vue', () => {
 
     it('Dashboard page loaded', () => {
         let userStore = {
-            getUserState () {
-                return {};
-            }
-        };
+                getUserState () {
+                    return {};
+                }
+            },
+            applicationStore = {
+                state: {
+                    workflow: true
+                }
+            };
+
         const wrapper = shallow(Dashboard, {
             i18n,
             mocks: {
-                userStore
+                userStore,
+                applicationStore
             }
         });
 

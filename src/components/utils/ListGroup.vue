@@ -2,8 +2,8 @@
     <b-card no-body class="mb-3">
         <slot name="list-group-header">
             <b-card-body class="py-4">
-                <h5 class="card-title mb-4">{{title}}</h5>
-                <h6 class="card-subtitle mb-0 text-muted">{{subtitle}}</h6>
+                <h5 :class="[{ 'mb-4': subtitle, 'mb-0': !subtitle}, 'card-title']">{{title}}</h5>
+                <h6 v-if="subtitle" class="card-subtitle mb-0 text-muted">{{subtitle}}</h6>
             </b-card-body>
         </slot>
         <b-list-group flush>
