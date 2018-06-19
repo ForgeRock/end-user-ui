@@ -1,7 +1,7 @@
 <template>
     <b-form @keyup.enter="save" @submit.prevent>
         <p class='text-center mb-4'>
-            {{$t(`pages.selfservice.headers.${apiType}.description`)}}
+            {{$t('pages.selfservice.passwordReset.userQuery')}}
         </p>
         <b-form-group>
             <fr-floating-label-input v-model="mail" fieldName="mail" :label="$t('common.placeholders.emailAddress')" type="text" autofocus="true"></fr-floating-label-input>

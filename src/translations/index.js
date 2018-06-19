@@ -106,7 +106,6 @@ export default
                     },
                     reset: {
                         title: 'Reset Password',
-                        description: 'We will send you an email with instructions on how to reset your password',
                         emailSent: 'An email has been sent to your inbox with instructions on how to reset your password.'
                     }
                 },
@@ -158,7 +157,8 @@ export default
                     emailSent: 'An email containing your username has been sent to your account.'
                 },
                 passwordReset: {
-                    advanceStageButtonText: 'Send Reset Instructions',
+                    userQuery: 'Enter email to retrieve account details',
+                    advanceStageButtonText: 'Retrieve Account',
                     tryAgain: 'Try resetting your password again',
                     errorMessage: 'Error resetting your password',
                     successMessage: 'Your password has been reset.',
