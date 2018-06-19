@@ -40,12 +40,14 @@
 
 <script>
     import moment from 'moment';
+    import _ from 'lodash';
 
     export default {
         name: 'Toolbar-Notification',
         data () {
             return {
-                notifications: []
+                notifications: [],
+                timeoutId: null
             };
         },
         mounted () {
@@ -57,23 +59,56 @@
             }
         },
         methods: {
+            resetPolling () {
+                /* istanbul ignore next */
+                if (!_.isNull(this.timeoutId)) {
+                    clearTimeout(this.timeoutId);
+                    this.timeoutId = null;
+                }
+            },
+            startPolling () {
+                /* istanbul ignore next */
+                this.timeoutId = _.delay(() => {
+                    this.loadData();
+                }, 3000);
+            },
             clearAll () {
                 this.notifications = [];
+
+                /* istanbul ignore next */
+                this.resetPolling();
 
                 /* istanbul ignore next */
                 this.getRequestService()
                     .post(`/notification?_action=deleteNotificationsForReceiver&receiverId=${this.$root.userStore.state.userId}`)
                     .then(() => {
                         this.displayNotification('success', this.$t('pages.app.notifications.removedAll'));
+
+                        if (_.isNull(this.timeoutId)) {
+                            this.startPolling();
+                        }
+                    })
+                    .catch(() => {
+                        this.displayNotification('error', this.$t('pages.app.notifications.failedToClear'));
                     });
             },
             clearOne (index) {
                 /* istanbul ignore next */
+                this.resetPolling();
+
+                this.notifications.splice(index, 1);
+                /* istanbul ignore next */
                 this.getRequestService()
                     .delete(`/notification/${this.notifications[index]._id}`)
                     .then(() => {
-                        this.notifications.splice(index, 1);
                         this.displayNotification('success', this.$t('pages.app.notifications.removed'));
+
+                        if (_.isNull(this.timeoutId)) {
+                            this.startPolling();
+                        }
+                    })
+                    .catch(() => {
+                        this.displayNotification('error', this.$t('pages.app.notifications.failedToRemove'));
                     });
             },
             loadData () {
@@ -82,7 +117,10 @@
                     .get(`/notification?_queryId=get-notifications-for-user&userId=${this.$root.userStore.state.userId}`)
                     .then(({data}) => {
                         this.notifications = data.result;
-                    });
+
+                        this.startPolling();
+                    })
+                    .catch(() => {});
             }
         }
     };
@@ -107,7 +145,7 @@
 
             .scrollbox {
                 max-height: 14.1875rem;
-                overflow-y: scroll;
+                overflow-y: auto;
             }
         }
     }

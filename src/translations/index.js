@@ -65,7 +65,9 @@ export default
                     title: 'Notifications',
                     clearAll: 'Clear All',
                     removedAll: 'Removed all notifications',
-                    removed: 'Removed notification'
+                    removed: 'Removed notification',
+                    failedToRemove: 'Failed to remove notification',
+                    failedToClear: 'Failed to clear all notifications'
                 }
             },
             notFound: {
