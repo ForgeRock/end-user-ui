@@ -22,6 +22,11 @@ describe('EditPassword.vue', () => {
                 usernameRecovery: false,
                 registration: false
             }
+        },
+        userStore = {
+            state: {
+                managedResource: ''
+            }
         };
 
     Vue.use(VueI18n);
@@ -54,7 +59,8 @@ describe('EditPassword.vue', () => {
                 $validator: v
             }),
             mocks: {
-                applicationStore
+                applicationStore,
+                userStore
             },
             i18n
         });
@@ -68,7 +74,8 @@ describe('EditPassword.vue', () => {
                 $validator: v
             }),
             mocks: {
-                applicationStore
+                applicationStore,
+                userStore
             },
             i18n
         });
@@ -90,7 +97,8 @@ describe('EditPassword.vue', () => {
                 $validator: v
             }),
             mocks: {
-                applicationStore
+                applicationStore,
+                userStore
             },
             i18n
         });
@@ -113,7 +121,8 @@ describe('EditPassword.vue', () => {
                         $validator: v
                     }),
                     mocks: {
-                        applicationStore
+                        applicationStore,
+                        userStore
                     },
                     i18n
                 }),
@@ -136,7 +145,8 @@ describe('EditPassword.vue', () => {
                     $validator: v
                 }),
                 mocks: {
-                    applicationStore
+                    applicationStore,
+                    userStore
                 },
                 i18n
             });

@@ -26,7 +26,7 @@
                             </div>
                         </b-form-group>
 
-                        <fr-password-policy-input :policyApi="`managed/user/${userId}`" v-model="newPassword">
+                        <fr-password-policy-input :policyApi="`${this.$root.userStore.state.managedResource}/${userId}`" v-model="newPassword">
 
                             <b-form-group class="mb-3" slot="custom-input">
                                 <label for="newPassword">{{$t('pages.profile.accountSecurity.newPassword')}}</label>

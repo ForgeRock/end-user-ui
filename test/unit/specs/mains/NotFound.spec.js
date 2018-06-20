@@ -15,7 +15,12 @@ describe('NotFound.vue', () => {
     });
 
     it('Not found page loaded', () => {
-        const wrapper = mount(NotFound, { i18n });
+        const wrapper = mount(NotFound, {
+            i18n,
+            stubs: {
+                'router-link': true
+            }
+        });
 
         expect(wrapper.name()).to.equal('NotFound');
     });

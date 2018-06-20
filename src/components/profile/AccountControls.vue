@@ -91,7 +91,7 @@
                 let selfServiceInstance = this.getRequestService();
 
                 /* istanbul ignore next */
-                selfServiceInstance.delete(`managed/user/${this.$root.userStore.state.userId}`).then(() => {
+                selfServiceInstance.delete(`/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}`).then(() => {
                     this.$refs.deleteModal.hide();
                     this.displayNotification('success', this.$t('pages.profile.accountControls.deleteAccountSuccessful'));
                     this.logoutUser();

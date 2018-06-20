@@ -42,6 +42,7 @@ export default new Router({
             component: Login,
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
             beforeEnter: (to, from, next) => {
+                /* istanbul ignore next */
                 if (window.location.search && window.location.search.includes('state')) {
                     next('/oauthReturn');
                 } else {

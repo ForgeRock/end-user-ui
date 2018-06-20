@@ -85,7 +85,7 @@
                     });
 
                 /* istanbul ignore next */
-                selfServiceInstance.patch(`managed/user/${userId}`, payload).then((response) => {
+                selfServiceInstance.patch(`${this.$root.userStore.state.managedResource}/${userId}`, payload).then((response) => {
                     this.$root.userStore.setProfileAction(response.data);
                     this.displayNotification('success', successMsg);
 
