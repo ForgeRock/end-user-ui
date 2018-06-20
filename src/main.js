@@ -52,8 +52,17 @@ router.beforeEach((to, from, next) => {
                 UserStore.setUserIdAction(userDetails.data.authorization.id);
                 UserStore.setManagedResourceAction(userDetails.data.authorization.component);
                 UserStore.setRolesAction(userDetails.data.authorization.roles);
+
                 // Check for progressive profiling.
-                this.progressiveProfileCheck(userDetails, () => {
+                if (
+                    _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
+                    !_.isNull(userDetails.data.authorization.requiredProfileProcesses) &&
+                    userDetails.data.authorization.requiredProfileProcesses.length > 0
+                ) {
+                    let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
+
+                    next(`/profileCompletion/${profileProcess}`);
+                } else {
                     axios.all([
                         authInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
                         authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, schema) => {
@@ -61,12 +70,8 @@ router.beforeEach((to, from, next) => {
                             UserStore.setSchemaAction(schema.data);
 
                             next();
-                        }))
-                        .catch((error) => {
-                            /* istanbul ignore next */
-                            this.displayNotification('error', error.response.data.message);
-                        });
-                });
+                        }));
+                }
             },
             () => {
                 next(false);
