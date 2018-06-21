@@ -14,7 +14,7 @@ describe('WorkflowControlWidget.vue', () => {
         messages: translations
     });
 
-    it('My-Tasks', () => {
+    it('My-Tasks component loaded', () => {
         const wrapper = mount(MyTasks, {
             i18n
         });

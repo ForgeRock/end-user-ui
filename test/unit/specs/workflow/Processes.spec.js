@@ -14,7 +14,7 @@ describe('WorkflowControlWidget.vue', () => {
         messages: translations
     });
 
-    it('Workflow-Control-Widget', () => {
+    it('Processes component loaded', () => {
         const wrapper = shallow(Processes, {
             i18n
         });

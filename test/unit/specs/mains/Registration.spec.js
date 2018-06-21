@@ -98,6 +98,14 @@ describe('Registration.vue', () => {
         wrapper.vm.apiErrorCallback({
             response: {
                 data: {
+                    detail: {
+                        failedPolicyRequirements: [{
+                            property: 'userName',
+                            policyRequirements: [{
+                                policyRequirement: 'UNIQUE'
+                            }]
+                        }]
+                    },
                     message: 'test'
                 }
             }

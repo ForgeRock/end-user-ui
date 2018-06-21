@@ -170,14 +170,33 @@
                 }
             },
             apiErrorCallback (error) {
+                let errorMessage = this.findPolicyError(error.response);
+
                 this.showSelfService = true;
 
                 /* istanbul ignore next */
-                this.displayNotification('error', error.response.data.message);
+                this.displayNotification('error', errorMessage);
+
                 // clean up any queryParams from the url
                 this.$router.push('/registration');
                 // reload the form
                 this.loadData();
+            },
+            findPolicyError (errorResponse) {
+                let errorMessage = errorResponse.data.message,
+                    policyError = '';
+
+                if (_.has(errorResponse, 'data.detail.failedPolicyRequirements')) {
+                    let policy = errorResponse.data.detail.failedPolicyRequirements[0];
+
+                    if (policy.policyRequirements.length > 0) {
+                        policyError = this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, { property: policy.property });
+
+                        errorMessage = `${errorMessage}: ${policyError}`;
+                    }
+                }
+
+                return errorMessage;
             },
             autoLogin: function (jwt) {
                 /* istanbul ignore next */

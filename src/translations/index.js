@@ -45,6 +45,7 @@ export default
                 'AT_LEAST_X_CAPITAL_LETTERS': 'Must have at least {numCaps} capital letter(s)',
                 'AT_LEAST_X_NUMBERS': 'Must have at least {numNums} number(s)',
                 'CANNOT_CONTAIN_OTHERS': 'Must not share characters with {disallowedFields}',
+                UNIQUE: '%{property} must be unique',
                 'test': 'succeed',
                 policyServiceError: {
                     registration: 'Unable to register. Please try again later.',
@@ -117,6 +118,7 @@ export default
                     signIn: 'Sign in',
                     signUpMsg: 'Signing up is fast and easy.',
                     createdAccount: 'User account has been created.',
+                    pleaseComplete: 'Please complete the registration form',
                     termsAndConditions: {
                         title: 'Terms & Conditions',
                         singlePage: 'By clicking "Sign Up" you agree to our '

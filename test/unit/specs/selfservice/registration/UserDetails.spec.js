@@ -30,6 +30,23 @@ describe('UserDetails.vue', () => {
         expect(wrapper.name()).to.equal('User-Details');
     });
 
+    it('User Details calculate validators', () => {
+        const wrapper = shallow(UserDetails, {
+                i18n,
+                propsData: {
+                    selfServiceDetails: {}
+                }
+            }),
+            property = {
+                required: true,
+                policies: [{
+                    policyId: 'valid-email-address-format'
+                }]
+            };
+
+        expect(wrapper.vm.calculateValidation(property)).to.equal('required|email');
+    });
+
     it('User Details gather data', () => {
         let data;
 

@@ -53,7 +53,7 @@
             Captcha
         },
         data () {
-            var data = {
+            let data = {
                 stages: {},
                 consentCheck: true
             };
@@ -66,7 +66,7 @@
         },
         methods: {
             getData () {
-                var data = {};
+                let data = {};
 
                 /* istanbul ignore next */
                 _.each(this.$children, (child) => {
@@ -104,7 +104,7 @@
             },
 
             isValid () {
-                var childChecks = [],
+                let childChecks = [],
                     validPromise = new Promise((resolve, reject) => {
                         if (this.$children) {
                             _.each(this.$children, (child, index) => {
@@ -127,6 +127,8 @@
 
                             if (validCheck) {
                                 resolve({'success': true});
+                            } else {
+                                this.displayNotification('error', this.$t('pages.selfservice.registration.pleaseComplete'));
                             }
                         });
                     });

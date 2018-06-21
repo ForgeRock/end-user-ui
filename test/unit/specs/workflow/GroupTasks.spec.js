@@ -14,7 +14,7 @@ describe('GroupTasks.vue', () => {
         messages: translations
     });
 
-    it('Group-Tasks', () => {
+    it('Group-Tasks component loaded', () => {
         const wrapper = mount(GroupTasks, {
             i18n
         });

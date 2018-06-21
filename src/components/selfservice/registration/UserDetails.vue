@@ -6,7 +6,7 @@
                     :defaultValue="property.socialValue"
                     :fieldName="key"
                     :label="property.description"
-                    :validateRules="property.required ? 'required' : ''"
+                    :validateRules="calculateValidation(property)"
                     type="text"
                     v-model="saveDetails[key]"></fr-floating-label-input>
         </b-form-group>
@@ -33,7 +33,6 @@
     import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
     import SocialButtons from '@/components/mains/SocialButtons';
 
-    // TODO Improve validation to handle more then just required / confirm password
     export default {
         name: 'User-Details',
         components: {
@@ -52,7 +51,7 @@
             }
         },
         data () {
-            var data = {
+            let data = {
                 userDetails: {},
                 saveDetails: {},
                 userPreferences: {},
@@ -106,12 +105,34 @@
                 };
             },
 
+            // Add additional frontend checks for field validation here
+            calculateValidation (property) {
+                let validators = [];
+
+                if (property.required) {
+                    validators.push('required');
+                }
+
+                if (property.policies) {
+                    // Add policy vee validators correlations here
+                    _.each(property.policies, (policy) => {
+                        if (policy.policyId === 'valid-email-address-format') {
+                            validators.push('email');
+                        }
+                    });
+                }
+
+                return validators.join('|');
+            },
+
             save () {
                 // Need to ignore this validation because it does not preform in testing due to vue validate
                 /* istanbul ignore next */
                 this.isValid().then((valid) => {
                     if (valid) {
                         this.$emit('advanceStage', this.getData());
+                    } else {
+                        this.displayNotification('error', this.$t('pages.selfservice.registration.pleaseComplete'));
                     }
                 });
             },
