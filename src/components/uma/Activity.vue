@@ -13,11 +13,11 @@
                     :hoverItem="false">
                     <template slot="list-item-header" class="d-inline-flex w-100">
                         <div class="flex-grow-1 media-body">
-                            <span class="activity-type">{{$t(`pages.uma.activity.${activity.type}`)}}</span>
+                            <span class="activity-type">{{$t(`pages.uma.activity.${activity.type}`, {requestingParty: activity.requestingPartyName})}}</span>
                             <button class="m-0 p-0 btn btn-link text-capitalize" type="button" @click="$emit('resourceSetClick', activity._id)">{{activity.resourceSetName}}</button>
                             <small class="d-block text-muted subtext">{{formatTime(activity.eventTime)}}</small>
                         </div>
-                        <fr-fallback-image v-if="activity.icon_url" :src="activity.icon_url" height="30" width="30" fallback="fa-file-o"></fr-fallback-image>
+                        <fr-fallback-image v-if="activity.icon_uri" :src="activity.icon_uri" height="30" width="30" fallback="fa-file-o"></fr-fallback-image>
                     </template>
                 </fr-list-item>
             </fr-list-group>

@@ -1,21 +1,21 @@
 <template>
     <b-container fluid>
         <template v-if="requestsLoaded">
-            <b-tabs class='mt-4' v-if="resources && resources.length > 0">
+            <b-tabs class='mt-4' v-if="resources.length > 0" @click="testForReload">
                 <b-tab title='Resources' active>
                     <fr-resources
                         @renderShareModal="renderShareModal"
                         @renderUnshareModal="renderUnshareModal"
                         :resources="resources"></fr-resources>
                 </b-tab>
-                <b-tab title='Activity' v-if="activity && activity.length > 0">
+                <b-tab title='Activity' v-if="activity.length > 0" @click="testForReload">
                     <fr-activity :umaHistory="umaHistory"></fr-activity>
                 </b-tab>
-                <b-tab title='Requests'>
+                <b-tab title='Requests' v-if="requests.length > 0">
                     <template slot="title">
-                        {{$t('pages.uma.notifications.requests')}} <b-badge pill variant="danger">{{numberOfRequests}}</b-badge>
+                        {{$t('pages.uma.notifications.requests')}} <b-badge pill variant="danger">{{requests.length}}</b-badge>
                     </template>
-                    <fr-requests></fr-requests>
+                    <fr-requests :requests="requests" @finalizeResourceAccess="finalizeResourceAccess"></fr-requests>
                 </b-tab>
             </b-tabs>
             <div v-else>
@@ -65,7 +65,7 @@
                 requests: [],
                 resourcesCount: 0,
                 activityCount: 0,
-                numberOfRequests: ''
+                delayedUpdate: false
             };
         },
         computed: {
@@ -76,8 +76,8 @@
                 return _.map(this.activity, (res) => {
                     let resource = _.find(this.resources, {_id: res.resourceSetId});
 
-                    if (_.has(resource, 'uri')) {
-                        res.icon_url = resource.uri;
+                    if (_.has(resource, 'icon_uri')) {
+                        res.icon_uri = resource.icon_uri;
                     }
 
                     return res;
@@ -91,6 +91,7 @@
             loadData () {
                 this.getResources();
                 this.getActivity();
+                this.getRequests();
             },
             getResources () {
                 /* istanbul ignore next */
@@ -139,7 +140,22 @@
                 /* istanbul ignore next */
                 // by default CORS requests don't allow cookies, the 'withCredentials: true' flag allows it
                 selfServiceInstance.get(url, { withCredentials: true }).then((response) => {
-                    this.requests = response.data.result;
+                    this.requests = _.map(response.data.result, (request) => {
+                        let resource = _.find(this.resources, {name: request.resource});
+
+                        if (_.has(resource, 'icon_uri')) {
+                            request.icon_uri = resource.icon_uri;
+                        }
+
+                        if (_.has(resource, 'scopes')) {
+                            request.scopes = resource.scopes;
+                        }
+
+                        request.allowed = false;
+                        request.decision = false;
+
+                        return request;
+                    });
                 })
                 .catch((error) => {
                     /* istanbul ignore next */
@@ -176,12 +192,8 @@
                     this.loadData();
                 })
                 .catch((error) => {
-                    if (error.response.status === 409) {
-                        this.displayNotification('success', successMsg);
-                    } else {
-                        /* istanbul ignore next */
-                        this.displayNotification('error', error.response.data.message);
-                    }
+                    /* istanbul ignore next */
+                    this.displayNotification('error', error.response.data.message);
                 });
             },
             unshareResource (resourceId) {
@@ -221,6 +233,35 @@
                     /* istanbul ignore next */
                     this.displayNotification('error', error.response.data.message);
                 });
+            },
+            finalizeResourceAccess (id, action, config = {}) {
+                /* istanbul ignore next */
+                let userName = this.$root.userStore.state.userName,
+                    successMsg = action === 'approve' ? this.$t('common.user.sharing.requestAllowedSuccess') : this.$t('common.user.sharing.requestDeniedSuccess'),
+                    selfServiceInstance = this.getRequestService(),
+                    payload = {scopes: config.scopes || {}},
+                    url = `${this.amDataEndpoints.baseUrl}${userName}/uma/pendingrequests/${id}?_action=${action}`;
+
+                /* istanbul ignore next */
+                selfServiceInstance.post(url, payload, { withCredentials: true }).then((response) => {
+                    if (config.onSuccess) {
+                        config.onSuccess();
+                    }
+
+                    this.delayedUpdate = true;
+                    this.displayNotification('success', successMsg);
+                })
+                .catch((error) => {
+                    /* istanbul ignore next */
+                    this.displayNotification('error', error.response.data.message);
+                });
+            },
+            testForReload () {
+                if (this.delayedUpdate === true) {
+                    this.delayedUpdate = false;
+
+                    this.loadData();
+                }
             }
         }
     };

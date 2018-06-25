@@ -26,7 +26,9 @@ export default
                 sharing: {
                     shareSuccess: 'Shared your resource.',
                     unshareSuccess: 'Unshared your resource.',
-                    modifySuccess: 'Successfully modified resource permissions'
+                    modifySuccess: 'Modified resource permissions',
+                    requestAllowedSuccess: 'Access granted',
+                    requestDeniedSuccess: 'Access denied'
                 },
                 kba: {
                     description: 'Select security question(s) below. These questions will help us verify your identity if you forget your password.',
@@ -252,6 +254,9 @@ export default
             uma: {
                 activity: {
                     'Authorisation_Granted': 'You created',
+                    'Authorisation_Requested': '{requestingParty} requested access to',
+                    'Authorisation_Request_Denied': 'You denied the request from {requestingParty} to access',
+                    'Authorisation_Request_Approved': 'You approved the request from {requestingParty} to access',
                     'Policy_Created': 'You shared',
                     'Policy_Updated': 'You updated sharing setting for'
                 },
@@ -273,6 +278,13 @@ export default
                     unshareResource: 'Unshare "{resourceName}" ?',
                     sameShareError: 'Cannot reshare resource with {requestingParty}.  Unshare with requesting party before changing permissions',
                     noRequestingParty: 'No requesting party defined.'
+                },
+                requests: {
+                    allow: 'Allow',
+                    deny: 'Deny',
+                    allowed: 'Allowed',
+                    denied: 'Denied',
+                    requestedAccess: 'requested access to:'
                 },
                 notifications: {
                     requests: 'Requests'
