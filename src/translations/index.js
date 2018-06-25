@@ -62,6 +62,7 @@ export default
                 dashboard: 'Dashboard',
                 sharing: 'Sharing',
                 user: 'User',
+                admin: 'Admin',
                 signOut: 'Sign Out',
                 notifications: {
                     noNotifications: 'No notifications available',
@@ -225,7 +226,8 @@ export default
                 },
                 editProfile: {
                     userDetailsTitle: 'Edit your personal info',
-                    optional: '(optional)'
+                    optional: '(optional)',
+                    noFields: 'No profile fields available'
                 },
                 accountSecurity: {
                     title: 'Account Security',

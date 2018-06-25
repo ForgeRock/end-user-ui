@@ -45,7 +45,7 @@
                     size: 'large'
                 });
 
-                if (this.$root.applicationStore.state.workflow) {
+                if (this.$root.applicationStore.state.workflow && this.$root.applicationStore.state.internalUser === false) {
                     this.widgets.push({
                         type: 'Workflow',
                         size: 'large'

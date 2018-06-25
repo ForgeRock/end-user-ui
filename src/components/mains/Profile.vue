@@ -17,10 +17,10 @@
                 <b-tabs>
                     <b-tab :title="$t('pages.profile.settings')" active>
                         <fr-account-security @updateProfile="updateProfile"></fr-account-security>
-                        <fr-authorized-applications v-if="$root.applicationStore.state.amDataEndpoints"></fr-authorized-applications>
-                        <fr-trusted-devices v-if="$root.applicationStore.state.amDataEndpoints"></fr-trusted-devices>
-                        <fr-preferences @updateProfile="updateProfile"></fr-preferences>
-                        <fr-consent :consentedMappings="profile.consentedMappings" @updateProfile="updateProfile"></fr-consent>
+                        <fr-authorized-applications v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-authorized-applications>
+                        <fr-trusted-devices v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-trusted-devices>
+                        <fr-preferences v-if="$root.userStore.state.internalUser === false" @updateProfile="updateProfile"></fr-preferences>
+                        <fr-consent v-if="$root.userStore.state.internalUser === false" :consentedMappings="profile.consentedMappings" @updateProfile="updateProfile"></fr-consent>
                         <fr-account-controls></fr-account-controls>
                     </b-tab>
                 </b-tabs>
@@ -63,7 +63,15 @@
         },
         computed: {
             fullName () {
-                return _.startCase(this.$root.userStore.state.givenName + ' ' + this.$root.userStore.state.sn);
+                let fullName = '';
+
+                if (this.$root.userStore.state.givenName.length > 0 || this.$root.userStore.state.sn.length > 0) {
+                    fullName = _.startCase(this.$root.userStore.state.givenName + ' ' + this.$root.userStore.state.sn);
+                } else {
+                    fullName = this.$root.userStore.state.userId;
+                }
+
+                return fullName;
             },
             email () {
                 return this.$root.userStore.state.email;

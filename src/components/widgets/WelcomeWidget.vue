@@ -32,7 +32,15 @@
         },
         computed: {
             fullName () {
-                return _.startCase(this.userDetails.givenName + ' ' + this.userDetails.sn);
+                let fullName = '';
+
+                if (this.userDetails.givenName.length > 0 || this.userDetails.sn.length > 0) {
+                    fullName = _.startCase(this.userDetails.givenName + ' ' + this.userDetails.sn);
+                } else {
+                    fullName = this.userDetails.userId;
+                }
+
+                return fullName;
             }
         }
     };

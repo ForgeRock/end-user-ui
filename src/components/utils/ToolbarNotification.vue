@@ -93,13 +93,15 @@
                     });
             },
             clearOne (index) {
+                let notificationId = this.notifications[index]._id;
+
                 /* istanbul ignore next */
                 this.resetPolling();
 
                 this.notifications.splice(index, 1);
                 /* istanbul ignore next */
                 this.getRequestService()
-                    .delete(`/notification/${this.notifications[index]._id}`)
+                    .delete(`/notification/${notificationId}`)
                     .then(() => {
                         this.displayNotification('success', this.$t('pages.app.notifications.removed'));
 

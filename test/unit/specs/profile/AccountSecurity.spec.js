@@ -31,18 +31,34 @@ describe('AccountSecurity.vue', () => {
     });
 
     it('AccountSecurity page loaded', () => {
-        const wrapper = shallow(AccountSecurity, {
-            i18n
-        });
+        const userStore = {
+                state: {
+                    internalUser: true
+                }
+            },
+            wrapper = shallow(AccountSecurity, {
+                i18n,
+                mocks: {
+                    userStore
+                }
+            });
 
         expect(wrapper.name()).to.equal('Account-Security');
     });
 
     describe('#sendUpdateProfile', () => {
         it('should emit an "updateProfile" event with the payload and config', () => {
-            const wrapper = shallow(AccountSecurity, {
-                i18n
-            });
+            const userStore = {
+                    state: {
+                        internalUser: true
+                    }
+                },
+                wrapper = shallow(AccountSecurity, {
+                    i18n,
+                    mocks: {
+                        userStore
+                    }
+                });
 
             wrapper.vm.sendUpdateProfile('test payload', 'test config');
             expect(wrapper.emitted().updateProfile.length).to.equal(1);

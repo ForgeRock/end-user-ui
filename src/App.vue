@@ -38,6 +38,8 @@
                                 {{$t('pages.app.user')}} <b-img src="static/images/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
                             </template>
                             <b-dropdown-item active-class="fr-no-active" exact-active-class="fr-no-active" to="profile">{{$t('pages.app.profile')}}</b-dropdown-item>
+                            <b-dropdown-item v-if="this.$root.userStore.state.internalUser" href="/admin">{{$t('pages.app.admin')}}</b-dropdown-item>
+                            <b-dropdown-divider class="m-0"></b-dropdown-divider>
                             <b-dropdown-item @click.prevent="logoutUser()">{{$t('pages.app.signOut')}}</b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>

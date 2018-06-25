@@ -9,7 +9,7 @@
         <b-container>
             <b-row>
                 <b-col sm="8" offset-sm="2">
-                    <b-form class="mb-3" name="edit-personal-form">
+                    <b-form v-if="formFields.length > 0" class="mb-3" name="edit-personal-form">
                         <template v-for="(field, index) in formFields">
                             <b-form-group :key="index" v-if="field.type !== 'boolean'">
                                 <label class="float-left" :for="field.title">{{field.title}}</label>
@@ -43,6 +43,9 @@
                             </b-form-group>
                         </template>
                     </b-form>
+                    <template v-else>
+                        <h3 class="text-center">{{$t('pages.profile.editProfile.noFields')}}</h3>
+                    </template>
                 </b-col>
             </b-row>
         </b-container>
@@ -50,7 +53,7 @@
         <div slot="modal-footer" class="w-100">
             <div class="float-right">
                 <b-btn variant="outline-secondary" @click="hideModal">{{$t('common.form.cancel')}}</b-btn>
-                <b-btn type="button" variant="primary" @click="saveForm">{{$t('common.form.saveChanges')}}</b-btn>
+                <b-btn type="button" variant="primary" :disabled="$root.userStore.state.internalUser" @click="saveForm">{{$t('common.form.saveChanges')}}</b-btn>
             </div>
         </div>
     </b-modal>
