@@ -47,6 +47,10 @@ describe('EditPassword.vue', () => {
                 userId: ''
             };
         });
+
+        sandbox.stub(EditPassword.methods, 'validate').callsFake(function () {
+            return Promise.resolve(true);
+        });
     });
 
     afterEach(function () {
@@ -66,6 +70,27 @@ describe('EditPassword.vue', () => {
         });
 
         expect(wrapper.name()).to.equal('Edit-Password');
+    });
+
+    it('Incorrect password error', () => {
+        const wrapper = shallow(EditPassword, {
+            provide: () => ({
+                $validator: v
+            }),
+            mocks: {
+                applicationStore,
+                userStore
+            },
+            i18n
+        });
+
+        wrapper.vm.displayError({
+            response: {
+                status: 403
+            }
+        });
+
+        expect(wrapper.vm.errors.all().length).to.equal(1);
     });
 
     it('revealNew method changes input state', () => {
@@ -152,15 +177,19 @@ describe('EditPassword.vue', () => {
             });
 
             wrapper.setData({currentPassword: 'test current', newPassword: 'test new'});
+
             wrapper.vm.onSavePassword();
 
-            let patchEvent = wrapper.emitted().updateProfile,
-                [payload, config] = patchEvent[0];
+            return Vue.nextTick()
+                .then(() => {
+                    let patchEvent = wrapper.emitted().updateProfile,
+                        [payload, config] = patchEvent[0];
 
-            expect(patchEvent).to.be.an('Array').with.property('length').that.equals(1);
-            expect(payload[0]).to.have.property('value').that.equals('test new');
-            expect(config).to.have.property('headers');
-            expect(config.headers).to.have.property('X-OpenIDM-Reauth-Password').that.equals('test current');
+                    expect(patchEvent).to.be.an('Array').with.property('length').that.equals(1);
+                    expect(payload[0]).to.have.property('value').that.equals('test new');
+                    expect(config).to.have.property('headers');
+                    expect(config.headers).to.have.property('X-OpenIDM-Reauth-Password').that.equals('test current');
+                });
         });
     });
 });

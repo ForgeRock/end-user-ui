@@ -17,13 +17,14 @@
                         <b-form-group>
                             <label for="currentPassword">{{$t('pages.profile.accountSecurity.currentPassword')}}</label>
                             <div class="form-label-password form-label-group mb-0"> 
-                                <b-form-input id="currentPassword" :type="inputCurrent" v-model="currentPassword"></b-form-input>
+                                <b-form-input id="currentPassword" name="currentPassword" data-vv-validate-on="submit" :data-vv-as="$t('pages.profile.accountSecurity.currentPassword')" :class="[{'is-invalid': errors.has('currentPassword')}, 'form-control']" :type="inputCurrent" v-model="currentPassword" v-validate="'required'"></b-form-input>
                                 <div class="input-group-append">
                                     <b-btn @click="revealCurrent" class="btn btn-secondary" type="button">
                                         <i :class="[{'fa-eye-slash': !showCurrent}, {'fa-eye': showCurrent}, 'fa']"></i>
                                     </b-btn>
                                 </div>
                             </div>
+                            <fr-validation-error :validatorErrors="errors" fieldName="currentPassword"></fr-validation-error>
                         </b-form-group>
 
                         <fr-password-policy-input :policyApi="`${this.$root.userStore.state.managedResource}/${userId}`" v-model="newPassword">
@@ -58,6 +59,7 @@
     import ListItem from '@/components/utils/ListItem';
     import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
     import LoadingButton from '@/components/utils/LoadingButton';
+    import ValidationError from '@/components/utils/ValidationError';
 
     export default {
         $_veeValidate: {
@@ -67,7 +69,8 @@
         components: {
             'fr-list-item': ListItem,
             'fr-loading-button': LoadingButton,
-            'fr-password-policy-input': PolicyPasswordInput
+            'fr-password-policy-input': PolicyPasswordInput,
+            'fr-validation-error': ValidationError
         },
         data () {
             return {
@@ -85,6 +88,7 @@
             clearComponent () {
                 this.currentPassword = '';
                 this.newPassword = '';
+                this.errors.clear();
             },
             resetComponent () {
                 this.loading = false;
@@ -92,15 +96,35 @@
                 this.newPassword = '';
                 this.$refs.cancel.click();
             },
+            displayError (error) {
+                if (error.response.status === 403) {
+                    this.errors.add({
+                        field: 'currentPassword',
+                        msg: 'Incorrect password provided'
+                    });
+                }
+            },
             onSavePassword () {
                 const headers = {
                         'X-Requested-With': 'XMLHttpRequest',
                         'X-OpenIDM-Reauth-Password': this.currentPassword
                     },
                     payload = [{operation: 'add', field: '/password', value: this.newPassword}],
-                    onSuccess = this.resetComponent.bind(this);
+                    onSuccess = this.resetComponent.bind(this),
+                    onError = this.displayError.bind(this);
 
-                this.$emit('updateProfile', payload, { headers, onSuccess });
+                this.errors.clear();
+
+                this.$validator.validateAll().then((valid) => {
+                    if (valid) {
+                        this.$emit('updateProfile', payload, { headers, onSuccess, onError });
+                    } else {
+                        this.displayNotification('error', 'Invalid password form');
+                    }
+                });
+            },
+            validate () {
+                return this.$validator.validateAll();
             },
             revealNew () {
                 if (this.inputNew === 'password') {

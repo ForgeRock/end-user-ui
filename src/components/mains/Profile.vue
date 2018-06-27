@@ -112,7 +112,7 @@
                     this.displayNotification('error', errorMsg);
 
                     if (config.onError) {
-                        config.onError();
+                        config.onError(error);
                     }
                 });
             }
