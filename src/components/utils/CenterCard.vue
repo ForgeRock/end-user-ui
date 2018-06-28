@@ -1,29 +1,26 @@
 <!--AVAILABLE SLOTS: center-card-header, center-card-body, center-card-footer-->
 <template>
-    <b-container fluid class="h-100 px-0">
-        <div class="h-100 d-flex">
-            <div class="m-auto fr-center-card">
+    <b-container fluid class="px-0">
+        <div class="fr-m-auto fr-center-card align-self-center">
+            <b-card no-body
+                    class="border-xs-0 border-sm d-flex fr-stretch-card"
+                    header-tag="header"
+                    footer-tag="footer">
 
-                <b-card no-body
-                        class="border-xs-0 border-sm"
-                        header-tag="header"
-                        footer-tag="footer">
+                <b-card-header class="d-flex flex-column flex-fill">
+                    <!--For dark theme use vertical-logo-white.svg version of logo-->
+                    <b-img v-if="showLogo" class="fr-logo mb-3 mt-2" src="static/images/vertical-logo.svg" fluid :alt="$t('common.form.logo')" />
+                    <slot name="center-card-header"></slot>
+                </b-card-header>
 
-                    <b-card-header>
-                        <!--For dark theme use vertical-logo-white.svg version of logo-->
-                        <b-img v-if="showLogo" class="fr-logo mb-3 mt-2" src="static/images/vertical-logo.svg" fluid :alt="$t('common.form.logo')" />
-                        <slot name="center-card-header"></slot>
-                    </b-card-header>
+                <slot name="center-card-body"></slot>
 
-                    <slot name="center-card-body"></slot>
-
-                    <slot name="center-card-footer"></slot>
-                </b-card>
-            </div>
+                <slot name="center-card-footer"></slot>
+            </b-card>
         </div>
+        
     </b-container>
 </template>
-
 <script>
     export default {
         name: 'Center-Card',
@@ -40,11 +37,12 @@
     // Selfservice form and card
     .fr-center-card {
         width: 100%;
-        margin: 0 auto;
         text-align: center;
+
         @include media-breakpoint-between(sm, xl) {
             max-width: 420px;
             padding: 40px 0;
+            margin: 0 auto;
         }
 
         .card {
@@ -72,5 +70,29 @@
             padding: 20px 50px;
         }
 
+        .fr-footer-bottom {
+            @media(max-width:575px) {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+        }
+    }
+
+    .fr-m-auto {
+        @include media-breakpoint-between(sm, xl) {
+            margin: auto;
+        }
+
+        @media(max-width:575px) {
+            height: 100%;
+            margin: 0;
+        }
+
+        .fr-stretch-card {            
+            @media(max-width:575px) {
+                height: 100%;
+            }
+        }
     }
 </style>

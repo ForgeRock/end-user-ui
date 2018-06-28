@@ -1,5 +1,5 @@
 <template>
-    <fr-center-card :showLogo="true">
+    <fr-center-card :showLogo="true" class="d-flex">
         <div slot="center-card-header">
             <h2 class="h2">{{$t('pages.login.signIn')}}</h2>
         </div>
@@ -29,8 +29,8 @@
             </p>
         </b-card-body>
         <template v-if="this.$root.applicationStore.state.registration">
-            <b-card-footer slot="center-card-footer">
-                {{$t('pages.login.newHere')}}
+            <b-card-footer slot="center-card-footer" class="fr-footer-bottom">
+                {{$t('pages.login.newHere')}} 
                 <router-link action="" to="registration">{{$t('pages.login.createAccount')}}</router-link>
             </b-card-footer>
         </template>
