@@ -12,7 +12,8 @@ export default
                 edit: 'Edit',
                 save: 'Save',
                 remove: 'Remove',
-                confirm: 'Confirm'
+                confirm: 'Confirm',
+                close: 'Close'
             },
             placeholders: {
                 password: 'Password',
@@ -253,6 +254,14 @@ export default
                     notAuthorized: 'Not Authorized',
                     subtitle: 'Control how your data is shared with third parties.',
                     title: 'Personal Data Sharing'
+                },
+                socialSignIn: {
+                    title: 'Social Sign-in',
+                    subtitle: 'Sign into your account using social identity providers.',
+                    disconnect: 'Disconnect',
+                    disconnectConfirmMsg: 'If you disconnect, you will not be able to log in with {provider}.',
+                    connect: 'Connect',
+                    sharing: 'You are sharing'
                 }
             },
             uma: {

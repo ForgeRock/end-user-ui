@@ -37,14 +37,16 @@
 
             /* istanbul ignore next */
             const socialInstance = this.getRequestService({
-                headers: _.extend(this.getAnonymousHeaders(), {
-                    'X-OpenIDM-NoSession': 'true',
-                    'X-OpenIDM-DataStoreToken': localStorage.getItem('dataStoreToken')
-                })
-            });
+                    headers: _.extend(this.getAnonymousHeaders(), {
+                        'X-OpenIDM-NoSession': 'true',
+                        'X-OpenIDM-DataStoreToken': localStorage.getItem('dataStoreToken')
+                    })
+                }),
+                linkedProvider = localStorage.getItem('linkedProvider');
 
             /* istanbul ignore next */
             localStorage.removeItem('dataStoreToken');
+            localStorage.removeItem('linkedProvider');
 
             /* istanbul ignore next */
             socialInstance.post('/identityProviders?_action=handlePostAuth', queryParams)
@@ -58,7 +60,6 @@
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     });
-
                     socialLoginInstance.post('/authentication?_action=login')
                         .then((response) => {
                             let originalToken = localStorage.getItem('accountClaimingToken');
@@ -81,7 +82,15 @@
 
                             // Check for progressive profiling.
                             this.progressiveProfileCheck(response, () => {
-                                if (_.isNull(originalToken)) {
+                                if (linkedProvider) {
+                                    this.$router.push({
+                                        name: 'Profile',
+                                        params: {
+                                            clientToken: dataStoreToken,
+                                            linkedProvider: linkedProvider
+                                        }
+                                    });
+                                } else if (_.isNull(originalToken)) {
                                     this.$router.push('/profile');
                                 } else {
                                     this.$router.push({

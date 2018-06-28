@@ -17,6 +17,7 @@
                 <b-tabs>
                     <b-tab :title="$t('pages.profile.settings')" active>
                         <fr-account-security @updateProfile="updateProfile"></fr-account-security>
+                        <fr-social-identities :clientToken="clientToken" :linkedProvider="linkedProvider"></fr-social-identities>
                         <fr-authorized-applications v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-authorized-applications>
                         <fr-trusted-devices v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-trusted-devices>
                         <fr-preferences v-if="$root.userStore.state.internalUser === false" @updateProfile="updateProfile"></fr-preferences>
@@ -38,10 +39,13 @@
     import TrustedDevices from '@/components/profile/TrustedDevices';
     import AuthorizedApplications from '@/components/profile/AuthorizedApplications';
     import Consent from '@/components/profile/Consent';
+    import SocialIdentities from '@/components/profile/SocialIdentities';
 
     export default {
         name: 'Profile',
         props: {
+            'clientToken': String,
+            'linkedProvider': String,
             'openProfile': {
                 required: false,
                 default: false
@@ -54,7 +58,8 @@
             'fr-preferences': Preferences,
             'fr-trusted-devices': TrustedDevices,
             'fr-authorized-applications': AuthorizedApplications,
-            'fr-consent': Consent
+            'fr-consent': Consent,
+            'fr-social-identities': SocialIdentities
         },
         mounted () {
             if (this.openProfile) {

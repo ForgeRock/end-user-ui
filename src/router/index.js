@@ -18,18 +18,6 @@ import Sharing from '@/components/mains/Sharing';
  */
 export default new Router({
     routes: [
-        // Facebook returns this after the hash and it is not a configuration option that can be turned off.
-        // Added this so social doesn't 404 on facebook login.
-        {
-            path: '/_=_',
-            redirect: '/login',
-            meta: { hideToolbar: true }
-        },
-        {
-            path: '/',
-            redirect: '/dashboard',
-            meta: { hideToolbar: true }
-        },
         {
             path: '/oauthReturn',
             component: OAuthReturn,
@@ -60,8 +48,18 @@ export default new Router({
         {
             path: '/dashboard',
             name: 'Dashboard',
+            alias: ['/'],
             component: Dashboard,
-            meta: { authenticate: true }
+            meta: { authenticate: true },
+            beforeEnter: (to, from, next) => {
+                if (window.location.search && window.location.search.includes('state')) {
+                    next({
+                        path: '/oauthReturn'
+                    });
+                } else {
+                    next();
+                }
+            }
         },
         {
             path: '/registration',

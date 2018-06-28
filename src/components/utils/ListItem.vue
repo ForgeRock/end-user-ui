@@ -89,6 +89,8 @@
     }
 
     .list-group-item-action {
+        color: inherit;
+
         .caret {
             .caret-up {
                 display: none;
@@ -131,6 +133,7 @@
     .noncollapse {
         background-color: $card-bg;
         border-bottom-color: transparent;
+        cursor: initial;
     }
 
 </style>
