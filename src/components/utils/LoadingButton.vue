@@ -1,6 +1,6 @@
 <template>
         <button :class="['btn btn-primary d-flex align-items-center', {'disabled': loading}]" type="button" @click="$emit('click')">
-            <span class="align-self-start">
+            <span :class="[{'align-self-start': !large, 'm-auto': large}]">
                 {{label}}
             </span>
             <span :class="['fr-grow', {'fr-grow-in': loading}]">
@@ -18,6 +18,10 @@
         props: {
             label: String,
             loading: {
+                type: Boolean,
+                default: false
+            },
+            large: {
                 type: Boolean,
                 default: false
             }

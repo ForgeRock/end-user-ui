@@ -194,6 +194,30 @@ label {
   }
 }
 
+/**
+  Fade animation for form transitions into error state
+ */
+.is-invalid {
+  transition: border .75s linear;
+}
+
+.fr-validation-requirements {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: .75s;
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 // Additional component level theme overrides must come after if you want access to bootstrap variables
 // These should also come last so they can override anything in the application
 @import "theme-components";

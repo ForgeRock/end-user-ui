@@ -25,9 +25,12 @@
             </b-modal>
         </template>
 
-        <b-button @click="saveCheck" :block="true" size="lg" variant="primary" class="mt-2 mb-3">
-            {{$t("common.form.signUp")}}
-        </b-button>
+        <fr-loading-button type="button" variant="primary" class="mt-2 mb-3 btn-lg btn-block"
+                           :label="$t('common.form.signUp')"
+                           :loading="loading"
+                           :large="true"
+                           @click="saveCheck"></fr-loading-button>
+
         <TermsAndConditions v-if="stages.termsAndConditions" :inline="true" :selfServiceDetails="selfServiceDetails"></TermsAndConditions>
     </div>
 </template>
@@ -39,6 +42,7 @@
     import kbaSecurityAnswerDefinitionStage from './KBASecurityAnswerDefinitionStage';
     import TermsAndConditions from './TermsAndConditions';
     import Consent from './Consent';
+    import LoadingButton from '@/components/utils/LoadingButton';
 
     export default {
         name: 'All-In-One-Registration',
@@ -50,12 +54,14 @@
             kbaSecurityAnswerDefinitionStage,
             TermsAndConditions,
             Consent,
-            Captcha
+            Captcha,
+            'fr-loading-button': LoadingButton
         },
         data () {
             let data = {
                 stages: {},
-                consentCheck: true
+                consentCheck: true,
+                loading: false
             };
 
             _.each(this.selfServiceDetails.requirements.stages, (name) => {
@@ -87,6 +93,8 @@
             },
 
             saveCheck () {
+                this.loading = true;
+
                 if (this.selfServiceDetails.requirements.consentEnabled) {
                     this.isValid().then(() => {
                         this.$refs.consentModal.show();
@@ -101,6 +109,7 @@
 
             save () {
                 this.$emit('advanceStage', this.getData());
+                this.loading = false;
             },
 
             isValid () {
@@ -129,6 +138,7 @@
                                 resolve({'success': true});
                             } else {
                                 this.displayNotification('error', this.$t('pages.selfservice.registration.pleaseComplete'));
+                                this.loading = false;
                             }
                         });
                     });
