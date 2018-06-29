@@ -1,15 +1,15 @@
 <template>
-    <div class="d-flex container-fluid p-0">
-        <b-container fluid v-show="!showSelfService">
-            <div class="d-flex">
-                <div class="m-auto fr-center-card p-0">
+    <div class="h-100">
+        <b-container fluid class="h-100 px-0" v-show="!showSelfService">
+            <div class="h-100 d-flex">
+                <div class="m-auto fr-center-card">
                     <bounce-loader :color="loadingColor"></bounce-loader>
                 </div>
             </div>
         </b-container>
 
-        <div v-show="showSelfService" class="d-flex container-fluid p-0">
-            <fr-center-card :showLogo="true" v-if="selfServiceType !== 'localAutoLogin'" class="m-auto fr-small-screen">
+        <div v-show="showSelfService">
+            <fr-center-card :showLogo="true" v-if="selfServiceType !== 'localAutoLogin'">
                 <div slot="center-card-header">
                     <h2 v-show="title.length > 0" class="h2">{{title}}</h2>
                     <p v-show="subtitle.length > 0" class='text-center mb-0'>{{subtitle}}</p>

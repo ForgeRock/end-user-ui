@@ -20,7 +20,7 @@
                     </li>
                 </ul>
             </div>
-            <div id="appContentWrapper" :class="[{'fr-no-toolbar': this.$route.meta.hideToolbar}, 'd-flex' ]">
+            <div id="appContentWrapper" :class="[{'fr-no-toolbar': this.$route.meta.hideToolbar}]">
                 <!--
                 Navigation Bar using Vue Route + Bootstrap Toolbar
                 -->
