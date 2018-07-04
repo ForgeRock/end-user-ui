@@ -4,20 +4,25 @@
             <div id="appSidebarWrapper" v-if="!this.$route.meta.hideToolbar && this.$root.userStore.state.userId !== null">
                 <ul class="sidebar-nav">
                     <li class="sidebar-brand">
-                        <router-link class="d-flex" active-class="" to="dashboard">
+                        <router-link class="d-flex" active-class=""  :to="{ name: 'Dashboard'}">
                             <img src="static/images/horizontal-logo-white.svg" :alt="$t('common.form.logo')" style="width:131px;" class="align-self-center sidebar-brand-logo" />
                             <img src="static/images/vertical-logo-white.svg" :alt="$t('common.form.logo')"  style="height:28px;" class="align-self-center sidebar-brand-mark" />
                         </router-link>
                     </li>
                     <li>
-                        <router-link to="dashboard"><i class="fa fa-fw mr-3 fa-tachometer"></i><span class="sidebar-item-text">{{$t('pages.app.dashboard')}}</span></router-link>
+                        <router-link  :to="{ name: 'Dashboard'}"><i class="fa fa-fw mr-3 fa-tachometer"></i><span class="sidebar-item-text">{{$t('pages.app.dashboard')}}</span></router-link>
                     </li>
                     <li>
-                        <router-link to="profile"><i class="fa fa-fw mr-3 fa-street-view"></i><span class="sidebar-item-text">{{$t('pages.app.profile')}}</span></router-link>
+                        <router-link :to="{ name: 'Profile'}"><i class="fa fa-fw mr-3 fa-street-view"></i><span class="sidebar-item-text">{{$t('pages.app.profile')}}</span></router-link>
                     </li>
                     <li v-if="$root.applicationStore.state.amDataEndpoints">
-                        <router-link to="sharing"><i class="fa fa-fw mr-3 fa-share"></i><span class="sidebar-item-text">{{$t('pages.app.sharing')}}</span></router-link>
+                        <router-link :to="{ name: 'Sharing'}"><i class="fa fa-fw mr-3 fa-share"></i><span class="sidebar-item-text">{{$t('pages.app.sharing')}}</span></router-link>
                     </li>
+                    <template v-for="(access, index) in this.$root.userStore.state.access">
+                        <li :key="'accessResource' +index">
+                            <router-link :to="{ name: 'Access', params: { resourceType: access.resource.split('/')[0],  resourceName: access.resource.split('/')[1]}}"><i :class="accessIcon(access.icon)"></i><span class="sidebar-item-text">{{access.title}}</span></router-link>
+                        </li>
+                    </template>
                 </ul>
             </div>
             <div id="appContentWrapper" :class="[{'fr-no-toolbar': this.$route.meta.hideToolbar}]">
@@ -86,6 +91,17 @@
         methods: {
             onToggle () {
                 this.toggled = !this.toggled;
+            },
+            accessIcon (icon) {
+                let iconClass = 'fa fa-fw mr-3 ';
+
+                if (icon.length) {
+                    iconClass = iconClass + icon;
+                } else {
+                    iconClass = iconClass + 'fa-cube';
+                }
+
+                return iconClass;
             }
         }
     };

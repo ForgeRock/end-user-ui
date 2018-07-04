@@ -68,9 +68,11 @@ router.beforeEach((to, from, next) => {
                 } else {
                     axios.all([
                         authInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
-                        authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, schema) => {
+                        authInstance.post(`privilege?_action=listPrivileges`),
+                        authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, privilege, schema) => {
                             UserStore.setProfileAction(profile.data);
                             UserStore.setSchemaAction(schema.data);
+                            UserStore.setAccess(privilege.data);
 
                             next();
                         }));

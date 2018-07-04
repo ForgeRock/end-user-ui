@@ -52,4 +52,18 @@ describe('Base App', () => {
 
         expect(wrapper.vm.toggled).to.equal(true);
     });
+
+    it('Access generated icons', () => {
+        const wrapper = shallow(App, {
+            i18n,
+            stubs: ['router-link', 'router-view', 'notifications'],
+            mocks: {
+                $route,
+                userStore
+            }
+        });
+
+        expect(wrapper.vm.accessIcon('')).to.equal('fa fa-fw mr-3 fa-cube');
+        expect(wrapper.vm.accessIcon('fa-test')).to.equal('fa fa-fw mr-3 fa-test');
+    });
 });

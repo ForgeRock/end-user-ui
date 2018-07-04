@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 /**
  * State - Enduser data store information
- *      @param {string} userId - Unique system identifier for a user used to get their spefic profile information
+ *      @param {string} userId - Unique system identifier for a user used to get their specific profile information
  *      @param {string} managedResource - Managed object where profile information lives
  *      @param {array} roles - Available roles for a user
  *      @param {object} profile - JSON blob of the managed resource profile details
@@ -11,6 +11,7 @@ import _ from 'lodash';
  *      @param {string} sn - Users last name pulled from profile details
  *      @param {string} email - Users email pulled from profile details,
  *      @param {string} userName - Users username from profile details
+ *      @param {array} access - Available resources user has access to
  */
 export default {
     state: {
@@ -20,6 +21,7 @@ export default {
         internalUser: false,
         profile: null,
         schema: null,
+        access: [],
         givenName: '',
         sn: '',
         email: '',
@@ -73,26 +75,26 @@ export default {
         this.state.schema = null;
     },
 
-    setUserIdAction (newVal) {
-        this.state.userId = _.clone(newVal);
+    setUserIdAction (userId) {
+        this.state.userId = _.clone(userId);
     },
 
     clearUserIdAction () {
         this.state.userId = null;
     },
 
-    setManagedResourceAction (newVal) {
-        this.state.managedResource = _.clone(newVal);
+    setManagedResourceAction (managedResource) {
+        this.state.managedResource = _.clone(managedResource);
     },
 
     clearManagedResourceAction () {
         this.state.managedResource = null;
     },
 
-    setRolesAction (newVal) {
-        this.state.roles = _.clone(newVal);
+    setRolesAction (roles) {
+        this.state.roles = _.clone(roles);
 
-        _.each(newVal, (role) => {
+        _.each(roles, (role) => {
             if (role === 'internal/role/openidm-admin') {
                 this.state.internalUser = true;
             }
@@ -101,6 +103,14 @@ export default {
 
     clearRolesAction () {
         this.state.roles = null;
+    },
+
+    setAccess (access) {
+        this.state.access = _.clone(access);
+    },
+
+    clearAccess () {
+        this.state.access = [];
     },
 
     clearStoreAction () {
@@ -114,5 +124,6 @@ export default {
         this.state.email = '';
         this.state.userName = '';
         this.state.internalUser = false;
+        this.state.access = [];
     }
 };

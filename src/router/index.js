@@ -1,4 +1,5 @@
 import Router from 'vue-router';
+import Access from '@/components/mains/Access';
 import Dashboard from '@/components/mains/Dashboard';
 import ForgotUsername from '@/components/mains/ForgotUsername';
 import NotFound from '@/components/mains/NotFound';
@@ -18,6 +19,10 @@ import Sharing from '@/components/mains/Sharing';
  */
 export default new Router({
     routes: [
+        {
+            path: '/',
+            redirect: '/dashboard'
+        },
         {
             path: '/oauthReturn',
             component: OAuthReturn,
@@ -46,9 +51,14 @@ export default new Router({
             meta: { authenticate: true }
         },
         {
+            path: '/access/:resourceType/:resourceName',
+            name: 'Access',
+            component: Access,
+            meta: { authenticate: true }
+        },
+        {
             path: '/dashboard',
             name: 'Dashboard',
-            alias: ['/'],
             component: Dashboard,
             meta: { authenticate: true },
             beforeEnter: (to, from, next) => {

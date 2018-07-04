@@ -14,6 +14,18 @@ describe('User Store', () => {
         expect(UserStore.state.userId).to.equal(null);
     });
 
+    it('access state management', () => {
+        expect(UserStore.state.access.length).to.equal(0);
+
+        UserStore.setAccess(['test']);
+
+        expect(UserStore.state.access.length).to.equal(1);
+
+        UserStore.clearAccess();
+
+        expect(UserStore.state.access.length).to.equal(0);
+    });
+
     it('managedResource state management', () => {
         expect(UserStore.state.managedResource).to.equal(null);
 
