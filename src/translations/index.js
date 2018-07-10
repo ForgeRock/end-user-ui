@@ -311,7 +311,8 @@ export default
                 noGroupTasks: 'Your group has no tasks at this time',
                 start: 'Start',
                 myTasks: 'My tasks',
-                unassignedTasks: 'Unassigned Tasks'
+                unassignedTasks: 'Unassigned Tasks',
+                processStartSuccessMessage: 'Process started'
             }
         }
     }

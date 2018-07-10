@@ -15,7 +15,7 @@ describe('WorkflowControlWidget.vue', () => {
     beforeEach(function () {
         sandbox = Sinon.sandbox.create();
 
-        sandbox.stub(WorkflowControl, 'mounted').callsFake(function () {});
+        sandbox.stub(WorkflowControl, 'created').callsFake(function () {});
     });
 
     afterEach(function () {
