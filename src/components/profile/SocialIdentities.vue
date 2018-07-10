@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="this.providers.length > 0">
         <fr-list-group :title="$t('pages.profile.socialSignIn.title')" :subtitle="$t('pages.profile.socialSignIn.subtitle')">
             <fr-list-item
                     v-for="(provider, index) in providers"

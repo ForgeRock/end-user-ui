@@ -13,7 +13,8 @@ export default
                 save: 'Save',
                 remove: 'Remove',
                 confirm: 'Confirm',
-                close: 'Close'
+                close: 'Close',
+                okay: 'Okay'
             },
             placeholders: {
                 password: 'Password',

@@ -5,9 +5,10 @@
         <kbaSecurityAnswerDefinitionStage v-if="stages.kbaSecurityAnswerDefinitionStage" :inline="true" :selfServiceDetails="selfServiceDetails"></KBASecurityAnswerDefinitionStage>
         <Captcha v-if="stages.captcha" :self-service-details="selfServiceDetails"></Captcha>
 
-        <template v-if="stages.consent">
+        <template v-if="stages.consent && selfServiceDetails.requirements && selfServiceDetails.requirements.consent">
             <b-modal ref="consentModal"
-                     :title="$t('pages.selfservice.registration.consent.title')">
+                     :title="$t('pages.selfservice.registration.consent.title')"
+                     @hide="loading = false;">
 
                 <Consent :inline="true" :selfServiceDetails="selfServiceDetails"></Consent>
 
@@ -19,7 +20,7 @@
 
                 <div slot="modal-footer" class="w-100">
                     <b-btn :disabled="consentCheck" size="sm" class="float-right" variant="primary" @click="save">
-                        Okay
+                        {{$t("common.form.okay")}}
                     </b-btn>
                 </div>
             </b-modal>
@@ -31,7 +32,7 @@
                            :large="true"
                            @click="saveCheck"></fr-loading-button>
 
-        <TermsAndConditions v-if="stages.termsAndConditions" :inline="true" :selfServiceDetails="selfServiceDetails"></TermsAndConditions>
+        <TermsAndConditions v-if="stages.termsAndConditions && selfServiceDetails.requirements && selfServiceDetails.requirements.terms" :inline="true" :selfServiceDetails="selfServiceDetails"></TermsAndConditions>
     </div>
 </template>
 

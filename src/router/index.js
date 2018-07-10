@@ -52,6 +52,7 @@ export default new Router({
             component: Dashboard,
             meta: { authenticate: true },
             beforeEnter: (to, from, next) => {
+                /* istanbul ignore next */
                 if (window.location.search && window.location.search.includes('state')) {
                     next({
                         path: '/oauthReturn'
