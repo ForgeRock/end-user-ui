@@ -12,9 +12,12 @@ import VeeValidate from 'vee-validate';
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import ToggleButton from 'vue-js-toggle-button';
+import PromisePoly from 'es6-promise';
 
 // Turn off production warning messages
 Vue.config.productionTip = false;
+
+PromisePoly.polyfill();
 
 // Add translation capability
 /*

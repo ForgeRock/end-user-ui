@@ -17,6 +17,7 @@
     "axios": "0.17.1",
     "bootstrap": "4.1.0",
     "bootstrap-vue": "2.0.0-rc.11",
+    "es6-promise": "4.2.4",
     "lodash": "4.17.10",
     "moment": "2.20.1",
     "npm": "5.8.0",
