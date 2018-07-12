@@ -24,8 +24,8 @@
         data () {
             return {
                 workflowService: null,
-                assignedTasks: [],
-                availableTasks: [],
+                assignedTasks: {},
+                availableTasks: {},
                 processes: {}
             };
         },
@@ -35,14 +35,11 @@
         },
         methods: {
             completeTask ({id, formData}) {
-                const data = _.omit(formData, '_processDefinitionId'),
-                    config = {
-                        headers: {'Accept': 'application/json, text/javascript, */*; q=0.01'},
-                        timeout: 2500
-                    };
-
                 /* istanbul ignore next */
-                return this.workflowService.post(`/workflow/taskinstance/${id}?_action=complete`, data, config)
+                return this.workflowService.post(`/workflow/taskinstance/${id}?_action=complete`, formData, {
+                    headers: {'Accept': 'application/json, text/javascript, */*; q=0.01'},
+                    timeout: 2500
+                })
                     .then((response) => {
                         this.displayNotification('success', this.$t('pages.workflow.taskSuccessfullyCompleted'));
                         this.$delete(this.assignedTasks, id);
@@ -96,37 +93,47 @@
                         });
                     });
             },
-            loadTasks (options = {taskGroup: 'availableTasks'}) {
+            getTaskParams (userId, groupName) {
                 const params = {
                     _queryId: 'gettasksview',
-                    userId: this.userDetails.userId
+                    userId
                 };
 
-                let taskGroup = this[options.taskGroup];
-
-                if (options.taskGroup === 'assignedTasks') {
+                if (groupName === 'assignedTasks') {
                     params.viewType = 'assignee';
                 }
 
-                /* istanbul ignore next */
-                return this.workflowService.get('/endpoint/gettasksview', { params })
-                    // Filter out any empty results
-                    .then(({data}) => _.reject(data.result, _.isEmpty))
-                    .then(([tasks]) => {
-                        _.each(tasks, (taskObj, id) => {
-                            let name = taskObj.name,
-                                task = _.first(taskObj.tasks),
-                                processDefinition = this.processes[task.processDefinitionId];
+                return params;
+            },
+            getTaskGroup (groupName) {
+                return this[groupName];
+            },
+            toTasks (taskGroup, {data}) {
+                // Filter out any empty results
+                let [ tasks ] = _.reject(data.result, _.isEmpty);
 
-                            // Use $set to maintain reactivity
-                            this.$set(taskGroup, id, { name, task, processDefinition });
-                        });
-                    });
+                // Process each result
+                _.each(tasks, (taskObj, id) => {
+                    let name = taskObj.name,
+                        task = _.first(taskObj.tasks),
+                        processDefinition = this.processes[task.processDefinitionId];
+
+                    // Use $set to maintain reactivity
+                    this.$set(taskGroup, id, { name, task, processDefinition });
+                });
+            },
+            loadTasks (options = {groupName: 'availableTasks'}) {
+                /* istanbul ignore next */
+                return this.workflowService.get('/endpoint/gettasksview', {
+                    params: this.getTaskParams(this.userDetails.userId, options.groupName)
+                }).then((response) => {
+                    this.toTasks(this.getTaskGroup(options.groupName), response);
+                });
             },
             loadData () {
                 /* istanbul ignore next */
                 this.loadProcesses() // Need to load processes first so process definitions are available to tasks when loaded
-                .then(() => axios.all([this.loadTasks({taskGroup: 'assignedTasks'}), this.loadTasks({taskGroup: 'availableTasks'})]))
+                .then(() => axios.all([this.loadTasks({groupName: 'assignedTasks'}), this.loadTasks({groupName: 'availableTasks'})]))
                 .catch((error) => {
                     this.displayNotification('error', error.response.data.message);
                 });

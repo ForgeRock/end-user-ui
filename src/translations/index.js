@@ -317,14 +317,22 @@ export default
                 invalidCreate: 'Invalid create form'
             },
             workflow: {
-                startProcess: 'Start a Process',
+                assign: 'Assign',
+                assignTo: 'Assign to',
+                assignmentSuccess: '{taskName} successfully assigned to {assignee}',
+                details: 'Details',
+                myTasks: 'My tasks',
                 noProcess: 'No processes at this time',
                 noAssignedTasks: 'No assigned tasks at this time',
                 noGroupTasks: 'Your group has no tasks at this time',
+                notAssigned: 'Not assigned',
+                processStartSuccessMessage: 'Process started',
+                requeue: 'Requeue',
                 start: 'Start',
-                myTasks: 'My tasks',
-                unassignedTasks: 'Unassigned Tasks',
-                processStartSuccessMessage: 'Process started'
+                startProcess: 'Start a Process',
+                taskSuccessfullyCompleted: 'Task successfully completed',
+                taskSuccessfullyRequeued: '{taskName} successfully requeued',
+                unassignedTasks: 'Unassigned Tasks'
             }
         }
     }
