@@ -78,7 +78,7 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
         select.value = '3';
         select.dispatchEvent(new Event('change'));
 
-        expect(wrapper.findAll('input[name="question"]').length).to.equal(1);
+        expect(wrapper.findAll('input[name="question0"]').length).to.equal(1);
     });
 
     it('correctly formats save object', () => {

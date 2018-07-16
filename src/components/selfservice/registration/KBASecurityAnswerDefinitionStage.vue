@@ -14,13 +14,13 @@
             <fr-floating-label-input class="mb-3" type="text"
                 v-if="selected[key].selected === customIndex"
                 v-model.trim="answer.customQuestion"
-                :fieldName="$t('common.user.kba.question').toLowerCase()"
+                :fieldName="$t('common.user.kba.question').toLowerCase() + key"
                 :label="$t('common.user.kba.question')"
                 :validateRules="'required'"></fr-floating-label-input>
 
             <fr-floating-label-input class="mb-3" type="text"
                 v-model.trim="answer.answer"
-                :fieldName="$t('common.user.kba.answer').toLowerCase()"
+                :fieldName="$t('common.user.kba.answer').toLowerCase() + key"
                 :label="$t('common.user.kba.answer')"
                 :validateRules="'required'"></fr-floating-label-input>
 
