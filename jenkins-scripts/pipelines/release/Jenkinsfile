@@ -12,6 +12,7 @@ def jobProperties = [buildDiscarder(logRotator(numToKeepStr: '10'))]
 jobProperties.add(parameters([
   string(defaultValue: '', description: 'Ex: 6.5.0', name: 'RELEASE_VERSION'),
   string(defaultValue: '', description: 'Ex: 6.5.1-SNAPSHOT. If left blank, the current Maven version will be used', name: 'NEXT_DEVELOPMENT_VERSION'),
+]))
 properties(jobProperties)
 
 def javaVersion = '8'
