@@ -74,6 +74,10 @@ $label-color:                           $gray-400;
 $input-btn-color:                       $gray-500;
 $input-btn-active-color:                $white;
 
+$input-group-addon-color:               $gray-200;
+$input-group-addon-bg:                  $gray-800;
+$input-group-addon-border-color:        $gray-800;
+
 // Custom form controls// Custom form controls
 $custom-control-indicator-bg:                $gray-800;
 $custom-control-indicator-checked-bg:        $primary;
@@ -154,3 +158,23 @@ $fr-alert-danger-bg-color:          $gray-900;
 $fr-alert-light-bg-color:           $gray-900;
 $fr-alert-dark-bg-color:            $gray-900;
 $fr-alert-box-shadow:               0px 0px 14px 0px rgba(0,0,0,0.75);
+
+// Paginator
+$pagination-color:                  $link-color;
+$pagination-bg:                     $gray-700;
+$pagination-border-color:           $gray-900;
+
+$pagination-active-color:           $link-color;
+$pagination-active-bg:              $gray-900;
+$pagination-active-border-color:    $gray-900;
+
+$pagination-hover-color:            $link-hover-color;
+$pagination-hover-bg:               $gray-900;
+
+$pagination-disabled-color:         $gray-500;
+$pagination-disabled-bg:            $gray-700;
+$pagination-disabled-border-color:  $gray-900;
+
+// Grid
+$table-hover-bg:                    $gray-900;
+$table-border-color:                $gray-900;

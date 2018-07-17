@@ -195,6 +195,58 @@ label {
 }
 
 /**
+  Grid and Table styles
+ */
+.card > .table th:first-child,
+.card > .table td:first-child {
+  padding-left: 1.875rem;
+}
+
+.card > .table th:last-child,
+.card > .table td:last-child {
+  padding-right: 1.875rem;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/*
+  Paginator Styles
+ */
+.pagination .page-link {
+  border-radius: $pagination-border-radius;
+  margin-left: 4px;
+}
+
+table td.avatar {
+  > div {
+    display: flex;
+  }
+  @media(min-width: 992px) {
+    width: 70px;
+    padding-right: 0;
+  }
+}
+
+table th.select,
+table td.select {
+  > div {
+    display: flex;
+  }
+  @media(min-width: 992px) {
+    width: 20px;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 991.99px) {
+  table.b-table.b-table-stacked-lg > tbody > tr > [data-label].avatar {
+    grid-template-columns: auto;
+  }
+}
+
+/**
   Fade animation for form transitions into error state
  */
 .is-invalid {

@@ -20,7 +20,7 @@
                     </li>
                     <template v-for="(access, index) in this.$root.userStore.state.access">
                         <li :key="'accessResource' +index">
-                            <router-link :to="{ name: 'Access', params: { resourceType: access.resource.split('/')[0],  resourceName: access.resource.split('/')[1]}}"><i :class="accessIcon(access.icon)"></i><span class="sidebar-item-text">{{access.title}}</span></router-link>
+                            <router-link :to="{ name: 'Access', meta: { title: 'User'}, params: { resourceType: access.resource.split('/')[0],  resourceName: access.resource.split('/')[1]}}"><i :class="accessIcon(access.icon)"></i><span class="sidebar-item-text">{{access.title}}</span></router-link>
                         </li>
                     </template>
                 </ul>
@@ -35,6 +35,7 @@
                             <i class="fa fa-bars fa-lg m-0"></i>
                         </b-button>
                     </b-nav-form>
+                    <b-navbar-brand class="ml-4" v-if="this.$route.params.resourceName">{{this.$route.params.resourceName | capitalize}}</b-navbar-brand>
                     <!-- Right aligned nav items -->
                     <b-navbar-nav class="ml-auto flex-row">
                         <fr-notification></fr-notification>
@@ -77,6 +78,7 @@
 
 <script>
     import ToolbarNotification from '@/components/utils/ToolbarNotification';
+    import _ from 'lodash';
 
     export default {
         name: 'App',
@@ -102,6 +104,11 @@
                 }
 
                 return iconClass;
+            }
+        },
+        filters: {
+            capitalize: function (value) {
+                return _.capitalize(value);
             }
         }
     };

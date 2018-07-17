@@ -51,7 +51,7 @@ $enable-rounded:                    true;
 //General
 $body-bg:                           $gray-100;
 $headings-color:                    $gray-900;
-$font-weight-bold:                  600;
+$font-weight-bold:                  500;
 $transition-collapse:               height .25s ease-in;
 $border-radius:                     4px;
 $border-color:                      rgba(0, 0, 0, 0.125);
@@ -86,6 +86,8 @@ $input-focus-color:                 !default;
 */
 $input-btn-color:                   $gray-800;
 $input-btn-active-color:            $gray-900;
+
+$input-group-addon-bg:              $input-bg;
 
 //Button
 $btn-padding-x:                     $input-btn-padding-x;
@@ -145,7 +147,8 @@ $fr-sidebar-nav-link-active-color:            rgba(0, 0, 0, 0.1);
 $dropdown-link-active-color:        $gray-900;
 $dropdown-link-active-bg:           $gray-100;
 $dropdown-header-color:             $gray-900;
-$dropdown-padding-y:                0;
+$dropdown-padding-y:                .25rem;
+$dropdown-item-padding-y:           .5rem;
 
 // Alert
 $alert-padding-y:                   1.25rem;
@@ -166,3 +169,19 @@ $modal-transition:                  transform .3s ease-out;
 $modal-content-bg:                  $white;
 $fr-modal-header-bg:                $modal-content-bg;
 $fr-modal-footer-bg:                $fr-modal-header-bg;
+
+//Pagination
+$pagination-border-color:                transparent;
+$pagination-disabled-border-color:       transparent;
+$pagination-border-radius:               $border-radius;
+$pagination-hover-bg:                    $gray-100;
+$pagination-hover-border-color:          transparent;
+$pagination-active-border-color:         transparent;
+$pagination-disabled-border-color:       transparent;
+
+//Table
+$table-bg:                    transparent !default;
+$table-accent-bg:             $gray-100;
+$table-hover-bg:              $gray-100;
+$table-cell-padding:          1.5rem 1rem;
+$table-cell-padding-sm:       .5rem;

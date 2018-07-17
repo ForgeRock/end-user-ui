@@ -14,7 +14,8 @@ export default
                 remove: 'Remove',
                 confirm: 'Confirm',
                 close: 'Close',
-                okay: 'Okay'
+                okay: 'Okay',
+                new: 'New'
             },
             placeholders: {
                 password: 'Password',

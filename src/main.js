@@ -79,8 +79,7 @@ router.beforeEach((to, from, next) => {
                 }
             },
             () => {
-                next(false);
-                router.push('login');
+                next({name: 'Login'});
             });
         } else {
             next();
@@ -169,7 +168,7 @@ Vue.mixin({
                 return response;
             }, (error) => {
                 if (error.response.data && error.response.data.code === 401) {
-                    this.$router.push({path: 'login'});
+                    this.$router.push({name: 'Login'});
                 }
 
                 return Promise.reject(error);
@@ -220,7 +219,7 @@ Vue.mixin({
                     logoutInstance.get();
                 }
 
-                this.$router.push('/login');
+                this.$router.push({name: 'Login'});
             });
         },
         progressiveProfileCheck (userDetails, continueLogin, updateApiType) {
