@@ -6,7 +6,7 @@
                     <b-img src="static/images/profile-default.png" rounded="circle" width="112" height="112" alt="img" class="m-1 mb-3" />
                     <h4>{{fullName}}</h4>
                     <span class="text-muted">{{email}}</span>
-                    <b-button ref="editProfileButton" variant="primary" block class="mt-4" v-b-modal.userDetailsModal>
+                    <b-button v-if="$root.userStore.state.internalUser === false" ref="editProfileButton" variant="primary" block class="mt-4" v-b-modal.userDetailsModal>
                         {{$t('pages.profile.editPersonalInfo')}}
                     </b-button>
                 </b-card>

@@ -27,7 +27,7 @@
         mounted () {},
         methods: {
             openProfile () {
-                this.$router.push({name: 'Profile', params: {openProfile: true}});
+                this.$router.push({name: 'Profile', params: {openProfile: !this.$root.userStore.state.internalUser}});
             }
         },
         computed: {
