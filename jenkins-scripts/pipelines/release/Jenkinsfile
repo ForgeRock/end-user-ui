@@ -110,7 +110,7 @@ timestamps {
       stage ('Final notification') {
         currentBuild.result = 'SUCCESS'
         releaseBuild.setBitbucketBuildStatus(commitShaForNotifications) // send an additional status for the 'release' commit
-        releaseBuild.sendSlackNotification(slackChannel, false, "IDM EndUser UI ${params.RELEASE_VERSION} has been released and is available at ${remoteHttpUrl}")
+        releaseBuild.sendSlackNotification(slackChannel, false, "IDM EndUser UI ${params.RELEASE_VERSION} has been released")
         releaseBuild.sendEmailNotification(emailNotificationMailingList)
       }
 
