@@ -82,7 +82,7 @@ timestamps {
             'forgerock-release',
             'binary-licensing',
             'thirdpartylicensing',
-            // 'source-copyright',
+            'source-copyright',
             'production-build'
           ]
 
