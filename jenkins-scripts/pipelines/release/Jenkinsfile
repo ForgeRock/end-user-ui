@@ -53,6 +53,7 @@ timestamps {
 
       stage ('Check release version number is unique') {
         stageErrorMessage = 'The version number chosen for the release has already been used, please check the console output'
+        sh 'git fetch --tags'
         def existingTags = sh(script: "git tag", returnStdout: true).split()
         if (existingTags.contains(params.RELEASE_VERSION)) {
           currentBuild.description = "Release version ${params.RELEASE_VERSION} cannot be used; this version of the " +
