@@ -75,6 +75,8 @@
                 /* istanbul ignore next */
                 idmInstance.post('/authentication?_action=logout').then(() => {
                     loginServiceInstance.post('/authentication?_action=login').then((userDetails) => {
+                        this.$root.userStore.clearStoreAction();
+
                         this.$root.userStore.setUserIdAction(userDetails.data.authorization.id);
                         this.$root.userStore.setManagedResourceAction(userDetails.data.authorization.component);
                         this.$root.userStore.setRolesAction(userDetails.data.authorization.roles);

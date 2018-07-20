@@ -92,7 +92,7 @@
             if (!_.isUndefined(this.clientToken)) {
                 const socialInstance = this.getRequestService();
                 /* istanbul ignore next */
-                socialInstance.post(`managed/user/${this.$root.userStore.state.userId}?_action=bind&provider=${this.linkedProvider}`, JSON.stringify(this.clientToken))
+                socialInstance.post(`${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=bind&provider=${this.linkedProvider}`, JSON.stringify(this.clientToken))
                     .then(() => {
                         this.getAllConnectedProviders(this.getRequestService({
                             headers: this.getAnonymousHeaders()
@@ -141,7 +141,7 @@
             },
             getAllConnectedProviders (socialInstance) {
                 /* istanbul ignore next */
-                socialInstance.get(`managed/user/${this.$root.userStore.state.userId}?_fields=idps/*`)
+                socialInstance.get(`${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=idps/*`)
                     .then((response) => {
                         this.connectedProviders = response.data.idps;
                         this.providers = this.setProviders();
@@ -204,7 +204,7 @@
                 });
 
                 /* istanbul ignore next */
-                socialInstance.post(`managed/user/${this.$root.userStore.state.userId}?_action=unbind&provider=${this.toDisconnect.provider}`)
+                socialInstance.post(`${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=unbind&provider=${this.toDisconnect.provider}`)
                     .then(() => {
                         this.connectedProviders.splice(_.findIndex(this.connectedProviders, {'provider': this.toDisconnect.provider}), 1);
                         this.providers = this.setProviders();
