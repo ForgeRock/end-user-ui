@@ -6,26 +6,34 @@
             <button type="button" aria-label="Close" class="close" @click="hideModal"><i class="fa fa-times"></i></button>
         </div>
 
+        <!-- Editing profile currently only supports String, Number and Boolean-->
         <b-container>
             <b-row>
                 <b-col sm="8" offset-sm="2">
                     <b-form v-if="formFields.length > 0" class="mb-3" name="edit-personal-form">
                         <template v-for="(field, index) in formFields">
-                            <b-form-group :key="index" v-if="field.type !== 'boolean'">
+                            <b-form-group :key="index" v-if="field.type === 'string' || field.type === 'number'">
                                 <label class="float-left" :for="field.title">{{field.title}}</label>
                                 <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
 
-                                <input v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
+                                <input v-if="field.type === 'string'" v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
                                        :name="field.name"
                                        :type="field.type"
                                        :class="[{'is-invalid': errors.has(field.name)}, 'form-control']"
                                        :data-vv-as="field.title"
                                        v-model.trim="formFields[index].value">
+
+                                <input v-else v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
+                                       :name="field.name"
+                                       :type="field.type"
+                                       :class="[{'is-invalid': errors.has(field.name)}, 'form-control']"
+                                       :data-vv-as="field.title"
+                                       v-model.number="formFields[index].value">
                                 <fr-validation-error :validatorErrors="errors" :fieldName="field.name"></fr-validation-error>
                             </b-form-group>
 
                             <!-- for boolean values -->
-                            <b-form-group :key="index" v-else>
+                            <b-form-group :key="index" v-if="field.type === 'boolean'">
                                 <div class="d-flex flex-column">
                                     <label class="mr-auto" :for="field.title">{{field.title}}</label>
 
@@ -35,7 +43,7 @@
                                                        :width="56"
                                                        :sync="true"
                                                        :cssColors="true"
-                                                       :labels="{checked: 'Yes', unchecked: 'No'}"
+                                                       :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
                                                        :value="formFields[index].value"
                                                        @change="formFields[index].value = !formFields[index].value"/>
                                     </div>
@@ -61,15 +69,12 @@
 
 <script>
     import _ from 'lodash';
-    import colors from '@/scss/main.scss';
-    import ListGroup from '@/components/utils/ListGroup';
     import ValidationError from '@/components/utils/ValidationError';
 
     export default {
         name: 'Edit-Personal-Info',
         components: {
-            'fr-validation-error': ValidationError,
-            'fr-list-group': ListGroup
+            'fr-validation-error': ValidationError
         },
         $_veeValidate: {
             validator: 'new'
@@ -80,7 +85,6 @@
         },
         data () {
             return {
-                color: colors.primary,
                 formFields: [],
                 originalFormFields: [],
                 title: this.$t('pages.profile.editProfile.userDetailsTitle')

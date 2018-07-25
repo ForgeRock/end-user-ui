@@ -219,6 +219,45 @@ label {
   margin-left: 4px;
 }
 
+/**
+  None floating label password reveal
+ */
+
+.form-label-password.form-label-group {
+  display: flex;
+
+  .form-control {
+    flex-grow: 1;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .input-group-append {
+    flex-grow: 1;
+
+    button {
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
+      background-color: $input-bg;
+      border-color: $input-border-color;
+      color:$input-btn-color;
+    }
+    button:hover {
+      color: $input-btn-active-color;
+    }
+
+  }
+}
+
+.form-label-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+/**
+  Table styles
+ */
+
 table td.avatar {
   > div {
     display: flex;

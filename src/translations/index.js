@@ -15,7 +15,9 @@ export default
                 confirm: 'Confirm',
                 close: 'Close',
                 okay: 'Okay',
-                new: 'New'
+                new: 'New',
+                yes: 'Yes',
+                no: 'No'
             },
             placeholders: {
                 password: 'Password',
@@ -48,6 +50,7 @@ export default
                 'AT_LEAST_X_CAPITAL_LETTERS': 'Must have at least {numCaps} capital letter(s)',
                 'AT_LEAST_X_NUMBERS': 'Must have at least {numNums} number(s)',
                 'CANNOT_CONTAIN_OTHERS': 'Must not share characters with {disallowedFields}',
+                'VALID_EMAIL_ADDRESS_FORMAT': 'Invalid email format (example@example.com)',
                 UNIQUE: '%{property} must be unique',
                 'test': 'succeed',
                 policyServiceError: {
@@ -234,6 +237,7 @@ export default
                 },
                 accountSecurity: {
                     title: 'Account Security',
+                    invalidPassword: 'Invalid password form',
                     subtitle: 'Update your username, password or security questions to secure your account.',
                     'password': 'Password',
                     'securityQuestions': 'Security Questions',
@@ -304,6 +308,13 @@ export default
                 notifications: {
                     requests: 'Requests'
                 }
+            },
+            access: {
+                password: 'Password',
+                noFields: 'No Fields Available',
+                successCreate: '{resource} successfully created',
+                typeSearch: 'Type to Search',
+                invalidCreate: 'Invalid create form'
             },
             workflow: {
                 startProcess: 'Start a Process',

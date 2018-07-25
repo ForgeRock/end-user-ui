@@ -51,7 +51,7 @@
                     </b-navbar-nav>
                 </b-navbar>
                 <transition name="fade" mode="out-in">
-                    <router-view/>
+                    <router-view :key="this.$route.fullPath"></router-view>
                 </transition>
             </div>
         </div>

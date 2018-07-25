@@ -127,7 +127,20 @@
              * @return {Object} - edited version of the policyRequirementSet
              */
             makeExclusions (policyRequirementSet) {
-                let { policyRequirements, policies } = policyRequirementSet;
+                let policyRequirements,
+                    policies;
+
+                if (policyRequirementSet && policyRequirementSet.policyRequirements) {
+                    policyRequirements = policyRequirementSet.policyRequirements;
+                } else {
+                    policyRequirements = [];
+                }
+
+                if (policyRequirementSet && policyRequirementSet.policies) {
+                    policies = policyRequirementSet.policies;
+                } else {
+                    policies = [];
+                }
 
                 const rejectPolicy = (requirement) => {
                     return _.reject(policies, (policy) => _.first(policy.policyRequirements) === requirement);

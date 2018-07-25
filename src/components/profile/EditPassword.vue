@@ -119,7 +119,7 @@
                     if (valid) {
                         this.$emit('updateProfile', payload, { headers, onSuccess, onError });
                     } else {
-                        this.displayNotification('error', 'Invalid password form');
+                        this.displayNotification('error', this.$t('pages.profile.accountSecurity.invalidPassword'));
                     }
                 });
             },
@@ -147,36 +147,3 @@
         }
     };
 </script>
-
-<style lang="scss" scoped>
-    .form-label-password.form-label-group {
-        display: flex;
-
-        .form-control {
-            flex-grow: 1;
-            border-bottom-right-radius: 0;
-            border-top-right-radius: 0;
-        }
-
-        .input-group-append {
-            flex-grow: 1;
-
-            button {
-                border-bottom-left-radius: 0;
-                border-top-left-radius: 0;
-                background-color: $input-bg;
-                border-color: $input-border-color;
-                color:$input-btn-color;
-            }
-            button:hover {
-              color: $input-btn-active-color;
-            }
-
-        }
-    }
-
-    .form-label-group {
-        position: relative;
-        margin-bottom: 1rem;
-    }
-</style>
