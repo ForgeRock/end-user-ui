@@ -4,7 +4,6 @@ import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { shallow } from '@vue/test-utils';
-import _ from 'lodash';
 
 describe('Workflow Task Component', () => {
     Vue.use(VueI18n);
@@ -22,10 +21,12 @@ describe('Workflow Task Component', () => {
                     formGenerationTemplate: '{name: "test", template: "<div>hello</div>"}'
                 }
             },
-            processDefinition: {
-                _id: 'test',
-                name: 'Test process',
-                formProperties: [ { _id: 'testVar', name: 'test variable' } ]
+            process: {
+                processDefinition: {
+                    _id: 'test',
+                    name: 'Test process',
+                    formProperties: [ { _id: 'testVar', name: 'test variable' } ]
+                }
             }
         };
 
@@ -58,6 +59,22 @@ describe('Workflow Task Component', () => {
             expect(wrapper.vm.processDefinition.formProperties.length).to.equal(1);
         });
 
+        it('should emit "loadProcess" when computing "processDefinition" and "process.processDefinition" is null', () => {
+            wrapper.setProps({
+                taskInstance: {
+                    task: {
+                        _id: 'testId',
+                        variables: { 'testVar': 'test value' }
+                    },
+                    process: {
+                        processDefinition: null
+                    }
+                }
+            });
+
+            expect(wrapper.emitted().loadProcess).to.be.ok; // eslint-disable-line
+        });
+
         it('should have computed "task"', () => {
             expect(wrapper.vm.task).to.be.an('object')
                 .and.to.include({ _id: 'testId' })
@@ -73,6 +90,26 @@ describe('Workflow Task Component', () => {
             expect(wrapper.vm.variables).to.be.an('object')
                 .and.to.deep.equal({testVar: 'test value'});
         });
+
+        it('should have computed "formProperties"', () => {
+            expect(wrapper.vm.formProperties).to.deep.equal([ { _id: 'testVar', name: 'test variable' } ]);
+        });
+
+        it('should return `[]` for "formProperties" when processDefinition null', () => {
+            wrapper.setProps({
+                taskInstance: {
+                    task: {
+                        _id: 'testId',
+                        variables: { 'testVar': 'test value' }
+                    },
+                    process: {
+                        processDefinition: null
+                    }
+                }
+            });
+
+            expect(wrapper.vm.formProperties).to.deep.equal([]);
+        });
     });
 
     describe('#cancel', () => {
@@ -80,20 +117,6 @@ describe('Workflow Task Component', () => {
             wrapper.vm.cancel();
             expect(wrapper.emitted().cancel).to.be.ok; // eslint-disable-line
             expect(wrapper.emitted().cancel[0]).to.deep.equal(['testId']);
-        });
-    });
-
-    describe('#setTaskForm', () => {
-        const updatedTemplateString = '{name: "updated-test-component", template: "<div>hello</div>"}',
-            formTemplatePath = 'task.taskDefinition.formGenerationTemplate',
-            clonedTaskInstance = _.cloneDeep(taskInstance),
-            updatedTaskInstance = _.set(clonedTaskInstance, formTemplatePath, updatedTemplateString);
-
-        it('should emit "cancel" with the task id', () => {
-            wrapper.setProps({taskInstance: updatedTaskInstance});
-            wrapper.vm.setTaskForm();
-
-            expect(wrapper.vm.taskForm).to.be.an('object').and.to.have.property('name').that.equals('updated-test-component');
         });
     });
 

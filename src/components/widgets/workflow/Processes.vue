@@ -2,19 +2,19 @@
     <div>
         <fr-list-group :title="this.$t('pages.workflow.startProcess')">
             <template v-if="!isEmpty(processes)">
-                <fr-list-item :collapsible="true" v-for="(process, id) in processes" :key="id">
+                <fr-list-item :collapsible="true" v-for="(process, id) in processes" :key="id" @hide="reset(id)" @show="$emit('loadProcess', process)">
                     <div slot="list-item-header" class="d-inline-flex w-100 media">
                         <div class="media-body align-self-center">
                             <h6>{{process.name}}</h6>
                         </div>
                         <div class="d-flex ml-3 align-self-center">
-                            <div class="btn btn-sm btn-link float-right btn-cancel" :ref="`cancel-${id}`" @click="reset(id)">{{$t('common.form.cancel')}}</div>
+                            <div class="btn btn-sm btn-link float-right btn-cancel" :ref="`cancel-${id}`">{{$t('common.form.cancel')}}</div>
                             <div class="btn btn-sm btn-link float-right btn-edit">{{$t('pages.workflow.start')}}</div>
                         </div>
                     </div>
 
                     <div slot="list-item-collapse-body" class="d-inline-flex w-100">
-                        <fr-process :processDefinition="process" :ref="id" @cancel="cancel" @startProcess="(payload) => $emit('startProcess', payload)"></fr-process>
+                        <fr-process :processDefinition="process.processDefinition" :ref="id" @cancel="cancel" @startProcess="(payload) => $emit('startProcess', payload)"></fr-process>
                     </div>
                 </fr-list-item>
             </template>
@@ -66,7 +66,7 @@
                 }
             },
             cancel (id) {
-                let cancelBtn = this.$refs[`cancel-${id}`][0];
+                let cancelBtn = _.first(this.$refs[`cancel-${id}`]);
 
                 if (cancelBtn) {
                     this.reset(id);

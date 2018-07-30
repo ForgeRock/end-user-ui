@@ -85,10 +85,15 @@ describe('Workflow Control Widget Component', () => {
                 response = {
                     data: { result: [{ test: {
                         name: 'test name',
-                        tasks: [{ processDefinitionId: 'test process' }]
+                        tasks: [{ processDefinitionId: 'testProcess' }]
                     } }] }
+                },
+                testProcess = {
+                    name: 'test process definition',
+                    processDefinition: null
                 };
-            wrapper.setData({processes: {'test process': 'test process definition'}});
+
+            wrapper.setData({ processes: { testProcess } });
 
             expect(wrapper.vm.assignedTasks).to.be.an('object').and.to.deep.equal({});
 
@@ -97,11 +102,11 @@ describe('Workflow Control Widget Component', () => {
 
             expect(wrapper.vm.availableTasks).to.have.property('test')
                 .that.includes({name: 'test name'})
-                .and.includes({processDefinition: 'test process definition'});
+                .and.includes({process: testProcess});
 
             expect(wrapper.vm.assignedTasks).to.have.property('test')
                 .that.includes({name: 'test name'})
-                .and.includes({processDefinition: 'test process definition'});
+                .and.includes({process: testProcess});
         });
     });
 });

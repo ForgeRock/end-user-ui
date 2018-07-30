@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div slot="list-item-collapse-body" class="d-inline-flex w-100">
-                            <fr-task :taskInstance="task":ref="id" @completeTask="completeTask"></fr-task> 
+                            <fr-task :taskInstance="task":ref="id" @loadProcess="(process) => $emit('loadProcess', process)" @completeTask="completeTask"></fr-task> 
                         </div>
                     </fr-list-item>
                 </transition-group>
@@ -88,11 +88,12 @@
             isEmpty: _.isEmpty,
             first: _.first
         },
-        mounted () {
-            window.myTasks = this;
-        },
         watch: {
             tasks: {
+                /**
+                * This function sets the state of panelShown. Anytime new tasks are added to the tasks prop,
+                * the prop key is added to the panelShown object with an initial state of `false`.
+                */
                 handler (val, oldVal) {
                     let newVals = _.difference(_.keys(val), _.keys(oldVal));
 

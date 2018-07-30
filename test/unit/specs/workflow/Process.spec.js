@@ -6,8 +6,6 @@ import translations from '@/translations';
 import { shallow } from '@vue/test-utils';
 import sinon from 'sinon';
 
-Process.created = sinon.stub();
-
 describe('Workflow Process Component', () => {
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
@@ -20,7 +18,7 @@ describe('Workflow Process Component', () => {
     describe('mount', () => {
         const wrapper = shallow(Process, {
             i18n,
-            propsData: { processDefinition: {_id: 'test', name: 'Test process'} }
+            propsData: { processDefinition: {_id: 'test', name: 'Test process', formGenerationTemplate: '{name: "test", template: "<div>hello</div>"}'} }
         });
 
         it('should have the correct name', () => {
@@ -28,15 +26,14 @@ describe('Workflow Process Component', () => {
         });
 
         it('should have the correct initial data', () => {
-            expect(wrapper.vm.startForm).to.equal(null);
-            expect(wrapper.vm.processInfo).to.equal(null);
+            expect(wrapper.vm.startForm).to.be.an('object').and.to.have.property('name').that.equals('test');
         });
     });
 
     describe('#cancel', () => {
         const wrapper = shallow(Process, {
             i18n,
-            propsData: { processDefinition: {_id: 'test', name: 'Test process'} }
+            propsData: { processDefinition: {_id: 'test', name: 'Test process', formGenerationTemplate: '{name: "test", template: "<div>hello</div>"}'} }
         });
 
         let resetSpy = sinon.spy();
@@ -57,7 +54,7 @@ describe('Workflow Process Component', () => {
     describe('#submit', () => {
         const wrapper = shallow(Process, {
             i18n,
-            propsData: { processDefinition: {_id: 'test', name: 'Test process'} }
+            propsData: { processDefinition: {_id: 'test', name: 'Test process', formGenerationTemplate: '{name: "test", template: "<div>hello</div>"}'} }
         });
 
         wrapper.vm.submit({test: 'test'});
@@ -72,7 +69,7 @@ describe('Workflow Process Component', () => {
         const wrapper = shallow(Process, {
                 i18n,
                 propsData: {
-                    processDefinition: { _id: 'test', name: 'Test process' }
+                    processDefinition: {_id: 'test', name: 'Test process', formGenerationTemplate: '{name: "test", template: "<div>hello</div>"}'}
                 }
             }),
             childResetFormSpy = sinon.spy();

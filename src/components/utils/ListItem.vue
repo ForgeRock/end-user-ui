@@ -6,7 +6,7 @@
             </div>
         </b-list-group-item>
 
-        <b-collapse :id="id" :visible="panelShown" :ref="id" @hidden="$emit('hidden')" @shown="$emit('shown')">
+        <b-collapse :id="id" :visible="panelShown" @hide="$emit('hide')" @show="$emit('show')" @hidden="$emit('hidden')" @shown="$emit('shown')">
             <b-card-body class="pt-3">
                 <slot name="list-item-collapse-body"></slot>
             </b-card-body>

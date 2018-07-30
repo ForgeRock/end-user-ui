@@ -1,22 +1,30 @@
 <template>
-        <component :is="startForm" @submit="submit" @cancel="cancel" :processDefinition="processDefinition" ref="startFormComponent" :isTask="task"></component>
+    <transition name="fade" mode="out-in" duration="250">
+        <component v-if="processDefinition !== null" :is="startForm" @submit="submit" @cancel="cancel" :processDefinition="processDefinition" ref="startFormComponent" :isTask="task"></component>
+        <clip-loader v-else class="m-auto" :color="'#007bff'"></clip-loader>
+    </transition>
 </template>
 
 <script>
+    import { ClipLoader } from 'vue-spinner/dist/vue-spinner.min.js';
     export default {
         name: 'Workflow-Process',
+        components: { 'clip-loader': ClipLoader },
         props: {
             processDefinition: {
-                Object,
+                types: [ Object, null ],
                 required: true
             },
             task: Object
         },
         data () {
-            return {
-                startForm: null,
-                processInfo: null
-            };
+            return {};
+        },
+        computed: {
+            startForm () {
+                const initializeForm = Function(`return ${this.processDefinition.formGenerationTemplate}`); // eslint-disable-line
+                return initializeForm();
+            }
         },
         methods: {
             cancel () {
@@ -29,10 +37,6 @@
             submit (payload) {
                 this.$emit('startProcess', payload);
             }
-        },
-        created () {
-            const initializeForm = Function(`return ${this.processDefinition.formGenerationTemplate}`); // eslint-disable-line
-            this.startForm = initializeForm();
         }
     };
 </script>

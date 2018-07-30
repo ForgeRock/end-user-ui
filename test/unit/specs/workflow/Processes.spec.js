@@ -35,6 +35,11 @@ describe('Workflow Processes Widget Component', () => {
         it('should call #reset on child component', () => {
             expect(childResetFormSpy.called).to.equal(true);
         });
+
+        it('should not call #reset if no child component', () => {
+            wrapper.vm.reset('test2');
+            expect(childResetFormSpy.calledOnce).to.equal(true);
+        });
     });
 
     describe('#cancel', () => {
@@ -53,6 +58,12 @@ describe('Workflow Processes Widget Component', () => {
 
         it('should click cancel button for process', () => {
             expect(clickSpy.called).to.equal(true);
+        });
+
+        it('should not click or call reset if button not found', () => {
+            wrapper.vm.cancel('test1');
+            expect(clickSpy.calledOnce).to.equal(true);
+            expect(resetFormSpy.calledOnce).to.equal(true);
         });
     });
 });

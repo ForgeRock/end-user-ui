@@ -1,8 +1,8 @@
 <template>
     <div>
-        <Processes :processes="processes" ref="processes" @startProcess="startProcess"></Processes>
-        <MyTasks :tasks="assignedTasks" @updateAssignment="updateAssignment" @completeTask="completeTask"></MyTasks>
-        <GroupTasks :tasks="availableTasks" @updateAssignment="updateAssignment"></GroupTasks>
+        <Processes :processes="processes" ref="processes" @startProcess="startProcess" @loadProcess="loadProcessDefinition"></Processes>
+        <MyTasks :tasks="assignedTasks" @updateAssignment="updateAssignment" @completeTask="completeTask" @loadProcess="loadProcessDefinition"></MyTasks>
+        <GroupTasks :tasks="availableTasks" @updateAssignment="updateAssignment" @loadProcess="loadProcessDefinition"></GroupTasks>
     </div>
 </template>
 
@@ -75,6 +75,16 @@
                         this.displayNotification('error', error.response.data.message);
                     });
             },
+            loadProcessDefinition (process) {
+                /* istanbul ignore next */
+                process.fetchProcessDefinition()
+                    .then(({data}) => {
+                        this.$set(process, 'processDefinition', data);
+                    })
+                    .catch((error) => {
+                        this.displayNotification('error', error.reponse.data.message);
+                    });
+            },
             loadProcesses () {
                 /* istanbul ignore next */
                 return this.workflowService.get('/endpoint/getprocessesforuser')
@@ -82,10 +92,12 @@
                     .then((processes) => processes.data.processes)
                     // Get the process definition for each process object
                     .then((processes) => {
-                        return axios.all(processes.map((process) => this.workflowService.get(`/workflow/processdefinition/${process._id}`)));
+                        return axios.all(processes.map((process) => {
+                            let fetchProcessDefinition = () => this.workflowService.get(`/workflow/processdefinition/${process._id}`),
+                                processDefinition = null;
+                            return _.merge(process, { fetchProcessDefinition, processDefinition });
+                        }));
                     })
-                    // Convert the array of responses to an array of the data from the previous request
-                    .then((response) => response.map((res) => res.data))
                     // Use the built in `$set` function to reactively get the process definitions into component state
                     .then((processDefinitions) => {
                         processDefinitions.forEach((definition) => {
@@ -116,10 +128,10 @@
                 _.each(tasks, (taskObj, id) => {
                     let name = taskObj.name,
                         task = _.first(taskObj.tasks),
-                        processDefinition = this.processes[task.processDefinitionId];
+                        process = this.processes[task.processDefinitionId];
 
                     // Use $set to maintain reactivity
-                    this.$set(taskGroup, id, { name, task, processDefinition });
+                    this.$set(taskGroup, id, { name, task, process });
                 });
             },
             loadTasks (options = {groupName: 'availableTasks'}) {
