@@ -75,12 +75,15 @@
             clearAll () {
                 this.notifications = [];
 
+                let internalUser = this.$root.userStore.state.internalUser,
+                    target = internalUser ? 'internal/user/openidm-admin' : `managed/user/${this.$root.userStore.state.userId}`;
+
                 /* istanbul ignore next */
                 this.resetPolling();
 
                 /* istanbul ignore next */
                 this.getRequestService()
-                    .post(`/notification?_action=deleteNotificationsForReceiver&receiverId=${this.$root.userStore.state.userId}`)
+                    .post(`/notification?_action=deleteNotificationsForTarget&target=${target}`)
                     .then(() => {
                         this.displayNotification('success', this.$t('pages.app.notifications.removedAll'));
 
@@ -116,9 +119,9 @@
             loadData () {
                 /* istanbul ignore next */
                 this.getRequestService()
-                    .get(`/notification?_queryId=get-notifications-for-user&userId=${this.$root.userStore.state.userId}`)
+                    .get(`/managed/user/${this.$root.userStore.state.userId}?_fields=_notifications/*`)
                     .then(({data}) => {
-                        this.notifications = data.result;
+                        this.notifications = data._notifications;
 
                         this.startPolling();
                     })
