@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import Access from '@/components/mains/Access';
+import ListResource from '@/components/mains/ListResource';
 import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import Sinon from 'sinon';
 import { mount } from '@vue/test-utils';
 
-describe('Access.vue', () => {
+describe('ListResource.vue', () => {
     var sandbox = null;
 
     Vue.use(VueI18n);
@@ -15,7 +15,7 @@ describe('Access.vue', () => {
     beforeEach(function () {
         sandbox = Sinon.sandbox.create();
 
-        sandbox.stub(Access, 'mounted').callsFake(function () {});
+        sandbox.stub(ListResource, 'mounted').callsFake(function () {});
     });
 
     afterEach(function () {
@@ -36,7 +36,7 @@ describe('Access.vue', () => {
         };
 
     it('Access page loaded', () => {
-        const wrapper = mount(Access, {
+        const wrapper = mount(ListResource, {
             i18n,
             stubs: {
                 'router-link': true
@@ -50,7 +50,7 @@ describe('Access.vue', () => {
     });
 
     it('Access resource URL generated', () => {
-        const wrapper = mount(Access, {
+        const wrapper = mount(ListResource, {
             i18n,
             stubs: {
                 'router-link': true
@@ -66,7 +66,7 @@ describe('Access.vue', () => {
     });
 
     it('Access sort column', () => {
-        const wrapper = mount(Access, {
+        const wrapper = mount(ListResource, {
             i18n,
             stubs: {
                 'router-link': true
@@ -83,7 +83,7 @@ describe('Access.vue', () => {
     });
 
     it('Sorting change reset', () => {
-        const wrapper = mount(Access, {
+        const wrapper = mount(ListResource, {
             i18n,
             stubs: {
                 'router-link': true
@@ -103,7 +103,7 @@ describe('Access.vue', () => {
     });
 
     it('New search entered', () => {
-        const wrapper = mount(Access, {
+        const wrapper = mount(ListResource, {
             i18n,
             stubs: {
                 'router-link': true
@@ -121,7 +121,7 @@ describe('Access.vue', () => {
     });
 
     it('Generated query filter for search', () => {
-        const wrapper = mount(Access, {
+        const wrapper = mount(ListResource, {
             i18n,
             stubs: {
                 'router-link': true
@@ -136,7 +136,7 @@ describe('Access.vue', () => {
     });
 
     it('Clear search and sort', () => {
-        const wrapper = mount(Access, {
+        const wrapper = mount(ListResource, {
             i18n,
             stubs: {
                 'router-link': true

@@ -18,6 +18,9 @@ module.exports = function (config) {
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
     },
+    proxies: {
+        '/static/images': '../static/images'
+    },
     webpack: webpackConfig,
     webpackMiddleware: {
       noInfo: true

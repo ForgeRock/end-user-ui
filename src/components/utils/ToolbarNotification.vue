@@ -118,14 +118,20 @@
             },
             loadData () {
                 /* istanbul ignore next */
-                this.getRequestService()
-                    .get(`/managed/user/${this.$root.userStore.state.userId}?_fields=_notifications/*`)
-                    .then(({data}) => {
-                        this.notifications = data._notifications;
+                if (!_.isNull(this.$root.userStore.state.userId)) {
+                    this.getRequestService()
+                        .get(`/managed/user/${this.$root.userStore.state.userId}?_fields=_notifications/*`)
+                        .then(({data}) => {
+                            if (data._notifications) {
+                                this.notifications = data._notifications;
+                            } else {
+                                this.notifications = [];
+                            }
 
-                        this.startPolling();
-                    })
-                    .catch(() => {});
+                            this.startPolling();
+                        })
+                        .catch(() => {});
+                }
             }
         }
     };

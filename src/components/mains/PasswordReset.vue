@@ -41,11 +41,11 @@
     export default {
         name: 'Password-Reset',
         components: {
-            captcha: Captcha,
-            emailValidation: EmailValidation,
+            Captcha,
+            EmailValidation,
+            UserQuery,
+            ResetStage,
             kbaSecurityAnswerVerificationStage: KbaVerification,
-            userQuery: UserQuery,
-            resetStage: ResetStage,
             'bounce-loader': BounceLoader,
             'fr-center-card': CenterCard
         },

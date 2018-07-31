@@ -24,6 +24,7 @@
                 </b-row>
             </div>
             <b-table show-empty
+                     table-responsive
                      stacked="lg"
                      :items="gridData"
                      :fields="columns"
@@ -34,8 +35,8 @@
                      :no-local-sorting="true"
                      class="mb-0"
                      :sort-direction="sortDirection"
+                     @row-clicked="resourceClicked"
                      @sort-changed="sortingChanged">
-                     <!-- @row-clicked="onRowClicked" -->
             </b-table>
             <div class="card-footer py-2">
                 <nav aria-label="Page navigation example">
@@ -73,6 +74,7 @@
             return {
                 name: this.$route.params.resourceName,
                 resource: this.$route.params.resourceType,
+                schemaProperties: {},
                 isRowSelected: false,
                 tableHover: true,
                 gridData: [],
@@ -84,7 +86,8 @@
                 sortDesc: false,
                 sortDirection: 'asc',
                 filter: '',
-                createProperties: []
+                createProperties: [],
+                userCanUpdate: false
             };
         },
         mounted () {
@@ -99,7 +102,7 @@
                     idmInstance.get(`schema/${this.resource}/${this.name}`),
                     idmInstance.get(`privilege/${this.resource}/${this.name}`)]).then(axios.spread((schema, privilege) => {
                         // Generate columns for display and filtering for read/query
-                        _.each(privilege.data.read, (readProp) => {
+                        _.each(privilege.data.VIEW, (readProp) => {
                             if (this.columns.length <= 3 && _.isUndefined(schema.data.properties[readProp.attribute].encryption)) {
                                 this.columns.push({
                                     key: readProp.attribute,
@@ -112,8 +115,14 @@
                             }
                         });
 
+                        if (privilege.data.UPDATE) {
+                            this.userCanUpdate = true;
+                        }
+
+                        this.schemaProperties = schema.data.properties;
+
                         // Generate create list for create resource dialog
-                        _.each(privilege.data.create, (createProp) => {
+                        _.each(privilege.data.CREATE, (createProp) => {
                             if (createProp.readOnly === false) {
                                 if (schema.data.properties[createProp.attribute].type === 'string' || schema.data.properties[createProp.attribute].type === 'number' || schema.data.properties[createProp.attribute].type === 'boolean') {
                                     schema.data.properties[createProp.attribute].key = createProp.attribute;
@@ -187,12 +196,12 @@
                 this.currentPage = 1;
                 this.lastPage = false;
 
-                this.loadGrid(this.generateSearch(this.filter, this.displayFields), this.displayFields, this.calculateSort(sort.sortDesc, sort.sortBy), 1);
+                this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, this.calculateSort(sort.sortDesc, sort.sortBy), 1);
             },
             paginationChange (page) {
                 /* istanbul ignore next */
                 this.currentPage = page;
-                this.loadGrid(this.generateSearch(this.filter, this.displayFields), this.displayFields, this.calculateSort(this.sortDesc, this.sortBy), page);
+                this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, this.calculateSort(this.sortDesc, this.sortBy), page);
             },
             search () {
                 this.sortBy = null;
@@ -200,17 +209,40 @@
                 this.currentPage = 1;
                 this.lastPage = false;
 
-                this.loadGrid(this.generateSearch(this.filter, this.displayFields), this.displayFields, null, 1);
+                this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, null, 1);
             },
-            generateSearch (filter, displayFields) {
+            generateSearch (filter, displayFields, schemaProps) {
                 let filterUrl = '';
 
                 if (filter.length > 0) {
                     _.each(displayFields, (field, index) => {
-                        if ((index + 1) < displayFields.length) {
-                            filterUrl = `${filterUrl}${field}+sw+"${filter}"+OR+`;
+                        let type = 'string';
+
+                        if (!_.isUndefined(schemaProps)) {
+                            type = schemaProps[field].type;
+                        }
+
+                        // Search based on number and proper number value
+                        if (type === 'number' && !_.isNaN(_.toNumber(filter))) {
+                            if ((index + 1) < displayFields.length) {
+                                filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
+                            } else {
+                                filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
+                            }
+                        // Search based on boolean and proper boolean true/false
+                        } else if (type === 'boolean' && (filter === 'true' || filter === 'false')) {
+                            if ((index + 1) < displayFields.length) {
+                                filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
+                            } else {
+                                filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
+                            }
+                        // Fallback to general string search if all other criteria fails
                         } else {
-                            filterUrl = `${filterUrl}${field}+sw+"${filter}"`;
+                            if ((index + 1) < displayFields.length) {
+                                filterUrl = `${filterUrl}${field}+sw+"${filter}"+OR+`;
+                            } else {
+                                filterUrl = `${filterUrl}${field}+sw+"${filter}"`;
+                            }
                         }
                     });
                 } else {
@@ -226,6 +258,20 @@
                 this.currentPage = 1;
 
                 this.loadGrid('true', this.displayFields, null, 1);
+            },
+            resourceClicked (item) {
+                if (this.userCanUpdate) {
+                    this.$router.push({
+                        name: 'EditResource',
+                        params: {
+                            resourceType: this.resource,
+                            resourceName: this.name,
+                            resourceId: item._id
+                        }
+                    });
+                } else {
+                    this.displayNotification('error', this.$t('pages.access.unableToEditResource', { resource: this.name }));
+                }
             }
         }
     };

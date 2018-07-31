@@ -44,6 +44,11 @@
   .custom-control-label::before {
     @include border-radius($custom-checkbox-indicator-border-radius);
     border: 1px solid $custom-checkbox-indicator-border-color;
+    left: -30px;
+  }
+
+  .custom-control-label::after {
+    left: -30px;
   }
 
   .custom-control-input:checked ~ .custom-control-label {

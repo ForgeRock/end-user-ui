@@ -61,7 +61,7 @@ describe('CreateResource.vue', () => {
             }
         });
 
-        expect(error.msg).to.equal('Invalid email format (example@example.com)');
+        expect(error[0].msg).to.equal('Invalid email format (example@example.com)');
     });
 
     it('Clean dialog after close', () => {

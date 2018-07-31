@@ -177,10 +177,12 @@
                 /* istanbul ignore next */
                 this.displayNotification('error', errorMessage);
 
+                // TODO Readd this if it is problematic not resetting all of registration on failure
                 // clean up any queryParams from the url
-                this.$router.push('/registration');
+                // this.$router.push('/registration');
+
                 // reload the form
-                this.loadData();
+                // this.loadData();
             },
             findPolicyError (errorResponse) {
                 let errorMessage = errorResponse.data.message,

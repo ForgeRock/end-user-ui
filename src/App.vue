@@ -20,7 +20,7 @@
                     </li>
                     <template v-for="(access, index) in this.$root.userStore.state.access">
                         <li :key="'accessResource' +index">
-                            <router-link :to="{ name: 'Access', meta: { title: 'User'}, params: { resourceType: access.resource.split('/')[0],  resourceName: access.resource.split('/')[1]}}"><i :class="accessIcon(access.icon)"></i><span class="sidebar-item-text">{{access.title}}</span></router-link>
+                            <router-link :to="{ name: 'ListResource', meta: { title: 'User'}, params: { resourceType: access.resource.split('/')[0],  resourceName: access.resource.split('/')[1]}}"><i :class="accessIcon(access.icon)"></i><span class="sidebar-item-text">{{access.title}}</span></router-link>
                         </li>
                     </template>
                 </ul>
@@ -43,7 +43,7 @@
                             <template slot="button-content">
                                 {{$t('pages.app.user')}} <b-img src="static/images/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
                             </template>
-                            <b-dropdown-item active-class="fr-no-active" exact-active-class="fr-no-active" to="profile">{{$t('pages.app.profile')}}</b-dropdown-item>
+                            <b-dropdown-item active-class="fr-no-active" exact-active-class="fr-no-active" :to="{ name: 'Profile'}">{{$t('pages.app.profile')}}</b-dropdown-item>
                             <b-dropdown-item v-if="this.$root.userStore.state.internalUser" href="/admin">{{$t('pages.app.admin')}}</b-dropdown-item>
                             <b-dropdown-divider class="m-0"></b-dropdown-divider>
                             <b-dropdown-item @click.prevent="logoutUser()">{{$t('pages.app.signOut')}}</b-dropdown-item>

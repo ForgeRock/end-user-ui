@@ -1,5 +1,6 @@
 import Router from 'vue-router';
-import Access from '@/components/mains/Access';
+import ListResource from '@/components/mains/ListResource';
+import EditResource from '@/components/access/EditResource';
 import Dashboard from '@/components/mains/Dashboard';
 import ForgotUsername from '@/components/mains/ForgotUsername';
 import NotFound from '@/components/mains/NotFound';
@@ -51,9 +52,15 @@ export default new Router({
             meta: { authenticate: true }
         },
         {
-            path: '/access/:resourceType/:resourceName',
-            name: 'Access',
-            component: Access,
+            path: '/list/:resourceType/:resourceName',
+            name: 'ListResource',
+            component: ListResource,
+            meta: { authenticate: true }
+        },
+        {
+            path: '/edit/:resourceType/:resourceName/:resourceId',
+            name: 'EditResource',
+            component: EditResource,
             meta: { authenticate: true }
         },
         {

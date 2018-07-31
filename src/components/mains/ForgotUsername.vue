@@ -40,10 +40,10 @@
     export default {
         name: 'Forgot-Username',
         components: {
-            captcha: Captcha,
-            emailUsername: EmailUsername,
-            retrieveUsername: RetrieveUsername,
-            userQuery: UserQuery,
+            Captcha,
+            EmailUsername,
+            RetrieveUsername,
+            UserQuery,
             'bounce-loader': BounceLoader,
             'fr-center-card': CenterCard
         },

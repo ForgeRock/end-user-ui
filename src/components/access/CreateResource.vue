@@ -86,6 +86,7 @@
     import _ from 'lodash';
     import ValidationError from '@/components/utils/ValidationError';
     import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
+    import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 
     export default {
         name: 'Create-Resource',
@@ -93,6 +94,9 @@
             'fr-validation-error': ValidationError,
             'fr-password-policy-input': PolicyPasswordInput
         },
+        mixins: [
+            ResourceMixin
+        ],
         props: {
             createProperties: {
                 type: Array,
@@ -147,17 +151,22 @@
 
                         idmInstance.post(`${this.resourceType}/${this.resourceName}?_action=create`, saveData).then(() => {
                             this.$emit('refreshGrid');
+                            this.errors.clear();
                             this.hideModal();
 
                             this.displayNotification('success', this.$t('pages.access.successCreate', { resource: _.capitalize(this.resourceName) }));
                         },
                         (error) => {
-                            let generatedError = this.findPolicyError(error.response);
+                            let generatedErrors = this.findPolicyError(error.response, this.createProperties);
 
                             this.errors.clear();
 
-                            if (error && generatedError.exists) {
-                                this.errors.add(generatedError);
+                            if (generatedErrors.length > 0) {
+                                _.each(generatedErrors, (generatedError) => {
+                                    if (generatedError.exists) {
+                                        this.errors.add(generatedError);
+                                    }
+                                });
                             } else {
                                 this.displayNotification('error', this.$t('pages.access.invalidCreate'));
                             }
@@ -166,36 +175,6 @@
                         this.displayNotification('error', this.$t('pages.access.invalidCreate'));
                     }
                 });
-            },
-
-            findPolicyError (errorResponse) {
-                let error = null;
-
-                if (_.has(errorResponse, 'data.detail.failedPolicyRequirements')) {
-                    let policy = errorResponse.data.detail.failedPolicyRequirements[0];
-
-                    if (policy.policyRequirements.length > 0) {
-                        let displayTitle = '';
-
-                        _.each(this.createProperties, (prop) => {
-                            if (prop.key === policy.property) {
-                                if (prop.title) {
-                                    displayTitle = prop.title;
-                                } else {
-                                    displayTitle = prop.key;
-                                }
-                            }
-                        });
-
-                        error = {
-                            exists: displayTitle.length > 0,
-                            field: policy.property,
-                            msg: this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, { property: displayTitle })
-                        };
-                    }
-                }
-
-                return error;
             },
 
             hideModal () {

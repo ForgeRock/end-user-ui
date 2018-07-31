@@ -70,9 +70,13 @@
 <script>
     import _ from 'lodash';
     import ValidationError from '@/components/utils/ValidationError';
+    import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 
     export default {
         name: 'Edit-Personal-Info',
+        mixins: [
+            ResourceMixin
+        ],
         components: {
             'fr-validation-error': ValidationError
         },
@@ -102,6 +106,7 @@
                     formFields = _.map(filteredOrder, (name) => {
                         return {
                             name: name,
+                            key: name,
                             title: properties[name].title,
                             value: this.profile[name] || null,
                             type: properties[name].type,
@@ -120,30 +125,46 @@
                 this.formFields = formFields;
                 this.originalFormFields = _.cloneDeep(formFields);
             },
-            createPatches (o, n) {
-                let originalFrom = _.cloneDeep(o),
-                    newForm = _.cloneDeep(n),
-                    changes = _.filter(newForm, (field, index) => {
-                        if (field.value !== originalFrom[index].value) {
-                            return true;
-                        }
-                        return false;
-                    });
-
-                return _.map(changes, (formField) => {
-                    if (formField.value === '' || formField.value === null) {
-                        return {operation: 'remove', field: '/' + formField.name};
-                    } else {
-                        return {operation: 'add', field: '/' + formField.name, value: formField.value};
-                    }
-                });
-            },
             saveForm () {
                 /* istanbul ignore next */
                 this.isValid().then((valid) => {
                     if (valid) {
-                        this.$emit('updateProfile', this.createPatches(this.originalFormFields, this.formFields));
-                        this.hideModal();
+                        const idmInstance = this.getRequestService();
+                        let policyFields = {};
+
+                        _.each(this.formFields, (field) => {
+                            if (field.value !== null) {
+                                policyFields[field.name] = field.value;
+                            }
+                        });
+
+                        idmInstance.post(`policy/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=validateObject`, policyFields).then((policyResult) => {
+                            if (policyResult.data.failedPolicyRequirements.length === 0) {
+                                this.$emit('updateProfile', this.generateUpdatePatch(this.originalFormFields, this.formFields));
+                                this.errors.clear();
+                                this.hideModal();
+                            } else {
+                                let generatedErrors = this.findPolicyError({
+                                    data: {
+                                        detail: {
+                                            failedPolicyRequirements: policyResult.data.failedPolicyRequirements
+                                        }
+                                    }
+                                }, this.formFields);
+
+                                this.errors.clear();
+
+                                if (generatedErrors.length > 0) {
+                                    _.each(generatedErrors, (generatedError) => {
+                                        if (generatedError.exists) {
+                                            this.errors.add(generatedError);
+                                        }
+                                    });
+                                } else {
+                                    this.displayNotification('error', this.$t('pages.profile.editProfile.failedProfileSave'));
+                                }
+                            }
+                        });
                     }
                 });
             },

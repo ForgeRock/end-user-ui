@@ -114,7 +114,7 @@ describe('EditPersonalInfo.vue', () => {
                 name: 'postalCode',
                 value: null
             }],
-            patches = wrapper.vm.createPatches(original, newForm);
+            patches = wrapper.vm.generateUpdatePatch(original, newForm);
 
         expect(patches.length).to.equal(3);
         expect(patches[0].operation).to.equal('add');

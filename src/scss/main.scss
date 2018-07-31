@@ -41,6 +41,16 @@
   baseColor: $primary;
 }
 
+//Circle and icon
+.fr-resource-circle {
+  width: 75px;
+  height: 75px;
+  text-align: center;
+
+  .fa {
+    line-height: inherit;
+  }
+}
 
 // Application adjustments (not related to themes
 // Center spinner

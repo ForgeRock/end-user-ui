@@ -17,7 +17,8 @@ export default
                 okay: 'Okay',
                 new: 'New',
                 yes: 'Yes',
-                no: 'No'
+                no: 'No',
+                delete: 'Delete'
             },
             placeholders: {
                 password: 'Password',
@@ -232,6 +233,7 @@ export default
                 },
                 editProfile: {
                     userDetailsTitle: 'Edit your personal info',
+                    failedProfileSave: 'Failed to save profile changes',
                     optional: '(optional)',
                     noFields: 'No profile fields available'
                 },
@@ -314,7 +316,18 @@ export default
                 noFields: 'No Fields Available',
                 successCreate: '{resource} successfully created',
                 typeSearch: 'Type to Search',
-                invalidCreate: 'Invalid create form'
+                invalidCreate: 'Invalid create form',
+                deleteResource: 'Successfully deleted user',
+                deleteConfirm: 'Are you sure you want to delete this',
+                deleteModalTitle: 'Confirm Deletion',
+                noAvailableProperties: 'No available properties for editing',
+                unableToEditResource: 'Unable to edit {resource}',
+                invalidEdit: 'Invalid edit form',
+                successEdited: '{resource} successfully edited',
+                details: 'Details',
+                resetPassword: 'Reset password',
+                failedSavePassword: 'Failed to save password',
+                successSavePassword: 'Successfully saved password'
             },
             workflow: {
                 assign: 'Assign',
