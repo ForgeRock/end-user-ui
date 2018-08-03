@@ -29,7 +29,7 @@
                 return this.process.processDefinition;
             },
             formProperties () {
-                return this.processDefinition !== null ? this.processDefinition.formProperties : [];
+                return this.processDefinition ? this.processDefinition.formProperties : [];
             },
             task () {
                 return this.taskInstance.task;
@@ -43,7 +43,8 @@
                 return _.get(this, 'task.variables');
             },
             taskForm () {
-                const initializeForm = Function(`return ${this.task.taskDefinition.formGenerationTemplate}`); // eslint-disable-line
+                const formGenerationTemplate = this.task.taskDefinition.formGenerationTemplate,
+                    initializeForm = formGenerationTemplate ? Function(`return ${formGenerationTemplate}`) : _.noop; // eslint-disable-line
                 return initializeForm();
             }
         },

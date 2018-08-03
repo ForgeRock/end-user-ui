@@ -95,6 +95,25 @@ describe('Workflow Task Component', () => {
             expect(wrapper.vm.formProperties).to.deep.equal([ { _id: 'testVar', name: 'test variable' } ]);
         });
 
+        it('should have computed "taskForm"', () => {
+            expect(wrapper.vm.taskForm).to.be.an('object');
+
+            wrapper.setProps({
+                taskInstance: {
+                    task: {
+                        _id: 'testId',
+                        variables: { 'testVar': 'test value' },
+                        taskDefinition: {}
+                    },
+                    process: {
+                        processDefinition: null
+                    }
+                }
+            });
+
+            expect(wrapper.vm.taskForm).to.equal(undefined);
+        });
+
         it('should return `[]` for "formProperties" when processDefinition null', () => {
             wrapper.setProps({
                 taskInstance: {

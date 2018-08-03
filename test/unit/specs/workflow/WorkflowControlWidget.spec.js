@@ -108,5 +108,29 @@ describe('Workflow Control Widget Component', () => {
                 .that.includes({name: 'test name'})
                 .and.includes({process: testProcess});
         });
+
+        it('should populate a method to fetch a process if no process defined', () => {
+            const wrapper = shallow(WorkflowControl, {
+                    i18n
+                }),
+                response = {
+                    data: { result: [{ test: {
+                        name: 'test name',
+                        tasks: [{ processDefinitionId: 'testProcess' }]
+                    } }] }
+                },
+                fetchSpy = sinon.spy();
+
+            wrapper.setData({workflowService: { get: fetchSpy }});
+            wrapper.vm.toTasks(wrapper.vm.assignedTasks, response);
+
+            expect(wrapper.vm.assignedTasks).to.have.property('test')
+                .that.includes({name: 'test name'})
+                .and.that.has.property('process').that.has.property('fetchProcessDefinition');
+
+            wrapper.vm.assignedTasks.test.process.fetchProcessDefinition();
+
+            expect(fetchSpy.called).to.equal(true);
+        });
     });
 });

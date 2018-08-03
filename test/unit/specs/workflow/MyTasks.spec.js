@@ -21,7 +21,14 @@ describe('Workflow MyTasks Widget Component', () => {
         wrapper = shallow(MyTasks, {
             i18n,
             propsData: {
-                tasks: { test1: { task: 'test task 1' } }
+                tasks: {
+                    test1: {
+                        task: {
+                            _id: 'test task 1',
+                            candidates: { candidateGroups: ['test-role'] }
+                        }
+                    }
+                }
             }
         });
     });
@@ -90,7 +97,10 @@ describe('Workflow MyTasks Widget Component', () => {
             expect(spyCall.args[1]).to.equal('updateAssignment');
             expect(spyCall.args[2]).to.deep.equal({
                 id: 'test1',
-                task: 'test task 1',
+                task: {
+                    _id: 'test task 1',
+                    candidates: { candidateGroups: ['test-role'] }
+                },
                 assignee: null
             });
         });
@@ -157,8 +167,8 @@ describe('Workflow MyTasks Widget Component', () => {
             wrapper.vm.$set = setSpy;
             wrapper.setProps({
                 tasks: {
-                    test1: { task: 'test task 1' },
-                    test2: { task: 'test task 2' }
+                    test1: { task: { _id: 'test task 1', candidates: { candidateGroups: ['test-role'] } } },
+                    test2: { task: { _id: 'test task 2', candidates: { candidateGroups: ['test-role'] } } }
                 }
             });
 
@@ -172,8 +182,8 @@ describe('Workflow MyTasks Widget Component', () => {
             wrapper.vm.panelShown = undefined;
             wrapper.setProps({
                 tasks: {
-                    test1: { task: 'test task 1' },
-                    test2: { task: 'test task 2' }
+                    test1: { task: { _id: 'test task 1', candidates: { candidateGroups: ['test-role'] } } },
+                    test2: { task: { _id: 'test task 2', candidates: { candidateGroups: ['test-role'] } } }
                 }
             });
 

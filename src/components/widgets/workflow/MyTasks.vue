@@ -8,7 +8,7 @@
                             <div class="media-body align-self-center">
                                 <h6>{{task.name}}</h6>
                             </div>
-                            <div class="btn btn-sm btn-link float-right" @click.stop="requeue(id)">{{$t('pages.workflow.requeue')}}</div>
+                            <div v-if="!isEmpty(task.task.candidates.candidateGroups)" class="btn btn-sm btn-link float-right" @click.stop="requeue(id)">{{$t('pages.workflow.requeue')}}</div>
                             <div class="d-flex ml-3 align-self-center">
                                 <div class="btn btn-sm btn-link float-right btn-cancel" :ref="`cancel-${id}`">{{$t('common.form.cancel')}}</div>
                                 <div class="btn btn-sm btn-link float-right btn-edit">{{$t('common.form.edit')}}</div>

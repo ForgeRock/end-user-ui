@@ -128,7 +128,14 @@
                 _.each(tasks, (taskObj, id) => {
                     let name = taskObj.name,
                         task = _.first(taskObj.tasks),
-                        process = this.processes[task.processDefinitionId];
+                        process = this.processes[task.processDefinitionId],
+                        fetchProcessDefinition = () => {
+                            return this.workflowService.get(`/workflow/processdefinition/${task.processDefinitionId}`);
+                        };
+
+                    if (_.isUndefined(process)) {
+                        process = { fetchProcessDefinition };
+                    }
 
                     // Use $set to maintain reactivity
                     this.$set(taskGroup, id, { name, task, process });
