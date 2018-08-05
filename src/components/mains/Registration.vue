@@ -44,6 +44,7 @@
     import SelfserviceAPI from '../selfservice/mixins/SelfserviceAPIMixin';
     import styles from '../../scss/main.scss';
     import TermsAndConditions from '../selfservice/registration/TermsAndConditions';
+    import GenericSelfService from '../selfservice/common/GenericSelfService';
     import _ from 'lodash';
 
     const customTitleComponents = [
@@ -65,7 +66,8 @@
             emailValidation,
             idmUserDetails,
             kbaSecurityAnswerDefinitionStage,
-            TermsAndConditions
+            TermsAndConditions,
+            GenericSelfService
         },
         props: ['clientToken'],
         mixins: [
@@ -165,7 +167,20 @@
                         this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
                     }
                 } else {
-                    this.selfServiceType = type;
+                    let stageCheck = false;
+
+                    _.each(this.$options.components, (value, key) => {
+                        if (_.toLower(key) === _.toLower(type)) {
+                            stageCheck = true;
+                        }
+                    });
+
+                    if (stageCheck) {
+                        this.selfServiceType = type;
+                    } else {
+                        this.selfServiceType = 'GenericSelfService';
+                    }
+
                     this.showSelfService = true;
                 }
             },

@@ -58,11 +58,17 @@ describe('PasswordReset.vue', () => {
     it('PasswordReset properly sets child component to resetStage stage', () => {
         const wrapper = mountWrapper();
         wrapper.vm.setChildComponent('resetStage', {
-            advanceStage: null,
-            selfServiceDetails: null
+            requirements: {
+                properties: {
+                    answer: {
+                        type: 'boolean',
+                        description: 'math'
+                    }
+                }
+            }
         });
 
-        expect(wrapper.vm.selfServiceType).to.equal('resetStage');
+        expect(wrapper.vm.selfServiceType).to.equal('GenericSelfService');
     });
 
     it('PasswordReset properly sets selfServiceType to null when stage is "parameters"', () => {
@@ -105,7 +111,22 @@ describe('PasswordReset.vue', () => {
     });
 
     it('PasswordReset calls setChildComponent() on api error', (done) => {
-        const wrapper = mountWrapper();
+        const wrapper = mount(PasswordReset, {
+            i18n,
+            propsData: {
+                apiType: 'reset',
+                selfServiceDetails: {
+                    requirements: {
+                        properties: {
+                            answer: {
+                                type: 'boolean',
+                                description: 'math'
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         // Trigger a save to verify after is valid promise
         wrapper.vm.apiErrorCallback({
@@ -116,7 +137,7 @@ describe('PasswordReset.vue', () => {
             }
         });
 
-        expect(wrapper.vm.selfServiceType).to.equal('resetStage');
+        expect(wrapper.vm.selfServiceType).to.equal('GenericSelfService');
         expect(wrapper.vm.selfServiceDetails.error).to.equal('testError');
         done();
     });

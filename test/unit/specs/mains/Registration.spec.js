@@ -20,7 +20,6 @@ describe('Registration.vue', () => {
 
         sandbox.stub(Registration, 'mounted').callsFake(function () {
             this.selfServiceType = null;
-            this.serviceDetails = null;
             this.advanceStage = _.noop;
             this.displayNotification = () => {};
             this.$router = [];

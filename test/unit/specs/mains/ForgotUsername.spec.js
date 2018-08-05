@@ -56,10 +56,16 @@ describe('ForgotUsername.vue', () => {
     it('forgotusername properly sets child component to emailUsername stage', () => {
         const wrapper = mountWrapper();
         wrapper.vm.setChildComponent('emailUsername', {
-            advanceStage: null,
-            selfServiceDetails: null
+            requirements: {
+                properties: {
+                    answer: {
+                        type: 'boolean',
+                        description: 'math'
+                    }
+                }
+            }
         });
 
-        expect(wrapper.vm.selfServiceType).to.equal('emailUsername');
+        expect(wrapper.vm.selfServiceType).to.equal('GenericSelfService');
     });
 });
