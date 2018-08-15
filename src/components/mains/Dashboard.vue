@@ -38,19 +38,21 @@
         },
         methods: {
             loadData () {
-                // Hardcoded welcome widget until removal of previous enduser to avoid
-                // Widget conflicts
-                this.widgets.push({
-                    type: 'Welcome',
-                    size: 'large'
-                });
+                /* istanbul ignore next */
+                this.getRequestService().get('config/ui/dashboard')
+                    .then(({data}) => {
+                        this.widgets = data.dashboard.widgets;
 
-                if (this.$root.applicationStore.state.workflow) {
-                    this.widgets.push({
-                        type: 'Workflow',
-                        size: 'large'
+                        if (this.$root.applicationStore.state.workflow) {
+                            this.widgets.push({
+                                type: 'Workflow',
+                                size: 'large'
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        this.displayNotification('error', error.response.data.message);
                     });
-                }
             }
         }
     };

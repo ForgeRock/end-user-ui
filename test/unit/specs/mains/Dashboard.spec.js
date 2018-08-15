@@ -4,6 +4,7 @@ import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { shallow } from '@vue/test-utils';
+import sinon from 'sinon';
 
 describe('Dashboard.vue', () => {
     Vue.use(VueI18n);
@@ -28,6 +29,7 @@ describe('Dashboard.vue', () => {
 
         const wrapper = shallow(Dashboard, {
             i18n,
+            methods: { loadData: sinon.stub() },
             mocks: {
                 userStore,
                 applicationStore
