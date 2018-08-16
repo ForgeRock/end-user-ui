@@ -101,19 +101,21 @@
                 axios.all([
                     idmInstance.get(`schema/${this.resource}/${this.name}`),
                     idmInstance.get(`privilege/${this.resource}/${this.name}`)]).then(axios.spread((schema, privilege) => {
-                        // Generate columns for display and filtering for read/query
-                        _.each(privilege.data.VIEW, (readProp) => {
-                            if (this.columns.length <= 3 && _.isUndefined(schema.data.properties[readProp.attribute].encryption)) {
-                                this.columns.push({
-                                    key: readProp.attribute,
-                                    label: schema.data.properties[readProp.attribute].title,
-                                    sortable: true,
-                                    sortDirection: 'desc'
-                                });
+                        if (privilege.data.VIEW.allowed) {
+                            // Generate columns for display and filtering for read/query
+                            _.each(privilege.data.VIEW.properties, (readProp) => {
+                                if (this.columns.length <= 3 && _.isUndefined(schema.data.properties[readProp.attribute].encryption)) {
+                                    this.columns.push({
+                                        key: readProp.attribute,
+                                        label: schema.data.properties[readProp.attribute].title,
+                                        sortable: true,
+                                        sortDirection: 'desc'
+                                    });
 
-                                this.displayFields.push(readProp.attribute);
-                            }
-                        });
+                                    this.displayFields.push(readProp.attribute);
+                                }
+                            });
+                        }
 
                         if (privilege.data.UPDATE) {
                             this.userCanUpdate = true;
@@ -121,24 +123,26 @@
 
                         this.schemaProperties = schema.data.properties;
 
-                        // Generate create list for create resource dialog
-                        _.each(privilege.data.CREATE, (createProp) => {
-                            if (createProp.readOnly === false) {
-                                if (schema.data.properties[createProp.attribute].type === 'string' || schema.data.properties[createProp.attribute].type === 'number' || schema.data.properties[createProp.attribute].type === 'boolean') {
-                                    schema.data.properties[createProp.attribute].key = createProp.attribute;
+                        if (privilege.data.CREATE.allowed) {
+                            // Generate create list for create resource dialog
+                            _.each(privilege.data.CREATE.properties, (createProp) => {
+                                if (createProp.readOnly === false) {
+                                    if (schema.data.properties[createProp.attribute].type === 'string' || schema.data.properties[createProp.attribute].type === 'number' || schema.data.properties[createProp.attribute].type === 'boolean') {
+                                        schema.data.properties[createProp.attribute].key = createProp.attribute;
 
-                                    _.each(schema.data.required, (requiredKey) => {
-                                        if (requiredKey === schema.data.properties[createProp.attribute].key) {
-                                            schema.data.properties[createProp.attribute].required = true;
-                                        }
-                                    });
+                                        _.each(schema.data.required, (requiredKey) => {
+                                            if (requiredKey === schema.data.properties[createProp.attribute].key) {
+                                                schema.data.properties[createProp.attribute].required = true;
+                                            }
+                                        });
 
-                                    this.createProperties.push(schema.data.properties[createProp.attribute]);
+                                        this.createProperties.push(schema.data.properties[createProp.attribute]);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
 
-                        this.loadGrid('true', this.displayFields, null, 1);
+                        this.loadGrid('true', this.displayFields, this.displayFields[0], 1);
                     }))
                     .catch((error) => {
                         this.displayNotification('error', error.response.data.message);
@@ -162,9 +166,12 @@
             buildGridUrl (filter, fields, sortField, page) {
                 let resourceUrl = `${this.resource}/${this.name}?_queryFilter=${filter}&_pageSize=10&_totalPagedResultsPolicy=EXACT`;
 
-                if (!_.isNull(sortField)) {
-                    resourceUrl = `${resourceUrl}&_sortKeys=${sortField}`;
+                if (_.isNull(sortField)) {
+                    // If there is no sortField default to sorting on the first column.
+                    sortField = fields[0];
                 }
+
+                resourceUrl = `${resourceUrl}&_sortKeys=${sortField}`;
 
                 if (fields.length) {
                     resourceUrl = `${resourceUrl}&_fields=${fields.join(',')}`;

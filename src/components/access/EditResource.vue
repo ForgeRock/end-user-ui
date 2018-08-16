@@ -202,7 +202,7 @@
             generateDisplay (schema, privilege, resourceDetails) {
                 this.oldFormFields = _.clone(resourceDetails);
 
-                if (privilege.DELETE) {
+                if (privilege.DELETE.allowed) {
                     this.canDelete = true;
                 }
 
@@ -217,49 +217,51 @@
                     this.$set(this.formFields, key, value);
                 });
 
-                _.each(privilege.UPDATE, (createPriv) => {
-                    let tempProp = schema.properties[createPriv.attribute];
+                if (privilege.UPDATE.allowed) {
+                    _.each(privilege.UPDATE.properties, (createPriv) => {
+                        let tempProp = schema.properties[createPriv.attribute];
 
-                    if (_.indexOf(schema.required, createPriv.attribute) !== -1) {
-                        tempProp.required = true;
-                    }
-
-                    if (createPriv.attribute === 'password' && !createPriv.readOnly) {
-                        this.canChangePassword = true;
-                    }
-
-                    tempProp.key = createPriv.attribute;
-
-                    // Try and do some primary detection for a display name
-                    if ((_.toLower(createPriv.attribute) === 'username' || _.toLower(createPriv.attribute) === 'name') && this.displayNameField.length === 0) {
-                        this.displayNameField = createPriv.attribute;
-                    }
-
-                    // Try and do some primary detection for a secondary title
-                    if ((_.toLower(createPriv.attribute) === 'title' ||
-                            _.toLower(createPriv.attribute) === 'email' ||
-                            _.toLower(createPriv.attribute) === 'type' ||
-                            _.toLower(createPriv.attribute) === 'mail') && this.displaySecondaryTitleField.length === 0) {
-                        this.displaySecondaryTitleField = createPriv.attribute;
-                    }
-
-                    // Add fields that may not be set yet from reading the resource
-                    if (_.isUndefined(this.formFields[createPriv.attribute])) {
-                        if (tempProp.type === 'boolean') {
-                            this.$set(this.formFields, createPriv.attribute, false);
-                            this.oldFormFields[createPriv.attribute] = false;
-                        } else {
-                            this.$set(this.formFields, createPriv.attribute, '');
-                            this.oldFormFields[createPriv.attribute] = '';
+                        if (_.indexOf(schema.required, createPriv.attribute) !== -1) {
+                            tempProp.required = true;
                         }
-                    }
 
-                    if (createPriv.readOnly) {
-                        this.readProperties.push(tempProp);
-                    } else {
-                        this.editProperties.push(tempProp);
-                    }
-                });
+                        if (createPriv.attribute === 'password' && !createPriv.readOnly) {
+                            this.canChangePassword = true;
+                        }
+
+                        tempProp.key = createPriv.attribute;
+
+                        // Try and do some primary detection for a display name
+                        if ((_.toLower(createPriv.attribute) === 'username' || _.toLower(createPriv.attribute) === 'name') && this.displayNameField.length === 0) {
+                            this.displayNameField = createPriv.attribute;
+                        }
+
+                        // Try and do some primary detection for a secondary title
+                        if ((_.toLower(createPriv.attribute) === 'title' ||
+                                _.toLower(createPriv.attribute) === 'email' ||
+                                _.toLower(createPriv.attribute) === 'type' ||
+                                _.toLower(createPriv.attribute) === 'mail') && this.displaySecondaryTitleField.length === 0) {
+                            this.displaySecondaryTitleField = createPriv.attribute;
+                        }
+
+                        // Add fields that may not be set yet from reading the resource
+                        if (_.isUndefined(this.formFields[createPriv.attribute])) {
+                            if (tempProp.type === 'boolean') {
+                                this.$set(this.formFields, createPriv.attribute, false);
+                                this.oldFormFields[createPriv.attribute] = false;
+                            } else {
+                                this.$set(this.formFields, createPriv.attribute, '');
+                                this.oldFormFields[createPriv.attribute] = '';
+                            }
+                        }
+
+                        if (createPriv.readOnly) {
+                            this.readProperties.push(tempProp);
+                        } else {
+                            this.editProperties.push(tempProp);
+                        }
+                    });
+                }
             },
             deleteResource () {
                 const idmInstance = this.getRequestService();
