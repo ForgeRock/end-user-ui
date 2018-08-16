@@ -10,6 +10,7 @@
                    v-validate="validateRules"
                    :data-vv-as="label"
                    data-vv-validate-on="submit"
+                   ref="input"
                    :name="fieldName"/>
             <div v-if="reveal" class="input-group-append">
                 <button @click="revealText" class="btn btn-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
@@ -75,6 +76,11 @@
 
             if (this.defaultValue) {
                 this.inputValue = this.defaultValue;
+            }
+
+            // Browser consistent focus fix
+            if (this.autofocus === 'true') {
+                this.$refs.input.focus();
             }
         },
         methods: {
