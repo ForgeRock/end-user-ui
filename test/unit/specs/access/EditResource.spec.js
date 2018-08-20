@@ -85,26 +85,28 @@ describe('EditResource.vue', () => {
                 }
             },
             privilege = {
-                UPDATE: [{
-                    attribute: 'userName',
-                    readOnly: false
+                UPDATE: {
+                    allowed: true,
+                    properties: [{
+                        attribute: 'userName',
+                        readOnly: false
+                    },
+                    {
+                        attribute: 'contractor',
+                        readOnly: false
+                    },
+                    {
+                        attribute: 'sn',
+                        readOnly: true
+                    },
+                    {
+                        attribute: 'email',
+                        readOnly: false
+                    }]
                 },
-                {
-                    attribute: 'contractor',
-                    readOnly: false
-                },
-                {
-                    attribute: 'sn',
-                    readOnly: true
-                },
-                {
-                    attribute: 'email',
-                    readOnly: false
-                }],
-                DELETE: [{
-                    attribute: 'userName',
-                    readOnly: false
-                }]
+                DELETE: {
+                    allowed: true
+                }
             },
             resourceDetails = {
                 userName: 'test',
