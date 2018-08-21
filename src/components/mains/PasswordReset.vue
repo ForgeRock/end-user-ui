@@ -64,8 +64,7 @@
             /* istanbul ignore next */
             if (this.$route.params.queryParams) {
                 let queryParams = this.parseQueryParams(this.$route.params.queryParams);
-                // hide the params from the user
-                this.$router.push('/passwordReset');
+
                 this.advanceStage(queryParams);
             } else {
                 this.loadData();
