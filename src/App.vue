@@ -20,7 +20,7 @@
                     </li>
                     <template v-for="(access, index) in this.$root.userStore.state.access">
                         <li :key="'accessResource' +index">
-                            <router-link :to="{ name: 'ListResource', meta: { title: 'User'}, params: { resourceType: access.resource.split('/')[0],  resourceName: access.resource.split('/')[1]}}"><i :class="accessIcon(access.icon)"></i><span class="sidebar-item-text">{{access.title}}</span></router-link>
+                            <router-link :to="{ name: 'ListResource', meta: { title: 'User'}, params: { resourceType: access.privilegePath.split('/')[0],  resourceName: access.privilegePath.split('/')[1]}}"><i :class="accessIcon(access.icon)"></i><span class="sidebar-item-text">{{access.title}}</span></router-link>
                         </li>
                     </template>
                 </ul>
