@@ -35,6 +35,8 @@
 
             window.history.pushState('', '', window.location.pathname);
 
+            this.$root.applicationStore.clearAuthHeadersAction();
+
             /* istanbul ignore next */
             const socialInstance = this.getRequestService({
                     headers: _.extend(this.getAnonymousHeaders(), {
@@ -77,6 +79,8 @@
                                     'X-Requested-With': 'XMLHttpRequest'
                                 });
                                 this.$root.applicationStore.setAuthLogoutUrlAction(response.data.authorization.logoutUrl || null);
+                                sessionStorage.setItem('amToken', dataStoreToken);
+                                sessionStorage.setItem('resubmitDataStoreToken', 'true');
                                 sessionStorage.removeItem('setAuthHeaders');
                             }
 

@@ -41,17 +41,52 @@ router.beforeEach((to, from, next) => {
 
     if (_.has(to, 'meta.authenticate')) {
         if (_.isNull(UserStore.state.userId)) {
-            let authInstance = axios.create({
-                baseURL: '/openidm',
-                timeout: 1000,
-                headers: _.extend({
+            let tempHeaders = _.extend({
                     'content-type': 'application/json',
                     'cache-control': 'no-cache',
                     'x-requested-with': 'XMLHttpRequest'
-                }, ApplicationStore.state.authHeaders || {})
+                }, ApplicationStore.state.authHeaders || {}),
+                amLogin = false,
+                authInstance;
+
+            /*
+                If we are in working with OpenAM to prevent extra redirects and timeouts we have to catch
+                the session right here and configure the appropriate headers
+             */
+            if (sessionStorage.getItem('resubmitDataStoreToken') && sessionStorage.getItem('amToken')) {
+                tempHeaders = {
+                    'X-OpenIDM-NoSession': 'false',
+                    'X-OpenIDM-OAuth-Login': 'true',
+                    'X-OpenIDM-DataStoreToken': sessionStorage.getItem('amToken'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                };
+
+                amLogin = true;
+            }
+
+            authInstance = axios.create({
+                baseURL: '/openidm',
+                timeout: 1000,
+                headers: tempHeaders
             });
 
             authInstance.post('/authentication?_action=login').then((userDetails) => {
+                /*
+                    Similar to oauthReturn we need to manipulate the correct headers for open AM here as well (if not the UI gets into an odd state where it will
+                    randomly go back to openAM to restore its session since the existing JWT returned from IDM has timed out.
+
+                    This is not ideal, but to create the least painful UI experience this is what we have to do for now.
+                 */
+                if (amLogin) {
+                    ApplicationStore.setAuthHeadersAction({
+                        'X-OpenIDM-OAuth-Login': 'true',
+                        'X-OpenIDM-DataStoreToken': sessionStorage.getItem('amToken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    });
+
+                    ApplicationStore.setAuthLogoutUrlAction(userDetails.data.authorization.logoutUrl || null);
+                }
+
                 UserStore.setUserIdAction(userDetails.data.authorization.id);
                 UserStore.setManagedResourceAction(userDetails.data.authorization.component);
                 UserStore.setRolesAction(userDetails.data.authorization.roles);
@@ -212,6 +247,14 @@ Vue.mixin({
                             'content-type': 'application/json'
                         }
                     });
+
+                    /*
+                        More OpenAM clean up to ensure that the session/tokens are cleaned up appropriately when logged out
+                     */
+                    if (ApplicationStore.state.authHeaders) {
+                        sessionStorage.removeItem('amToken');
+                        sessionStorage.removeItem('resubmitDataStoreToken');
+                    }
 
                     this.$root.applicationStore.clearAuthHeadersAction();
                     this.$root.applicationStore.clearAuthLogoutUrlAction();
