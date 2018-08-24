@@ -1,6 +1,6 @@
 <template>
     <b-form>
-        <fr-social-buttons v-if="!isSocialReg" :signin='false'></fr-social-buttons>
+        <fr-social-buttons v-if="!isSocialReg" :signin="false"></fr-social-buttons>
         <b-form-group class="mb-0" v-for="(property, key) in userDetails" :key="key">
             <fr-floating-label-input
                     :defaultValue="property.socialValue"

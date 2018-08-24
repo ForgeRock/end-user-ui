@@ -68,7 +68,7 @@
             SelfserviceAPI
         ],
         name: 'Account-Claiming',
-        props: ['clientToken', 'originalToken'],
+        props: ['clientToken', 'originalToken', 'returnParams'],
         mounted () {
             /* istanbul ignore next */
             this.loadData();
@@ -112,7 +112,13 @@
                 this.selfServiceDetails = details;
                 /* istanbul ignore next */
                 if (type === 'parameters') {
-                    this.advanceStage({});
+                    if (this.returnParams) {
+                        this.advanceStage({
+                            'returnParams': this.returnParams
+                        });
+                    } else {
+                        this.advanceStage({});
+                    }
                 } else if (type === 'socialUserClaim' && details.tag === 'initial') {
                     this.advanceStage({
                         'clientToken': this.clientToken
@@ -134,8 +140,16 @@
                             this.socialVerification = true;
                         }
                     }
-                } else if (type === 'localAutoLogin' && _.isUndefined(details.additions.claimedProfile)) {
-                    this.$router.push({name: 'Registration', params: {clientToken: this.clientToken}});
+                } else if ((type === 'localAutoLogin' || type === 'openAMAutoLogin') && _.isUndefined(details.additions.claimedProfile)) {
+                    if (sessionStorage.getItem('amSocialToken')) {
+                        let tempToken = sessionStorage.getItem('amSocialToken');
+
+                        sessionStorage.removeItem('amSocialToken');
+
+                        this.$router.push({name: 'Registration', params: {clientToken: tempToken}});
+                    } else {
+                        this.$router.push({name: 'Registration', params: {clientToken: this.clientToken}});
+                    }
                 } else if (details.tag === 'end' && details.status.success) {
                     const socialLoginInstance = this.getRequestService({
                         headers: {

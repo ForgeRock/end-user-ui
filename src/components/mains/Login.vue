@@ -12,7 +12,7 @@
                 </div>
             </transition>
 
-            <fr-social-buttons signin></fr-social-buttons>
+            <fr-social-buttons :signin="true"></fr-social-buttons>
 
             <b-form class="form-signin mb-3" @submit.prevent="submit">
 

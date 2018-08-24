@@ -25,6 +25,11 @@ export default new Router({
             redirect: '/dashboard'
         },
         {
+            path: '/handleOAuth/:amData',
+            component: OAuthReturn,
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
+        },
+        {
             path: '/oauthReturn',
             component: OAuthReturn,
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }

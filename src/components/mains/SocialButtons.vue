@@ -31,7 +31,10 @@
     export default {
         name: 'Social-Buttons',
         props: {
-            'signin': Boolean,
+            'signin': {
+                type: Boolean,
+                default: false
+            },
             'filterProviders': {
                 type: Array,
                 default: () => { return []; }
@@ -67,9 +70,11 @@
                                headers on authenticated requests after being logged inspect
                                then immediately redirect to am's login. */
                             if (provider.provider === 'OPENAM' && this.providers.length === 1) {
-                                if (!window.location.search) {
+                                if (!window.location.search && this.signin === true) {
                                     sessionStorage.setItem('setAuthHeaders', true);
                                     this.goToIDP('OPENAM');
+                                } else {
+                                    this.providers.splice((index - 1), 1);
                                 }
                             } else {
                                 this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
@@ -92,7 +97,7 @@
                 /* istanbul ignore next */
                 socialInstance.post('/identityProviders?_action=getAuthRedirect', {
                     'provider': provider,
-                    'landingPage': `${window.location.protocol}/#/${window.location.host}/login?_oauthReturn=true&provider=${provider}&gotoURL=%23`
+                    'landingPage': `${window.location.protocol}/${window.location.host}/#/login?_oauthReturn=true&provider=${provider}&gotoURL=%23`
                 })
                 .then((response) => {
                     localStorage.setItem('dataStoreToken', response.data.token);
