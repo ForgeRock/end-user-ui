@@ -63,7 +63,7 @@ describe('EditResource.vue', () => {
 
         let schema = {
                 icon: 'fa-test',
-                order: ['userName', 'sn', 'email', 'contractor'],
+                order: ['country', 'userName', 'sn', 'email', 'contractor'],
                 required: ['userName'],
                 properties: {
                     userName: {
@@ -81,6 +81,10 @@ describe('EditResource.vue', () => {
                     contractor: {
                         type: 'boolean',
                         title: 'Contractor'
+                    },
+                    country: {
+                        type: 'string',
+                        title: 'Country'
                     }
                 }
             },
@@ -106,6 +110,25 @@ describe('EditResource.vue', () => {
                 },
                 DELETE: {
                     allowed: true
+                },
+                VIEW: {
+                    allowed: true,
+                    properties: [{
+                        attribute: 'userName',
+                        readOnly: true
+                    },
+                    {
+                        attribute: 'country',
+                        readOnly: true
+                    },
+                    {
+                        attribute: 'sn',
+                        readOnly: true
+                    },
+                    {
+                        attribute: 'email',
+                        readOnly: true
+                    }]
                 }
             },
             resourceDetails = {
@@ -117,6 +140,9 @@ describe('EditResource.vue', () => {
 
         expect(wrapper.vm.icon).to.equal('fa-test');
         expect(wrapper.vm.formFields['contractor']).to.equal(false);
+        // make sure the view and update properties are merged together and in the correct order
+        expect(wrapper.vm.displayProperties.length).to.equal(5);
+        expect(wrapper.vm.displayProperties[0].key).to.equal('country');
     });
 
     it('Password reveal correctly', () => {

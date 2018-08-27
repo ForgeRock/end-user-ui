@@ -25,73 +25,75 @@
         <b-tabs flex-column flex-sm-row>
             <b-tab :title="this.$t('pages.access.details')" active>
                 <b-card>
-                    <template v-if="editProperties.length > 0 || readProperties.length > 0">
-                        <template v-for="(field, index) in editProperties">
-                            <b-form-group :label="field.title" label-for="field.key" horizontal :key="'editResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
-                                <b-form-input  :ref="index === 0 ? 'focusInput' : ''" v-if="field.type === 'string'" v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
-                                        :name="field.key"
-                                        type="text"
-                                        :class="[{'is-invalid': errors.has(`mainEdit.${field.key}`)}]"
-                                        :data-vv-as="field.title"
-                                        data-vv-scope="mainEdit"
-                                        :autocomplete="field.key"
-                                        v-model.trim="formFields[field.key]"></b-form-input>
+                    <template v-if="displayProperties.length > 0">
+                        <template v-for="(field, index) in displayProperties">
+                            <template v-if="!field.isReadOnly">
+                                <b-form-group :label="field.title" label-for="field.key" horizontal :key="'editResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
+                                    <b-form-input  :ref="index === 0 ? 'focusInput' : ''" v-if="field.type === 'string'" v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
+                                            :name="field.key"
+                                            type="text"
+                                            :class="[{'is-invalid': errors.has(`mainEdit.${field.key}`)}]"
+                                            :data-vv-as="field.title"
+                                            data-vv-scope="mainEdit"
+                                            :autocomplete="field.key"
+                                            v-model.trim="formFields[field.key]"></b-form-input>
 
-                                <b-form-input horizontal :ref="index === 0 ? 'focusInput' : ''" v-else v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
-                                       :name="field.key"
-                                       type="number"
-                                       :class="[{'is-invalid': errors.has(`mainEdit.${field.key}`)}]"
-                                       :data-vv-as="field.title"
-                                       data-vv-scope="mainEdit"
-                                       :autocomplete="field.key"
-                                       v-model.number="formFields[field.key]"></b-form-input>
-                                <fr-validation-error :validatorErrors="errors" :fieldName="`mainEdit.${field.key}`"></fr-validation-error>
-                            </b-form-group>
+                                    <b-form-input horizontal :ref="index === 0 ? 'focusInput' : ''" v-else v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
+                                           :name="field.key"
+                                           type="number"
+                                           :class="[{'is-invalid': errors.has(`mainEdit.${field.key}`)}]"
+                                           :data-vv-as="field.title"
+                                           data-vv-scope="mainEdit"
+                                           :autocomplete="field.key"
+                                           v-model.number="formFields[field.key]"></b-form-input>
+                                    <fr-validation-error :validatorErrors="errors" :fieldName="`mainEdit.${field.key}`"></fr-validation-error>
+                                </b-form-group>
 
-                            <!-- for boolean values -->
-                            <b-form-group :key="'createResource' +index" v-if="field.type === 'boolean'">
-                                <div class="form-row">
-                                    <label class="col-form-label col-sm-3" :for="field.title">{{field.title}}</label>
+                                <!-- for boolean values -->
+                                <b-form-group :key="'createResource' +index" v-if="field.type === 'boolean'">
+                                    <div class="form-row">
+                                        <label class="col-form-label col-sm-3" :for="field.title">{{field.title}}</label>
 
-                                    <div class="mr-auto">
-                                        <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                                       :height="28"
-                                                       :width="56"
-                                                       :sync="true"
-                                                       :cssColors="true"
-                                                       :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
-                                                       v-model="formFields[field.key]"/>
+                                        <div class="mr-auto">
+                                            <toggle-button class="mt-2 p-0 fr-toggle-primary"
+                                                           :height="28"
+                                                           :width="56"
+                                                           :sync="true"
+                                                           :cssColors="true"
+                                                           :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
+                                                           v-model="formFields[field.key]"/>
+                                        </div>
                                     </div>
-                                </div>
-                            </b-form-group>
-                        </template>
-                        <template v-for="(field, index) in readProperties">
-                            <b-form-group :label="field.title" label-for="field.key" horizontal :key="'readResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
-                                <b-form-input horizontal
-                                      type="text"
-                                      plaintext
-                                      v-model="formFields[field.key]"></b-form-input>
-                            </b-form-group>
+                                </b-form-group>
+                            </template>
+                            <template v-else>
+                                <b-form-group :label="field.title" label-for="field.key" horizontal :key="'readResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
+                                    <b-form-input horizontal
+                                          type="text"
+                                          plaintext
+                                          v-model="formFields[field.key]"></b-form-input>
+                                </b-form-group>
 
-                            <!-- for boolean values -->
-                            <b-form-group :key="'readResource' +index" v-if="field.type === 'boolean'">
-                                <div class="form-row">
-                                    <label class="col-form-label col-sm-3" :for="field.title">{{field.title}}</label>
+                                <!-- for boolean values -->
+                                <b-form-group :key="'readResource' +index" v-if="field.type === 'boolean'">
+                                    <div class="form-row">
+                                        <label class="col-form-label col-sm-3" :for="field.title">{{field.title}}</label>
 
-                                    <div class="mr-auto">
-                                        <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                                       :height="28"
-                                                       :width="56"
-                                                       :disabled="true"
-                                                       :sync="true"
-                                                       :cssColors="true"
-                                                       :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
-                                                       v-model="formFields[field.key]"/>
+                                        <div class="mr-auto">
+                                            <toggle-button class="mt-2 p-0 fr-toggle-primary"
+                                                           :height="28"
+                                                           :width="56"
+                                                           :disabled="true"
+                                                           :sync="true"
+                                                           :cssColors="true"
+                                                           :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
+                                                           v-model="formFields[field.key]"/>
+                                        </div>
                                     </div>
-                                </div>
-                            </b-form-group>
+                                </b-form-group>
+                            </template>
                         </template>
-                        <div class="float-right mt-4">
+                        <div v-if="!disableSaveButton" class="float-right mt-4">
                             <b-btn type="button" @click="saveResource" variant="primary">{{$t('common.form.save')}}</b-btn>
                         </div>
                     </template>
@@ -165,12 +167,12 @@
                 name: this.$route.params.resourceName,
                 resource: this.$route.params.resourceType,
                 id: this.$route.params.resourceId,
-                editProperties: [],
-                readProperties: [],
+                displayProperties: [],
                 canDelete: false,
                 canChangePassword: false,
                 passwordInputType: 'password',
                 showPassword: true,
+                disableSaveButton: false,
                 icon: '',
                 displayNameField: '',
                 displaySecondaryTitleField: '',
@@ -217,8 +219,12 @@
                     this.$set(this.formFields, key, value);
                 });
 
-                if (privilege.UPDATE.allowed) {
-                    _.each(privilege.UPDATE.properties, (createPriv) => {
+                if (privilege.VIEW.allowed) {
+                    // if there are no update properties disable the save button
+                    if (privilege.UPDATE.properties.length === 0) {
+                        this.disableSaveButton = true;
+                    }
+                    _.each(this.mergePrivilegeProperties(privilege, schema), (createPriv) => {
                         let tempProp = schema.properties[createPriv.attribute];
 
                         if (_.indexOf(schema.required, createPriv.attribute) !== -1) {
@@ -256,10 +262,10 @@
                         }
 
                         if (createPriv.readOnly) {
-                            this.readProperties.push(tempProp);
-                        } else {
-                            this.editProperties.push(tempProp);
+                            tempProp.isReadOnly = true;
                         }
+
+                        this.displayProperties.push(tempProp);
                     });
                 }
             },
@@ -308,7 +314,7 @@
                             this.displayNotification('success', this.$t('pages.access.successEdited', { resource: _.capitalize(this.name) }));
                         },
                         (error) => {
-                            let generatedErrors = this.findPolicyError(error.response, this.editProperties);
+                            let generatedErrors = this.findPolicyError(error.response, this.displayProperties);
 
                             this.errors.clear();
 
@@ -349,6 +355,22 @@
                         this.displayNotification('error', this.$t('pages.access.invalidEdit'));
                     }
                 });
+            },
+            mergePrivilegeProperties (privilege, schema) {
+                let properties = [];
+
+                _.each(schema.order, (schemaPropName) => {
+                    let view = _.find(privilege.VIEW.properties, { attribute: schemaPropName }),
+                        update = _.find(privilege.UPDATE.properties, { attribute: schemaPropName });
+
+                    if (update) {
+                        properties.push(update);
+                    } else if (view) {
+                        properties.push(view);
+                    }
+                });
+
+                return properties;
             }
         },
         computed: {
