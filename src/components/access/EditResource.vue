@@ -193,7 +193,7 @@
                 /* istanbul ignore next */
                 axios.all([
                     idmInstance.get(`schema/${this.resource}/${this.name}`),
-                    idmInstance.get(`privilege/${this.resource}/${this.name}`),
+                    idmInstance.get(`privilege/${this.resource}/${this.name}/${this.id}`),
                     idmInstance.get(`${this.resource}/${this.name}/${this.id}`)]).then(axios.spread((schema, privilege, resourceDetails) => {
                         this.generateDisplay(schema.data, privilege.data, resourceDetails.data);
                     }))
@@ -360,13 +360,15 @@
                 let properties = [];
 
                 _.each(schema.order, (schemaPropName) => {
-                    let view = _.find(privilege.VIEW.properties, { attribute: schemaPropName }),
-                        update = _.find(privilege.UPDATE.properties, { attribute: schemaPropName });
+                    let canView = _.indexOf(privilege.VIEW.properties, schemaPropName) > -1,
+                        canUpdate = _.indexOf(privilege.UPDATE.properties, schemaPropName) > -1,
+                        property = {attribute: schemaPropName};
 
-                    if (update) {
-                        properties.push(update);
-                    } else if (view) {
-                        properties.push(view);
+                    if (canUpdate) {
+                        properties.push(property);
+                    } else if (canView) {
+                        property.readOnly = true;
+                        properties.push(property);
                     }
                 });
 

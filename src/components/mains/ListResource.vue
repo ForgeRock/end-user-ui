@@ -104,15 +104,15 @@
                         if (privilege.data.VIEW.allowed) {
                             // Generate columns for display and filtering for read/query
                             _.each(privilege.data.VIEW.properties, (readProp) => {
-                                if (this.columns.length <= 3 && _.isUndefined(schema.data.properties[readProp.attribute].encryption)) {
+                                if (this.columns.length <= 3 && _.isUndefined(schema.data.properties[readProp].encryption)) {
                                     this.columns.push({
-                                        key: readProp.attribute,
-                                        label: schema.data.properties[readProp.attribute].title,
+                                        key: readProp,
+                                        label: schema.data.properties[readProp].title,
                                         sortable: true,
                                         sortDirection: 'desc'
                                     });
 
-                                    this.displayFields.push(readProp.attribute);
+                                    this.displayFields.push(readProp);
                                 }
                             });
                         }
@@ -126,18 +126,16 @@
                         if (privilege.data.CREATE.allowed) {
                             // Generate create list for create resource dialog
                             _.each(privilege.data.CREATE.properties, (createProp) => {
-                                if (createProp.readOnly === false) {
-                                    if (schema.data.properties[createProp.attribute].type === 'string' || schema.data.properties[createProp.attribute].type === 'number' || schema.data.properties[createProp.attribute].type === 'boolean') {
-                                        schema.data.properties[createProp.attribute].key = createProp.attribute;
+                                if (schema.data.properties[createProp].type === 'string' || schema.data.properties[createProp].type === 'number' || schema.data.properties[createProp].type === 'boolean') {
+                                    schema.data.properties[createProp].key = createProp;
 
-                                        _.each(schema.data.required, (requiredKey) => {
-                                            if (requiredKey === schema.data.properties[createProp.attribute].key) {
-                                                schema.data.properties[createProp.attribute].required = true;
-                                            }
-                                        });
+                                    _.each(schema.data.required, (requiredKey) => {
+                                        if (requiredKey === schema.data.properties[createProp].key) {
+                                            schema.data.properties[createProp].required = true;
+                                        }
+                                    });
 
-                                        this.createProperties.push(schema.data.properties[createProp.attribute]);
-                                    }
+                                    this.createProperties.push(schema.data.properties[createProp]);
                                 }
                             });
                         }
