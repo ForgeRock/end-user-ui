@@ -65,8 +65,8 @@ router.beforeEach((to, from, next) => {
             }
 
             authInstance = axios.create({
-                baseURL: '/openidm',
-                timeout: 1000,
+                baseURL: idmDefaultContext,
+                timeout: 5000,
                 headers: tempHeaders
             });
 
@@ -169,7 +169,7 @@ Vue.mixin({
     methods: {
         getRequestService: function (config) {
             let baseURL = idmDefaultContext,
-                timeout = 1000,
+                timeout = 5000,
                 headers = {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache',
@@ -239,22 +239,20 @@ Vue.mixin({
             idmInstance.post('/authentication?_action=logout').then(() => {
                 this.$root.userStore.clearStoreAction();
 
+                /*
+                    In case of oauth + openAM we should always make sure these session variables are cleared on logout
+                 */
+                sessionStorage.removeItem('amToken');
+                sessionStorage.removeItem('resubmitDataStoreToken');
+
                 if (logoutUrl) {
                     let logoutInstance = axios.create({
                         baseURL: logoutUrl,
-                        timeout: 1000,
+                        timeout: 5000,
                         headers: {
                             'content-type': 'application/json'
                         }
                     });
-
-                    /*
-                        More OpenAM clean up to ensure that the session/tokens are cleaned up appropriately when logged out
-                     */
-                    if (ApplicationStore.state.authHeaders) {
-                        sessionStorage.removeItem('amToken');
-                        sessionStorage.removeItem('resubmitDataStoreToken');
-                    }
 
                     this.$root.applicationStore.clearAuthHeadersAction();
                     this.$root.applicationStore.clearAuthLogoutUrlAction();
@@ -295,7 +293,7 @@ Vue.mixin({
 var startApp = function () {
         let idmInstance = axios.create({
             baseURL: idmDefaultContext,
-            timeout: 1000,
+            timeout: 5000,
             headers: {
                 'X-OpenIDM-NoSession': true,
                 'X-OpenIDM-Password': 'anonymous',

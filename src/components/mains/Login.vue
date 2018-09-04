@@ -57,6 +57,10 @@
                 wrongPasswordSubmitted: false
             };
         },
+        mounted () {
+            // In case account claiming is cancelled midway through this will clear the storage token
+            localStorage.removeItem('accountClaimingToken');
+        },
         methods: {
             submit () {
                 /* istanbul ignore next */
