@@ -1,6 +1,13 @@
 export default
 {
     en: {
+        config: {
+            messages: {
+                socialProviders: {
+                    cannotUnbind: 'Before disabling provider create a local password'
+                }
+            }
+        },
         common: {
             form: {
                 submit: 'Submit',

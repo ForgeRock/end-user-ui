@@ -212,7 +212,7 @@
                         this.hideModal();
                     })
                     .catch((error) => {
-                        this.displayNotification('error', error.response.data.message);
+                        this.displayNotification('error', this.$t(error.response.data.message));
                         this.hideModal();
                     });
             }
