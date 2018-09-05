@@ -287,7 +287,8 @@ export default
                     disconnect: 'Disconnect',
                     disconnectConfirmMsg: 'If you disconnect, you will not be able to log in with {provider}.',
                     connect: 'Connect',
-                    sharing: 'You are sharing'
+                    sharing: 'You are sharing',
+                    linkedAccount: 'Linked account'
                 }
             },
             uma: {

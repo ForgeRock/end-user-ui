@@ -29,17 +29,7 @@
                 </div>
 
                 <div slot="list-item-collapse-body" v-if="provider._id">
-                    <div class="row">
-                        <strong class="col fr-social-details-title">
-                            {{$t('pages.profile.socialSignIn.sharing')}}
-                        </strong>
-                        <div class="col-8 text-muted">
-                            <span class="d-block py-1" v-for="(scope, index) in provider.scope">
-                                <i class="fa fa-check text-success mr-2"></i>
-                                {{scope | capitalize}}
-                            </span>
-                        </div>
-                    </div>
+                    <fr-social-identity-panel :provider="provider"></fr-social-identity-panel>
                 </div>
             </fr-list-item>
 
@@ -69,12 +59,14 @@
     import _ from 'lodash';
     import ListGroup from '@/components/utils/ListGroup';
     import ListItem from '@/components/utils/ListItem';
+    import SocialIdentityPanel from './SocialIdentityPanel';
 
     export default {
         name: 'Social-Identities',
         components: {
             'fr-list-group': ListGroup,
-            'fr-list-item': ListItem
+            'fr-list-item': ListItem,
+            'fr-social-identity-panel': SocialIdentityPanel
         },
         props: {
             'clientToken': String,
@@ -109,11 +101,6 @@
         mounted () {
             /* istanbul ignore next */
             this.loadData();
-        },
-        filters: {
-            capitalize: function (value) {
-                return _.capitalize(value);
-            }
         },
         computed: {
             disconnectedProvider () {

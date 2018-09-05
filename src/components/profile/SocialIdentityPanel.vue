@@ -1,0 +1,69 @@
+<template>
+    <div>
+        <div class="row mb-4" v-if="showAccountDetails">
+            <strong class="col fr-social-details-title">
+                {{$t('pages.profile.socialSignIn.linkedAccount')}}
+            </strong>
+            <div class="col-8">
+                <div class="media">
+                    <b-img :src="photoUrl" rounded="circle" width="40" height="40" alt="img" class="my-auto mr-3" />
+
+                        <div class="media-body">
+                            <strong class="fr-social-details-title d-block mb-0">{{profile.displayName}}</strong>
+                            <span class="text-muted">{{profile.email}}</span>
+                        </div>
+                </div> 
+            </div>
+        </div>
+        <div class="row">
+            <strong class="col fr-social-details-title">
+                {{$t('pages.profile.socialSignIn.sharing')}}
+            </strong>
+            <div class="col-8 text-muted">
+                <span class="d-block py-1" v-for="(scope, index) in provider.scope">
+                    <i class="fa fa-check text-success mr-2"></i>
+                    {{capitalize(scope)}}
+                </span>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    import _ from 'lodash';
+
+    export default {
+        name: 'Social-Identity-Panel',
+        props: ['provider'],
+        data () {
+            return { profile: {} };
+        },
+        created () {
+            // istanbul ignore next
+            this.getRequestService()
+                .post('identityProviders?_action=normalizeProfile', this.getProfileRequestPayload())
+                .then(({data}) => {
+                    this.profile = _.first(data);
+                });
+        },
+        methods: {
+            getProfileRequestPayload () {
+                let rawProfile = this.provider.propertyMap.reduce((result, mapping) => {
+                    return _.set(result, mapping.source, this.provider[mapping.source]);
+                }, {});
+
+                rawProfile._refResourceCollection = this.provider._refResourceCollection;
+
+                return { rawProfile };
+            },
+            capitalize: _.capitalize
+        },
+        computed: {
+            showAccountDetails () {
+                return !_.isEmpty(this.profile) && (_.has(this.profile, 'displayName') || _.has(this.profile, 'email'));
+            },
+            photoUrl () {
+                return this.profile.photoUrl || 'static/images/profile-default.png';
+            }
+        }
+    };
+</script>
