@@ -176,7 +176,7 @@ export default
                     socialDesc: 'To continue, please sign in to your {providers} account to link accounts.',
                     link: 'Link Accounts',
                     return: 'Back to sign in',
-                    linked: 'Accounts Linked!',
+                    linked: 'Accounts linked',
                     error: 'Unable to link accounts'
                 },
                 forgotUsername: {
