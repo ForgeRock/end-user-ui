@@ -55,11 +55,14 @@
         inject: ['$validator'],
         data () {
             let locale = this.$i18n.locale,
+                fallbackLocale = this.$i18n.fallbackLocale,
                 numberOfQuestions = _.toString(this.selfServiceDetails.requirements.properties.kba.minItems),
                 answers = _.times(numberOfQuestions, (n) => { return { answer: null, questionId: null, customQuestion: null }; }),
                 selected = _.times(numberOfQuestions, () => { return {selected: null}; }),
                 options = _.map(this.selfServiceDetails.requirements.properties.kba.questions, (question) => {
-                    return { value: question.id, text: question.question[locale], disabled: false };
+                    let text = question.question[locale] || question.question[fallbackLocale];
+
+                    return { value: question.id, text, disabled: false };
                 }),
                 customIndex = options.length + 1;
 
