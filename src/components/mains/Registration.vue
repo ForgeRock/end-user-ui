@@ -142,18 +142,23 @@
                         /* istanbul ignore next */
                         socialLoginInstance.post('/authentication?_action=login')
                             .then((userDetails) => {
-                                this.progressiveProfileCheck(userDetails, () => {
-                                    this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
-                                    window.history.pushState('', '', window.location.pathname);
-                                    this.$router.push('/profile');
-                                });
+                                this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
+
+                                if (details.additions.successUrl && details.additions.successUrl.length > 0) {
+                                    window.location = details.additions.successUrl;
+                                } else {
+                                    this.progressiveProfileCheck(userDetails, () => {
+                                        window.history.pushState('', '', window.location.pathname);
+                                        this.$router.push('/profile');
+                                    });
+                                }
                             })
                             .catch(() => {
                                 window.history.pushState('', '', window.location.pathname);
                                 this.$router.push('/login');
                             });
                     } else {
-                        this.autoLogin(details.additions.credentialJwt);
+                        this.autoLogin(details.additions.credentialJwt, details.additions.successUrl);
                     }
                 } else if (type === 'openAMAutoLogin' && details.status) {
                     if (_.has(details, 'additions.successUrl')) {
@@ -215,7 +220,7 @@
 
                 return errorMessage;
             },
-            autoLogin: function (jwt) {
+            autoLogin: function (jwt, successUrl) {
                 /* istanbul ignore next */
                 var loginServiceInstance = this.getRequestService({
                         headers: {
@@ -233,16 +238,21 @@
                 /* istanbul ignore next */
                 idmInstance.post('/authentication?_action=logout').then(() => {
                     loginServiceInstance.post('/authentication?_action=login').then((userDetails) => {
-                        // Check for progressive profiling.
-                        this.progressiveProfileCheck(userDetails, () => {
-                            this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
-                            this.$router.push('/');
-                        });
+                        this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
+
+                        if (successUrl && successUrl.length > 0) {
+                            window.location = successUrl;
+                        } else {
+                            // Check for progressive profiling.
+                            this.progressiveProfileCheck(userDetails, () => {
+                                this.$router.push('/');
+                            });
+                        }
                     })
-                        .catch((error) => {
-                            /* istanbul ignore next */
-                            this.displayNotification('error', error.response.data.message);
-                        });
+                    .catch((error) => {
+                        /* istanbul ignore next */
+                        this.displayNotification('error', error.response.data.message);
+                    });
                 });
             }
         }
