@@ -120,7 +120,7 @@
                                 this.$root.userStore.setProfileAction(profile.data);
                                 this.$root.userStore.setSchemaAction(schema.data);
 
-                                this.$router.push('/profile');
+                                this.$router.push('/');
                             }))
                             .catch((error) => {
                                 /* istanbul ignore next */

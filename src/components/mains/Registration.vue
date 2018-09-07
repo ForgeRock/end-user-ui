@@ -149,7 +149,7 @@
                                 } else {
                                     this.progressiveProfileCheck(userDetails, () => {
                                         window.history.pushState('', '', window.location.pathname);
-                                        this.$router.push('/profile');
+                                        this.$router.push('/');
                                     });
                                 }
                             })
