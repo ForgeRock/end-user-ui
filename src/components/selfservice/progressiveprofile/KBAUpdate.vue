@@ -29,6 +29,10 @@
     import _ from 'lodash';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
 
+    /**
+     * @description Selfservice stage for progressive profile, handles the case where a resourse is requested to change their KBA questions
+     *
+     **/
     export default {
         name: 'KBA-Update-Stage',
         props: {

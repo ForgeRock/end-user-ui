@@ -25,6 +25,10 @@
     </b-container>
 </template>
 <script>
+    /**
+     * @description Card container that will stay horizontally and vertically center on the screen (example can be found on the default login page)
+     *
+     **/
     export default {
         name: 'Center-Card',
         props: {

@@ -42,6 +42,14 @@
     import moment from 'moment';
     import _ from 'lodash';
 
+    /**
+     * @description Display for system notifications for the logged in user
+     *
+     * @fires GET /managed/resourceName/ID?_fields=_notifications/* - Retrieve all notifications for a specific resource
+     * @fires DELETE /notification/ID - Remove one specific notification based on the notifications ID
+     * @fires POST /notification?_action=deleteNotificationsForTarget&target=Id - Removes all notifications for a resource (e.g. managed/user/userID)
+     *
+     **/
     export default {
         name: 'Toolbar-Notification',
         data () {
@@ -76,7 +84,7 @@
                 this.notifications = [];
 
                 let internalUser = this.$root.userStore.state.internalUser,
-                    target = internalUser ? 'internal/user/openidm-admin' : `managed/user/${this.$root.userStore.state.userId}`;
+                    target = internalUser ? 'internal/user/openidm-admin' : `${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}`;
 
                 /* istanbul ignore next */
                 this.resetPolling();
@@ -120,7 +128,7 @@
                 /* istanbul ignore next */
                 if (!_.isNull(this.$root.userStore.state.userId)) {
                     this.getRequestService()
-                        .get(`/managed/user/${this.$root.userStore.state.userId}?_fields=_notifications/*`)
+                        .get(`/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=_notifications/*`)
                         .then(({data}) => {
                             if (data._notifications) {
                                 this.notifications = data._notifications;

@@ -39,6 +39,11 @@
     import GenericSelfService from '../selfservice/common/GenericSelfService';
     import _ from 'lodash';
 
+    /**
+     * @description Selfservice controlling component for retrieving a forgotten username. Makes use of selfservice-username.json config file.
+     *
+     * @mixin - selfservice/mixins/SelfserviceAPIMixin.vue
+     */
     export default {
         name: 'Forgot-Username',
         components: {

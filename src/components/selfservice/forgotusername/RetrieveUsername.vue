@@ -18,6 +18,10 @@
 </template>
 
 <script>
+    /**
+     * @description Selfservice stage for username recovery, displays the found username
+     *
+     **/
     export default {
         name: 'Retrieve-Username',
         props: {

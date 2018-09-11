@@ -35,6 +35,10 @@
     import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
     import Process from './Process';
 
+    /**
+     * @description Dashboard widget that displays a list of available processes that can be started
+     *
+     **/
     export default {
         name: 'Processes',
         props: {

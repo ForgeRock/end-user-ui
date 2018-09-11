@@ -17,6 +17,9 @@
 </template>
 
 <script>
+    /**
+     * @description The default 404 page when Vue router is unable to locate a route.
+     */
     export default {
         name: 'NotFound'
     };

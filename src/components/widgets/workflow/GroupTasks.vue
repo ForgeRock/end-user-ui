@@ -35,6 +35,10 @@
     import ListItem from '@/components/utils/ListItem';
     import AssignTask from './AssignTask';
 
+    /**
+     * @description Dashboard widget that lists available group tasks that can be assigned
+     *
+     **/
     export default {
         name: 'Group-Tasks',
         props: {

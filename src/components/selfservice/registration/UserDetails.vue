@@ -33,6 +33,10 @@
     import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
     import SocialButtons from '@/components/mains/SocialButtons';
 
+    /**
+     * @description Selfservice stage for generating user details and displaying social buttons available. Works the same alone and in allinone
+     *
+     **/
     export default {
         name: 'User-Details',
         components: {

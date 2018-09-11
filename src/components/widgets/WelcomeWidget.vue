@@ -18,6 +18,10 @@
 <script>
     import _ from 'lodash';
 
+    /**
+     * @description Widget that provides a welcome message for the managed resource, also provides a button to directly access editing the resources profile.
+     *
+     **/
     export default {
         name: 'Welcome-Widget',
         props: ['userDetails', 'widgetDetails'],

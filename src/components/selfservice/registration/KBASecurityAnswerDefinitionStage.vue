@@ -36,6 +36,10 @@
     import HorizontalRule from '@/components/utils/HorizontalRule';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
 
+    /**
+     * @description Selfservice stage that handles the initial KBA during registration functions the same in allinone
+     *
+     **/
     export default {
         name: 'KBA-Security-Answer-Definition-Stage',
         props: {

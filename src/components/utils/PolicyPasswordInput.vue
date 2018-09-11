@@ -28,6 +28,12 @@
     import FloatingLabelInput from './FloatingLabelInput';
     import PolicyPanel from './PolicyPanel';
 
+    /**
+     * @description The main display for the password policy component. Connects a text field to check policy on input to see if password correctly matches configured policy (makes use of policy.json)
+     *
+     * @fires POST /policy/selfservice/registration/?_action=validateObject - Submits an object in its current state to policy for validation against the configured policy
+     *
+     **/
     export default {
         name: 'PolicyPasswordInput',
         inject: ['$validator'],

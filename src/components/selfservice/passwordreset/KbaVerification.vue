@@ -23,6 +23,10 @@
     import _ from 'lodash';
     import ValidationError from '@/components/utils/ValidationError';
 
+    /**
+     * @description Selfservice stage for password reset, handles securing a users password change with verifying KBA answers
+     *
+     **/
     export default {
         name: 'Kba-Verification',
         inject: ['$validator'],

@@ -21,6 +21,11 @@
 <script>
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
 
+    /**
+     * @description Selfservice stage for multiple selfservice flows, typically used with an email to locate a user in the system to continue on with further
+     * selfservice stages
+     *
+     **/
     export default {
         name: 'User-Query',
         components: {

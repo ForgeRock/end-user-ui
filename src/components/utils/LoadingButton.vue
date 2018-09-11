@@ -12,6 +12,11 @@
 </template>
 <script>
     import { ClipLoader } from 'vue-spinner/dist/vue-spinner.min.js';
+
+    /**
+     * @description Button with built in loading spinner that can be used to show users something is loading
+     *
+     **/
     export default {
         name: 'LoadingButton',
         components: { ClipLoader },

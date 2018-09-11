@@ -35,6 +35,10 @@
     import ListItem from '@/components/utils/ListItem';
     import Task from './Task';
 
+    /**
+     * @description Dashboard widget that lists tasks currently assigned to the logged in user
+     *
+     **/
     export default {
         name: 'My-Tasks',
         props: {

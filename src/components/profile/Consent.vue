@@ -60,6 +60,13 @@
     import ListItem from '@/components/utils/ListItem';
     import AccessLevel from './AccessLevel';
 
+    /**
+     * @description Controls the display of a users currently consented mappings (where their data is sent).
+     *
+     * @fires POST consent?_action=getConsentMappings - Gets a list of available mappings for consent in conjunction with the consent portion of a users profile this is
+     * used to display which mappings are consented to and can be consented out of.
+     *
+     */
     export default {
         name: 'Consent',
         components: {

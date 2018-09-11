@@ -32,6 +32,10 @@
     import ListItem from '@/components/utils/ListItem';
     import FallbackImage from '@/components/utils/FallbackImage';
 
+    /**
+     * @description Main component for UMA (AM/IDM) displays a list of resource activities
+     *
+     **/
     export default {
         name: 'Uma-Activity',
         components: {

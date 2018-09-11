@@ -12,6 +12,10 @@
 </template>
 
 <script>
+    /**
+     * @description Selfservice stage for multiple selfservice flows, displays a google captcha
+     *
+     **/
     export default {
         name: 'Captcha',
         props: {

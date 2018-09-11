@@ -35,6 +35,10 @@
 <script>
     import _ from 'lodash';
 
+    /**
+     * @description Dashboard widget that allows a user to assign a task
+     *
+     **/
     export default {
         name: 'Assign-Task',
         props: ['taskDefinition'],

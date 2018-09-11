@@ -41,6 +41,11 @@
     import Consent from '@/components/profile/Consent';
     import SocialIdentities from '@/components/profile/SocialIdentities';
 
+    /**
+     * @description Controlling component for profile management (changing password, KBA, edit profile, social management etc.)
+     *
+     * @fires PATCH type/name/id (e.g. managed/user/_id) - Submits a patch object of changes for the provided resource record
+     */
     export default {
         name: 'Profile',
         props: {

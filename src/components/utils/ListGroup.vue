@@ -13,6 +13,10 @@
 </template>
 
 <script>
+    /**
+     * @description Container for holding ListItem.vue, together both components can be used to display a list of items with varying degrees of customization
+     *
+     **/
     export default {
         name: 'List-Group',
         props: {

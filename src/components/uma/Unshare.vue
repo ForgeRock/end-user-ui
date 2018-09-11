@@ -15,6 +15,10 @@
 </template>
 
 <script>
+    /**
+     * @description Dialog for warning a user and confirming they want to stop sharing a resource
+     *
+     **/
     export default {
         name: 'Unshare',
         components: {},

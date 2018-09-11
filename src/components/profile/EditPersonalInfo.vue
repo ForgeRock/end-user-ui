@@ -72,6 +72,12 @@
     import ValidationError from '@/components/utils/ValidationError';
     import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 
+    /**
+     * @description Displays a users profile, auto generates fields based off of resource schema. Currently only displays strings, numbers and booleans. In the case of a policy
+     * save error it will highlight the appropriate field and display a policy error. For custom profile changes (e.g. adding a dropdown) this would be the primary file to add these
+     * adjustments.
+     *
+     */
     export default {
         name: 'Edit-Personal-Info',
         mixins: [

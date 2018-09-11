@@ -12,6 +12,10 @@
     import EditPassword from '@/components/profile/EditPassword';
     import ListGroup from '@/components/utils/ListGroup';
 
+    /**
+     * @description Handles displaying account security controls (KBA change and password change)
+     *
+     */
     export default {
         name: 'Account-Security',
         data () {

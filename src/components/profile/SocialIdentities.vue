@@ -61,6 +61,16 @@
     import ListItem from '@/components/utils/ListItem';
     import SocialIdentityPanel from './SocialIdentityPanel';
 
+    /**
+     * @description Handles displaying a users social providers, will also allow a user to configure a new social provider based on available providers
+     *
+     * @fires POST resource/name/ID?_action=bind&provider=provider (e.g. managed/user/fakeID?_action=bind&provider=google) - Binds a provider based on a return client token from the provider
+     * @fires GET /identityProviders - List of available social providers
+     * @fires POST managed/user/ID?_fields=idps/* (e.g. managed/user/fakeId?_fields=idps/*) - List of social providers already configured for the current logged in resource.
+     * @fires POST /identityProviders?_action=getAuthRedirect - Generated the redirect information for a selected social provider
+     * @fires POST resource/name/ID?_action=unbind&provider=provider (e.g. managed/user/fakeID?_action=unbind&provider=google) - Unbinds a social provider from the current sessions user
+     *
+     */
     export default {
         name: 'Social-Identities',
         components: {

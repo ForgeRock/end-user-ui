@@ -40,6 +40,11 @@
 <script>
     import _ from 'lodash';
 
+    /**
+     * @description Selfservice stage for multiple selfservice flows, attempts to auto generate a form for a user to fill out. Currently
+     * generates only numbers, strings and boolean fields. This stage will only load when no other stage is found.
+     *
+     **/
     export default {
         name: 'Generic-Self-Service',
         props: {

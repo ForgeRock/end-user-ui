@@ -20,6 +20,10 @@
 <script>
     import _ from 'lodash';
 
+    /**
+     * @description Part of the password policy component to display the list of policy items required
+     *
+     **/
     export default {
         name: 'PolicyPanel',
         props: ['policies', 'policyFailures'],

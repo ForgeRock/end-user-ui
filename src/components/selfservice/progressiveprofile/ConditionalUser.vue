@@ -39,6 +39,10 @@
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
     import KBAUpdate from './KBAUpdate';
 
+    /**
+     * @description Selfservice stage for progressive profile, will auto generate fields based on the configuring for progressive profiling
+     *
+     **/
     export default {
         name: 'Conditional-User',
         components: {

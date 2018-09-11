@@ -117,6 +117,10 @@
 <script>
     import FallbackImage from '@/components/utils/FallbackImage';
 
+    /**
+     * @description Component for displaying a resource
+     *
+     **/
     export default {
         name: 'Resources',
         components: {

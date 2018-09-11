@@ -1,6 +1,15 @@
 <script>
     import _ from 'lodash';
 
+    /**
+     * @description Mixin used for selfservice proceesses handles the general progression through the selfservice stages as well as calling the appropriate loading function
+     * That is configured in each specific selfservice process controller.
+     *
+     * @fires GET selfservice/type (e.g. selfservice/registration) - Gets the initial requirements needed to kick off the selfservice flow.
+     * @fires POST/selfservice/type?_action=submitRequirements (e.g. selfservice/registration?_action=submitRequirements) - Calls the selfservice endpoint with the current data for the stage, if the data
+     * matches what is expected a new stage will be returned and loaded.
+     *
+     */
     export default {
         name: 'Selfservice-API',
         methods: {

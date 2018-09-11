@@ -28,6 +28,10 @@
 <script>
     import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
 
+    /**
+     * @description Selfservice stage for password reset, handles the final result of password reset, either displaying an error or that the reset has been complete
+     *
+     **/
     export default {
         name: 'Reset-Stage',
         components: {

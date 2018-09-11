@@ -1,6 +1,10 @@
 <script>
     import _ from 'lodash';
 
+    /**
+     * @description Resource management mixin used for generating an update patch and  handling policy errors
+     *
+     **/
     export default {
         name: 'Resource-Mixin',
         methods: {

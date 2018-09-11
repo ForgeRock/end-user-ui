@@ -13,6 +13,17 @@
     import GroupTasks from '@/components/widgets/workflow/GroupTasks';
     import Processes from '@/components/widgets/workflow/Processes';
 
+    /**
+     * @description Controlling file for loading the three different parts of workflow (available tasks, available processes, and tasks assigned to you).
+     *
+     * @fires POST /workflow/taskinstance/ID?_action=complete - Call used to save a task, the expected data is based on the configured workflow
+     * @fires PUT  /workflow/taskinstance/ID - Assigns a user to an already created task, expected input is a assignee ID
+     * @fires GET /endpoint/gettasksview - Get task view information (based on workflow configuration)
+     * @fires POST  /workflow/processinstance/?_action=create - Create or start a new task (based on how workflow is configured)
+     * @fires GET  /endpoint/getprocessesforuser- Returns all the current task instances assigned to the user currently logged in
+     * @fires GET /workflow/processdefinition/ID - Gets the details for the process definition (based on workflow configuration)
+     *
+     **/
     export default {
         name: 'Workflow-Control-Widget',
         components: {

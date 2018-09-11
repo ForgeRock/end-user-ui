@@ -45,6 +45,12 @@
     import SocialButtons from '@/components/mains/SocialButtons';
     import styles from '../../../scss/main.scss';
 
+    /**
+     * @description Selfservice stage for handling account claiming for manuel or social
+     *
+     * @fires POST /authentication?_action=login - Login in using returned client token from social provider
+     *
+     **/
     export default {
         components: {
             BounceLoader,
@@ -164,7 +170,7 @@
                         .then((userDetails) => {
                             // Check for progressive profiling.
                             this.progressiveProfileCheck(userDetails, () => {
-                                this.$router.push('/profile');
+                                this.$router.push('/');
                                 this.displayNotification('success', this.$t('pages.selfservice.accountClaiming.linked'));
                             });
                         })

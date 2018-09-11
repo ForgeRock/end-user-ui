@@ -153,6 +153,16 @@
     import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
     import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 
+    /**
+     * @description Full page that provides view/edit of a specific resource for delegated admin. Auto generates fields based on backend return.
+     * Currently generates string, number, boolean and password (not based on type, but on field name being passsword).
+     *
+     * @fires GET schema/type/name/ (e.g. schema/managed/user) - Schema for a resource
+     * @fires GET privilege/type/name/id (e.g. privilege/managed/user/_id) - Privileges for a specific record of a resource
+     * @fires GET type/name/id (e.g. managed/user/_id) - Resource details, in this context privileges will restrict the data return
+     * @fires DELETE type/name/id (e.g. managed/user/_id) - Deletes resource record
+     * @fires PATCH type/name/id (e.g. managed/user/_id) - Submits a patch object of changes for the provided resource record
+     */
     export default {
         name: 'Edit-Resource',
         components: {

@@ -46,6 +46,11 @@
     import ListItem from '@/components/utils/ListItem';
     import FallbackImage from '@/components/utils/FallbackImage';
 
+    /**
+     * @description If fullstack (AM/IDM) is configured will work with authorized applications endpoiint (AM) and display a list of currently tied applications.
+     * It is possible to also remove these applications though if you attempt to remove openIDM it will always re-add since this is needed to ensure fullstack works.
+     *
+     */
     export default {
         name: 'Authorized-Applications',
         components: {

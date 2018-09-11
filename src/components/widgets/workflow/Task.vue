@@ -9,6 +9,10 @@
     import _ from 'lodash';
     import { ClipLoader } from 'vue-spinner/dist/vue-spinner.min.js';
 
+    /**
+     * @description Dashboard widget that displays the specific details of a task
+     *
+     **/
     export default {
         name: 'Task',
         props: ['taskInstance'],

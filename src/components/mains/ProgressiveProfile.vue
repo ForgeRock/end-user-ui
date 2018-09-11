@@ -41,6 +41,14 @@
     import SelfserviceAPI from '../selfservice/mixins/SelfserviceAPIMixin';
     import conditionaluser from '../selfservice/progressiveprofile/ConditionalUser';
 
+    /**
+     * @description Selfservice controlling component for resource progressive profiling. Makes use of selfservice-profile.json config file.
+     *
+     * @mixin - selfservice/mixins/SelfserviceAPIMixin.vue
+     *
+     * @fires POST authentication?_action=login - Since progressive profiling creates a partial session, once it is complete we call login again with the
+     * original JWT to continue the authentication session
+     */
     export default {
         name: 'Progressive-Profile',
         components: {

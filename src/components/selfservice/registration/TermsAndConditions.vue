@@ -23,6 +23,10 @@
 </template>
 
 <script>
+    /**
+     * @description Selfservice stage for terms and conditions depending on all in one displays as a dialog or inline text depending at allinone
+     *
+     **/
     export default {
         name: 'Terms-And-Conditions',
         props: {

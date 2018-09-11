@@ -7,6 +7,11 @@
 
 <script>
     import { ClipLoader } from 'vue-spinner/dist/vue-spinner.min.js';
+
+    /**
+     * @description Dashboard widget that displays the details of a specific process
+     *
+     **/
     export default {
         name: 'Workflow-Process',
         components: { 'clip-loader': ClipLoader },

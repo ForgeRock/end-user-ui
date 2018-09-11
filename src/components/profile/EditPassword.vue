@@ -61,6 +61,11 @@
     import LoadingButton from '@/components/utils/LoadingButton';
     import ValidationError from '@/components/utils/ValidationError';
 
+    /**
+     * @description Allows a user to change their password, makes use of policy password component, similar to registration it will only allow a user to change password
+     * as long as it passes policy requirements (policy.json).
+     *
+     */
     export default {
         $_veeValidate: {
             validator: 'new'

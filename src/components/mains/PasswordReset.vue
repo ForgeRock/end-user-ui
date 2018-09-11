@@ -40,6 +40,11 @@
     import GenericSelfService from '../selfservice/common/GenericSelfService';
     import _ from 'lodash';
 
+    /**
+     * @description Selfservice controlling component for recovering a lost password. Makes use of selfservice-reset.json config file.
+     *
+     * @mixin - selfservice/mixins/SelfserviceAPIMixin.vue
+     */
     export default {
         name: 'Password-Reset',
         components: {

@@ -10,6 +10,10 @@
 <script>
     import axios from 'axios';
 
+    /**
+     * @description Component that will load an image and if the image fails to load it will display a fallback image rather then loading nothing
+     *
+     **/
     export default {
         name: 'Image-Fallback',
         props: ['src', 'width', 'height', 'alt', 'fallback'],

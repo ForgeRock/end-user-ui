@@ -65,6 +65,14 @@
     import axios from 'axios';
     import CreateResource from '@/components/access/CreateResource';
 
+    /**
+     * @description Controlling component for delegated admin, allows for listing available resources and connects to the create, delete and edit features.
+     *
+     * @fires GET schema/type/name/ (e.g. schema/managed/user) - Schema for a resource (e.g. managed/user schema)
+     * @fires GET privilege/type/name/ (e.g. privilege/managed/user/) - Privileges for a resource (e.g. managed/user)
+     * @fires GET resource/name?_queryFilter=filter&_pageSize=10&_totalPagedResultsPolicy=EXACT (e.g. managed/user?_queryFilter=true&_pageSize=10&_totalPagedResultsPolicy=EXACT) -
+     * List resource items, limited to 10 returned items and makes use of a query filter search if provided (defaults to queryFilter = true if none provided by the user).
+     */
     export default {
         name: 'Access',
         components: {

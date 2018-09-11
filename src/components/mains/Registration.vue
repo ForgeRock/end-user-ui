@@ -55,6 +55,15 @@
         'termsAndConditions'
     ];
 
+    /**
+     * @description Selfservice controlling component for registering a resource (e.g. a new user). Makes use of selfservice-registration.json config file.
+     *
+     * @mixin - selfservice/mixins/SelfserviceAPIMixin.vue
+     *
+     * @fires POST authentication?_action=login - Uses localAutoLogin stage that sets a JWT after a successful registration to start a user session.
+     * Alternatively if registration came through social, login will use the data store token to go forward with login after a successful registration.
+     * @fires POST authentication?_action=logout - Ends current user session
+     */
     export default {
         name: 'Registration',
         components: {

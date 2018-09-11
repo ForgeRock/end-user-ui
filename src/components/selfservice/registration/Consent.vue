@@ -12,6 +12,10 @@
 </template>
 
 <script>
+    /**
+     * @description Selfservice stage for consent depending on all in one displays as a dialog or a basic page text display
+     *
+     **/
     export default {
         name: 'Consent',
         props: {

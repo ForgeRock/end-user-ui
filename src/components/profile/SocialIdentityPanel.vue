@@ -31,6 +31,12 @@
 <script>
     import _ from 'lodash';
 
+    /**
+     * @description Display component for each configured social provider
+     *
+     * @fires POST identityProviders?_action=normalizeProfile - Returns a nromalized set of data for social providers, this is used to provide additional display such as profile picture from Facebook or Google.
+     *
+     */
     export default {
         name: 'Social-Identity-Panel',
         props: ['provider'],

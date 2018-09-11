@@ -29,6 +29,10 @@
     import _ from 'lodash';
     import ValidationError from '@/components/utils/ValidationError';
 
+    /**
+     * @description Input with a floating label in the center, this will move when a user types into the input (example can be found on the default login page)
+     *
+     **/
     export default {
         name: 'Floating-Label-Input',
         components: {

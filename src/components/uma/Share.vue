@@ -72,6 +72,10 @@
     import _ from 'lodash';
     import FallbackImage from '@/components/utils/FallbackImage';
 
+    /**
+     * @description Dialog for sharing a resource with users
+     *
+     **/
     export default {
         name: 'Share',
         components: {

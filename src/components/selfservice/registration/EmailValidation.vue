@@ -5,6 +5,10 @@
 </template>
 
 <script>
+    /**
+     * @description Stage ofr handling email validation
+     *
+     **/
     export default {
         name: 'Email-Validation'
     };

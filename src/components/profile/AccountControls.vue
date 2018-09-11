@@ -73,6 +73,14 @@
     import ListItem from '@/components/utils/ListItem';
     import _ from 'lodash';
 
+    /**
+     * @description Handles displaying basic account controls (delete and download).
+     *
+     * @fires DELETE resource/name/id (e.g. managed/user/fakeid) - Deletes specific resource record
+     * @fires GET resource/name/id?_fields=*,idps/*,_meta/createDate,_meta/lastChanged,_meta/termsAccepted,_meta/loginCount (e.g. managed/user/fakeid) - Gets JSON data on a resource including certain meta data,
+     * this is used to generate a downloadable file.
+     *
+     */
     export default {
         name: 'Account-Controls',
         components: {

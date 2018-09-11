@@ -21,6 +21,11 @@
     import Welcome from '@/components/widgets/WelcomeWidget';
     import Workflow from '@/components/widgets/WorkflowControlWidget';
 
+    /**
+     * @description Controlling component for the dashboard, loads widgets set and configured in the ui-dashboard config file.
+     *
+     * @fires GET config/ui/dashboard - Read of the config file ui-dashboard.json
+     */
     export default {
         name: 'Dashboard',
         components: {

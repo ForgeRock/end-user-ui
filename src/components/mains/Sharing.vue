@@ -44,6 +44,10 @@
     import Share from '@/components/uma/Share';
     import Unshare from '@/components/uma/Unshare';
 
+    /**
+     * @description Controlling component for sharing resources, this UI is primarily focused making use of AM and its UMA features.
+     * This UI feature requires full stack (IDM/AM) to be configured and for AM to be properly configured to make use of UMA
+     **/
     export default {
         name: 'Sharing',
         components: {

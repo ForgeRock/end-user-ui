@@ -43,6 +43,16 @@
     import axios from 'axios';
     import SocialButtons from '@/components/mains/SocialButtons';
 
+    /**
+     * @description Controlling component to allow users to manually login, socially login or start of a selfservice process (username, password or registration) if configured.
+     *
+     * @fires POST authentication?_action=logout - Ends current user session
+     * @fires POST authentication?_action=login - Uses username and password to establish a new user session
+     * @fires GET type/name/id (e.g. managed/user/_id) - Resource details, in this context it is for the successfully logged in user
+     * @fires POST privilege?_action=listPrivileges - Check to see if a user has any privilege based access
+     * @fires GET schema/type/name/ (e.g. schema/managed/user) - Schema for a resource
+     *
+     */
     export default {
         name: 'Login',
         components: {

@@ -28,6 +28,14 @@
 <script>
     import _ from 'lodash';
 
+    /**
+     * @description Controlling component for initializing oauth process for login and registration.
+     * This component controls the displaying of the buttons based on which providers are configured.
+     *
+     * @fires GET authentication - Returns a list of available configured providers.
+     * @fires POST identityProviders?_action=getAuthRedirect - Generates the redirect URL used to go to the selected provider and begin the Oauth authentication process
+     *
+     **/
     export default {
         name: 'Social-Buttons',
         props: {

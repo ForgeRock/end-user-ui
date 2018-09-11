@@ -66,6 +66,10 @@
     import LoadingButton from '@/components/utils/LoadingButton';
     import ValidationError from '@/components/utils/ValidationError';
 
+    /**
+     * @description Allows a user to change their KBA, will ensure based on KBA configuration a user must match the systems KBA requirements.
+     *
+     */
     export default {
         name: 'Edit-KBA',
         components: {

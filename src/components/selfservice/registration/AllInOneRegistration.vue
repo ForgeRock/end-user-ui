@@ -45,6 +45,10 @@
     import Consent from './Consent';
     import LoadingButton from '@/components/utils/LoadingButton';
 
+    /**
+     * @description Selfservice stage that is used for combing multiple selfservice stages (User details, Captcha, KBA, Terms and Confitions and Consent)
+     *
+     **/
     export default {
         name: 'All-In-One-Registration',
         props: {

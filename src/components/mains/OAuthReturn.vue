@@ -13,6 +13,12 @@
     import styles from '../../scss/main.scss';
     import _ from 'lodash';
 
+    /**
+     * @description Return page used for oauth provider authentication. Will appropriately redirect a user to login or account claiming.
+     *
+     * @fires POST identityProviders?_action=handlePostAuth - Generates the token used for continuing the authentication process based off of the returned provider information
+     * @fires POST authentication?_action=login - Uses data store token to establish a new user session
+     */
     export default {
         name: 'OAuth-Return',
         components: {

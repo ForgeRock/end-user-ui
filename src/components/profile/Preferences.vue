@@ -28,6 +28,10 @@
     import ListGroup from '@/components/utils/ListGroup';
     import ListItem from '@/components/utils/ListItem';
 
+    /**
+     * @description Displays available user preferences, these are typically true/false values associated with a managed resource (e.g. Do you want to recieve marketing emails?).
+     *
+     */
     export default {
         name: 'Preferences',
         components: {

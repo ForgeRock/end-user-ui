@@ -27,6 +27,10 @@
 </template>
 
 <script>
+    /**
+     * @description Used in conjunction with ListGroup.vue, this is the individual item in each list display.
+     *
+     **/
     export default {
         name: 'List-Item',
         props: {

@@ -88,6 +88,18 @@
     import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
     import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 
+    /**
+     * @description Dialog used for managing the create portion of delegated admin. Auto generates fields based on backend return.
+     * Currently generates string, number, boolean and password (not based on type, but on field name being passsword).
+     *
+     * @param {array} createProperties - Required list of objects used to generate the fields for creating a user
+     * @param {string} resourceName - Required resource name
+     * @param {string} resourceType - Required type of resource, currently only supports managed
+     *
+     * @mixin - utils/mixins/ResourceMixin.vue
+     *
+     * @fires POST type/name?_action=create (e.g. managed/user?_action=create) - Creates a record for the specified managed resource
+     */
     export default {
         name: 'Create-Resource',
         components: {
