@@ -27,6 +27,7 @@
 - [Browser support](#browser-support)
 - [Common questions](#common-questions)
 
+<a name="quick-start"></a>
 ## Quick start
 
 - [Download and install the latest node](https://nodejs.org/en/download/) or verify your node version `node -v`
@@ -37,6 +38,7 @@
 - Start up target IDM (default startup is `http://localhost:8080`)
 - Start development server with npm: `npm run dev`
 
+<a name="development-server"></a>
 ## Development server
 
 `npm run dev` starts up a standalone node server primarily for ease of development. This development server also provides an easy way to test and understand various identity management features.
@@ -47,11 +49,13 @@
 - Includes its own [testing](#testing)
 - Built off [Vue Webpack Template](http://vuejs-templates.github.io/webpack/)
 
+<a name="development-server-tools"></a>
 ## Development server tools
 
 - [Node](https://nodejs.org/en/download/) - Version 5.0.0 or newer (ForgeRock development verified 6.4.1)
 - [NPM](https://www.npmjs.com/) - Version 8.0.0 or newer (ForgeRock development verified 9.5.0)
 
+<a name="testing"></a>
 ## Testing
 
 - Run tests with npm: `npm test`
@@ -62,6 +66,7 @@ Running tests provides a console display with test results and generates a viewa
 
 This command runs two copies of the tests - one in the phantom JS headless browser and another at `localhost:9876` that can be used to watch or debug on your local browser.
 
+<a name="testing-tools"></a>
 ## Testing tools
 
 The following testing tools are installed when you install the project dependencies:
@@ -73,6 +78,7 @@ The following testing tools are installed when you install the project dependenc
 - [Chai](http://chaijs.com/) - Assertion library
 - [PhantomJS](https://github.com/ariya/phantomjs) - Headless browser
 
+<a name="application-structure"></a>
 ## Application structure
 
 To help you with navigation, the application has the following basic layout:
@@ -96,6 +102,7 @@ src/
 
 ```
 
+<a name="application-tools"></a>
 ## Application tools
 
 The following application tools are installed when you install the project dependencies:
@@ -110,6 +117,7 @@ The following application tools are installed when you install the project depen
 
 There are several other libraries included with both node and the application, but these are the primary core libraries used throughout. For additional libraries, see [package.json](https://stash.forgerock.org/users/jason.browne/repos/openidm-enduser/browse/package.json)
 
+<a name="translations"></a>
 ## Translations
 
 Application translation uses [Vue i18n](https://kazupon.github.io/vue-i18n/en/) and the `openidm/info/uiconfig` endpoint to get the current user's browser language.
@@ -135,12 +143,14 @@ For example:
 
 ```
 
+<a name="deployment"></a>
 ## Deployment
 
 - To deploy the application, run: `npm run build`
 
 Running `npm run build` creates a distribution file in the `dist` folder and two detail files for support or QA purposes: `COMMITHASH` and `VERSION`. Each deployment use case is different.
 
+<a name="theming"></a>
 ## Theming
 
 The following theming tools are installed when you install the project dependencies:
@@ -168,6 +178,7 @@ The project also includes a style guide, available when running the development 
 
 The style guide gives an indication of how new themes and styles will impact base application components.
 
+<a name="build-command-summary"></a>
 ## Build command summary
 
 ``` bash
@@ -193,6 +204,7 @@ npm run build --theme=red
 npm test
 ```
 
+<a name="browser-support"></a>
 ## Browser support
 
 - Internet Explorer 11 or higher
@@ -200,17 +212,20 @@ npm test
 - Latest Safari
 - Latest Chrome
 
+<a name="common-questions"></a>
 ## Common Questions
 
 - [Who this project is for](#who-this-project-is-for)
 - [How to Add a Self-Service Stage to the UI](#how-to-add-a-self-service-stage-to-the-ui)
 - [How to Replace IDM Enduser files](#how-to-replace-a-idm-enduser)
 
+<a name="who-this-project-is-for"></a>
 ### Who this project is for
 
 This project is meant to help developers and customers understand the features of ForgeRock Identity Management. A basic understanding of Javascript, HTML, CSS and Vue are required
 to successfully navigate and understand the code.
 
+<a name="how-to-add-a-self-service-stage-to-the-ui"></a>
 ### How to Add a Self-Service Stage to the UI
 
 This tutorial assumes you have created the backend portion of the stage and added that stage to the appropriate `selfservice-` file. If you need help with these steps please refer to the [ForgeRock Documentation](https://backstage.forgerock.com/docs/idm/6.5/self-service-reference/#chap-custom-stages).
@@ -297,6 +312,7 @@ This tutorial assumes you have created the backend portion of the stage and adde
 
 5. When these steps are complete, all that remains is to step through the self-service process with the new stage added and validate that everything is hooked up.
 
+<a name="how-to-replace-a-idm-enduser"></a>
 ### How to Replace IDM Enduser
 
 1) Inside of the Enduser project Run `npm run build` to generate a distribution copy
