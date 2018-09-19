@@ -46,6 +46,10 @@
             'filterProviders': {
                 type: Array,
                 default: () => { return []; }
+            },
+            'filterProvidersObjects': {
+                type: Array,
+                default: () => { return []; }
             }
         },
         data () {
@@ -73,21 +77,25 @@
                             }
                         });
 
-                        _.each(this.providers, (provider, index) => {
-                            /* If this is fullStack we need to tell the app to use oauth
-                               headers on authenticated requests after being logged inspect
-                               then immediately redirect to am's login. */
-                            if (provider.provider === 'OPENAM' && this.providers.length === 1) {
-                                if (!window.location.search && this.signin === true) {
-                                    sessionStorage.setItem('setAuthHeaders', true);
-                                    this.goToIDP('OPENAM');
+                        if (this.providers.length) {
+                            _.each(this.providers, (provider, index) => {
+                                /* If this is fullStack we need to tell the app to use oauth
+                                   headers on authenticated requests after being logged inspect
+                                   then immediately redirect to am's login. */
+                                if (provider.provider === 'OPENAM' && this.providers.length === 1) {
+                                    if (!window.location.search && this.signin === true) {
+                                        sessionStorage.setItem('setAuthHeaders', true);
+                                        this.goToIDP('OPENAM');
+                                    } else {
+                                        this.providers.splice((index - 1), 1);
+                                    }
                                 } else {
-                                    this.providers.splice((index - 1), 1);
+                                    this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
                                 }
-                            } else {
-                                this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
-                            }
-                        });
+                            });
+                        } else if (this.filterProvidersObjects.length) {
+                            this.providers = this.filterProvidersObjects;
+                        }
                     })
                     .catch((error) => {
                         this.displayNotification('error', error.response.data.message);
@@ -101,7 +109,6 @@
                 const socialInstance = this.getRequestService({
                     headers: this.getAnonymousHeaders()
                 });
-
                 /* istanbul ignore next */
                 socialInstance.post('/identityProviders?_action=getAuthRedirect', {
                     'provider': provider,

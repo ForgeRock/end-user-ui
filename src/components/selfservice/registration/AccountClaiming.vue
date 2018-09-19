@@ -22,7 +22,7 @@
                                      type="password"
                                      fieldName="password"></fr-floating-label-input>
 
-            <fr-social-buttons v-if="socialVerification" :filterProviders="providers" signin></fr-social-buttons>
+            <fr-social-buttons v-if="socialVerification" :filterProviders="providers" :filterProvidersObjects="providersObjects" signin></fr-social-buttons>
 
             <button v-if="passwordVerification"
                     v-on:click="claimAccount"
@@ -45,12 +45,6 @@
     import SocialButtons from '@/components/mains/SocialButtons';
     import styles from '../../../scss/main.scss';
 
-    /**
-     * @description Selfservice stage for handling account claiming for manuel or social
-     *
-     * @fires POST /authentication?_action=login - Login in using returned client token from social provider
-     *
-     **/
     export default {
         components: {
             BounceLoader,
@@ -67,6 +61,7 @@
                 passwordVerification: false,
                 socialVerification: false,
                 providers: [],
+                providersObjects: [],
                 mail: ''
             };
         },
@@ -76,8 +71,16 @@
         name: 'Account-Claiming',
         props: ['clientToken', 'originalToken', 'returnParams'],
         mounted () {
-            /* istanbul ignore next */
-            this.loadData();
+            if (localStorage.getItem('accountClaimingToken')) {
+                let accountClaimingToken = localStorage.getItem('accountClaimingToken');
+
+                localStorage.removeItem('accountClaimingToken');
+
+                this.claimAccount(accountClaimingToken);
+            } else {
+                /* istanbul ignore next */
+                this.loadData();
+            }
         },
         computed: {
             socialDescription () {
@@ -100,10 +103,15 @@
             }
         },
         methods: {
-            claimAccount () {
+            claimAccount (accountClaimingToken) {
+                let clientToken = this.clientToken;
+
+                if (_.isString(accountClaimingToken)) {
+                    clientToken = accountClaimingToken;
+                }
                 /* istanbul ignore next */
                 this.advanceStage({
-                    'clientToken': this.clientToken,
+                    'clientToken': clientToken,
                     'password': this.password
                 });
             },
@@ -143,14 +151,13 @@
                         } else {
                             localStorage.setItem('accountClaimingToken', this.clientToken);
                             this.providers = _.map(details.requirements.definitions.providers.items.oneOf, 'provider');
+                            this.providersObjects = details.requirements.definitions.providers.items.oneOf;
                             this.socialVerification = true;
                         }
                     }
                 } else if ((type === 'localAutoLogin' || type === 'openAMAutoLogin') && _.isUndefined(details.additions.claimedProfile)) {
                     if (sessionStorage.getItem('amSocialToken')) {
                         let tempToken = sessionStorage.getItem('amSocialToken');
-
-                        sessionStorage.removeItem('amSocialToken');
 
                         this.$router.push({name: 'Registration', params: {clientToken: tempToken}});
                     } else {
@@ -161,16 +168,18 @@
                         headers: {
                             'X-OpenIDM-NoSession': 'false',
                             'X-OpenIDM-OAuth-Login': 'true',
-                            'X-OpenIDM-DataStoreToken': this.clientToken,
+                            'X-OpenIDM-DataStoreToken': sessionStorage.getItem('amSocialToken') || this.clientToken,
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     });
+
+                    sessionStorage.removeItem('amSocialToken');
 
                     socialLoginInstance.post('/authentication?_action=login')
                         .then((userDetails) => {
                             // Check for progressive profiling.
                             this.progressiveProfileCheck(userDetails, () => {
-                                this.$router.push('/');
+                                this.$router.push('/profile');
                                 this.displayNotification('success', this.$t('pages.selfservice.accountClaiming.linked'));
                             });
                         })

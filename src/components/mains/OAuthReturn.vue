@@ -12,7 +12,7 @@
     import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
     import styles from '../../scss/main.scss';
     import _ from 'lodash';
-
+    
     /**
      * @description Return page used for oauth provider authentication. Will appropriately redirect a user to login or account claiming.
      *
@@ -84,7 +84,11 @@
                 /* istanbul ignore next */
                 socialInstance.post('/identityProviders?_action=handlePostAuth', queryParams)
                     .then((response) => {
-                        let dataStoreToken = response.data.token;
+                        let dataStoreToken = response.data.token,
+                            originalToken = localStorage.getItem('accountClaimingToken');
+
+                        localStorage.removeItem('accountClaimingToken');
+
                         const socialLoginInstance = this.getRequestService({
                             headers: {
                                 'X-OpenIDM-NoSession': 'false',
@@ -95,9 +99,6 @@
                         });
                         socialLoginInstance.post('/authentication?_action=login')
                             .then((response) => {
-                                let originalToken = localStorage.getItem('accountClaimingToken');
-                                localStorage.removeItem('accountClaimingToken');
-
                                 /* If setAuthHeaders is true we know this if fullStack mode.
                                    We need to set the headers to be used on all this user's authenticated requests.
                                    Basically re-logging in on every request with a valid am token. We also need to
@@ -144,7 +145,8 @@
                                 this.$router.push({
                                     name: 'AccountClaiming',
                                     params: {
-                                        clientToken: dataStoreToken
+                                        clientToken: dataStoreToken,
+                                        originalToken: originalToken
                                     }
                                 });
                             });
