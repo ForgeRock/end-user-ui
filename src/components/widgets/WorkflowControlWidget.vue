@@ -57,7 +57,13 @@
                     })
                     .then(this.loadData)
                     .catch((error) => {
-                        this.displayNotification('error', error.response.data.message);
+                        if (error.response.data.code === 403) {
+                            this.displayNotification('error', this.$t('pages.workflow.taskNoLongerAvailable', {taskName: this.assignedTasks[id].name}));
+                            this.$delete(this.assignedTasks, id);
+                            this.loadTasks();
+                        } else {
+                            this.displayNotification('error', error.response.data.message);
+                        }
                     });
             },
             updateAssignment ({id, task, assignee}) {
@@ -71,7 +77,13 @@
                     })
                     .then(this.loadData)
                     .catch((error) => {
-                        this.displayNotification('error', error.response.data.message);
+                        if (error.response.data.code === 403) {
+                            this.displayNotification('error', this.$t('pages.workflow.taskNoLongerAvailable', {taskName: this.availableTasks[id].name}));
+                            this.$delete(this.availableTasks, id);
+                            this.loadTasks();
+                        } else {
+                            this.displayNotification('error', error.response.data.message);
+                        }
                     });
             },
             startProcess (payload) {

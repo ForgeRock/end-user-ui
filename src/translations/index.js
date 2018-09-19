@@ -365,6 +365,7 @@ export default
                 startProcess: 'Start a Process',
                 taskSuccessfullyCompleted: 'Task successfully completed',
                 taskSuccessfullyRequeued: '{taskName} successfully requeued',
+                taskNoLongerAvailable: '{taskName} task deleted by admin',
                 unassignedTasks: 'Unassigned Tasks'
             }
         }
