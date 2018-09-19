@@ -135,6 +135,7 @@ export default
                     },
                     reset: {
                         title: 'Reset Password',
+                        description: 'Verify You\'re Human',
                         emailSent: 'An email has been sent to your inbox with instructions on how to reset your password.'
                     }
                 },

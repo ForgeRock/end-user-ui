@@ -1,5 +1,5 @@
 <p align="center">
-  <h3 align="center">Identity Management (Enduser) - UI</h3>
+  <b>Identity Management (Enduser) - UI</b>
 
   <p align="center">
     Easy to integrate, standalone UI to demonstrate ForgeRock Identity Management.
@@ -218,6 +218,7 @@ npm test
 - [Who this project is for](#who-this-project-is-for)
 - [How to Add a Self-Service Stage to the UI](#how-to-add-a-self-service-stage-to-the-ui)
 - [How to Replace IDM Enduser files](#how-to-replace-a-idm-enduser)
+- [How to Add Additional Registration Flows](#how-to-add-additional-registration-flows)
 
 <a name="who-this-project-is-for"></a>
 ### Who this project is for
@@ -316,8 +317,30 @@ This tutorial assumes you have created the backend portion of the stage and adde
 ### How to Replace IDM Enduser
 
 1) Inside of the Enduser project Run `npm run build` to generate a distribution copy
-2) Locate your current IDM project folder and navigate to `/openidm/openidm-zip/target/openidm/ui/enduser`
-3) Delete the contents of `/openidm/openidm-zip/target/openidm/ui/enduser`
-4) Copy files from the `dist` folder in Enduser over to IDM enduser `/openidm/openidm-zip/target/openidm/ui/enduser`
+2) Locate your current IDM project folder and navigate to `/path/to/your/openidm/ui/enduser`
+3) Delete the contents from the unzipped openidm for `enduser` `/path/to/your/openidm/ui/enduser`
+4) Copy files from the `dist` folder in Enduser over to IDM enduser `/path/to/your/openidm/ui/enduser`
 
-**If you rebuild IDM you will need to preform these steps again as that process will replace the current zip contents**
+**If you rebuild IDM you will need to perform these steps again as that process will replace the current zip contents.**
+
+<a name="how-to-add-additional-registration-flows"></a>
+### How to Add Additional Registration Flows
+
+1. Add multiple `selfservice-registration.json` files, following [these docs](https://backstage.forgerock.com/docs/idm/6.5/integrators-guide/#uss-registration).
+2. For each additional `selfservice-registration.json` file, clone `Registration.vue` and rename it to match the corresponding new registration file. For example, if you named the configuration file `selfservice-registrationsecondflow.json`, name the vue file `RegistrationSecondFlow.vue`.
+3. In the new Vue file, change the variable `apiType: 'registration'`, to match your `selfservice-` file. For example, if your configuration file is named `selfservice-registrationsecondflow` change the variable to `apiType: 'registrationsecondflow'`.
+4. Locate the router file `router/index.js` and add a route for the new file:
+
+``` json
+    {
+        path: '/registrationsecondflow',
+        name: 'RegistrationSecondFlow',
+        component: RegistrationSecondFlow,
+        meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
+        props: true
+    },
+```
+
+5. At the top of the `router/index.js` file, import the new Vue file and ensure that it matches the component that you specified in the route: `import RegistrationSecondFlow from '@/components/mains/RegistrationSecondFlow';`
+6. Make sure that your IDM access.js file is configured properly, based on [these docs](https://backstage.forgerock.com/docs/idm/6.5/integrators-guide/#uss-registration). You will see a forbidden access error if this file isn't configured correctly.
+7. Assuming you are on the development sever and have used default settings, you should now be able to navigate through two separate registration flows : `localhost:8081/#/registration` and `localhost:8081/#/registrationsecondflow`.
