@@ -31,7 +31,7 @@
         <template v-if="this.$root.applicationStore.state.registration">
             <b-card-footer slot="center-card-footer" class="fr-footer-bottom">
                 {{$t('pages.login.newHere')}} 
-                <router-link action="" to="registration">{{$t('pages.login.createAccount')}}</router-link>
+                <router-link action="" :to="{name: 'Registration'}">{{$t('pages.login.createAccount')}}</router-link>
             </b-card-footer>
         </template>
     </fr-center-card>
