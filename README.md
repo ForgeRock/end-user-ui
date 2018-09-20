@@ -44,7 +44,7 @@
 `npm run dev` starts up a standalone node server primarily for ease of development. This development server also provides an easy way to test and understand various identity management features.
 
 - Uses port `8080` by default, and auto-increments the port if `8080` is not available
-- Assumes `openidm` is the context for the rest service (e.g. http://localhost:8080/openidm/info). If this is not the case, change [idmDefaultContext](https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/browse/src/main.js)
+- Assumes `openidm` is the context for the rest service (e.g. http://localhost:8080/openidm/info). If this is not the case, change [idmContext](https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/browse/src/main.js), or [context](https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/browse/index.html).
 - Supports hot reloading and error display when code is changed
 - Includes its own [testing](#testing)
 - Built off [Vue Webpack Template](http://vuejs-templates.github.io/webpack/)

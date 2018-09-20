@@ -131,7 +131,8 @@ const i18n = new VueI18n({
         fallbackLocale: 'en',
         messages: translations
     }),
-    idmDefaultContext = '/openidm';
+    idmDefaultContext = '/openidm',
+    idmContext = window.context || idmDefaultContext;
 
 // Globally load bootstrap vue components for use
 Vue.use(BootstrapVue);
@@ -168,7 +169,7 @@ Vue.use(ToggleButton);
 Vue.mixin({
     methods: {
         getRequestService: function (config) {
-            let baseURL = idmDefaultContext,
+            let baseURL = idmContext,
                 timeout = 5000,
                 headers = {
                     'content-type': 'application/json',
@@ -292,7 +293,7 @@ Vue.mixin({
  */
 var startApp = function () {
         let idmInstance = axios.create({
-            baseURL: idmDefaultContext,
+            baseURL: idmContext,
             timeout: 5000,
             headers: {
                 'X-OpenIDM-NoSession': true,
