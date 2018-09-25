@@ -114,8 +114,7 @@
             setUser () {
                 /* istanbul ignore next */
                 let loginServiceInstance = this.getRequestService({
-                    headers: this.getAnonymousHeaders(),
-                    timeout: 5000
+                    headers: this.getAnonymousHeaders()
                 });
                 /* istanbul ignore next */
                 loginServiceInstance.post('/authentication?_action=login').then((userDetails) => {

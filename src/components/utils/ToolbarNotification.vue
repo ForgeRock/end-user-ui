@@ -75,10 +75,12 @@
                 }
             },
             startPolling () {
+                let pollingDelay = 3000;
+
                 /* istanbul ignore next */
                 this.timeoutId = _.delay(() => {
                     this.loadData();
-                }, 3000);
+                }, pollingDelay);
             },
             clearAll () {
                 this.notifications = [];

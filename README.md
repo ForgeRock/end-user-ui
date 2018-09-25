@@ -1,5 +1,5 @@
 <p align="center">
-  <b>Identity Management (Enduser) - UI</b>
+  <b>Identity Management (End User) - UI</b>
 
   <p align="center">
     Easy to integrate, standalone UI to demonstrate ForgeRock Identity Management.
@@ -7,7 +7,7 @@
     <a href="https://backstage.forgerock.com/docs/"><strong>Explore ForgeRock docs »</strong></a>
   </p>
   <p align="center">
-    The purpose of this readme is to help users setup a self contained development environment for the enduser UI that can be customized and expanded.
+    The purpose of this readme is to help users setup a self contained development environment for the End User UI that can be customized and expanded.
   </p>
 </p>
 
@@ -217,8 +217,11 @@ npm test
 
 - [Who this project is for](#who-this-project-is-for)
 - [How to Add a Self-Service Stage to the UI](#how-to-add-a-self-service-stage-to-the-ui)
-- [How to Replace IDM Enduser files](#how-to-replace-a-idm-enduser)
+- [How to Replace IDM End User files](#how-to-replace-a-idm-enduser)
 - [How to Add Additional Registration Flows](#how-to-add-additional-registration-flows)
+- [How to Configure Notification Polling](#how-to-configure-notification-polling)
+- [How to Configure REST Call Timeouts](#how-to-configure-rest-call-timeouts)
+- [What has Changed with Workflow](#what-has-changed-with-workflow)
 
 <a name="who-this-project-is-for"></a>
 ### Who this project is for
@@ -314,12 +317,12 @@ This tutorial assumes you have created the backend portion of the stage and adde
 5. When these steps are complete, all that remains is to step through the self-service process with the new stage added and validate that everything is hooked up.
 
 <a name="how-to-replace-a-idm-enduser"></a>
-### How to Replace IDM Enduser
+### How to Replace IDM End User
 
-1) Inside of the Enduser project Run `npm run build` to generate a distribution copy
+1) Inside of the End User project Run `npm run build` to generate a distribution copy
 2) Locate your current IDM project folder and navigate to `/path/to/your/openidm/ui/enduser`
 3) Delete the contents from the unzipped openidm for `enduser` `/path/to/your/openidm/ui/enduser`
-4) Copy files from the `dist` folder in Enduser over to IDM enduser `/path/to/your/openidm/ui/enduser`
+4) Copy files from the `dist` folder in End User over to IDM enduser `/path/to/your/openidm/ui/enduser`
 
 **If you rebuild IDM you will need to perform these steps again as that process will replace the current zip contents.**
 
@@ -344,3 +347,30 @@ This tutorial assumes you have created the backend portion of the stage and adde
 5. At the top of the `router/index.js` file, import the new Vue file and ensure that it matches the component that you specified in the route: `import RegistrationSecondFlow from '@/components/mains/RegistrationSecondFlow';`
 6. Make sure that your IDM access.js file is configured properly, based on [these docs](https://backstage.forgerock.com/docs/idm/6.5/integrators-guide/#uss-registration). You will see a forbidden access error if this file isn't configured correctly.
 7. Assuming you are on the development sever and have used default settings, you should now be able to navigate through two separate registration flows : `localhost:8081/#/registration` and `localhost:8081/#/registrationsecondflow`.
+
+<a name="how-to-configure-notification-polling"></a>
+### How to Configure Notification Polling
+
+The End User UI polls for new system notifications every `3000 milliseconds` by default.
+To change the default polling time, follow these steps:
+
+1) Navigate to `src/components/utils/ToolbarNotification.vue`
+2) Locate the function called `StartPolling`
+3) At the top of the function there is a variable `pollingDelay`
+4) Set the `pollingDelay` (in milliseconds) to adjust the notification polling interval.
+
+<a name="how-to-configure-rest-call-timeouts"></a>
+### How to Configure REST Call Timeouts
+
+REST calls in the End User UI time out after `5000 milliseconds` by default. To change this timeout, follow these steps:
+
+1) Navigate to `src/main.js`
+2) Locate the function called `getRequestService`
+3) At the top of the function there is a variable `timeout`
+4) Set the `timeout` (in milliseconds) to adjust the REST call timeout.
+
+<a name="what-has-changed-with-workflow"></a>
+### What has Changed with Workflow
+
+With the new End User UI the default workflows in IDM have been updated to make use of `Vue JS` as a framework. Previously, these workflows used `JQuery` and `Handlebars`.
+You will need to update any existing workflows to use `Vue JS` in order to use the new End User UI. **Previously formatted workflows are not supported with the new End User UI.**

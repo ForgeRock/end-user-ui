@@ -79,8 +79,7 @@
                             'X-OpenIDM-NoSession': false,
                             'X-OpenIDM-Password': this.password,
                             'X-OpenIDM-Username': this.username
-                        },
-                        timeout: 5000
+                        }
                     }),
                     idmInstance = this.getRequestService({
                         headers: this.getAnonymousHeaders()

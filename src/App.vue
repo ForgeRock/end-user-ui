@@ -120,6 +120,12 @@
   lang="scss" to turn on LESS CSS
 -->
 <style lang="scss">
+    // For theming please see https://getbootstrap.com/docs/4.0/getting-started/theming/
+    // Variable must come before bootstrap (to override them)
+    // Currently variable and theming loaded through node
+    @import "~bootstrap/scss/bootstrap.scss";
+    @import "scss/main.scss";
+
     #app {
         -webkit-transition: all 0.2s ease;
         -moz-transition: all 0.2s ease;

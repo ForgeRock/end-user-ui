@@ -48,8 +48,7 @@
             completeTask ({id, formData}) {
                 /* istanbul ignore next */
                 return this.workflowService.post(`/workflow/taskinstance/${id}?_action=complete`, formData, {
-                    headers: {'Accept': 'application/json, text/javascript, */*; q=0.01'},
-                    timeout: 2500
+                    headers: {'Accept': 'application/json, text/javascript, */*; q=0.01'}
                 })
                     .then((response) => {
                         this.displayNotification('success', this.$t('pages.workflow.taskSuccessfullyCompleted'));
