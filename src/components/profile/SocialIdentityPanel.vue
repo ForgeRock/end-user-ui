@@ -10,7 +10,7 @@
 
                         <div class="media-body">
                             <strong class="fr-social-details-title d-block mb-0">{{profile.displayName}}</strong>
-                            <span class="text-muted">{{profile.email}}</span>
+                            <span v-show="accountDisplayName" class="text-muted">{{accountDisplayName}}</span>
                         </div>
                 </div> 
             </div>
@@ -65,10 +65,17 @@
         },
         computed: {
             showAccountDetails () {
-                return !_.isEmpty(this.profile) && (_.has(this.profile, 'displayName') || _.has(this.profile, 'email'));
+                let profileNotEmtpy = !_.isEmpty(this.profile),
+                    profileHasDisplayName = _.has(this.profile, 'displayName'),
+                    profileHasEmailOrUsername = _.has(this.profile, 'email') || _.has(this.profile, 'username');
+
+                return profileNotEmtpy && (profileHasDisplayName || profileHasEmailOrUsername);
             },
             photoUrl () {
                 return this.profile.photoUrl || 'static/images/profile-default.png';
+            },
+            accountDisplayName () {
+                return this.profile.email || this.profile.username;
             }
         }
     };

@@ -90,12 +90,26 @@ describe('Profile SocialIdentityPanel Component', () => {
             expect(wrapper.vm.showAccountDetails).to.equal(false);
         });
 
-        it('should be "true" when profile has either "displayName" or "email"', () => {
+        it('should be "true" when profile has either "displayName", "username" or "email"', () => {
             wrapper.setData({profile: { displayName: 'test name' }});
             expect(wrapper.vm.showAccountDetails).to.equal(true);
 
             wrapper.setData({profile: { email: 'test mail' }});
             expect(wrapper.vm.showAccountDetails).to.equal(true);
+
+            wrapper.setData({profile: { username: 'test user name' }});
+            expect(wrapper.vm.showAccountDetails).to.equal(true);
+        });
+    });
+
+    describe('computed#accountDisplayName', () => {
+        it('should default to email', () => {
+            expect(wrapper.vm.accountDisplayName).to.equal(wrapper.vm.profile.email);
+        });
+
+        it('should be username when email not defined on profile', () => {
+            wrapper.setData({profile: {username: 'test user name'}});
+            expect(wrapper.vm.accountDisplayName).to.equal('test user name');
         });
     });
 });
