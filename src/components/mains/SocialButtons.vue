@@ -109,14 +109,22 @@
                 const socialInstance = this.getRequestService({
                     headers: this.getAnonymousHeaders()
                 });
+
                 /* istanbul ignore next */
-                socialInstance.post('/identityProviders?_action=getAuthRedirect', {
-                    'provider': provider,
-                    'landingPage': `${window.location.protocol}/${window.location.host}/#/login?_oauthReturn=true&provider=${provider}&gotoURL=%23`
-                })
-                .then((response) => {
-                    localStorage.setItem('dataStoreToken', response.data.token);
-                    window.location.href = response.data.redirect;
+                socialInstance.post('/authentication?_action=logout').then(() => {
+                    /* istanbul ignore next */
+                    socialInstance.post('/identityProviders?_action=getAuthRedirect', {
+                        'provider': provider,
+                        'landingPage': `${window.location.protocol}/${window.location.host}/#/login?_oauthReturn=true&provider=${provider}&gotoURL=%23`
+                    })
+                    .then((response) => {
+                        localStorage.setItem('dataStoreToken', response.data.token);
+                        window.location.href = response.data.redirect;
+                    })
+                    .catch((error) => {
+                        /* istanbul ignore next */
+                        this.displayNotification('error', error.response.data.message);
+                    });
                 })
                 .catch((error) => {
                     /* istanbul ignore next */
