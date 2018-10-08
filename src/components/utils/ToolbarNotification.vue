@@ -15,13 +15,12 @@
             <div class="scrollbox" is="transition-group" name="notification-list">
                 <div  v-for="(notification, index) in notifications" :class="[{ 'border-bottom': (index + 1) < notifications.length }, 'dropdown-item', 'py-3', 'fr-notification-item']" :key="notification._id">
                     <div class="media">
-                        <div class="media-body align-self-center">
+                        <div class="media-body">
                             <h6 class="my-0">{{notification.message}}</h6>
                             <small class="text-muted">{{notification.createDate | cleanDate}}</small>
                         </div>
-                        <div class="d-flex ml-3 align-self-center">
-                            <b-button @click.prevent="clearOne(index)" variant="sm" type="button" class="btn btn-link"><i class="fa fa-trash text-muted"></i></b-button>
-                        </div>
+                        <b-button @click.prevent="clearOne(index)" variant="sm" type="button" class="btn btn-link my-auto"><i class="fa fa-trash text-muted"></i></b-button>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -168,6 +167,10 @@
                 max-height: 14.1875rem;
                 overflow-y: auto;
             }
+        }
+
+        .dropdown-item {
+            white-space: inherit
         }
     }
 
