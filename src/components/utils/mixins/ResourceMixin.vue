@@ -49,7 +49,8 @@
                     _.each(errorResponse.data.detail.failedPolicyRequirements, (policy) => {
                         if (policy.policyRequirements.length > 0) {
                             let displayTitle = '',
-                                foundProperty = _.find(properties, (prop) => { return prop.key === policy.property; });
+                                foundProperty = _.find(properties, (prop) => { return prop.key === policy.property; }),
+                                params = policy.policyRequirements[0].params || {};
 
                             if (foundProperty) {
                                 if (foundProperty.title) {
@@ -57,12 +58,14 @@
                                 } else {
                                     displayTitle = foundProperty.key;
                                 }
+
+                                params.property = displayTitle;
                             }
 
                             error.push({
                                 exists: displayTitle.length > 0,
                                 field: policy.property,
-                                msg: this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, { property: displayTitle })
+                                msg: this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, params)
                             });
                         }
                     });
