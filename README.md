@@ -32,9 +32,9 @@
 
 - [Download and install the latest node](https://nodejs.org/en/download/) or verify your node version `node -v`
 - Check that you have the latest npm with `npm install npm@latest -g`
-- Clone or download the repo: `https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser`
+- Clone or download the repo: `https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser` or `https://github.com/ForgeRock/end-user-ui`
 - Navigate to your `openidm-enduser` directory and install dependencies with npm: `npm install`
-- Update `proxyTable:target` in [config/index.js](https://stash.forgerock.org/users/jason.browne/repos/openidm-enduser/browse/config/index.js) to point to your target IDM
+- Update `proxyTable:target` in `/config/index.js` to point to your target IDM
 - Start up target IDM (default startup is `http://localhost:8080`)
 - Start development server with npm: `npm run dev`
 
@@ -44,7 +44,7 @@
 `npm run dev` starts up a standalone node server primarily for ease of development. This development server also provides an easy way to test and understand various identity management features.
 
 - Uses port `8080` by default, and auto-increments the port if `8080` is not available
-- Assumes `openidm` is the context for the rest service (e.g. http://localhost:8080/openidm/info). If this is not the case, change [idmContext](https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/browse/src/main.js), or [context](https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/browse/index.html).
+- Assumes `openidm` is the context for the rest service (e.g. http://localhost:8080/openidm/info). If this is not the case, change idmContext `/src/main.js`, or context `/index.html`.
 - Supports hot reloading and error display when code is changed
 - Includes its own [testing](#testing)
 - Built off [Vue Webpack Template](http://vuejs-templates.github.io/webpack/)
@@ -52,8 +52,8 @@
 <a name="development-server-tools"></a>
 ## Development server tools
 
-- [Node](https://nodejs.org/en/download/) - Version 5.0.0 or newer (ForgeRock development verified 6.4.1)
-- [NPM](https://www.npmjs.com/) - Version 8.0.0 or newer (ForgeRock development verified 9.5.0)
+- [Node](https://nodejs.org/en/download/) - Version 9.0.0 or newer (ForgeRock development verified 9.5.0)
+- [NPM](https://www.npmjs.com/) - Version 5.0.0 or newer (ForgeRock development verified 6.4.1)
 
 <a name="testing"></a>
 ## Testing
@@ -115,14 +115,14 @@ The following application tools are installed when you install the project depen
 - [Vee Validate](https://github.com/baianat/vee-validate) - Form validation for Vue
 - [lodash](https://lodash.com/) - Util library for preforming various efficient calculations
 
-There are several other libraries included with both node and the application, but these are the primary core libraries used throughout. For additional libraries, see [package.json](https://stash.forgerock.org/users/jason.browne/repos/openidm-enduser/browse/package.json)
+There are several other libraries included with both node and the application, but these are the primary core libraries used throughout. For additional libraries, see package.json `/package.json`
 
 <a name="translations"></a>
 ## Translations
 
 Application translation uses [Vue i18n](https://kazupon.github.io/vue-i18n/en/) and the `openidm/info/uiconfig` endpoint to get the current user's browser language.
 
-The project only contains `en` based translations and falls back to `en` if an unsupported language is detected. To change the default language fallback adjust [VueI18n](https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/browse/src/main.js).
+The project only contains `en` based translations and falls back to `en` if an unsupported language is detected. To change the default language fallback adjust VueI18n `/src/main.js`.
 
 Adding a new translation means expanding the current JSON contained in `src/translations/index.js` with the corresponding language code and appropriate mirrored structure.
 
