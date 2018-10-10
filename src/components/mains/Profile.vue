@@ -16,7 +16,7 @@
             <b-col class="detailsCol" lg="8">
                 <b-tabs>
                     <b-tab :title="$t('pages.profile.settings')" active>
-                        <fr-account-security @updateProfile="updateProfile"></fr-account-security>
+                        <fr-account-security @updateProfile="updateProfile" @updateKBA="updateKBA"></fr-account-security>
                         <fr-social-identities v-if="$root.userStore.state.internalUser === false" :clientToken="clientToken" :linkedProvider="linkedProvider"></fr-social-identities>
                         <fr-authorized-applications v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-authorized-applications>
                         <fr-trusted-devices v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-trusted-devices>
@@ -95,6 +95,12 @@
         },
         methods: {
             updateProfile (payload, config = {}) {
+                this.makeUpdateRequest(this.$root.userStore.state.managedResource, payload, config);
+            },
+            updateKBA (payload, config) {
+                this.makeUpdateRequest('selfservice/user', payload, config);
+            },
+            makeUpdateRequest (endpoint, payload, config = {}) {
                 /* istanbul ignore next */
                 let successMsg = config.successMsg || this.$t('common.user.profile.updateSuccess'),
                     userId = this.$root.userStore.state.userId,
@@ -103,7 +109,7 @@
                     });
 
                 /* istanbul ignore next */
-                selfServiceInstance.patch(`${this.$root.userStore.state.managedResource}/${userId}`, payload).then((response) => {
+                selfServiceInstance.patch(`${endpoint}/${userId}`, payload).then((response) => {
                     this.$root.userStore.setProfileAction(response.data);
                     this.displayNotification('success', successMsg);
 

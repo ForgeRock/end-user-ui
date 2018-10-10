@@ -37,13 +37,19 @@
             selfServiceDetails: { required: true }
         },
         data () {
-            let locale = this.$i18n.locale,
+            let { locale, fallbackLocale } = this.$i18n,
                 { properties, required } = this.selfServiceDetails.requirements;
 
             return {
                 questionText: _.mapValues(properties, (value) => {
-                    if (_.has(value, 'userQuestion')) return value.userQuestion;
-                    if (_.has(value, 'systemQuestion')) return value.systemQuestion[locale];
+                    if (_.has(value, 'systemQuestion')) {
+                        let question = value.systemQuestion[locale] || value.systemQuestion[fallbackLocale];
+                        return question;
+                    }
+
+                    if (_.has(value, 'userQuestion')) {
+                        return value.userQuestion;
+                    }
                 }),
                 answers: required.reduce((acc, answer) => _.set(acc, answer, ''), {})
             };

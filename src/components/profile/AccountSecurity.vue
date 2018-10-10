@@ -2,7 +2,7 @@
     <fr-list-group :title="$t('pages.profile.accountSecurity.title')" :subtitle="$t('pages.profile.accountSecurity.subtitle')">
 
         <fr-edit-password @updateProfile="sendUpdateProfile"></fr-edit-password>
-        <fr-edit-kba v-if="isOnKBA && $root.userStore.state.internalUser === false" :kbaData="kbaData" @updateProfile="sendUpdateProfile"></fr-edit-kba>
+        <fr-edit-kba v-if="isOnKBA && $root.userStore.state.internalUser === false" :kbaData="kbaData" @updateKBA="sendUpdateKBA"></fr-edit-kba>
 
     </fr-list-group>
 </template>
@@ -30,6 +30,9 @@
             'fr-edit-password': EditPassword
         },
         methods: {
+            sendUpdateKBA (payload, config) {
+                this.$emit('updateKBA', payload, config);
+            },
             sendUpdateProfile (payload, config) {
                 this.$emit('updateProfile', payload, config);
             }

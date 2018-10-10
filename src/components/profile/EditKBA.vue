@@ -96,7 +96,7 @@
         },
         methods: {
             initializeForm (minimumRequired) {
-                let locale = this.$i18n.locale;
+                let { locale, fallbackLocale } = this.$i18n;
 
                 // set form state based on stored user questions
                 _.times(minimumRequired, (index) => {
@@ -105,7 +105,7 @@
 
                 // create select options
                 this.selectOptions = _.map(this.questions, (question, key) => {
-                    return {value: key, text: question[locale], disabled: true};
+                    return {value: key, text: question[locale] || question[fallbackLocale], disabled: true};
                 });
 
                 this.customIndex = this.selectOptions.length + 1;
@@ -154,7 +154,7 @@
                     if (valid) {
                         this.loading = true;
 
-                        this.$emit('updateProfile', this.generatePatch(), { onSuccess: () => {
+                        this.$emit('updateKBA', this.generatePatch(), { onSuccess: () => {
                             this.$refs.cancel.click();
                         }});
                     }
