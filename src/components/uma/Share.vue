@@ -3,7 +3,7 @@
       <div slot="modal-header" class="d-flex w-100 h-100">
             <div class="media">
                 <div class="d-flex mr-3 align-self-center">
-                    <fr-fallback-image :src="resource.uri" :height="40" :width="40" fallback="fa-file-o"></fr-fallback-image>
+                    <fr-fallback-image :src="resource.icon_uri" :height="40" :width="40" fallback="fa-file-o"></fr-fallback-image>
                 </div>
                 <div class="media-body align-self-center">
                     <h6 class="my-0">{{resource.name}}</h6>

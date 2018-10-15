@@ -17,7 +17,7 @@
                             <button class="m-0 p-0 btn btn-link text-capitalize" type="button" @click="$emit('resourceSetClick', activity._id)">{{activity.resourceSetName}}</button>
                             <small class="d-block text-muted subtext">{{formatTime(activity.eventTime)}}</small>
                         </div>
-                        <fr-fallback-image v-if="activity.icon_uri" :src="activity.icon_uri" height="30" width="30" fallback="fa-file-o"></fr-fallback-image>
+                        <fr-fallback-image :src="activity.icon_uri" height="30" width="30" fallback="fa-file-o"></fr-fallback-image>
                     </template>
                 </fr-list-item>
             </fr-list-group>

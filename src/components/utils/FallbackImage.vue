@@ -2,7 +2,7 @@
         <div>
             <b-img v-if="imageFound" :src="src" :width="width" :height="width" :alt="alt" />
             <span  v-else class="icon-holder p-2 d-flex bg-light border rounded">
-                <i :class="['fa fa-lg text-dark mt-auto', fallback]"></i>
+                <i :class="['fa', fallback, 'fa-lg text-dark mt-auto']"></i>
             </span>
         </div>
 </template>

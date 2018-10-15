@@ -53,8 +53,7 @@
                                     <div class="media mb-2 mb-sm-0">
                                         <div class="d-flex mr-3 align-self-top">
                                             <fr-fallback-image
-                                                v-if="resource.uri"
-                                                :src="resource.uri"
+                                                :src="resource.icon_uri"
                                                 :height="40"
                                                 :width="40"
                                                 fallback="fa-file-o fa-2x m-auto pt-1 pb-1"></fr-fallback-image>
@@ -98,7 +97,7 @@
                                 </b-dropdown>
                             </div>
                             <div class="card-body pt-0">
-                                <fr-fallback-image v-if="resource.uri" :src="resource.uri" :width="86" :height="86" class="pl-5 pr-5 pt-3 mb-3" fallback="fa-file-o fa-3x m-auto pt-3 pb-3"></fr-fallback-image>
+                                <fr-fallback-image :src="resource.icon_uri" :width="86" :height="86" class="pl-5 pr-5 pt-3 mb-3" fallback="fa-file-o fa-3x m-auto pt-3 pb-3"></fr-fallback-image>
                                 <h5 class="card-title text-truncate">{{resource.name}}</h5>
                                 <div class="card-text">
                                     <small class="text-muted" v-if="!resource.policy">{{$t('pages.uma.resources.resourceNotShared')}}</small>
