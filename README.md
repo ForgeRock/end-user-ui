@@ -87,16 +87,16 @@ To help you with navigation, the application has the following basic layout:
 src/
 ├── components/ - General application components
 │    ├── access/ - Delegated admin components
-│    ├── mains/ - Main entry point for router and primary components
 │    ├── profile/ - Profile management components (KBA, password change, profile edit, social management, etc.)
 │    ├── selfservice/ - Components for the various self-service flows (username recovery, password reset, registration, progressive profile, etc.)
 │    ├── uma/ - User Managed Access integration
 │    ├── utils/ - Variety of support components that are used throughout the application
-│    └── widgets/ - Dashboard widgets and workflow integration
-├── router - Application routes
-├── scss - SCSS / CSS styling files
-├── store - Shared data sources for components
-├── translations - Translation files
+│    ├── stores/ - Application wide data used across multiple Vue components
+│    └── dashboard/ - Dashboard widgets and workflow integration
+├── router/ - Application routes
+├── scss/ - SCSS / CSS styling files
+├── store/ - Shared data sources for components
+├── translations/ - Translation files
 ├── App.vue - The base application Vue component
 └── main.js - Initialization Javascript file
 

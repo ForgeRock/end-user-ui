@@ -9,7 +9,7 @@ import VeeValidate from 'vee-validate';
 describe('KBAUpdate.vue', () => {
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
-    Vue.use(VeeValidate, { inject: true, fastExit: false });
+    Vue.use(VeeValidate, { inject: false, fastExit: false });
 
     const i18n = new VueI18n({
             locale: 'en',

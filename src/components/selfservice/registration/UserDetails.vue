@@ -31,7 +31,7 @@
     import _ from 'lodash';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
     import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
-    import SocialButtons from '@/components/mains/SocialButtons';
+    import SocialButtons from '@/components/utils/SocialButtons';
 
     /**
      * @description Selfservice stage for generating user details and displaying social buttons available. Works the same alone and in allinone

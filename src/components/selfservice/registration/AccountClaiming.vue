@@ -41,9 +41,9 @@
     import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
     import CenterCard from '@/components/utils/CenterCard';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
-    import SelfserviceAPI from '../../selfservice/mixins/SelfserviceAPIMixin';
-    import SocialButtons from '@/components/mains/SocialButtons';
-    import styles from '../../../scss/main.scss';
+    import SelfserviceAPI from '@/components/selfservice/mixins/SelfserviceAPIMixin';
+    import SocialButtons from '@/components/utils/SocialButtons';
+    import styles from '@/scss/main.scss';
 
     export default {
         components: {

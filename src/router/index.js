@@ -1,17 +1,17 @@
 import Router from 'vue-router';
-import ListResource from '@/components/mains/ListResource';
-import EditResource from '@/components/access/EditResource';
-import Dashboard from '@/components/mains/Dashboard';
-import ForgotUsername from '@/components/mains/ForgotUsername';
-import NotFound from '@/components/mains/NotFound';
-import Login from '@/components/mains/Login';
-import OAuthReturn from '@/components/mains/OAuthReturn';
-import Profile from '@/components/mains/Profile';
-import PasswordReset from '@/components/mains/PasswordReset';
-import ProgressiveProfile from '@/components/mains/ProgressiveProfile';
-import Registration from '@/components/mains/Registration';
 import AccountClaiming from '@/components/selfservice/registration/AccountClaiming';
-import Sharing from '@/components/mains/Sharing';
+import Dashboard from '@/components/dashboard';
+import EditResource from '@/components/access/EditResource';
+import ForgotUsername from '@/components/selfservice/forgotusername';
+import ListResource from '@/components/access';
+import Login from '@/components/Login';
+import NotFound from '@/components/NotFound';
+import OAuthReturn from '@/components/OAuthReturn';
+import PasswordReset from '@/components/selfservice/passwordreset';
+import Profile from '@/components/profile';
+import ProgressiveProfile from '@/components/selfservice/progressiveprofile';
+import Registration from '@/components/selfservice/registration';
+import Sharing from '@/components/uma';
 
 // import Styleguide from '../../styleguide/Styleguide';
 /**
