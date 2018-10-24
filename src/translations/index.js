@@ -50,7 +50,8 @@ export default
                     question: 'Question',
                     answer: 'Answer',
                     saveQuestions: 'Save questions',
-                    submitAnswers: 'Verify Answer | Verify Answers'
+                    submitAnswers: 'Verify Answer | Verify Answers',
+                    notUnique: 'Custom questions cannot be duplicates'
                 }
             },
             policyValidationMessages: {

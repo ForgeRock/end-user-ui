@@ -17,10 +17,8 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
         }),
         v = new VeeValidate.Validator();
 
-    let wrapper;
-
-    beforeEach(() => {
-        wrapper = mount(KBASecurityAnswerDefinitionStage, {
+    let wrapper,
+        mountOptions = {
             provide: () => ({
                 $validator: v
             }),
@@ -50,7 +48,10 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
                     }
                 }
             }
-        });
+        };
+
+    beforeEach(() => {
+        wrapper = mount(KBASecurityAnswerDefinitionStage, mountOptions);
     });
 
     it('KBASecurityAnswerDefinitionStage component loaded', () => {
@@ -58,16 +59,15 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
     });
 
     it('creates the correct number of selects and inputs', () => {
-        expect(wrapper.vm.$data.selected.length).to.equal(4);
         expect(wrapper.findAll('select').length).to.equal(4);
         expect(wrapper.findAll('input').length).to.equal(4);
     });
 
     it('disables questions when they are selected', () => {
         // choose first value in select
-        wrapper.vm.selected[0].selected = '1';
+        wrapper.vm.answers[0].questionId = '1';
         expect(wrapper.vm.options[1].disabled).to.equal(true);
-        wrapper.vm.selected[1].selected = '2';
+        wrapper.vm.answers[1].questionId = '2';
         expect(wrapper.vm.options[2].disabled).to.equal(true);
     });
 
@@ -75,62 +75,58 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
         // choose "custom" option in select
         const select = wrapper.find('select').element;
 
-        select.value = '3';
+        select.value = wrapper.vm.customIndex;
         select.dispatchEvent(new Event('change'));
 
         expect(wrapper.findAll('input[name="question0"]').length).to.equal(1);
     });
 
     it('correctly formats save object', () => {
-        let data;
+        let options = Object.assign({}, mountOptions, {stubs: ['BFormSelect']}),
+            wrapper = mount(KBASecurityAnswerDefinitionStage, options),
+            data;
 
-        // fill out form fields
         wrapper.vm.answers = [
             {
                 answer: 'eggs',
-                questionId: null,
+                questionId: wrapper.vm.customIndex,
                 customQuestion: 'What\'s your favorite food'
             },
             {
                 answer: 'red',
-                questionId: null,
-                customQuestion: null
+                questionId: '1'
             },
             {
                 answer: 'main',
-                questionId: null,
+                questionId: wrapper.vm.customIndex,
                 customQuestion: 'What street did you grow up on?'
             },
             {
                 answer: 'google',
-                questionId: null,
-                customQuestion: null
+                questionId: '2'
             }
         ];
 
-        wrapper.vm.selected = [
-            { selected: '3' },
-            { selected: '1' },
-            { selected: '3' },
-            { selected: '2' }
-        ];
-
-        wrapper.vm.save();
         data = wrapper.vm.getData();
 
-        expect(data).to.be.an('object');
-        expect(data.kba).to.be.an('array');
-        expect(data.kba[0]).to.be.an('object');
-        expect(data.kba[0]).to.have.property('questionId');
-        expect(data.kba[0]).to.have.property('answer');
-        expect(data.kba[0].questionId).to.equal('3');
-        expect(data.kba[0].answer).to.equal('eggs');
-        expect(data.kba[1].questionId).to.equal('1');
-        expect(data.kba[1].answer).to.equal('red');
-        expect(data.kba[2].questionId).to.equal('3');
-        expect(data.kba[2].answer).to.equal('main');
-        expect(data.kba[3].questionId).to.equal('2');
-        expect(data.kba[3].answer).to.equal('google');
+        expect(data).to.be.an('object')
+            .and.to.have.property('kba').that.is.an('array');
+        expect(data.kba[0]).to.deep.equal({
+            answer: 'eggs',
+            customQuestion: 'What\'s your favorite food'
+        });
+        expect(data.kba[1]).to.deep.equal({
+            questionId: '1',
+            answer: 'red'
+        });
+        expect(data.kba[2]).to.deep.equal({
+            answer: 'main',
+            customQuestion: 'What street did you grow up on?'
+        });
+        expect(data.kba[3]).to.deep.equal({
+            questionId: '2',
+            answer: 'google'
+        });
     });
 
     it('allows selecting defined questions', () => {
@@ -176,5 +172,37 @@ describe('KBASecurityAnswerDefinitionStage.vue', () => {
         expect(wrapper.findAll('input').length).to.equal(2);
         // should not find a 'question' input
         expect(wrapper.findAll('input[name="question"]').length).to.equal(0);
+    });
+
+    it('should get duplicates from custom question text and defined questions', () => {
+        wrapper = mount(KBASecurityAnswerDefinitionStage, mountOptions);
+
+        wrapper.vm.answers = [
+            {
+                answer: 'test answer 1',
+                questionId: null,
+                customQuestion: 'test question 1'
+            },
+            {
+                answer: 'test answer 2',
+                questionId: null,
+                customQuestion: 'test question 2'
+            },
+            {
+                answer: 'test answer 3',
+                questionId: null,
+                customQuestion: 'test question 3'
+            }
+        ];
+
+        expect(wrapper.vm.getDuplicates(0)).to.deep.equal(
+            ['test question 2', 'test question 3', 'What\'s your favorite color?', 'Who was your first employer?']
+        );
+        expect(wrapper.vm.getDuplicates(1)).to.deep.equal(
+            ['test question 1', 'test question 3', 'What\'s your favorite color?', 'Who was your first employer?']
+        );
+        expect(wrapper.vm.getDuplicates(2)).to.deep.equal(
+            ['test question 1', 'test question 2', 'What\'s your favorite color?', 'Who was your first employer?']
+        );
     });
 });
