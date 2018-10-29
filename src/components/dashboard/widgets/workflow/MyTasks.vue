@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div slot="list-item-collapse-body" class="d-inline-flex w-100">
-                            <fr-task :taskInstance="task":ref="id" @loadProcess="(process) => $emit('loadProcess', process)" @completeTask="completeTask"></fr-task> 
+                            <fr-task :taskInstance="task":ref="id" @loadProcess="(process) => $emit('loadProcess', process)" @cancel="cancel" @completeTask="completeTask"></fr-task>
                         </div>
                     </fr-list-item>
                 </transition-group>

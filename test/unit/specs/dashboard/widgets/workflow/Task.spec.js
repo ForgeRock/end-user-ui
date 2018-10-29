@@ -3,6 +3,7 @@ import Task from '@/components/dashboard/widgets/workflow/Task';
 import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
+import _ from 'lodash';
 import { shallow } from '@vue/test-utils';
 
 describe('Workflow Task Component', () => {
@@ -111,7 +112,7 @@ describe('Workflow Task Component', () => {
                 }
             });
 
-            expect(wrapper.vm.taskForm).to.equal(undefined);
+            expect(_.isNull(wrapper.vm.taskForm)).to.equal(true);
         });
 
         it('should return `[]` for "formProperties" when processDefinition null', () => {

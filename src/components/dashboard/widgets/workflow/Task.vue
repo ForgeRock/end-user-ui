@@ -1,15 +1,30 @@
 <template>
     <transition name="fade" mode="out-in" duration="250">
-        <component v-if="processDefinition !== null" :is="taskForm" @submit="submit" @cancel="cancel" :processDefinition="processDefinition" :taskDefinition="task" :variables="variables"></component>
-        <clip-loader v-else class="m-auto" :color="'#007bff'"></clip-loader>
+        <component v-if="processDefinition !== null && showGenericTask === false"
+                   :is="taskForm"
+                   @submit="submit"
+                   @cancel="cancel"
+                   :processDefinition="processDefinition"
+                   :taskDefinition="task"
+                   :variables="variables"></component>
+        <GenericTask v-else-if="showGenericTask === true && processDefinition !== null"
+                     :variables="taskInstance.task.variables"
+                     :task-fields="taskInstance.task.taskDefinition.formProperties"
+                     :process-fields="taskInstance.task.formProperties"
+                     @submit="submit"
+                     @cancel="cancel"></GenericTask>
+        <clip-loader v-else class="m-auto" :color="loadingColor"></clip-loader>
     </transition>
 </template>
 
 <script>
     import _ from 'lodash';
     import { ClipLoader } from 'vue-spinner/dist/vue-spinner.min.js';
+    import GenericTask from '@/components/dashboard/widgets/workflow/GenericTask';
+    import styles from '@/scss/main.scss';
 
     /**
+     * @description Dashboard widget that displays the specific details of a task
      * @description Dashboard widget that displays the specific details of a task
      *
      **/
@@ -17,10 +32,14 @@
         name: 'Task',
         props: ['taskInstance'],
         data () {
-            return {};
+            return {
+                showGenericTask: false,
+                loadingColor: styles.baseColor
+            };
         },
         components: {
-            'clip-loader': ClipLoader
+            'clip-loader': ClipLoader,
+            GenericTask
         },
         computed: {
             process () {
@@ -48,8 +67,14 @@
             },
             taskForm () {
                 const formGenerationTemplate = this.task.taskDefinition.formGenerationTemplate,
-                    initializeForm = formGenerationTemplate ? Function(`return ${formGenerationTemplate}`) : _.noop; // eslint-disable-line
-                return initializeForm();
+                    initializeForm = formGenerationTemplate ? Function(`return ${formGenerationTemplate}`) : null // eslint-disable-line
+
+                if (!_.isNull(initializeForm)) {
+                    return initializeForm();
+                } else {
+                    this.showGenericTask = true;
+                    return null;
+                }
             }
         },
         methods: {
