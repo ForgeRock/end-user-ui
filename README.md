@@ -20,7 +20,7 @@
 - [Testing tools](#testing-tools)
 - [Application structure](#application-structure)
 - [Application tools](#application-tools)
-- [Translations](#translations)
+- [Translations and Text](#translations-and-text)
 - [Deployment](#deployment)
 - [Theming](#theming)
 - [Build command summary](#build-command-summary)
@@ -87,12 +87,14 @@ To help you with navigation, the application has the following basic layout:
 src/
 ├── components/ - General application components
 │    ├── access/ - Delegated admin components
+│    ├── dashboard/ - Dashboard widgets and workflow integration
 │    ├── profile/ - Profile management components (KBA, password change, profile edit, social management, etc.)
 │    ├── selfservice/ - Components for the various self-service flows (username recovery, password reset, registration, progressive profile, etc.)
 │    ├── uma/ - User Managed Access integration
 │    ├── utils/ - Variety of support components that are used throughout the application
-│    ├── stores/ - Application wide data used across multiple Vue components
-│    └── dashboard/ - Dashboard widgets and workflow integration
+│    ├── Login.vue/ - Base login page for the application
+│    ├── NotFound.vue/ - 404 page
+│    └── OAuthReturn.vue/ - Handles OAuth returns for registration and login
 ├── router/ - Application routes
 ├── scss/ - SCSS / CSS styling files
 ├── store/ - Shared data sources for components
@@ -117,14 +119,18 @@ The following application tools are installed when you install the project depen
 
 There are several other libraries included with both node and the application, but these are the primary core libraries used throughout. For additional libraries, see package.json `/package.json`
 
-<a name="translations"></a>
-## Translations
+<a name="translations-and-text"></a>
+## Translations and Text
 
 Application translation uses [Vue i18n](https://kazupon.github.io/vue-i18n/en/) and the `openidm/info/uiconfig` endpoint to get the current user's browser language.
 
 The project only contains `en` based translations and falls back to `en` if an unsupported language is detected. To change the default language fallback adjust VueI18n `/src/main.js`.
 
-Adding a new translation means expanding the current JSON contained in `src/translations/index.js` with the corresponding language code and appropriate mirrored structure.
+Adding and changing an existing message for the `en` base language involves either adding a key or editing an existing key.
+Keys follow JSON structure; for example, if you wanted to edit the navigation bar `Profile` to `User Profile` you would need to locate the appropriate key `en.pages.app.profile` and change the text.
+Inside of your Vue application you would then make use of that key with the built in translation function `{{$t('pages.app.profile')}}` or `this.$t('pages.app.profile')`.
+
+Adding a new translation language means expanding the current JSON contained in `src/translations/index.js` with the corresponding language code and appropriate mirrored structure.
 
 
 For example:
