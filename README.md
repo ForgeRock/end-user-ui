@@ -239,6 +239,7 @@ to successfully navigate and understand the code.
 ### How to Add a Self-Service Stage to the UI
 
 This tutorial assumes you have created the backend portion of the stage and added that stage to the appropriate `selfservice-` file. If you need help with these steps please refer to the [ForgeRock Documentation](https://backstage.forgerock.com/docs/idm/6/self-service-reference/).
+These instructions apply to registration, password reset, and forgotten username.
 
 1. Create a `.vue` file. Depending on the self-service flow you'll want to add the file to the appropriate location in the file structure. For example, a registration stage would go under `src/selfservice/registration`.
 2. After the file is created, we follow a combination of Vue component structure and a self-service stage pattern that ForgeRock has established:
