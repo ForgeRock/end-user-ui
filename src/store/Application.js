@@ -18,7 +18,8 @@ export default {
         registration: false,
         authHeaders: null,
         authLogoutUrl: null,
-        amDataEndpoints: null
+        amDataEndpoints: null,
+        loginRedirect: null
     },
 
     setAmDataEndpointsAction (amDataEndpoints) {
@@ -91,6 +92,14 @@ export default {
         this.state.authLogoutUrl = null;
     },
 
+    setLoginRedirect (redirect) {
+        this.state.loginRedirect = redirect;
+    },
+
+    clearLoginRedirect () {
+        this.state.loginRedirect = null;
+    },
+
     clearEnduserSelfservice () {
         this.state.workflow = false;
         this.state.passwordReset = false;
@@ -99,5 +108,6 @@ export default {
         this.state.authHeaders = null;
         this.state.authLogoutUrl = null;
         this.state.amDataEndpoints = null;
+        this.state.loginRedirect = null;
     }
 };

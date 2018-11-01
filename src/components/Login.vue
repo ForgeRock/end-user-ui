@@ -104,7 +104,8 @@
                                     this.$root.userStore.setAccess(privilege.data);
 
                                     window.history.pushState('', '', window.location.pathname);
-                                    this.$router.push('/');
+
+                                    this.completeLogin();
                                 }))
                                 .catch((error) => {
                                     /* istanbul ignore next */

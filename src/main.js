@@ -114,6 +114,20 @@ router.beforeEach((to, from, next) => {
                 }
             },
             () => {
+                // Recheck class in case of double login load using from location
+                document.body.className = '';
+
+                if (_.has(from, 'meta.bodyClass')) {
+                    document.body.className = (document.body.className + from.meta.bodyClass).trim();
+                }
+
+                if (to.name !== 'Login') {
+                    ApplicationStore.setLoginRedirect({
+                        name: to.name,
+                        params: to.params
+                    });
+                }
+
                 next({name: 'Login'});
             });
         } else {
@@ -168,6 +182,7 @@ Vue.use(ToggleButton);
 // Global mixin for making openIDM REST calls
 Vue.mixin({
     methods: {
+        // Generated an axios ajax request service for consistent use of calls to IDM
         getRequestService: function (config) {
             let baseURL = idmContext,
                 timeout = 5000,
@@ -204,6 +219,13 @@ Vue.mixin({
                 return response;
             }, (error) => {
                 if (error.response.data && error.response.data.code === 401) {
+                    if (this.$route.name !== 'Login') {
+                        ApplicationStore.setLoginRedirect({
+                            name: this.$route.name,
+                            params: this.$route.params
+                        });
+                    }
+
                     this.$router.push({name: 'Login'});
                 }
 
@@ -212,6 +234,7 @@ Vue.mixin({
 
             return instance;
         },
+        // Headers used for oauth requests and selfservice
         getAnonymousHeaders: function () {
             let headers = this.$root.applicationStore.state.authHeaders || {
                 'X-OpenIDM-NoSession': true,
@@ -221,6 +244,7 @@ Vue.mixin({
 
             return headers;
         },
+        // Display a application notification
         displayNotification: function (notificationType, message) {
             /* istanbul ignore next */
             this.$notify({
@@ -229,6 +253,7 @@ Vue.mixin({
                 text: message
             });
         },
+        // Log a user out of their existing session (both normal and fullstack)
         logoutUser: function () {
             /* istanbul ignore next */
             let idmInstance = this.getRequestService({
@@ -257,6 +282,7 @@ Vue.mixin({
 
                     this.$root.applicationStore.clearAuthHeadersAction();
                     this.$root.applicationStore.clearAuthLogoutUrlAction();
+                    this.$root.applicationStore.clearLoginRedirect();
 
                     logoutInstance.get();
                 }
@@ -264,6 +290,7 @@ Vue.mixin({
                 this.$router.push({name: 'Login'});
             });
         },
+        // Check if progressive profile is needed
         progressiveProfileCheck (userDetails, continueLogin, updateApiType) {
             if (
                 _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
@@ -283,6 +310,15 @@ Vue.mixin({
                 }
             } else {
                 continueLogin();
+            }
+        },
+        // One location for checking and redirecting a completed login for s user
+        completeLogin () {
+            if (!_.isNull(this.$root.applicationStore.state.loginRedirect)) {
+                this.$router.push(this.$root.applicationStore.state.loginRedirect);
+                this.$root.applicationStore.clearLoginRedirect();
+            } else {
+                this.$router.push('/');
             }
         }
     }

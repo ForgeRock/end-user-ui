@@ -73,6 +73,18 @@ describe('Application Store', () => {
         expect(ApplicationStore.state.authLogoutUrl).to.equal(null);
     });
 
+    it('loginRedirect state management', () => {
+        expect(ApplicationStore.state.loginRedirect).to.equal(null);
+
+        ApplicationStore.setLoginRedirect('testUrl');
+
+        expect(ApplicationStore.state.loginRedirect).to.equal('testUrl');
+
+        ApplicationStore.clearLoginRedirect();
+
+        expect(ApplicationStore.state.authLogoutUrl).to.equal(null);
+    });
+
     it('all selfservice state management', () => {
         let availability = [
             {
