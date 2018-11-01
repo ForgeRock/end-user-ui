@@ -179,7 +179,11 @@
                         .then((userDetails) => {
                             // Check for progressive profiling.
                             this.progressiveProfileCheck(userDetails, () => {
-                                this.$router.push('/profile');
+                                if (_.has(details, 'additions.successUrl') && !_.isEmpty(details.additions.successUrl)) {
+                                    window.location = details.additions.successUrl;
+                                } else {
+                                    this.$router.push('/');
+                                }
                                 this.displayNotification('success', this.$t('pages.selfservice.accountClaiming.linked'));
                             });
                         })

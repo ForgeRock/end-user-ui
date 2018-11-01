@@ -129,7 +129,7 @@
                                             }
                                         });
                                     } else if (_.isNull(originalToken)) {
-                                        this.$router.push('/profile');
+                                        this.$router.push('/');
                                     } else {
                                         this.$router.push({
                                             name: 'AccountClaiming',
