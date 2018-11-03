@@ -85,6 +85,10 @@ export default {
 
     setManagedResourceAction (managedResource) {
         this.state.managedResource = _.clone(managedResource);
+
+        if (managedResource === 'internal/user') {
+            this.state.internalUser = true;
+        }
     },
 
     clearManagedResourceAction () {
@@ -93,12 +97,6 @@ export default {
 
     setRolesAction (roles) {
         this.state.roles = _.clone(roles);
-
-        _.each(roles, (role) => {
-            if (role === 'internal/role/openidm-admin') {
-                this.state.internalUser = true;
-            }
-        });
     },
 
     clearRolesAction () {
