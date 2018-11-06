@@ -139,7 +139,10 @@
                     });
                 } else if (type === 'socialUserClaim' && details.tag === 'verifyProfile') {
                     this.mail = _.has(details, 'requirements.mail') ? details.requirements.mail : '';
-                    if (details.requirements.required.indexOf('password') !== -1) {
+
+                    if (details.requirements.error) {
+                        this.displayNotification('error', details.requirements.error.message);
+                    } else if (details.requirements.required.indexOf('password') !== -1) {
                         // You can get into this usecase by
                         // having a manually registered account with matching email and a password set
                         this.passwordVerification = true;
