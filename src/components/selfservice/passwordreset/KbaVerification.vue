@@ -8,7 +8,7 @@
             :key="key">
             <label class="col-form-label pt-0 pb-2" :for="key">{{questionText[key]}}</label>
 
-            <input :key="key" v-validate="'required'" :data-vv-as="$t('common.user.kba.answer')" autofocus="true" :class="{'form-control': true, 'is-invalid': errors.has(key)}" :name="key" :id="key"  v-model.trim="answers[key]" />
+            <input :ref="key" :key="key" v-validate="'required'" :data-vv-as="$t('common.user.kba.answer')" autofocus="true" :class="{'form-control': true, 'is-invalid': errors.has(key)}" :name="key" :id="key"  v-model.trim="answers[key]" />
             <fr-validation-error :validatorErrors="errors" :fieldName="key"></fr-validation-error>
         </div>
 
@@ -53,6 +53,12 @@
                 }),
                 answers: required.reduce((acc, answer) => _.set(acc, answer, ''), {})
             };
+        },
+        mounted () {
+            // This will auto focus as long as one answer field is generated
+            if (this.$refs && this.$refs['answer1']) {
+                this.$refs['answer1'][0].focus();
+            }
         },
         methods: {
             emitData () {
