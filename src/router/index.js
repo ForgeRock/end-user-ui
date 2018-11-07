@@ -42,7 +42,7 @@ export default new Router({
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
             beforeEnter: (to, from, next) => {
                 /* istanbul ignore next */
-                if (window.location.search && window.location.search.includes('state')) {
+                if (window.location.search && window.location.search.match(/state|oauth_token/)) {
                     next('/oauthReturn');
                 } else {
                     next();
@@ -75,7 +75,7 @@ export default new Router({
             meta: { authenticate: true },
             beforeEnter: (to, from, next) => {
                 /* istanbul ignore next */
-                if (window.location.search && window.location.search.includes('state')) {
+                if (window.location.search && window.location.search.match(/state|oauth_token/)) {
                     next({
                         path: '/oauthReturn'
                     });
