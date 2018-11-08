@@ -35,16 +35,20 @@
         methods: {
             loadRecaptcha () {
                 /* istanbul ignore next */
-                setTimeout(() => {
-                    if (typeof window.grecaptcha === 'undefined') {
-                        this.loadRecaptcha();
-                    } else {
-                        window.grecaptcha.render('recaptchaContainer', {
-                            sitekey: this.selfServiceDetails.requirements.properties.response.recaptchaSiteKey,
-                            callback: this.handleCaptchaCallback
-                        });
-                    }
-                }, 500);
+                if (this.selfServiceDetails.requirements.properties.response.recaptchaSiteKey || this.selfServiceDetails.requirements.properties.response.recaptchaSiteKey.length === 0) {
+                    this.displayNotification('error', this.$t('pages.selfservice.captchaError'));
+                } else {
+                    setTimeout(() => {
+                        if (typeof window.grecaptcha === 'undefined') {
+                            this.loadRecaptcha();
+                        } else {
+                            window.grecaptcha.render('recaptchaContainer', {
+                                sitekey: this.selfServiceDetails.requirements.properties.response.recaptchaSiteKey,
+                                callback: this.handleCaptchaCallback
+                            });
+                        }
+                    }, 500);
+                }
             },
             handleCaptchaCallback (response) {
                 this.recaptchaResponse = response;

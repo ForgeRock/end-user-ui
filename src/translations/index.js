@@ -129,6 +129,7 @@ export default
             },
             selfservice: {
                 signIn: 'Sign in',
+                captchaError: 'ReCaptcha configured improperly - contact your administrator.',
                 headers: {
                     username: {
                         title: 'Recover Your Username',
