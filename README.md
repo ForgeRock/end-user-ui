@@ -366,6 +366,9 @@ To change the default polling time, follow these steps:
 3) At the top of the function there is a variable `pollingDelay`
 4) Set the `pollingDelay` (in milliseconds) to adjust the notification polling interval.
 
+To turn off polling, comment out or remove the startPolling method and remove any reference to that function.
+This will result in the notifications loading only when the application is first loaded.
+
 <a name="how-to-configure-rest-call-timeouts"></a>
 ### How to Configure REST Call Timeouts
 
