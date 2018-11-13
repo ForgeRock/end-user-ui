@@ -212,7 +212,7 @@
                     });
             },
             generateDisplay (schema, privilege, resourceDetails) {
-                this.oldFormFields = _.clone(resourceDetails);
+                this.oldFormFields = _.pick(resourceDetails,privilege.VIEW.properties);
 
                 if (privilege.DELETE.allowed) {
                     this.canDelete = true;
@@ -225,7 +225,7 @@
                 }
 
                 // Add reactive form for changes
-                _.each(resourceDetails, (value, key) => {
+                _.each(this.oldFormFields, (value, key) => {
                     this.$set(this.formFields, key, value);
                 });
 
