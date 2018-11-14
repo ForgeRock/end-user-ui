@@ -212,7 +212,7 @@
                     });
             },
             generateDisplay (schema, privilege, resourceDetails) {
-                this.oldFormFields = _.pick(resourceDetails,privilege.VIEW.properties);
+                this.oldFormFields = _.pick(resourceDetails, privilege.VIEW.properties);
 
                 if (privilege.DELETE.allowed) {
                     this.canDelete = true;
