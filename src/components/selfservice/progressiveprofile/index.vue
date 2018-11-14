@@ -81,7 +81,11 @@
                 this.selfServiceDetails = details;
                 this.selfServiceType = type;
 
-                if (_.has(details, 'requirements.uiConfig')) {
+                if (_.isEmpty(details.requirements) && details.tag === 'initial') {
+                    this.advanceStage({
+                        'input': {}
+                    });
+                } else if (_.has(details, 'requirements.uiConfig')) {
                     this.showForm = true;
                     this.displayName = details.requirements.uiConfig.displayName;
                     this.purpose = details.requirements.uiConfig.purpose;
