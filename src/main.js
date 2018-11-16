@@ -65,7 +65,7 @@ router.beforeEach((to, from, next) => {
             }
 
             authInstance = axios.create({
-                baseURL: idmDefaultContext,
+                baseURL: idmContext,
                 timeout: 5000,
                 headers: tempHeaders
             });
@@ -145,8 +145,7 @@ const i18n = new VueI18n({
         fallbackLocale: 'en',
         messages: translations
     }),
-    idmDefaultContext = '/openidm',
-    idmContext = window.context || idmDefaultContext;
+    idmContext = window.context || '/openidm';
 
 // Globally load bootstrap vue components for use
 Vue.use(BootstrapVue);
