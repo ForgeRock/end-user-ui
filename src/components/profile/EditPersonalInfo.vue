@@ -10,9 +10,9 @@
         <b-container>
             <b-row>
                 <b-col sm="8" offset-sm="2">
-                    <b-form v-if="formFields.length > 0" class="mb-3" name="edit-personal-form">
+                    <b-form v-if="formFields.length > 0" class="mb-3 w-100" name="edit-personal-form">
                         <template v-for="(field, index) in formFields">
-                            <b-form-group :key="index" v-if="field.type === 'string' || field.type === 'number'">
+                            <b-form-group style="min-width: 200px;" :key="index" v-if="field.type === 'string' || field.type === 'number'">
                                 <label class="float-left" :for="field.title">{{field.title}}</label>
                                 <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
 

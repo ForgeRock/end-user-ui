@@ -112,8 +112,14 @@
                 })
                 .catch((error) => {
                     /* istanbul ignore next */
-                    let errorMsg = error.response.data.message;
-                    this.displayNotification('error', errorMsg);
+                    this.resources = [];
+                    this.requestsLoaded = true;
+
+                    if (error.response) {
+                        this.displayNotification('error', error.response.data.message);
+                    } else {
+                        this.displayNotification('error', error.message);
+                    }
                 });
             },
             getActivity () {
@@ -129,9 +135,13 @@
                     this.activity = response.data.result;
                 })
                 .catch((error) => {
+                    this.activity = [];
                     /* istanbul ignore next */
-                    let errorMsg = error.response.data.message;
-                    this.displayNotification('error', errorMsg);
+                    if (error.response) {
+                        this.displayNotification('error', error.response.data.message);
+                    } else {
+                        this.displayNotification('error', error.message);
+                    }
                 });
             },
             getRequests () {
@@ -163,8 +173,13 @@
                 })
                 .catch((error) => {
                     /* istanbul ignore next */
-                    let errorMsg = error.response.data.message;
-                    this.displayNotification('error', errorMsg);
+                    this.requests = {};
+
+                    if (error.response) {
+                        this.displayNotification('error', error.response.data.message);
+                    } else {
+                        this.displayNotification('error', error.message);
+                    }
                 });
             },
             renderShareModal (resource) {

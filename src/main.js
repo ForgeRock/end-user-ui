@@ -83,8 +83,6 @@ router.beforeEach((to, from, next) => {
                         'X-OpenIDM-DataStoreToken': sessionStorage.getItem('amToken'),
                         'X-Requested-With': 'XMLHttpRequest'
                     });
-
-                    ApplicationStore.setAuthLogoutUrlAction(userDetails.data.authorization.logoutUrl || null);
                 }
 
                 UserStore.setUserIdAction(userDetails.data.authorization.id);
@@ -217,18 +215,20 @@ Vue.mixin({
             instance.interceptors.response.use((response) => {
                 return response;
             }, (error) => {
-                if (error.response.data && error.response.data.code === 401) {
+                if (error.response && error.response.data && error.response.data.code === 401) {
                     if (this.$route.name !== 'Login') {
                         ApplicationStore.setLoginRedirect({
                             name: this.$route.name,
                             params: this.$route.params
                         });
                     }
-
                     this.$router.push({name: 'Login'});
-                }
 
-                return Promise.reject(error);
+                    return Promise.reject(error);
+                } else {
+                    // In the case of critical error
+                    return Promise.reject(new Error(error.message));
+                }
             });
 
             return instance;
@@ -256,12 +256,11 @@ Vue.mixin({
         logoutUser: function () {
             /* istanbul ignore next */
             let idmInstance = this.getRequestService({
-                    headers: this.getAnonymousHeaders()
-                }),
-                logoutUrl = _.clone(this.$root.applicationStore.state.authLogoutUrl);
+                headers: this.getAnonymousHeaders()
+            });
 
             /* istanbul ignore next */
-            idmInstance.post('/authentication?_action=logout').then(() => {
+            idmInstance.post('/authentication?_action=logout').then((response) => {
                 this.$root.userStore.clearStoreAction();
 
                 /*
@@ -269,22 +268,8 @@ Vue.mixin({
                  */
                 sessionStorage.removeItem('amToken');
                 sessionStorage.removeItem('resubmitDataStoreToken');
-
-                if (logoutUrl) {
-                    let logoutInstance = axios.create({
-                        baseURL: logoutUrl,
-                        timeout: 5000,
-                        headers: {
-                            'content-type': 'application/json'
-                        }
-                    });
-
-                    this.$root.applicationStore.clearAuthHeadersAction();
-                    this.$root.applicationStore.clearAuthLogoutUrlAction();
-                    this.$root.applicationStore.clearLoginRedirect();
-
-                    logoutInstance.get();
-                }
+                this.$root.applicationStore.clearAuthHeadersAction();
+                this.$root.applicationStore.clearLoginRedirect();
 
                 this.$router.push({name: 'Login'});
             });

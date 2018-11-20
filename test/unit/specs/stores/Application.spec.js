@@ -61,18 +61,6 @@ describe('Application Store', () => {
         expect(ApplicationStore.state.authHeaders).to.equal(null);
     });
 
-    it('authLogoutUrl state management', () => {
-        expect(ApplicationStore.state.authLogoutUrl).to.equal(null);
-
-        ApplicationStore.setAuthLogoutUrlAction('testUrl');
-
-        expect(ApplicationStore.state.authLogoutUrl).to.equal('testUrl');
-
-        ApplicationStore.clearAuthLogoutUrlAction();
-
-        expect(ApplicationStore.state.authLogoutUrl).to.equal(null);
-    });
-
     it('loginRedirect state management', () => {
         expect(ApplicationStore.state.loginRedirect).to.equal(null);
 
@@ -81,8 +69,6 @@ describe('Application Store', () => {
         expect(ApplicationStore.state.loginRedirect).to.equal('testUrl');
 
         ApplicationStore.clearLoginRedirect();
-
-        expect(ApplicationStore.state.authLogoutUrl).to.equal(null);
     });
 
     it('all selfservice state management', () => {

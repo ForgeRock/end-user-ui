@@ -64,6 +64,13 @@
         .card-header {
             border: none;
             padding: 40px 50px 0;
+
+            .justify-content-center {
+                flex-direction: column;
+                .fr-logo {
+                    align-self: center;
+                }
+            }
         }
 
         .card-body {

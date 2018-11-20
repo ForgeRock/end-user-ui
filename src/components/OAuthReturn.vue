@@ -111,8 +111,6 @@
                                         'X-Requested-With': 'XMLHttpRequest'
                                     });
 
-                                    this.$root.applicationStore.setAuthLogoutUrlAction(response.data.authorization.logoutUrl || null);
-
                                     sessionStorage.setItem('amToken', dataStoreToken);
                                     sessionStorage.setItem('resubmitDataStoreToken', 'true');
                                     sessionStorage.removeItem('setAuthHeaders');
