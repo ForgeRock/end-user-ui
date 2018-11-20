@@ -45,7 +45,7 @@
      * @description Display for system notifications for the logged in user
      *
      * @fires GET /managed/resourceName/ID?_fields=_notifications/* - Retrieve all notifications for a specific resource
-     * @fires DELETE /notification/ID - Remove one specific notification based on the notifications ID
+     * @fires DELETE /internal/notification - Remove one specific notification based on the notifications ID
      * @fires POST /notification?_action=deleteNotificationsForTarget&target=Id - Removes all notifications for a resource (e.g. managed/user/userID)
      *
      **/
@@ -113,7 +113,7 @@
                 this.notifications.splice(index, 1);
                 /* istanbul ignore next */
                 this.getRequestService()
-                    .delete(`/notification/${notificationId}`)
+                    .delete(`/internal/notification/${notificationId}`)
                     .then(() => {
                         this.displayNotification('success', this.$t('pages.app.notifications.removed'));
 
