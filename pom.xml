@@ -5,7 +5,8 @@
   Use of this code requires a commercial software license with ForgeRock AS.
   or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.forgerock</groupId>
@@ -48,7 +49,7 @@
         <connection>scm:git:ssh://git@stash.forgerock.org:7999/openidm/openidm-enduser.git</connection>
         <developerConnection>scm:git:ssh://git@stash.forgerock.org:7999/openidm/openidm-enduser.git</developerConnection>
         <url>https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/browse</url>
-        <tag>sustaining/6.5.x</tag>
+        <tag>HEAD</tag>
     </scm>
 
 			<profiles>
