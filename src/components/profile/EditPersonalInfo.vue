@@ -10,10 +10,10 @@
         <b-container>
             <b-row>
                 <b-col sm="8" offset-sm="2">
-                    <b-form v-if="formFields.length > 0" class="mb-3 w-100" name="edit-personal-form">
+                    <b-form style="flex-direction: column;" v-if="formFields.length > 0" class="mb-3 fr-edit-personal-form" name="edit-personal-form">
                         <template v-for="(field, index) in formFields">
                             <b-form-group style="min-width: 200px;" :key="index" v-if="field.type === 'string' || field.type === 'number'">
-                                <label class="float-left" :for="field.title">{{field.title}}</label>
+                                <label :for="field.title">{{field.title}}</label>
                                 <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
 
                                 <input v-if="field.type === 'string'" v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
@@ -183,4 +183,29 @@
 
 <style lang="scss">
     @import '../../scss/full-screen-modal';
+
+    _:-ms-fullscreen, :root {
+        #userDetailsModal {
+            .row {
+                min-width: 900px;
+            }
+            .fr-edit-personal-form {
+                min-width: 900px;
+            }
+        }
+    }
+
+    @media only screen and (max-width: 700px) {
+        _:-ms-fullscreen, :root {
+            #userDetailsModal {
+                .row {
+                    min-width: 200px;
+                }
+                .fr-edit-personal-form {
+                    min-width: 200px;
+                }
+            }
+        }
+
+    }
 </style>

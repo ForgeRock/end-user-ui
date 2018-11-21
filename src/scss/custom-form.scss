@@ -2,6 +2,10 @@
 //
 // Build the custom controls out of psuedo-elements.
 
+.form-control {
+  height: 50px;
+}
+
 .custom-control-label {
   margin-bottom: 0;
 
