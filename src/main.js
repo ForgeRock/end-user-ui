@@ -225,9 +225,11 @@ Vue.mixin({
                     this.$router.push({name: 'Login'});
 
                     return Promise.reject(error);
-                } else {
+                } else if (_.isUndefined(error.response)) {
                     // In the case of critical error
                     return Promise.reject(new Error(error.message));
+                } else {
+                    return Promise.reject(error);
                 }
             });
 
