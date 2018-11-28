@@ -80,6 +80,9 @@ describe('Login.vue', () => {
                     'X-OpenIDM-Password': 'anonymous',
                     'X-OpenIDM-Username': 'anonymous'
                 };
+            },
+            encodeRFC5987IfNecessary: function (s) {
+                return s;
             }
         });
 

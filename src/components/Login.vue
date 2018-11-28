@@ -77,8 +77,8 @@
                 var loginServiceInstance = this.getRequestService({
                         headers: {
                             'X-OpenIDM-NoSession': false,
-                            'X-OpenIDM-Password': this.password,
-                            'X-OpenIDM-Username': this.username
+                            'X-OpenIDM-Password': this.encodeRFC5987IfNecessary(this.password),
+                            'X-OpenIDM-Username': this.encodeRFC5987IfNecessary(this.username)
                         }
                     }),
                     idmInstance = this.getRequestService({
