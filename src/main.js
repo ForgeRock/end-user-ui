@@ -342,6 +342,16 @@ Vue.mixin({
             } else {
                 this.$router.push('/');
             }
+        },
+        // Encode characters that cannot be used in browser request-header values
+        encodeRFC5987IfNecessary: function (headerValue) {
+            /* istanbul ignore next */
+            let encoded = encodeURIComponent(headerValue)
+                .replace(/['()]/g, escape)
+                .replace(/\*/g, '%2A')
+                .replace(/%(?:7C|60|5E)/g, unescape);
+            /* istanbul ignore next */
+            return encoded === headerValue ? headerValue : "UTF-8''" + encoded;
         }
     }
 });

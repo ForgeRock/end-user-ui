@@ -114,7 +114,7 @@
             onSavePassword () {
                 const headers = {
                         'X-Requested-With': 'XMLHttpRequest',
-                        'X-OpenIDM-Reauth-Password': this.currentPassword
+                        'X-OpenIDM-Reauth-Password': this.encodeRFC5987IfNecessary(this.currentPassword)
                     },
                     payload = [{ operation: 'add', field: '/password', value: this.newPassword }],
                     onSuccess = this.resetComponent.bind(this),

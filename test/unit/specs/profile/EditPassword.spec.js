@@ -178,6 +178,12 @@ describe('EditPassword.vue', () => {
 
             wrapper.setData({currentPassword: 'test current', newPassword: 'test new'});
 
+            wrapper.setMethods({
+                encodeRFC5987IfNecessary: function (s) {
+                    return s;
+                }
+            });
+
             wrapper.vm.onSavePassword();
 
             return Vue.nextTick()
