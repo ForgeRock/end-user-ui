@@ -112,10 +112,15 @@
                         if (privilege.data.VIEW.allowed) {
                             // Generate columns for display and filtering for read/query
                             _.each(privilege.data.VIEW.properties, (readProp) => {
-                                if (this.columns.length <= 3 && _.isUndefined(schema.data.properties[readProp].encryption)) {
+                                let propSchema = schema.data.properties[readProp];
+                                if (
+                                    this.columns.length <= 3 &&
+                                    _.isUndefined(propSchema.encryption) &&
+                                    _.includes(['string', 'boolean', 'number'], propSchema.type)
+                                ) {
                                     this.columns.push({
                                         key: readProp,
-                                        label: schema.data.properties[readProp].title,
+                                        label: propSchema.title,
                                         sortable: true,
                                         sortDirection: 'desc'
                                     });
