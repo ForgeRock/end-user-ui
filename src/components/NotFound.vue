@@ -1,8 +1,11 @@
 <template>
     <b-container id="notFoundContainer" class="h-100 d-flex" fluid>
         <div style="width: 350px;" class="m-auto align-self-center text-center">
-            <b-img src="static/images/ghost.svg" width="112" height="112" alt="img" class="fr-ghost mb-2" />
-            <div class="fr-code">404</div>
+            <div class="fr-speech-bubble">
+                <p><strong class="text-muted">{{ghostMessage}}</strong></p>
+                <div class="fr-speech-arrow"></div>
+            </div>
+            <b-img @click="ghostMessage === '404' ? ghostMessage = 'Boo' : ghostMessage = '...'" src="static/images/ghost.svg" width="112" height="112" alt="img" class="fr-ghost mb-2" />
             <p class="text-centered">{{$t("pages.notFound.couldNotFind")}}</p>
 
             <router-link to="/">
@@ -11,7 +14,7 @@
                 </b-button>
             </router-link>
 
-            <b-img src="static/images/ghost-shadow.svg" width="112" height="112" alt="img" class="fr-shadow"/>
+            <b-img @click="ghostMessage = '404'" src="static/images/ghost-shadow.svg" width="112" height="112" alt="img" class="fr-shadow"/>
         </div>
     </b-container>
 </template>
@@ -21,7 +24,12 @@
      * @description The default 404 page when Vue router is unable to locate a route.
      */
     export default {
-        name: 'NotFound'
+        name: 'NotFound',
+        data () {
+            return {
+                ghostMessage: '404'
+            };
+        }
     };
 </script>
 
@@ -49,17 +57,61 @@
     }
 
     #notFoundContainer {
-        .fr-code {
-            font-size: 52px;
+        .fr-ghost, .fr-shadow  {
+            animation: nudge 5s linear infinite alternate;
+            cursor: pointer;
+        }
+
+        .fr-speech-bubble {
+            animation: nudge 5s linear infinite alternate;
+            font-size: 20px;
             font-weight: 300;
-        }
+            background: #fff;
+            border: 1px solid #a7a7a7;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            -webkit-box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+            line-height: 1.3;
+            margin: 0 auto 15px;
+            max-width: 110px;
+            padding: 15px;
+            position: relative;
+            right:70px;
 
-        .fr-ghost {
-            animation: nudge 5s linear infinite alternate;
-        }
+            p {
+                margin-bottom: 10px;
 
-        .fr-shadow {
-            animation: nudge 5s linear infinite alternate;
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+            }
+
+            .fr-speech-arrow {
+                border-left: 21px solid transparent;
+                border-top: 20px solid rgba(0, 0, 0, 0.2);
+                bottom: -25px;
+                position: absolute;
+                right: 15px;
+
+                &::before {
+                    border-left: 23px solid transparent;
+                    border-top: 23px solid #fff;
+                    bottom: 2px;
+                    content: "";
+                    position: absolute;
+                    right: 5px;
+                }
+
+                &::after {
+                    border-left: 21px solid transparent;
+                    border-top: 21px solid #fff;
+                    bottom: 4px;
+                    content: "";
+                    position: absolute;
+                    right: 6px;
+                }
+            }
         }
     }
 </style>
