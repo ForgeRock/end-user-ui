@@ -1,18 +1,4 @@
 import Router from 'vue-router';
-import AccountClaiming from '@/components/selfservice/registration/AccountClaiming';
-import Dashboard from '@/components/dashboard';
-import EditResource from '@/components/access/EditResource';
-import ForgotUsername from '@/components/selfservice/forgotusername';
-import ListResource from '@/components/access';
-import Login from '@/components/Login';
-import NotFound from '@/components/NotFound';
-import OAuthReturn from '@/components/OAuthReturn';
-import PasswordReset from '@/components/selfservice/passwordreset';
-import Profile from '@/components/profile';
-import ProgressiveProfile from '@/components/selfservice/progressiveprofile';
-import Registration from '@/components/selfservice/registration';
-import Sharing from '@/components/uma';
-
 // import Styleguide from '../../styleguide/Styleguide';
 /**
  * Available toolbar configuration
@@ -26,19 +12,19 @@ export default new Router({
         },
         {
             path: '/handleOAuth/:amData',
-            component: OAuthReturn,
+            component: () => import('@/components/OAuthReturn'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/oauthReturn',
-            component: OAuthReturn,
+            component: () => import('@/components/OAuthReturn'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/login',
             name: 'Login',
             alias: ['/_=_'], // Need alias for catching Facebook odd oAuth return
-            component: Login,
+            component: () => import('@/components/Login'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
             beforeEnter: (to, from, next) => {
                 /* istanbul ignore next */
@@ -53,25 +39,25 @@ export default new Router({
             path: '/profile',
             name: 'Profile',
             props: true,
-            component: Profile,
+            component: () => import('@/components/profile'),
             meta: { authenticate: true }
         },
         {
             path: '/list/:resourceType/:resourceName',
             name: 'ListResource',
-            component: ListResource,
+            component: () => import('@/components/access'),
             meta: { authenticate: true }
         },
         {
             path: '/edit/:resourceType/:resourceName/:resourceId',
             name: 'EditResource',
-            component: EditResource,
+            component: () => import('@/components/access/EditResource'),
             meta: { authenticate: true }
         },
         {
             path: '/dashboard',
             name: 'Dashboard',
-            component: Dashboard,
+            component: () => import('@/components/dashboard'),
             meta: { authenticate: true },
             beforeEnter: (to, from, next) => {
                 /* istanbul ignore next */
@@ -87,57 +73,57 @@ export default new Router({
         {
             path: '/registration',
             name: 'Registration',
-            component: Registration,
+            component: () => import('@/components/selfservice/registration'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
             props: true
         },
         {
             path: '/accountClaiming',
             name: 'AccountClaiming',
-            component: AccountClaiming,
+            component: () => import('@/components/selfservice/registration/AccountClaiming'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
             props: true
         },
         {
             path: '/registration/:queryParams',
             name: 'RegistrationEmailValidation',
-            component: Registration,
+            component: () => import('@/components/selfservice/registration'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/forgotusername',
             name: 'ForgotUsername',
-            component: ForgotUsername,
+            component: () => import('@/components/selfservice/forgotusername'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/passwordreset',
             name: 'PasswordReset',
-            component: PasswordReset,
+            component: () => import('@/components/selfservice/passwordreset'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/passwordreset/:queryParams',
             name: 'PasswordResetForm',
-            component: PasswordReset,
+            component: () => import('@/components/selfservice/passwordreset'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/profilecompletion',
             name: 'ProgressiveProfileForm',
-            component: ProgressiveProfile,
+            component: () => import('@/components/selfservice/progressiveprofile'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/profilecompletion/:profileProcess',
             name: 'ProgressiveProfileInitiate',
-            component: ProgressiveProfile,
+            component: () => import('@/components/selfservice/progressiveprofile'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
             path: '/sharing',
             name: 'Sharing',
-            component: Sharing,
+            component: () => import('@/components/uma'),
             meta: {
                 authenticate: true
             }
@@ -152,7 +138,7 @@ export default new Router({
         */
         {
             path: '*',
-            component: NotFound,
+            component: () => import('@/components/NotFound'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         }
     ]

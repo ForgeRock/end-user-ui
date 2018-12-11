@@ -32,15 +32,6 @@
 
 <script>
     import _ from 'lodash';
-    import AccountControls from '@/components/profile/AccountControls';
-    import AccountSecurity from '@/components/profile/AccountSecurity';
-    import EditPersonalInfo from '@/components/profile/EditPersonalInfo';
-    import Preferences from '@/components/profile/Preferences';
-    import TrustedDevices from '@/components/profile/TrustedDevices';
-    import AuthorizedApplications from '@/components/profile/AuthorizedApplications';
-    import Consent from '@/components/profile/Consent';
-    import SocialIdentities from '@/components/profile/SocialIdentities';
-
     /**
      * @description Controlling component for profile management (changing password, KBA, edit profile, social management etc.)
      *
@@ -57,14 +48,14 @@
             }
         },
         components: {
-            'fr-account-controls': AccountControls,
-            'fr-account-security': AccountSecurity,
-            'fr-edit-personal-info': EditPersonalInfo,
-            'fr-preferences': Preferences,
-            'fr-trusted-devices': TrustedDevices,
-            'fr-authorized-applications': AuthorizedApplications,
-            'fr-consent': Consent,
-            'fr-social-identities': SocialIdentities
+            'fr-account-controls': () => import('@/components/profile/AccountControls'),
+            'fr-account-security': () => import('@/components/profile/AccountSecurity'),
+            'fr-edit-personal-info': () => import('@/components/profile/EditPersonalInfo'),
+            'fr-preferences': () => import('@/components/profile/Preferences'),
+            'fr-trusted-devices': () => import('@/components/profile/TrustedDevices'),
+            'fr-authorized-applications': () => import('@/components/profile/AuthorizedApplications'),
+            'fr-consent': () => import('@/components/profile/Consent'),
+            'fr-social-identities': () => import('@/components/profile/SocialIdentities')
         },
         mounted () {
             if (this.openProfile) {

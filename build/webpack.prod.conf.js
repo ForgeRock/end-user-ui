@@ -32,6 +32,7 @@ const webpackConfig = merge(baseWebpackConfig, {
   },
   plugins: [
     new CleanWebpackPlugin(['dist']),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new GitRevisionPlugin(),
 
       // http://vuejs.github.io/vue-loader/en/workflow/production.html
