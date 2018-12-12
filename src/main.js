@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
         document.body.className = (document.body.className + to.meta.bodyClass).trim();
     }
 
-    if (_.has(to, 'meta.authenticate')) {
+    if (_.has(to, 'meta.authenticate') && to.meta.authenticate === true) {
         if (_.isNull(UserStore.state.userId)) {
             let tempHeaders = _.extend({
                     'content-type': 'application/json',
