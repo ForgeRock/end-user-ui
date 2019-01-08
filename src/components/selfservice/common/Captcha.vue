@@ -16,6 +16,8 @@
      * @description Selfservice stage for multiple selfservice flows, displays a google captcha
      *
      **/
+    import _ from 'lodash';
+
     export default {
         name: 'Captcha',
         props: {
@@ -35,7 +37,7 @@
         methods: {
             loadRecaptcha () {
                 /* istanbul ignore next */
-                if (this.selfServiceDetails.requirements.properties.response.recaptchaSiteKey || this.selfServiceDetails.requirements.properties.response.recaptchaSiteKey.length === 0) {
+                if (_.isUndefined(this.selfServiceDetails.requirements.properties.response.recaptchaSiteKey) || this.selfServiceDetails.requirements.properties.response.recaptchaSiteKey.length === 0) {
                     this.displayNotification('error', this.$t('pages.selfservice.captchaError'));
                 } else {
                     setTimeout(() => {
