@@ -13,7 +13,9 @@
 
         <template v-if="notifications.length > 0">
             <div class="scrollbox" is="transition-group" name="notification-list">
-                <div  v-for="(notification, index) in notifications" :class="[{ 'border-bottom': (index + 1) < notifications.length }, 'dropdown-item', 'py-3', 'fr-notification-item']" :key="notification._id">
+                <div  v-for="(notification, index) in notifications" :class="[
+                `${notification.notificationType}-notification`,
+                { 'border-bottom': (index + 1) < notifications.length }, 'dropdown-item', 'py-3', 'fr-notification-item']" :key="notification._id">
                     <div class="media">
                         <div class="media-body">
                             <h6 class="my-0">{{notification.message}}</h6>
@@ -43,6 +45,12 @@
 
     /**
      * @description Display for system notifications for the logged in user
+     *
+     * notificationType supported:
+     * danger
+     * warning
+     * success
+     * info
      *
      * @fires GET /managed/resourceName/ID?_fields=_notifications/* - Retrieve all notifications for a specific resource
      * @fires DELETE /internal/notification - Remove one specific notification based on the notifications ID
@@ -151,17 +159,39 @@
         .fr-notification-item {
             transition: opacity .5s;
             width: 275px;
+            border-bottom: inherit;
+
+            &.info-notification {
+                border-left: solid 4px $primary;
+            }
+
+            &.success-notification {
+                border-left: solid 4px $success;
+            }
+
+            &.danger-notification {
+                border-left: solid 4px $danger;
+            }
+
+            &.warning-notification {
+                border-left: solid 4px $warning;
+            }
+
+            &.fr-no-notifications {
+                border-bottom: 0;
+            }
         }
 
         .badge-danger {
             position: absolute;
             margin-left: -20px;
-            vertical-align:super;
+            vertical-align: super;
         }
 
         .dropdown-menu {
             right: auto;
             left: -165px;
+            padding-bottom: 0;
 
             .scrollbox {
                 max-height: 14.1875rem;
