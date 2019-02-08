@@ -106,7 +106,7 @@ export default
             },
             dashboard: {
                 noWidget: 'No Widgets Available',
-                noWidgetSubText: 'Don\'t worry, you still have a <a href="/#/profile">profile</a>.',
+                noWidgetSubText: 'Don\'t worry, you still have a <a href="#/profile">profile</a>.',
                 widgets: {
                     welcome: {
                         greeting: 'Hello',
