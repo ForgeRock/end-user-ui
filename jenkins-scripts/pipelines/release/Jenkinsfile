@@ -108,6 +108,11 @@ timestamps {
         releaseBuild.setAndPushNextDevelopmentVersionNumber()
       }
 
+      stage('Build and push Docker image') {
+        stageErrorMessage = 'Docker image creation failed, please check the console output'
+        releaseBuild.mvn("-B docker:build docker:push")
+      }
+
       stage ('Final notification') {
         currentBuild.result = 'SUCCESS'
         releaseBuild.setBitbucketBuildStatus(commitShaForNotifications) // send an additional status for the 'release' commit

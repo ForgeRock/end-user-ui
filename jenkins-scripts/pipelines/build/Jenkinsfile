@@ -12,6 +12,8 @@ timestamps {
 
       checkout scm
 
+      ENDUSER_VERSION = readMavenPom(file: 'pom.xml').version
+
       def jobLocation = "${env.WORKSPACE}/jenkins-scripts/pipelines/build"
 
       if (isPR()) {

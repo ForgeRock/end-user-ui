@@ -24,6 +24,7 @@
 - [Deployment](#deployment)
 - [Theming](#theming)
 - [Build command summary](#build-command-summary)
+- [Build source code and Docker images using Maven](#build-using-maven)
 - [Browser support](#browser-support)
 - [Common questions](#common-questions)
 
@@ -208,6 +209,35 @@ npm run build --theme=red
 
 # run all tests
 npm test
+```
+
+A `Dockerfile` is provided that bundles the contents of the `dist/` directory,
+and a `nginx.conf` file to run the application using [NGINX](https://www.nginx.com/).
+
+``` bash
+# build docker image with custom name/tag
+docker build -t custom/end-user-ui:custom-tag .
+```
+
+<a name="build-using-maven"></a>
+## Build source code and Docker images using Maven
+
+This project's source code can be built using [Apache Maven](https://maven.apache.org/)
+and Docker images can be created using the [Fabric8 Docker Maven Plugin](https://dmp.fabric8.io/).
+
+``` bash
+# build all source code and output result to dist/ directory
+mvn clean install
+
+# build docker image using default settings
+mvn docker:build
+
+# build and push docker image with custom name/registry/tags
+mvn docker:build docker:push \
+  -Ddocker.name=custom/end-user-ui \
+  -Ddocker.push.registry=custom.bintray.io \
+  -Ddocker.tags.0=custom-tag \
+  -Ddocker.tags.1=other-tag
 ```
 
 <a name="browser-support"></a>

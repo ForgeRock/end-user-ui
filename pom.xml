@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright 2018 ForgeRock AS. All Rights Reserved
+  Copyright 2018-2019 ForgeRock AS. All Rights Reserved
 
   Use of this code requires a commercial software license with ForgeRock AS.
   or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.
@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.forgerock</groupId>
         <artifactId>forgerock-parent</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.2</version>
     </parent>
 
 		<groupId>org.forgerock.openidm</groupId>
@@ -24,6 +24,10 @@
         <frontendMavenPlugin.version>1.6</frontendMavenPlugin.version>
         <node.version>v9.5.0</node.version>
         <npm.version>5.6.0</npm.version>
+        <!-- properties read by docker-maven-plugin -->
+        <docker.push.registry>forgerock-docker-public.bintray.io</docker.push.registry>
+        <docker.imagePropertyConfiguration>override</docker.imagePropertyConfiguration>
+        <docker.source.dir>./</docker.source.dir>
     </properties>
 
 		<repositories>
@@ -152,6 +156,48 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--
+             ! Build Docker image for IDM End-User UI.
+             ! (1) mvn clean install
+             ! (2) start Docker environment
+             ! (3) mvn docker:build
+             !
+             ! Run it locally to quickly test:
+             !     docker run -t -i -p 8080:8080 forgerock/end-user-ui:7.0.0-SNAPSHOT
+             !
+             ! Open shell prompt in the running container:
+             !     docker ps
+             !     docker exec -it cd731efbd4a3 bash
+             !
+             ! Example of building and pushing the Docker image with a custom image name and registry:
+             !     mvn docker:build docker:push \
+             !         -Ddocker.name=custom/end-user-ui -Ddocker.push.registry=custom.bintray.io
+             !-->
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.28.0</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>forgerock/end-user-ui</name>
+                            <build>
+                                <dockerFile>Dockerfile</dockerFile>
+                                <!--
+                                 ! Tags can be added during docker:build where .0 is index 0 in the array:
+                                 !
+                                 ! -Ddocker.tags.0=my-custom-tag
+                                 !-->
+                                <tags>
+                                    <tag>${project.version}</tag>
+                                </tags>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>com.forgerock.release</groupId>
                 <artifactId>release-engineering-maven-plugin</artifactId>

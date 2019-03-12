@@ -54,6 +54,24 @@ def build() {
       }
     }
 
+    stage ('Build and push Docker image') {
+
+      stageErrorMessage = 'Docker image creation failed, please check the console output'
+
+      def versionPrefix = ENDUSER_VERSION.substring(0, ENDUSER_VERSION.lastIndexOf("-")) // e.g. '6.0.0'
+
+      withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
+               "MAVEN_OPTS=${mavenBuildOptions}",
+               "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
+
+        // The *-SNAPSHOT tag will be created by default, and comes from the project version provided to Maven
+        sh """mvn -B docker:build docker:push \
+            -Ddocker.tags.0=${versionPrefix}-postcommit-latest \
+            -Ddocker.tags.1=${versionPrefix}-${SHORT_GIT_COMMIT}
+          """
+      }
+    }
+
     currentBuild.result = 'SUCCESS'
 
     // Send a 'build is back to normal' notification if the previous build was not good
