@@ -108,9 +108,9 @@
         created () {
             /* istanbul ignore next */
             this.getRequestService()
-                .post('consent?_action=getConsentMappings')
+                .get(`consent?_queryFilter=/source eq "${this.$root.userStore.state.managedResource}"`)
                 .then(({data}) => {
-                    this.consentableMappings = data;
+                    this.consentableMappings = data.result;
                 });
         },
         methods: {
