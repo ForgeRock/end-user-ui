@@ -91,7 +91,8 @@
         },
         props: {
             schema: { type: Object, required: true },
-            profile: { type: Object, required: true }
+            profile: { type: Object, required: true },
+            autoOpen: { type: Boolean, required: false, default: false }
         },
         data () {
             return {
@@ -99,6 +100,11 @@
                 originalFormFields: [],
                 title: this.$t('pages.profile.editProfile.userDetailsTitle')
             };
+        },
+        mounted () {
+            if (this.autoOpen) {
+                this.$root.$emit('bv::show::modal', 'userDetailsModal');
+            }
         },
         methods: {
             generateFormFields () {

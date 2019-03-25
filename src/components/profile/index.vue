@@ -11,7 +11,7 @@
                     </b-button>
                 </b-card>
 
-                <fr-edit-personal-info @updateProfile="updateProfile" :schema="schema" :profile="profile"></fr-edit-personal-info>
+                <fr-edit-personal-info :autoOpen="openProfile" @updateProfile="updateProfile" :schema="schema" :profile="profile"></fr-edit-personal-info>
             </b-col>
             <b-col class="detailsCol" lg="8">
                 <b-tabs>
@@ -56,11 +56,6 @@
             'fr-authorized-applications': () => import('@/components/profile/AuthorizedApplications'),
             'fr-consent': () => import('@/components/profile/Consent'),
             'fr-social-identities': () => import('@/components/profile/SocialIdentities')
-        },
-        mounted () {
-            if (this.openProfile) {
-                this.$refs.editProfileButton.click();
-            }
         },
         computed: {
             fullName () {
