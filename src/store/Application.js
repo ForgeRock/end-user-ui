@@ -8,6 +8,11 @@ import _ from 'lodash';
  *      @param {boolean} registration - Flag to allow the UI to know the registration feature is available
  *      @param {object} authHeaders - Request headers needed for authenticated requests in fullStack mode
  *      @param {object} amDataEndpoints - AM endpoints required for fullStack
+ *      @param {string} idmBaseURL - Location of IDM
+ *      @param {string} loginURL - If platformMode is true then an external login/selfservice URL needs to be provided if there is no token
+ *      @param {boolean} platformMode - Tells enduser whether it should expect both IDM and AM or just an IDM only environment
+ *      @param {string} theme - Current theme set for the application
+ *      @param {string} idmClientID - IDM client ID used for platform calls in conjunction with AM
  */
 export default {
     state: {
@@ -17,7 +22,39 @@ export default {
         registration: false,
         authHeaders: null,
         amDataEndpoints: null,
-        loginRedirect: null
+        loginRedirect: null,
+        amBaseURL: null,
+        idmBaseURL: '/openidm',
+        loginURL: null,
+        platformMode: false,
+        theme: 'default',
+        idmClientID: null
+    },
+
+    setEnvironment (env) {
+        if (env.amURL) {
+            this.state.amBaseURL = env.amURL;
+        }
+
+        if (env.idmURL) {
+            this.state.idmBaseURL = env.idmURL;
+        }
+
+        if (env.platformMode) {
+            this.state.platformMode = env.platformMode;
+        }
+
+        if (env.loginURL) {
+            this.state.loginURL = env.loginURL;
+        }
+
+        if (env.theme) {
+            this.state.theme = env.theme;
+        }
+
+        if (env.idmClientID) {
+            this.state.idmClientID = env.idmClientID;
+        }
     },
 
     setAmDataEndpointsAction (amDataEndpoints) {

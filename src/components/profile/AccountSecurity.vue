@@ -1,7 +1,10 @@
 <template>
     <fr-list-group :title="$t('pages.profile.accountSecurity.title')" :subtitle="$t('pages.profile.accountSecurity.subtitle')">
 
-        <fr-edit-password @updateProfile="sendUpdateProfile"></fr-edit-password>
+        <!--
+            UI check for platform, if platform need to load a different social based component
+        -->
+        <fr-edit-password v-if="$root.applicationStore.state.platformMode === false" @updateProfile="sendUpdateProfile"></fr-edit-password>
         <fr-edit-kba v-if="isOnKBA && $root.userStore.state.internalUser === false" :kbaData="kbaData" @updateKBA="sendUpdateKBA"></fr-edit-kba>
 
     </fr-list-group>

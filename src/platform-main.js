@@ -13,6 +13,8 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 import ToggleButton from 'vue-js-toggle-button';
 import PromisePoly from 'es6-promise';
+import AppAuthHelper from 'appauthhelper';
+import SessionCheck from 'oidcsessioncheck';
 
 // Turn off production warning messages
 Vue.config.productionTip = false;
@@ -27,6 +29,7 @@ PromisePoly.polyfill();
   JS: this.$t("pages.resources.externalResources")
  */
 Vue.use(VueI18n);
+
 // Setup router
 Vue.use(Router);
 
@@ -38,30 +41,12 @@ router.beforeEach((to, from, next) => {
         document.body.className = (document.body.className + to.meta.bodyClass).trim();
     }
 
-    if (_.has(to, 'meta.authenticate') && to.meta.authenticate === true) {
+    if (_.has(to, 'meta.authenticate')) {
         if (_.isNull(UserStore.state.userId)) {
             let tempHeaders = _.extend({
-                    'content-type': 'application/json',
-                    'cache-control': 'no-cache',
-                    'x-requested-with': 'XMLHttpRequest'
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
                 }, ApplicationStore.state.authHeaders || {}),
-                amLogin = false,
                 authInstance;
-
-            /*
-                If we are in working with OpenAM to prevent extra redirects and timeouts we have to catch
-                the session right here and configure the appropriate headers
-             */
-            if (sessionStorage.getItem('resubmitDataStoreToken') && sessionStorage.getItem('amToken')) {
-                tempHeaders = {
-                    'X-OpenIDM-NoSession': 'false',
-                    'X-OpenIDM-OAuth-Login': 'true',
-                    'X-OpenIDM-DataStoreToken': sessionStorage.getItem('amToken'),
-                    'X-Requested-With': 'XMLHttpRequest'
-                };
-
-                amLogin = true;
-            }
 
             authInstance = axios.create({
                 baseURL: idmContext,
@@ -70,63 +55,31 @@ router.beforeEach((to, from, next) => {
             });
 
             authInstance.post('/authentication?_action=login').then((userDetails) => {
-                /*
-                    Similar to oauthReturn we need to manipulate the correct headers for open AM here as well (if not the UI gets into an odd state where it will
-                    randomly go back to openAM to restore its session since the existing JWT returned from IDM has timed out.
-
-                    This is not ideal, but to create the least painful UI experience this is what we have to do for now.
-                 */
-                if (amLogin) {
-                    ApplicationStore.setAuthHeadersAction({
-                        'X-OpenIDM-OAuth-Login': 'true',
-                        'X-OpenIDM-DataStoreToken': sessionStorage.getItem('amToken'),
-                        'X-Requested-With': 'XMLHttpRequest'
-                    });
-                }
-
                 UserStore.setUserIdAction(userDetails.data.authorization.id);
                 UserStore.setManagedResourceAction(userDetails.data.authorization.component);
                 UserStore.setRolesAction(userDetails.data.authorization.roles);
 
-                // Check for progressive profiling.
-                if (
-                    _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
-                    !_.isNull(userDetails.data.authorization.requiredProfileProcesses) &&
-                    userDetails.data.authorization.requiredProfileProcesses.length > 0
-                ) {
-                    let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
+                axios.all([
+                    authInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
+                    authInstance.post(`privilege?_action=listPrivileges`),
+                    authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, privilege, schema) => {
+                        UserStore.setProfileAction(profile.data);
+                        UserStore.setSchemaAction(schema.data);
+                        UserStore.setAccess(privilege.data);
 
-                    next(`/profileCompletion/${profileProcess}`);
-                } else {
-                    axios.all([
-                        authInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
-                        authInstance.post(`privilege?_action=listPrivileges`),
-                        authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, privilege, schema) => {
-                            UserStore.setProfileAction(profile.data);
-                            UserStore.setSchemaAction(schema.data);
-                            UserStore.setAccess(privilege.data);
-
-                            next();
-                        }));
-                }
+                        next();
+                    }));
             },
-            () => {
-                // Recheck class in case of double login load using from location
-                document.body.className = '';
+                () => {
+                    // Recheck class in case of double login load using from location
+                    document.body.className = '';
 
-                if (_.has(from, 'meta.bodyClass')) {
-                    document.body.className = (document.body.className + from.meta.bodyClass).trim();
-                }
+                    if (_.has(from, 'meta.bodyClass')) {
+                        document.body.className = (document.body.className + from.meta.bodyClass).trim();
+                    }
 
-                if (to.name !== 'Login') {
-                    ApplicationStore.setLoginRedirect({
-                        name: to.name,
-                        params: to.params
-                    });
-                }
-
-                next({name: 'Login'});
-            });
+                    next({name: 'Login'});
+                });
         } else {
             next();
         }
@@ -204,6 +157,7 @@ Vue.mixin({
             }
 
             headers = _.extend(headers, this.$root.applicationStore.state.authHeaders || {});
+            headers['Authorization'] = 'Bearer ' + sessionStorage.getItem('accessToken');
 
             instance = axios.create({
                 baseURL: baseURL,
@@ -215,12 +169,6 @@ Vue.mixin({
                 return response;
             }, (error) => {
                 if (error.response && error.response.data && error.response.data.code === 401) {
-                    if (this.$route.name !== 'Login') {
-                        ApplicationStore.setLoginRedirect({
-                            name: this.$route.name,
-                            params: this.$route.params
-                        });
-                    }
                     this.$router.push({name: 'Login'});
 
                     return Promise.reject(error);
@@ -237,9 +185,7 @@ Vue.mixin({
         // Headers used for oauth requests and selfservice
         getAnonymousHeaders: function () {
             let headers = this.$root.applicationStore.state.authHeaders || {
-                'X-OpenIDM-NoSession': true,
-                'X-OpenIDM-Password': 'anonymous',
-                'X-OpenIDM-Username': 'anonymous'
+                'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
             };
 
             return headers;
@@ -255,47 +201,7 @@ Vue.mixin({
         },
         // Log a user out of their existing session (both normal and fullstack)
         logoutUser: function () {
-            /* istanbul ignore next */
-            let idmInstance = this.getRequestService({
-                headers: this.getAnonymousHeaders()
-            });
-
-            /* istanbul ignore next */
-            idmInstance.post('/authentication?_action=logout').then((response) => {
-                this.$root.userStore.clearStoreAction();
-
-                /*
-                    In case of oauth + openAM we should always make sure these session variables are cleared on logout
-                 */
-                sessionStorage.removeItem('amToken');
-                sessionStorage.removeItem('resubmitDataStoreToken');
-                this.$root.applicationStore.clearAuthHeadersAction();
-                this.$root.applicationStore.clearLoginRedirect();
-
-                this.$router.push({name: 'Login'});
-            });
-        },
-        // Check if progressive profile is needed
-        progressiveProfileCheck (userDetails, continueLogin, updateApiType) {
-            if (
-                _.has(userDetails, 'data.authorization.requiredProfileProcesses') &&
-                !_.isNull(userDetails.data.authorization.requiredProfileProcesses) &&
-                userDetails.data.authorization.requiredProfileProcesses.length > 0
-            ) {
-                let profileProcess = userDetails.data.authorization.requiredProfileProcesses[0].split('/')[1];
-
-                if (updateApiType) {
-                    this.apiType = profileProcess;
-                }
-
-                this.$router.push(`/profileCompletion/${profileProcess}`);
-                // If we update the apiType we need to reload the selfServiceDetails with the fresh info.
-                if (updateApiType) {
-                    this.loadData();
-                }
-            } else {
-                continueLogin();
-            }
+            window.logout();
         },
         // One location for checking and redirecting a completed login for s user
         completeLogin () {
@@ -305,16 +211,6 @@ Vue.mixin({
             } else {
                 this.$router.push('/');
             }
-        },
-        // Encode characters that cannot be used in browser request-header values
-        encodeRFC5987IfNecessary: function (headerValue) {
-            /* istanbul ignore next */
-            let encoded = encodeURIComponent(headerValue)
-                .replace(/['()]/g, escape)
-                .replace(/\*/g, '%2A')
-                .replace(/%(?:7C|60|5E)/g, unescape);
-            /* istanbul ignore next */
-            return encoded === headerValue ? headerValue : "UTF-8''" + encoded;
         }
     }
 });
@@ -327,13 +223,9 @@ var startApp = function () {
             baseURL: idmContext,
             timeout: 5000,
             headers: {
-                'X-OpenIDM-NoSession': true,
-                'X-OpenIDM-Password': 'anonymous',
-                'X-OpenIDM-Username': 'anonymous'
+                'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
             }
         });
-
-        ApplicationStore.setEnvironment(process.env);
 
         axios.all([
             idmInstance.get('/info/uiconfig'),
@@ -367,6 +259,72 @@ var startApp = function () {
                 applicationStore: ApplicationStore
             }
         });
+    },
+    addAppAuth = () => {
+        var AM_URL = ApplicationStore.state.amBaseURL,
+            commonSettings = {
+                clientId: ApplicationStore.state.idmClientID,
+                authorizationEndpoint: AM_URL + '/oauth2/authorize'
+            },
+            redirectToLogin = () => {
+                window.location.href = ApplicationStore.state.loginURL;
+            };
+
+        AppAuthHelper.init({
+            clientId: commonSettings.clientId,
+            authorizationEndpoint: commonSettings.authorizationEndpoint,
+            scopes: 'openid',
+            tokenEndpoint: AM_URL + '/oauth2/access_token',
+            revocationEndpoint: AM_URL + '/oauth2/token/revoke',
+            endSessionEndpoint: AM_URL + '/oauth2/connect/endSession',
+            redirectUri: window.location.origin + '/appAuthHelperRedirect.html',
+            interactionRequiredHandler: function () {
+                redirectToLogin();
+            },
+            tokensAvailableHandler: function (claims) {
+                // this function is called every time the tokens are either
+                // originally obtained or renewed
+                var sessionCheck = new SessionCheck({
+                    clientId: commonSettings.clientId,
+                    opUrl: commonSettings.authorizationEndpoint,
+                    redirectUri: window.location.origin + '/sessionCheck.html',
+                    subject: claims.sub,
+                    invalidSessionHandler: function () {
+                        AppAuthHelper.logout().then(function () {
+                            redirectToLogin();
+                        });
+                    },
+                    cooldownPeriod: 5
+                });
+                // check the validity of the session immediately
+                sessionCheck.triggerSessionCheck();
+
+                // check every minute
+                setInterval(function () {
+                    sessionCheck.triggerSessionCheck();
+                }, 60000);
+                // check with every captured event
+                document.addEventListener('click', function () {
+                    sessionCheck.triggerSessionCheck();
+                });
+                document.addEventListener('keypress', function () {
+                    sessionCheck.triggerSessionCheck();
+                });
+
+                startApp();
+            }
+        });
+
+        // In this application, we want tokens immediately, before any user interaction is attempted
+        AppAuthHelper.getTokens();
+
+        // trigger logout from anywhere in the SPA by calling this global function
+        window.logout = function () {
+            AppAuthHelper.logout().then(function () {
+                redirectToLogin();
+            });
+        };
     };
 
-startApp();
+ApplicationStore.setEnvironment(process.env);
+addAppAuth();

@@ -6,6 +6,7 @@ const merge = require('webpack-merge')
 const baseWebpackConfig = require('./webpack.base.conf')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const portfinder = require('portfinder')
 
 const devWebpackConfig = merge(baseWebpackConfig, {
@@ -36,7 +37,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': require('../config/dev.env')
+      'process.env': require('../config/dev.env').generateVariables(process.env)
     }), 
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
@@ -49,6 +50,31 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     })
   ]
 })
+
+if (process.env.npm_config_platformMode) {
+    devWebpackConfig.plugins.push(new CopyWebpackPlugin([
+        {
+            from: 'node_modules/appauthhelper/appAuthHelperRedirect.html',
+            to: 'appAuthHelperRedirect.html',
+            toType: 'file'
+        },
+        {
+            from: 'node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js',
+            to: 'node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js',
+            toType: 'file'
+        },
+        {
+            from: 'node_modules/oidcsessioncheck/sessionCheck.html',
+            to: 'sessionCheck.html',
+            toType: 'file'
+        },
+        {
+            from: 'node_modules/oidcsessioncheck/sessionCheckFrame.js',
+            to: 'sessionCheckFrame.js',
+            toType: 'file'
+        }
+    ]))
+}
 
 module.exports = new Promise((resolve, reject) => {
   portfinder.basePort = process.env.PORT || config.dev.port

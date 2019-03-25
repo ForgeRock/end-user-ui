@@ -17,7 +17,11 @@
                 <b-tabs>
                     <b-tab :title="$t('pages.profile.settings')" active>
                         <fr-account-security @updateProfile="updateProfile" @updateKBA="updateKBA"></fr-account-security>
-                        <fr-social-identities v-if="$root.userStore.state.internalUser === false" :clientToken="clientToken" :linkedProvider="linkedProvider"></fr-social-identities>
+                        <!--
+                            UI check for platform, if platform need to load a different social based component
+                        -->
+                        <fr-social-identities v-if="$root.userStore.state.internalUser === false && $root.applicationStore.state.platformMode === false" :clientToken="clientToken" :linkedProvider="linkedProvider"></fr-social-identities>
+
                         <fr-authorized-applications v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-authorized-applications>
                         <fr-trusted-devices v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-trusted-devices>
                         <fr-preferences v-if="$root.userStore.state.internalUser === false" @updateProfile="updateProfile"></fr-preferences>

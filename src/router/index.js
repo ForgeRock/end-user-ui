@@ -1,4 +1,5 @@
 import Router from 'vue-router';
+import ApplicationStore from '../store/Application';
 // import Styleguide from '../../styleguide/Styleguide';
 /**
  * Available toolbar configuration
@@ -27,8 +28,9 @@ export default new Router({
             component: () => import('@/components/Login'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
             beforeEnter: (to, from, next) => {
-                /* istanbul ignore next */
-                if (window.location.search && window.location.search.match(/state|oauth_token/)) {
+                if (ApplicationStore.state.platformMode) {
+                    window.location = ApplicationStore.state.loginURL;
+                } else if (window.location.search && window.location.search.match(/state|oauth_token/)) {
                     next('/oauthReturn');
                 } else {
                     next();

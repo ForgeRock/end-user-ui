@@ -36,10 +36,16 @@ describe('AccountSecurity.vue', () => {
                     internalUser: true
                 }
             },
+            applicationStore = {
+                state: {
+                    platformMode: false
+                }
+            },
             wrapper = shallow(AccountSecurity, {
                 i18n,
                 mocks: {
-                    userStore
+                    userStore,
+                    applicationStore
                 }
             });
 
@@ -53,10 +59,16 @@ describe('AccountSecurity.vue', () => {
                         internalUser: true
                     }
                 },
+                applicationStore = {
+                    state: {
+                        platformMode: false
+                    }
+                },
                 wrapper = shallow(AccountSecurity, {
                     i18n,
                     mocks: {
-                        userStore
+                        userStore,
+                        applicationStore
                     }
                 });
 

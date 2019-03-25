@@ -11,7 +11,7 @@ function resolve (dir) {
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js'
+    app: process.env.npm_config_platformMode ? './src/platform-main.js' : './src/main.js'
   },
   output: {
     path: config.build.assetsRoot,

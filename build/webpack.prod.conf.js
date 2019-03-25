@@ -14,7 +14,7 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
 const env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
-  : require('../config/prod.env')
+  : require('../config/prod.env').generateVariables(process.env)
 
 const webpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -144,6 +144,32 @@ if (config.build.productionGzip) {
       minRatio: 0.8
     })
   )
+}
+
+if (env.npm_config_platformMode) {
+    console.log('platform detected...');
+    webpackConfig.plugins.push(new CopyWebpackPlugin([
+        {
+            from: 'node_modules/appauthhelper/appAuthHelperRedirect.html',
+            to: 'appAuthHelperRedirect.html',
+            toType: 'file'
+        },
+        {
+            from: 'node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js',
+            to: 'node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js',
+            toType: 'file'
+        },
+        {
+            from: 'node_modules/oidcsessioncheck/sessionCheck.html',
+            to: 'sessionCheck.html',
+            toType: 'file'
+        },
+        {
+            from: 'node_modules/oidcsessioncheck/sessionCheckFrame.js',
+            to: 'sessionCheckFrame.js',
+            toType: 'file'
+        }
+    ]))
 }
 
 if (config.build.bundleAnalyzerReport) {

@@ -5,13 +5,15 @@
   "author": "jason.browne <jason.browne@forgerock.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "cross-env webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev:platform": "cross-env npm_config_platformMode=true npm_config_idmClientID=test npm_config_amURL=test npm_config_idmURL=test npm_config_loginURL=localhost:8083 webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "unit:watch": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --auto-watch",
-    "test": "npm run unit",
+    "test": "npm_config_platformMode=false npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "build:platform": "cross-env npm_config_platformMode=true npm_config_idmClientID=test npm_config_amURL=test npm_config_idmURL=test npm_config_loginURL=localhost:8083 node build/build.js"
   },
   "dependencies": {
     "axios": "0.17.1",
@@ -26,7 +28,9 @@
     "vue-js-toggle-button": "1.2.3",
     "vue-notification": "1.3.4",
     "vue-router": "3.0.1",
-    "vue-spinner": "1.0.3"
+    "vue-spinner": "1.0.3",
+    "oidcsessioncheck": "0.0.4",
+    "appauthhelper": "0.0.2"
   },
   "devDependencies": {
     "@vue/test-utils": "1.0.0-beta.15",
