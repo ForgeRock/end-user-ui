@@ -38,6 +38,7 @@
 </template>
 
 <script>
+    import _ from 'lodash';
     import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
     import CenterCard from '@/components/utils/CenterCard';
     import axios from 'axios';
@@ -70,6 +71,10 @@
         mounted () {
             // In case account claiming is cancelled midway through this will clear the storage token
             localStorage.removeItem('accountClaimingToken');
+            // if there is already a session redirect to the home page
+            if (_.has(this.$root, 'userStore.state.userId')) {
+                this.$router.push('/');
+            }
         },
         methods: {
             submit () {
