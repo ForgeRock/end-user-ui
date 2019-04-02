@@ -19,6 +19,7 @@ export default {
         managedResource: null,
         roles: null,
         internalUser: false,
+        adminUser: false,
         profile: null,
         schema: null,
         access: [],
@@ -97,6 +98,10 @@ export default {
 
     setRolesAction (roles) {
         this.state.roles = _.clone(roles);
+
+        if (_.includes(this.state.roles, 'internal/role/openidm-admin')) {
+            this.state.adminUser = true;
+        }
     },
 
     clearRolesAction () {
@@ -122,6 +127,7 @@ export default {
         this.state.email = '';
         this.state.userName = '';
         this.state.internalUser = false;
+        this.state.adminUser = false;
         this.state.access = [];
     }
 };
