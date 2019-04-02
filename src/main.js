@@ -222,7 +222,8 @@ Vue.mixin({
                             params: this.$route.params
                         });
                     }
-                    this.$router.push({name: 'Login'});
+
+                    this.logoutUser();
 
                     return Promise.reject(error);
                 } else if (_.isUndefined(error.response)) {
@@ -274,6 +275,9 @@ Vue.mixin({
                 this.$root.applicationStore.clearLoginRedirect();
 
                 this.$router.push({name: 'Login'});
+            }, () => {
+                // if an error is thrown here reloading the page will clean up the state of the app
+                window.location.reload(true);
             });
         },
         // Check if progressive profile is needed
