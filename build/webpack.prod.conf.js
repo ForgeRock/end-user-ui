@@ -146,7 +146,7 @@ if (config.build.productionGzip) {
   )
 }
 
-if (env.npm_config_platformMode) {
+if (process.env.npm_config_platformMode) {
     console.log('platform detected...');
     webpackConfig.plugins.push(new CopyWebpackPlugin([
         {
