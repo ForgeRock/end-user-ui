@@ -84,7 +84,6 @@
                                    then immediately redirect to am's login. */
                                 if (provider.provider === 'OPENAM' && this.providers.length === 1) {
                                     if (!window.location.search && this.signin === true) {
-                                        sessionStorage.setItem('setAuthHeaders', true);
                                         this.goToIDP('OPENAM');
                                     } else {
                                         this.providers.splice((index - 1), 1);
