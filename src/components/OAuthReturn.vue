@@ -12,7 +12,7 @@
     import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
     import styles from '@/scss/main.scss';
     import _ from 'lodash';
-    
+
     /**
      * @description Return page used for oauth provider authentication. Will appropriately redirect a user to login or account claiming.
      *
@@ -99,12 +99,12 @@
                         });
                         socialLoginInstance.post('/authentication?_action=login')
                             .then((response) => {
-                                /* If setAuthHeaders is true we know this if fullStack mode.
+                                /* If amDataEndpoints exist we know this if fullStack mode.
                                    We need to set the headers to be used on all this user's authenticated requests.
                                    Basically re-logging in on every request with a valid am token. We also need to
                                    grab the logoutUrl so we can use that to kill not only the idm session
                                    but also the am session. */
-                                if (sessionStorage.getItem('setAuthHeaders')) {
+                                if (_.has(this.$root.applicationStore.state, 'amDataEndpoints')) {
                                     this.$root.applicationStore.setAuthHeadersAction({
                                         'X-OpenIDM-OAuth-Login': 'true',
                                         'X-OpenIDM-DataStoreToken': dataStoreToken,
@@ -113,7 +113,6 @@
 
                                     sessionStorage.setItem('amToken', dataStoreToken);
                                     sessionStorage.setItem('resubmitDataStoreToken', 'true');
-                                    sessionStorage.removeItem('setAuthHeaders');
                                 }
 
                                 // Check for progressive profiling.
