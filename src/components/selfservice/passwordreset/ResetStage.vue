@@ -18,9 +18,7 @@
             <p>{{selfServiceDetails.error}}</p>
         </b-alert>
         <div class="mt-2">
-            <b-link href="#/passwordReset" @click="$router.go($router.currentRoute)">
-                {{$t("pages.selfservice.passwordReset.tryAgain")}}
-            </b-link>
+            <router-link action="" :to="{ path: '/passwordreset/'}">{{$t("pages.selfservice.passwordReset.tryAgain")}}</router-link>
         </div>
     </div>
 </template>
