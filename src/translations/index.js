@@ -25,7 +25,8 @@ export default
                 new: 'New',
                 yes: 'Yes',
                 no: 'No',
-                delete: 'Delete'
+                delete: 'Delete',
+                reset: 'Reset'
             },
             placeholders: {
                 password: 'Password',
