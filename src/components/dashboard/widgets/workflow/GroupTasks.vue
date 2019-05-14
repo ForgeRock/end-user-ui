@@ -3,7 +3,7 @@
         <fr-list-group :title="this.$t('pages.workflow.unassignedTasks')">
             <template v-if="!isEmpty(tasks)">
                 <transition-group name="fade" mode="out-in">
-                    <fr-list-item :collapsible="true" v-for="(taskDefinition, id) in tasks" :key="id" :ref="`collapse-${id}`" @shown="setShown(id)" @hidden="setHidden(id)">
+                    <fr-list-item :collapsible="true" v-for="(taskDefinition, id) in tasks" :key="`groupTask_${id}`" :ref="`collapse-${id}`" @shown="setShown(id)" @hidden="setHidden(id)">
                         <div slot="list-item-header" class="d-inline-flex w-100 media">
                             <div class="media-body align-self-center">
                                 <h6 class="mb-1 mt-2">{{taskDefinition.name}}</h6>
