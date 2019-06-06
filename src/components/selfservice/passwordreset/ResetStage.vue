@@ -18,7 +18,7 @@
             <p>{{selfServiceDetails.error}}</p>
         </b-alert>
         <div class="mt-2">
-            <router-link action="" :to="{ path: '/passwordreset/'}">{{$t("pages.selfservice.passwordReset.tryAgain")}}</router-link>
+            <a href="#/passwordreset" v-on:click="reloadPage">{{$t("pages.selfservice.passwordReset.tryAgain")}}</a>
         </div>
     </div>
 </template>
@@ -53,6 +53,10 @@ export default {
         },
         save () {
             this.$emit('advanceStage', this.getData());
+        },
+        reloadPage (event) {
+            event.preventDefault();
+            window.location.reload();
         }
     },
     watch: {
