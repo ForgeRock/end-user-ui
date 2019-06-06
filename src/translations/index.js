@@ -71,6 +71,7 @@ export default
                 'AT_LEAST_X_NUMBERS': 'Must have at least %{numNums} number(s)',
                 'CANNOT_CONTAIN_OTHERS': 'Must not share characters with %{disallowedFields}',
                 'VALID_EMAIL_ADDRESS_FORMAT': 'Invalid email format (example@example.com)',
+                'IS_NEW': 'Must not be the same as the previous %{historyLength} passwords',
                 'UNIQUE': '%{property} must be unique',
                 'test': 'succeed',
                 policyServiceError: {
