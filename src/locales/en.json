@@ -121,9 +121,10 @@
             "signIn": "Sign In",
             "newHere": "New here?",
             "createAccount": "Create an account",
-            "badPassword": "Sorry, that password isn't right.",
+            "badPassword": "Invalid username or password.",
             "weCanHelp": "We can help you",
             "recoverPassword": "recover your password.",
+            "recoverUsername": "recover your username.",
             "forgotUsername": "Forgot username?",
             "forgotPassword": "Forgot password?"
         },
