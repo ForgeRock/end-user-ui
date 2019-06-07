@@ -12,13 +12,13 @@
                 :showErrorState="false"
                 @input="$emit('input', $event)">
 
-                <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="policyFailures"></fr-policy-panel>
+                <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="defaultPolicyFailures || policyFailures"></fr-policy-panel>
             </fr-floating-label-input>
         </slot>
 
         <template v-else>
             <slot name="custom-input"></slot>
-            <fr-policy-panel :policies="policies" :policyFailures="policyFailures"></fr-policy-panel>
+            <fr-policy-panel :policies="policies" :policyFailures="defaultPolicyFailures || policyFailures"></fr-policy-panel>
         </template>
     </b-form-group>
 </template>
@@ -43,17 +43,25 @@ export default {
     },
     props: {
         policyApi: { required: true, type: String },
+        defaultPolicyFailures: { required: false, type: Array },
         value: String,
         label: String,
         exclude: {
             required: false,
             type: Array,
             default () {
+                let policyApi = this.policyApi;
                 return [
                     {
                         name: 'REQUIRED',
                         predicate (policyRequirements) {
                             return _.includes(policyRequirements, 'REQUIRED') && _.includes(policyRequirements, 'MIN_LENGTH');
+                        }
+                    },
+                    {
+                        name: 'IS_NEW',
+                        predicate (policyRequirements) {
+                            return policyApi === 'selfservice/registration';
                         }
                     },
                     'VALID_TYPE',
@@ -185,6 +193,9 @@ export default {
             // Create validation service call and bind to component scope.
             requestPolicyValidation = function (password) {
                 let data = formatPayload(password);
+
+                // remove existing defaultPolicyFailures
+                this.defaultPolicyFailures = null;
 
                 /* istanbul ignore next */
                 return policyService

@@ -6,7 +6,7 @@
     </div>
     <div v-else-if="typeof selfServiceDetails.error !== 'string'">
         <b-form @keyup.enter="save" @submit.prevent>
-                <fr-policy-password-input policyApi="selfservice/reset" v-model="password" name="password" :label="$t('pages.selfservice.passwordReset.newPassword')" ></fr-policy-password-input>
+                <fr-policy-password-input :defaultPolicyFailures="defaultPolicyFailures" policyApi="selfservice/reset" v-model="password" name="password" :label="$t('pages.selfservice.passwordReset.newPassword')" ></fr-policy-password-input>
             <b-button @click="save" :block="true" size="lg" variant="primary">
                 {{$t("pages.selfservice.passwordReset.changePassword")}}
             </b-button>
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { has, find, map } from 'lodash';
 import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
 
 /**
@@ -40,7 +41,8 @@ export default {
     },
     data () {
         return {
-            password: ''
+            password: '',
+            defaultPolicyFailures: null
         };
     },
     methods: {
@@ -51,6 +53,26 @@ export default {
         },
         save () {
             this.$emit('advanceStage', this.getData());
+        }
+    },
+    watch: {
+        selfServiceDetails: {
+            handler (val) {
+                /*
+                    If there is a change to selfServiceDetails it's probably because of a
+                    policy failure on password that could not be handled on the fly with
+                    "?_action=validateObject". Look for those failures here and send them to the
+                    PolicyPasswordInput via it's defaultPolicyFailures property.
+                */
+                if (has(val, 'requirements.error.detail.failedPolicyRequirements')) {
+                    let failedPolicy = find(val.requirements.error.detail.failedPolicyRequirements, { property: 'password' });
+
+                    if (failedPolicy && failedPolicy.policyRequirements) {
+                        this.defaultPolicyFailures = map(failedPolicy.policyRequirements, 'policyRequirement');
+                    }
+                }
+            },
+            deep: true
         }
     }
 };

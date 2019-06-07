@@ -35,7 +35,7 @@ describe('PasswordPolicyInput.vue', () => {
                 defaultExclude = wrapper.vm.exclude,
                 { predicate } = _.first(defaultExclude);
 
-            expect(defaultExclude.length).to.equal(3);
+            expect(defaultExclude.length).to.equal(4);
             expect(predicate(policyRequirements)).to.equal(true);
         });
     });
