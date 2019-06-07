@@ -5,14 +5,14 @@
 </template>
 
 <script>
-    /**
-     * @description Component for displaying error message for form fields
-     *
-     **/
-    export default {
-        name: 'Validation-Error',
-        props: ['validatorErrors', 'fieldName']
-    };
+/**
+ * @description Component for displaying error message for form fields
+ *
+ **/
+export default {
+    name: 'Validation-Error',
+    props: ['validatorErrors', 'fieldName']
+};
 </script>
 
 <style lang="scss" scoped></style>

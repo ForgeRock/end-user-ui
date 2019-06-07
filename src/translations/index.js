@@ -153,6 +153,9 @@ export default
                         title: 'Terms & Conditions',
                         singlePage: 'By clicking "Sign Up" you agree to our '
                     },
+                    userDetails: {
+                        userName: 'translated Name'
+                    },
                     consent: {
                         title: 'Privacy & Consent',
                         agreement: 'I agree'

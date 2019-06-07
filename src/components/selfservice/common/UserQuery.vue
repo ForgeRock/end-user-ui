@@ -19,36 +19,36 @@
 </template>
 
 <script>
-    import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
+import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
 
-    /**
-     * @description Selfservice stage for multiple selfservice flows, typically used with an email to locate a user in the system to continue on with further
-     * selfservice stages
-     *
-     **/
-    export default {
-        name: 'User-Query',
-        components: {
-            'fr-floating-label-input': FloatingLabelInput
-        },
-        props: {
-            apiType: { required: true }
-        },
-        data () {
+/**
+ * @description Selfservice stage for multiple selfservice flows, typically used with an email to locate a user in the system to continue on with further
+ * selfservice stages
+ *
+ **/
+export default {
+    name: 'User-Query',
+    components: {
+        'fr-floating-label-input': FloatingLabelInput
+    },
+    props: {
+        apiType: { required: true }
+    },
+    data () {
+        return {
+            mail: ''
+        };
+    },
+    methods: {
+        getData () {
             return {
-                mail: ''
+                queryFilter: `mail eq "${this.mail}"`
             };
         },
-        methods: {
-            getData () {
-                return {
-                    queryFilter: `mail eq "${this.mail}"`
-                };
-            },
-            save () {
-                /* istanbul ignore next */
-                this.$emit('advanceStage', this.getData());
-            }
+        save () {
+            /* istanbul ignore next */
+            this.$emit('advanceStage', this.getData());
         }
-    };
+    }
+};
 </script>

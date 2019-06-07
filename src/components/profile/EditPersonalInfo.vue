@@ -1,5 +1,5 @@
 <template>
-    <b-modal id="userDetailsModal" class="fr-full-screen" ref="fsModal" cancel-variant="outline-secondary" @show="setModal" @keydown.enter.native.prevent="saveForm">
+    <b-modal id="userDetailsModal" modal-class="fr-full-screen" ref="fsModal" cancel-variant="outline-secondary" @show="setModal" @keydown.enter.native.prevent="saveForm">
 
         <div slot="modal-header" class="d-flex w-100 h-100">
             <h5 class="modal-title align-self-center text-center">{{title}}</h5>
@@ -60,7 +60,7 @@
 
         <div slot="modal-footer" class="w-100">
             <div class="float-right">
-                <b-btn variant="outline-secondary" @click="hideModal">{{$t('common.form.cancel')}}</b-btn>
+                <b-btn variant="outline-secondary mr-2" @click="hideModal">{{$t('common.form.cancel')}}</b-btn>
                 <b-btn type="button" variant="primary" :disabled="$root.userStore.state.internalUser" @click="saveForm">{{$t('common.form.saveChanges')}}</b-btn>
             </div>
         </div>
@@ -68,123 +68,123 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import ValidationError from '@/components/utils/ValidationError';
-    import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
+import _ from 'lodash';
+import ValidationError from '@/components/utils/ValidationError';
+import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 
-    /**
-     * @description Displays a users profile, auto generates fields based off of resource schema. Currently only displays strings, numbers and booleans. In the case of a policy
-     * save error it will highlight the appropriate field and display a policy error. For custom profile changes (e.g. adding a dropdown) this would be the primary file to add these
-     * adjustments.
-     *
-     */
-    export default {
-        name: 'Edit-Personal-Info',
-        mixins: [
-            ResourceMixin
-        ],
-        components: {
-            'fr-validation-error': ValidationError
-        },
-        $_veeValidate: {
-            validator: 'new'
-        },
-        props: {
-            schema: { type: Object, required: true },
-            profile: { type: Object, required: true },
-            autoOpen: { type: Boolean, required: false, default: false }
-        },
-        data () {
-            return {
-                formFields: [],
-                originalFormFields: [],
-                title: this.$t('pages.profile.editProfile.userDetailsTitle')
-            };
-        },
-        mounted () {
-            if (this.autoOpen) {
-                this.$root.$emit('bv::show::modal', 'userDetailsModal');
-            }
-        },
-        methods: {
-            generateFormFields () {
-                let {order, properties, required} = this.schema,
-                    filteredOrder = _.filter(order, (propName) => {
-                        return properties[propName].viewable &&
+/**
+ * @description Displays a users profile, auto generates fields based off of resource schema. Currently only displays strings, numbers and booleans. In the case of a policy
+ * save error it will highlight the appropriate field and display a policy error. For custom profile changes (e.g. adding a dropdown) this would be the primary file to add these
+ * adjustments.
+ *
+ */
+export default {
+    name: 'Edit-Personal-Info',
+    mixins: [
+        ResourceMixin
+    ],
+    components: {
+        'fr-validation-error': ValidationError
+    },
+    $_veeValidate: {
+        validator: 'new'
+    },
+    props: {
+        schema: { type: Object, required: true },
+        profile: { type: Object, required: true },
+        autoOpen: { type: Boolean, required: false, default: false }
+    },
+    data () {
+        return {
+            formFields: [],
+            originalFormFields: [],
+            title: this.$t('pages.profile.editProfile.userDetailsTitle')
+        };
+    },
+    mounted () {
+        if (this.autoOpen) {
+            this.$root.$emit('bv::show::modal', 'userDetailsModal');
+        }
+    },
+    methods: {
+        generateFormFields () {
+            let { order, properties, required } = this.schema,
+                filteredOrder = _.filter(order, (propName) => {
+                    return properties[propName].viewable &&
                             properties[propName].userEditable &&
                             properties[propName].type !== 'array' &&
                             properties[propName].type !== 'object';
-                    }),
-                    formFields = _.map(filteredOrder, (name) => {
-                        return {
-                            name: name,
-                            key: name,
-                            title: properties[name].title,
-                            value: this.profile[name] || null,
-                            type: properties[name].type,
-                            required: _.includes(required, name)
-                        };
+                }),
+                formFields = _.map(filteredOrder, (name) => {
+                    return {
+                        name: name,
+                        key: name,
+                        title: properties[name].title,
+                        value: this.profile[name] || null,
+                        type: properties[name].type,
+                        required: _.includes(required, name)
+                    };
+                });
+
+            return formFields;
+        },
+        hideModal () {
+            this.$refs.fsModal.hide();
+        },
+        setModal () {
+            let formFields = this.generateFormFields();
+
+            this.formFields = formFields;
+            this.originalFormFields = _.cloneDeep(formFields);
+        },
+        saveForm () {
+            /* istanbul ignore next */
+            this.isValid().then((valid) => {
+                if (valid) {
+                    const idmInstance = this.getRequestService();
+                    let policyFields = {};
+
+                    _.each(this.formFields, (field) => {
+                        if (field.value !== null) {
+                            policyFields[field.name] = field.value;
+                        }
                     });
 
-                return formFields;
-            },
-            hideModal () {
-                this.$refs.fsModal.hide();
-            },
-            setModal () {
-                let formFields = this.generateFormFields();
-
-                this.formFields = formFields;
-                this.originalFormFields = _.cloneDeep(formFields);
-            },
-            saveForm () {
-                /* istanbul ignore next */
-                this.isValid().then((valid) => {
-                    if (valid) {
-                        const idmInstance = this.getRequestService();
-                        let policyFields = {};
-
-                        _.each(this.formFields, (field) => {
-                            if (field.value !== null) {
-                                policyFields[field.name] = field.value;
-                            }
-                        });
-
-                        idmInstance.post(`policy/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=validateObject`, policyFields).then((policyResult) => {
-                            if (policyResult.data.failedPolicyRequirements.length === 0) {
-                                this.$emit('updateProfile', this.generateUpdatePatch(this.originalFormFields, this.formFields));
-                                this.errors.clear();
-                                this.hideModal();
-                            } else {
-                                let generatedErrors = this.findPolicyError({
-                                    data: {
-                                        detail: {
-                                            failedPolicyRequirements: policyResult.data.failedPolicyRequirements
-                                        }
+                    idmInstance.post(`policy/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=validateObject`, policyFields).then((policyResult) => {
+                        if (policyResult.data.failedPolicyRequirements.length === 0) {
+                            this.$emit('updateProfile', this.generateUpdatePatch(this.originalFormFields, this.formFields));
+                            this.errors.clear();
+                            this.hideModal();
+                        } else {
+                            let generatedErrors = this.findPolicyError({
+                                data: {
+                                    detail: {
+                                        failedPolicyRequirements: policyResult.data.failedPolicyRequirements
                                     }
-                                }, this.formFields);
-
-                                this.errors.clear();
-
-                                if (generatedErrors.length > 0) {
-                                    _.each(generatedErrors, (generatedError) => {
-                                        if (generatedError.exists) {
-                                            this.errors.add(generatedError);
-                                        }
-                                    });
-                                } else {
-                                    this.displayNotification('error', this.$t('pages.profile.editProfile.failedProfileSave'));
                                 }
+                            }, this.formFields);
+
+                            this.errors.clear();
+
+                            if (generatedErrors.length > 0) {
+                                _.each(generatedErrors, (generatedError) => {
+                                    if (generatedError.exists) {
+                                        this.errors.add(generatedError);
+                                    }
+                                });
+                            } else {
+                                this.displayNotification('error', this.$t('pages.profile.editProfile.failedProfileSave'));
                             }
-                        });
-                    }
-                });
-            },
-            isValid () {
-                return this.$validator.validateAll();
-            }
+                        }
+                    });
+                }
+            });
+        },
+        isValid () {
+            return this.$validator.validateAll();
         }
-    };
+    }
+};
 </script>
 
 <style lang="scss">

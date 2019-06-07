@@ -8,35 +8,36 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import _ from 'lodash';
-    /**
-     * @description Component that will load an image and if the image fails to load it will display a fallback image rather then loading nothing
-     *
-     **/
-    export default {
-        name: 'Image-Fallback',
-        props: ['src', 'width', 'height', 'alt', 'fallback'],
-        data () {
-            return {
-                imageFound: false
-            };
-        },
-        mounted () {
-            /* istanbul ignore next */
-            if (!_.isNull(this.src) && !_.isUndefined(this.src) && this.src.length > 0) {
-                axios.get(`${this.src}`).then(({status}) => {
-                    this.imageFound = status === 200;
-                }).catch((error) => {
-                    if (error) {
-                        this.imageFound = false;
-                    }
-                });
-            } else {
-                this.imageFound = false;
-            }
+import _ from 'lodash';
+import axios from 'axios';
+
+/**
+ * @description Component that will load an image and if the image fails to load it will display a fallback image rather then loading nothing
+ *
+ **/
+export default {
+    name: 'Image-Fallback',
+    props: ['src', 'width', 'height', 'alt', 'fallback'],
+    data () {
+        return {
+            imageFound: false
+        };
+    },
+    mounted () {
+        /* istanbul ignore next */
+        if (!_.isNull(this.src) && !_.isUndefined(this.src) && this.src.length > 0) {
+            axios.get(`${this.src}`).then(({ status }) => {
+                this.imageFound = status === 200;
+            }).catch((error) => {
+                if (error) {
+                    this.imageFound = false;
+                }
+            });
+        } else {
+            this.imageFound = false;
         }
-    };
+    }
+};
 </script>
 
 <style language="scss" scoped>

@@ -62,61 +62,61 @@
 </template>
 
 <script>
-    import _ from 'lodash';
+import _ from 'lodash';
 
-    /**
-     * @description Widget that provides generic fallback for a workflow task
-     *
-     **/
-    export default {
-        name: 'Generic-Task',
-        props: ['variables', 'taskFields', 'processFields'],
-        data () {
-            let tempFormFields = [],
-                tempFormValues = {},
-                tempVariables = _.omit(_.clone(this.variables), ['approverId', 'initiatorId', 'openidmObjectId']);
+/**
+ * @description Widget that provides generic fallback for a workflow task
+ *
+ **/
+export default {
+    name: 'Generic-Task',
+    props: ['variables', 'taskFields', 'processFields'],
+    data () {
+        let tempFormFields = [],
+            tempFormValues = {},
+            tempVariables = _.omit(_.clone(this.variables), ['approverId', 'initiatorId', 'openidmObjectId']);
 
-            // Generate list of possible editable/none editable properties with values
-            _.each(this.taskFields.formPropertyHandlers, (field, key) => {
-                let tempField = {
-                    key: field._id,
-                    name: field.name,
-                    value: this.variables[field._id],
-                    type: field.type.name,
-                    readOnly: !field.writable
-                };
-
-                // Handel dropdown use case
-                if (field.type.name === 'enum') {
-                    tempField.options = field.type.values;
-
-                    // If no variable value set default value to first option
-                    if (_.isUndefined(tempField.value) && field.type.values) {
-                        tempField.value = Object.keys(field.type.values)[0];
-                        tempFormValues[field._id] = tempField.value;
-                    }
-                }
-
-                // In the case of no enum set trackable input values to be bond by Vue
-                if (_.isUndefined(tempFormValues[field._id])) {
-                    tempFormValues[field._id] = this.variables[field._id];
-                }
-
-                tempFormFields.push(tempField);
-
-                delete tempVariables[field._id];
-            });
-
-            return {
-                formFields: tempFormFields,
-                readOnlyFields: tempVariables,
-                formValues: tempFormValues
+        // Generate list of possible editable/none editable properties with values
+        _.each(this.taskFields.formPropertyHandlers, (field, key) => {
+            let tempField = {
+                key: field._id,
+                name: field.name,
+                value: this.variables[field._id],
+                type: field.type.name,
+                readOnly: !field.writable
             };
-        },
-        filters: {
-            capitalize (val) {
-                return _.capitalize(val);
+
+            // Handel dropdown use case
+            if (field.type.name === 'enum') {
+                tempField.options = field.type.values;
+
+                // If no variable value set default value to first option
+                if (_.isUndefined(tempField.value) && field.type.values) {
+                    tempField.value = Object.keys(field.type.values)[0];
+                    tempFormValues[field._id] = tempField.value;
+                }
             }
+
+            // In the case of no enum set trackable input values to be bond by Vue
+            if (_.isUndefined(tempFormValues[field._id])) {
+                tempFormValues[field._id] = this.variables[field._id];
+            }
+
+            tempFormFields.push(tempField);
+
+            delete tempVariables[field._id];
+        });
+
+        return {
+            formFields: tempFormFields,
+            readOnlyFields: tempVariables,
+            formValues: tempFormValues
+        };
+    },
+    filters: {
+        capitalize (val) {
+            return _.capitalize(val);
         }
-    };
+    }
+};
 </script>

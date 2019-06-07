@@ -5,7 +5,7 @@
                 <p><strong class="text-muted">{{ghostMessage}}</strong></p>
                 <div class="fr-speech-arrow"></div>
             </div>
-            <b-img @click="ghostMessage === '404' ? ghostMessage = 'Boo' : ghostMessage = '...'" src="static/images/ghost.svg" width="112" height="112" alt="img" class="fr-ghost mb-2" />
+            <b-img @click="ghostMessage === '404' ? ghostMessage = 'Boo' : ghostMessage = '...'" :src="require('@/assets/images/ghost.svg')" width="112" height="112" alt="img" class="fr-ghost mb-2" />
             <p class="text-centered">{{$t("pages.notFound.couldNotFind")}}</p>
 
             <router-link to="/">
@@ -14,23 +14,23 @@
                 </b-button>
             </router-link>
 
-            <b-img @click="ghostMessage = '404'" src="static/images/ghost-shadow.svg" width="112" height="112" alt="img" class="fr-shadow"/>
+            <b-img @click="ghostMessage = '404'" :src="require('@/assets/images/ghost-shadow.svg')" width="112" height="112" alt="img" class="fr-shadow"/>
         </div>
     </b-container>
 </template>
 
 <script>
-    /**
-     * @description The default 404 page when Vue router is unable to locate a route.
-     */
-    export default {
-        name: 'NotFound',
-        data () {
-            return {
-                ghostMessage: '404'
-            };
-        }
-    };
+/**
+ * @description The default 404 page when Vue router is unable to locate a route.
+ */
+export default {
+    name: 'NotFound',
+    data () {
+        return {
+            ghostMessage: '404'
+        };
+    }
+};
 </script>
 
 <style lang="scss">

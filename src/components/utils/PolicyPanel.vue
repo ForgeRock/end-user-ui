@@ -18,40 +18,40 @@
 </template>
 
 <script>
-    import _ from 'lodash';
+import _ from 'lodash';
 
-    /**
-     * @description Part of the password policy component to display the list of policy items required
-     *
-     **/
-    export default {
-        name: 'PolicyPanel',
-        props: ['policies', 'policyFailures'],
-        data () {
-            return {};
+/**
+ * @description Part of the password policy component to display the list of policy items required
+ *
+ **/
+export default {
+    name: 'PolicyPanel',
+    props: ['policies', 'policyFailures'],
+    data () {
+        return {};
+    },
+    computed: {
+        isValid () {
+            return _.isArray(this.policyFailures) && _.isEmpty(this.policyFailures);
         },
-        computed: {
-            isValid () {
-                return _.isArray(this.policyFailures) && _.isEmpty(this.policyFailures);
-            },
-            isLoading () {
-                return this.policyFailures === 'loading' || this.policyFailures === false;
-            }
-        },
-        methods: {
-            translate (policy) {
-                let path = `common.policyValidationMessages.${policy.name}`;
-
-                return this.$t(path, policy.params);
-            },
-            includes: _.includes
-        },
-        watch: {
-            policyFailures (value) {
-                this.policyFailures = value;
-            }
+        isLoading () {
+            return this.policyFailures === 'loading' || this.policyFailures === false;
         }
-    };
+    },
+    methods: {
+        translate (policy) {
+            let path = `common.policyValidationMessages.${policy.name}`;
+
+            return this.$t(path, policy.params);
+        },
+        includes: _.includes
+    },
+    watch: {
+        policyFailures (value) {
+            this.policyFailures = value;
+        }
+    }
+};
 </script>
 <style lang="scss" scoped>
     .fr-policy-list-item {

@@ -11,33 +11,32 @@
                     <!--For dark theme use vertical-logo-white.svg version of logo-->
 
                     <div class="d-flex flex-fill flex-column justify-content-center">
-                        <b-img v-if="showLogo" class="fr-logo mb-3 mt-2" src="static/images/vertical-logo.svg" fluid :alt="$t('common.form.logo')" />
+                        <b-img v-if="showLogo" class="fr-logo mb-3 mt-2" :src="require('@/assets/images/vertical-logo.svg')" fluid :alt="$t('common.form.logo')" />
                         <slot name="center-card-header"></slot>
                     </div>
                 </b-card-header>
 
                 <slot name="center-card-body"></slot>
-
                 <slot name="center-card-footer"></slot>
             </b-card>
         </div>
-        
+
     </b-container>
 </template>
 <script>
-    /**
-     * @description Card container that will stay horizontally and vertically center on the screen (example can be found on the default login page)
-     *
-     **/
-    export default {
-        name: 'Center-Card',
-        props: {
-            'showLogo': {
-                type: Boolean,
-                default: false
-            }
+/**
+ * @description Card container that will stay horizontally and vertically center on the screen (example can be found on the default login page)
+ *
+ **/
+export default {
+    name: 'Center-Card',
+    props: {
+        'showLogo': {
+            type: Boolean,
+            default: false
         }
-    };
+    }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -103,7 +102,7 @@
             margin: 0;
         }
 
-        .fr-stretch-card {            
+        .fr-stretch-card {
             @media(max-width:575px) {
                 height: 100%;
             }

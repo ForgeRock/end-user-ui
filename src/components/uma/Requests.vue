@@ -10,7 +10,7 @@
                                     <div class="mb-2"><small><strong>{{request.user}}</strong> {{$t('pages.uma.requests.requestedAccess')}}</small></div>
                                     <div class="media mb-1">
                                         <div class="d-flex mr-2 align-self-center">
-                                            <fr-fallback-image v-if="request.icon_uri" :src="request.icon_uri" height="30" width="30" fallback="fa-file-o"></fr-fallback-image>
+                                            <fr-fallback-image v-if="request.icon_uri" :src="request.icon_uri" height="30" width="30" fallback="fa-file-alt"></fr-fallback-image>
                                         </div>
                                         <div class="media-body align-self-center">
                                             <div class="media-body align-self-center">
@@ -42,45 +42,45 @@
 </template>
 
 <script>
-    import moment from 'moment';
-    import FallbackImage from '@/components/utils/FallbackImage';
+import moment from 'moment';
+import FallbackImage from '@/components/utils/FallbackImage';
 
-    /**
-     * @description Allows user to request access to a resource
-     *
-     **/
-    export default {
-        name: 'Requests',
-        components: {
-            'fr-fallback-image': FallbackImage
-        },
-        props: ['requests'],
-        filters: {
-            formatTime (dateString) {
-                let eventDate = moment(dateString);
+/**
+ * @description Allows user to request access to a resource
+ *
+ **/
+export default {
+    name: 'Requests',
+    components: {
+        'fr-fallback-image': FallbackImage
+    },
+    props: ['requests'],
+    filters: {
+        formatTime (dateString) {
+            let eventDate = moment(dateString);
 
-                if (eventDate.isSame(moment(), 'day')) {
-                    return eventDate.fromNow();
-                } else {
-                    return eventDate.format('LT');
-                }
-            }
-        },
-        methods: {
-            finalizeAccess (request, index, action) {
-                this.requests[index].decision = true;
-
-                this.$emit('finalizeResourceAccess', request._id, action, {
-                    scopes: request.permissions,
-                    onSuccess: () => {
-                        if (action === 'approve') {
-                            this.requests[index].allowed = true;
-                        }
-                    }
-                });
+            if (eventDate.isSame(moment(), 'day')) {
+                return eventDate.fromNow();
+            } else {
+                return eventDate.format('LT');
             }
         }
-    };
+    },
+    methods: {
+        finalizeAccess (request, index, action) {
+            this.requests[index].decision = true;
+
+            this.$emit('finalizeResourceAccess', request._id, action, {
+                scopes: request.permissions,
+                onSuccess: () => {
+                    if (action === 'approve') {
+                        this.requests[index].allowed = true;
+                    }
+                }
+            });
+        }
+    }
+};
 </script>
 
 <style lang="scss" scoped>

@@ -20,65 +20,65 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import ValidationError from '@/components/utils/ValidationError';
+import _ from 'lodash';
+import ValidationError from '@/components/utils/ValidationError';
 
-    /**
-     * @description Selfservice stage for password reset, handles securing a users password change with verifying KBA answers
-     *
-     **/
-    export default {
-        name: 'Kba-Verification',
-        inject: ['$validator'],
-        components: {
-            'fr-validation-error': ValidationError
-        },
-        props: {
-            selfServiceDetails: { required: true }
-        },
-        data () {
-            let { locale, fallbackLocale } = this.$i18n,
-                { properties, required } = this.selfServiceDetails.requirements;
+/**
+ * @description Selfservice stage for password reset, handles securing a users password change with verifying KBA answers
+ *
+ **/
+export default {
+    name: 'Kba-Verification',
+    inject: ['$validator'],
+    components: {
+        'fr-validation-error': ValidationError
+    },
+    props: {
+        selfServiceDetails: { required: true }
+    },
+    data () {
+        let { locale, fallbackLocale } = this.$i18n,
+            { properties, required } = this.selfServiceDetails.requirements;
 
-            return {
-                questionText: _.mapValues(properties, (value) => {
-                    if (_.has(value, 'systemQuestion')) {
-                        let question = value.systemQuestion[locale] || value.systemQuestion[fallbackLocale];
-                        return question;
-                    }
+        return {
+            questionText: _.mapValues(properties, (value) => {
+                if (_.has(value, 'systemQuestion')) {
+                    let question = value.systemQuestion[locale] || value.systemQuestion[fallbackLocale];
+                    return question;
+                }
 
-                    if (_.has(value, 'userQuestion')) {
-                        return value.userQuestion;
-                    }
-                }),
-                answers: required.reduce((acc, answer) => _.set(acc, answer, ''), {})
-            };
-        },
-        mounted () {
-            // This will auto focus as long as one answer field is generated
-            if (this.$refs && this.$refs['answer1']) {
-                this.$refs['answer1'][0].focus();
-            }
-        },
-        methods: {
-            emitData () {
-                this.$emit('advanceStage', this.getData());
-            },
-            getData () {
-                return this.answers;
-            },
-            isValid () {
-                /* istanbul ignore next */
-                return this.$validator.validateAll();
-            },
-            save () {
-                /* istanbul ignore next */
-                this.isValid().then((valid) => {
-                    if (valid) {
-                        this.emitData();
-                    }
-                });
-            }
+                if (_.has(value, 'userQuestion')) {
+                    return value.userQuestion;
+                }
+            }),
+            answers: required.reduce((acc, answer) => _.set(acc, answer, ''), {})
+        };
+    },
+    mounted () {
+        // This will auto focus as long as one answer field is generated
+        if (this.$refs && this.$refs['answer1']) {
+            this.$refs['answer1'][0].focus();
         }
-    };
+    },
+    methods: {
+        emitData () {
+            this.$emit('advanceStage', this.getData());
+        },
+        getData () {
+            return this.answers;
+        },
+        isValid () {
+            /* istanbul ignore next */
+            return this.$validator.validateAll();
+        },
+        save () {
+            /* istanbul ignore next */
+            this.isValid().then((valid) => {
+                if (valid) {
+                    this.emitData();
+                }
+            });
+        }
+    }
+};
 </script>

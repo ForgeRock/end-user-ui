@@ -18,14 +18,14 @@
 </template>
 
 <script>
-    /**
-     * @description Selfservice stage for username recovery, displays the found username
-     *
-     **/
-    export default {
-        name: 'Retrieve-Username',
-        props: {
-            selfServiceDetails: { required: true }
-        }
-    };
+/**
+ * @description Selfservice stage for username recovery, displays the found username
+ *
+ **/
+export default {
+    name: 'Retrieve-Username',
+    props: {
+        selfServiceDetails: { required: true }
+    }
+};
 </script>

@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div slot="list-item-collapse-body" class="d-inline-flex w-100">
-                            <fr-task :taskInstance="task":ref="id" @loadProcess="(process) => $emit('loadProcess', process)" @cancel="cancel" @completeTask="completeTask"></fr-task>
+                            <fr-task :taskInstance="task" :ref="id" @loadProcess="(process) => $emit('loadProcess', process)" @cancel="cancel" @completeTask="completeTask"></fr-task>
                         </div>
                     </fr-list-item>
                 </transition-group>
@@ -30,90 +30,90 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import ListGroup from '@/components/utils/ListGroup';
-    import ListItem from '@/components/utils/ListItem';
-    import Task from './Task';
+import _ from 'lodash';
+import ListGroup from '@/components/utils/ListGroup';
+import ListItem from '@/components/utils/ListItem';
+import Task from './Task';
 
-    /**
-     * @description Dashboard widget that lists tasks currently assigned to the logged in user
-     *
-     **/
-    export default {
-        name: 'My-Tasks',
-        props: {
-            tasks: Object
+/**
+* @description Dashboard widget that lists tasks currently assigned to the logged in user
+*
+**/
+export default {
+    name: 'My-Tasks',
+    props: {
+        tasks: Object
+    },
+    data () {
+        return { panelShown: {}, onHidden: null };
+    },
+    components: {
+        'fr-list-group': ListGroup,
+        'fr-list-item': ListItem,
+        'fr-task': Task
+    },
+    methods: {
+        setShown (id) {
+            this.$set(this.panelShown, id, true);
         },
-        data () {
-            return {panelShown: {}, onHidden: null};
-        },
-        components: {
-            'fr-list-group': ListGroup,
-            'fr-list-item': ListItem,
-            'fr-task': Task
-        },
-        methods: {
-            setShown (id) {
-                this.$set(this.panelShown, id, true);
-            },
-            setHidden (id) {
-                this.$set(this.panelShown, id, false);
+        setHidden (id) {
+            this.$set(this.panelShown, id, false);
 
-                if (_.isFunction(this.onHidden)) {
-                    this.onHidden();
-                    this.onHidden = null;
-                }
-            },
-            cancel (id) {
-                _.first(this.$refs[`cancel-${id}`]).click();
-            },
-            requeue (id) {
-                let task = this.tasks[id].task,
-                    action = 'updateAssignment',
-                    payload = { id, task, assignee: null };
-
-                this.update(id, action, payload);
-            },
-            completeTask (payload) {
-                this.update(payload.id, 'completeTask', payload);
-            },
-            update (id, action, payload) {
-                let update = () => {
-                    this.$emit(action, payload);
-                };
-
-                if (this.panelShown[id]) {
-                    this.onHidden = update;
-                    this.cancel(id);
-                } else {
-                    update();
-                }
-            },
-            isEmpty: _.isEmpty,
-            first: _.first
+            if (_.isFunction(this.onHidden)) {
+                this.onHidden();
+                this.onHidden = null;
+            }
         },
-        watch: {
-            tasks: {
-                /**
+        cancel (id) {
+            _.first(this.$refs[`cancel-${id}`]).click();
+        },
+        requeue (id) {
+            let task = this.tasks[id].task,
+                action = 'updateAssignment',
+                payload = { id, task, assignee: null };
+
+            this.update(id, action, payload);
+        },
+        completeTask (payload) {
+            this.update(payload.id, 'completeTask', payload);
+        },
+        update (id, action, payload) {
+            let update = () => {
+                this.$emit(action, payload);
+            };
+
+            if (this.panelShown[id]) {
+                this.onHidden = update;
+                this.cancel(id);
+            } else {
+                update();
+            }
+        },
+        isEmpty: _.isEmpty,
+        first: _.first
+    },
+    watch: {
+        tasks: {
+            /**
                 * This function sets the state of panelShown. Anytime new tasks are added to the tasks prop,
                 * the prop key is added to the panelShown object with an initial state of `false`.
                 */
-                handler (val, oldVal) {
-                    let newVals = _.difference(_.keys(val), _.keys(oldVal));
+            handler (val, oldVal) {
+                let newVals = _.difference(_.keys(val), _.keys(oldVal));
 
-                    if (_.isUndefined(this.panelShown)) {
-                        this.panelShown = {};
-                    }
+                if (_.isUndefined(this.panelShown)) {
+                    this.panelShown = {};
+                }
 
-                    newVals.forEach((val) => {
-                        this.$set(this.panelShown, val, false);
-                    });
-                },
-                deep: true
-            }
+                newVals.forEach((val) => {
+                    this.$set(this.panelShown, val, false);
+                });
+            },
+            deep: true
         }
+    }
 
-    };
+};
 </script>
 
 <style lang="scss" scoped></style>

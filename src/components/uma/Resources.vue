@@ -10,12 +10,11 @@
                         :placeholder="$t('pages.uma.resources.search')"  v-model="resourceFilter">
                 </div>
                 <div class="col">
-                    <b-dropdown variant="link" right  class="float-right text-muted" no-caret>
+                    <b-dropdown variant="link" right  class="float-right text-muted">
                         <template slot="button-content">
                             <span class="text-muted">
                                 <i class="fa fa-list" v-if="!this.viewgrid"></i>
                                 <i class="fa fa-th" v-if="this.viewgrid"></i>
-                                <i class="fa fa-caret-down ml-1"></i>
                             </span>
                         </template>
                         <b-dropdown-header>{{$t('pages.uma.resources.viewAs')}}</b-dropdown-header>
@@ -47,7 +46,7 @@
             <div id="listView" v-if="!this.viewgrid">
                 <b-card no-body class="my-4">
                     <b-list-group flush>
-                        <b-list-group-item v-for="(resource, index) in resources" :key="index" v-if="resource.name.includes(resourceFilter)">
+                        <b-list-group-item v-for="(resource, index) in filteredResources" :key="`listResource-${index}`">
                             <div class="d-sm-flex">
                                 <div class="media-body">
                                     <div class="media mb-2 mb-sm-0">
@@ -56,7 +55,7 @@
                                                 :src="resource.icon_uri"
                                                 :height="40"
                                                 :width="40"
-                                                fallback="fa-file-o fa-2x m-auto pt-1 pb-1"></fr-fallback-image>
+                                                fallback="fa-file-alt fa-2x m-auto pt-1 pb-1"></fr-fallback-image>
                                         </div>
                                         <div class="d-sm-flex media-body align-self-center">
                                             <div class="media-body mb-2 mb-sm-0">
@@ -85,7 +84,7 @@
             </div>
             <div id="gridView" v-if="this.viewgrid">
                 <div class="row">
-                  <div v-for="(resource, index) in resources" :key="index" v-if="resource.name.includes(resourceFilter)" class="col-sm-6 col-md-3">
+                  <div v-for="(resource, index) in filteredResources" :key="`viewResource-${index}`"  class="col-sm-6 col-md-3">
                         <div class="card text-center mb-4">
                             <div class="card-header py-0 px-1 border-0">
                                 <b-dropdown variant="link" class="fr-card-menu-link float-right" right no-caret>
@@ -97,7 +96,7 @@
                                 </b-dropdown>
                             </div>
                             <div class="card-body pt-0">
-                                <fr-fallback-image :src="resource.icon_uri" :width="86" :height="86" class="pl-5 pr-5 pt-3 mb-3" fallback="fa-file-o fa-3x m-auto pt-3 pb-3"></fr-fallback-image>
+                                <fr-fallback-image :src="resource.icon_uri" :width="86" :height="86" class="pl-5 pr-5 pt-3 mb-3" fallback="fa-file-alt fa-3x m-auto pt-3 pb-3"></fr-fallback-image>
                                 <h5 class="card-title text-truncate">{{resource.name}}</h5>
                                 <div class="card-text">
                                     <small class="text-muted" v-if="!resource.policy">{{$t('pages.uma.resources.resourceNotShared')}}</small>
@@ -114,38 +113,44 @@
 </template>
 
 <script>
-    import FallbackImage from '@/components/utils/FallbackImage';
+import _ from 'lodash';
+import FallbackImage from '@/components/utils/FallbackImage';
 
-    /**
-     * @description Component for displaying a resource
-     *
-     **/
-    export default {
-        name: 'Resources',
-        components: {
-            'fr-fallback-image': FallbackImage
+/**
+* @description Component for displaying a resource
+*
+**/
+export default {
+    name: 'Resources',
+    components: {
+        'fr-fallback-image': FallbackImage
+    },
+    data () {
+        return {
+            viewgrid: false,
+            showModalActions: false,
+            newshare: '',
+            resourceFilter: ''
+        };
+    },
+    props: ['resources'],
+    methods: {
+        renderShareModal (resource) {
+            this.$emit('renderShareModal', resource);
         },
-        data () {
-            return {
-                viewgrid: false,
-                showModalActions: false,
-                newshare: '',
-                resourceFilter: ''
-            };
+        renderUnshareModal (resourceName, resourceId) {
+            this.$emit('renderUnshareModal', resourceName, resourceId);
         },
-        props: ['resources'],
-        methods: {
-            renderShareModal (resource) {
-                this.$emit('renderShareModal', resource);
-            },
-            renderUnshareModal (resourceName, resourceId) {
-                this.$emit('renderUnshareModal', resourceName, resourceId);
-            },
-            toggleGrid () {
-                this.viewgrid = !this.viewgrid;
-            }
+        toggleGrid () {
+            this.viewgrid = !this.viewgrid;
         }
-    };
+    },
+    computed: {
+        filteredResources () {
+            return _.filter(this.resources, (resource) => { return resource.name.includes(this.resourceFilter); });
+        }
+    }
+};
 </script>
 
 <style lang="scss" scoped>

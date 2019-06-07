@@ -56,99 +56,99 @@
     </fr-list-item>
 </template>
 <script>
-    import ListItem from '@/components/utils/ListItem';
-    import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
-    import LoadingButton from '@/components/utils/LoadingButton';
-    import ValidationError from '@/components/utils/ValidationError';
+import ListItem from '@/components/utils/ListItem';
+import LoadingButton from '@/components/utils/LoadingButton';
+import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
+import ValidationError from '@/components/utils/ValidationError';
 
-    /**
-     * @description Allows a user to change their password, makes use of policy password component, similar to registration it will only allow a user to change password
-     * as long as it passes policy requirements (policy.json).
-     *
-     */
-    export default {
-        $_veeValidate: {
-            validator: 'new'
+/**
+ * @description Allows a user to change their password, makes use of policy password component, similar to registration it will only allow a user to change password
+ * as long as it passes policy requirements (policy.json).
+ *
+ */
+export default {
+    $_veeValidate: {
+        validator: 'new'
+    },
+    name: 'Edit-Password',
+    components: {
+        'fr-list-item': ListItem,
+        'fr-loading-button': LoadingButton,
+        'fr-password-policy-input': PolicyPasswordInput,
+        'fr-validation-error': ValidationError
+    },
+    data () {
+        return {
+            currentPassword: '',
+            newPassword: '',
+            loading: false,
+            showNew: true,
+            showCurrent: true,
+            inputCurrent: 'password',
+            inputNew: 'password',
+            userId: this.$root.userStore.getUserState().userId
+        };
+    },
+    methods: {
+        clearComponent () {
+            this.currentPassword = '';
+            this.newPassword = '';
+            this.errors.clear();
         },
-        name: 'Edit-Password',
-        components: {
-            'fr-list-item': ListItem,
-            'fr-loading-button': LoadingButton,
-            'fr-password-policy-input': PolicyPasswordInput,
-            'fr-validation-error': ValidationError
+        resetComponent () {
+            this.loading = false;
+            this.currentPassword = '';
+            this.newPassword = '';
+            this.$refs.cancel.click();
         },
-        data () {
-            return {
-                currentPassword: '',
-                newPassword: '',
-                loading: false,
-                showNew: true,
-                showCurrent: true,
-                inputCurrent: 'password',
-                inputNew: 'password',
-                userId: this.$root.userStore.getUserState().userId
-            };
-        },
-        methods: {
-            clearComponent () {
-                this.currentPassword = '';
-                this.newPassword = '';
-                this.errors.clear();
-            },
-            resetComponent () {
-                this.loading = false;
-                this.currentPassword = '';
-                this.newPassword = '';
-                this.$refs.cancel.click();
-            },
-            displayError (error) {
-                if (error.response.status === 403) {
-                    this.errors.add({
-                        field: 'currentPassword',
-                        msg: 'Incorrect password provided'
-                    });
-                }
-            },
-            onSavePassword () {
-                const headers = {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-OpenIDM-Reauth-Password': this.encodeRFC5987IfNecessary(this.currentPassword)
-                    },
-                    payload = [{operation: 'add', field: '/password', value: this.newPassword}],
-                    onSuccess = this.resetComponent.bind(this),
-                    onError = this.displayError.bind(this);
-
-                this.errors.clear();
-
-                this.$validator.validateAll().then((valid) => {
-                    if (valid) {
-                        this.$emit('updateProfile', payload, { headers, onSuccess, onError });
-                    } else {
-                        this.displayNotification('error', this.$t('pages.profile.accountSecurity.invalidPassword'));
-                    }
+        displayError (error) {
+            if (error.response.status === 403) {
+                this.errors.add({
+                    field: 'currentPassword',
+                    msg: 'Incorrect password provided'
                 });
-            },
-            validate () {
-                return this.$validator.validateAll();
-            },
-            revealNew () {
-                if (this.inputNew === 'password') {
-                    this.inputNew = 'text';
-                    this.showNew = false;
+            }
+        },
+        onSavePassword () {
+            const headers = {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-OpenIDM-Reauth-Password': this.encodeRFC5987IfNecessary(this.currentPassword)
+                },
+                payload = [{ operation: 'add', field: '/password', value: this.newPassword }],
+                onSuccess = this.resetComponent.bind(this),
+                onError = this.displayError.bind(this);
+
+            this.errors.clear();
+
+            this.$validator.validateAll().then((valid) => {
+                if (valid) {
+                    this.$emit('updateProfile', payload, { headers, onSuccess, onError });
                 } else {
-                    this.inputNew = 'password';
-                    this.showNew = true;
+                    this.displayNotification('error', this.$t('pages.profile.accountSecurity.invalidPassword'));
                 }
-            },
-            revealCurrent () {
-                if (this.inputCurrent === 'password') {
-                    this.inputCurrent = 'text';
-                    this.showCurrent = false;
-                } else {
-                    this.inputCurrent = 'password';
-                    this.showCurrent = true;
-                }
+            });
+        },
+        validate () {
+            return this.$validator.validateAll();
+        },
+        revealNew () {
+            if (this.inputNew === 'password') {
+                this.inputNew = 'text';
+                this.showNew = false;
+            } else {
+                this.inputNew = 'password';
+                this.showNew = true;
+            }
+        },
+        revealCurrent () {
+            if (this.inputCurrent === 'password') {
+                this.inputCurrent = 'text';
+                this.showCurrent = false;
+            } else {
+                this.inputCurrent = 'password';
+                this.showCurrent = true;
             }
         }
-    };
+    }
+};
 </script>

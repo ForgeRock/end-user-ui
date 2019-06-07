@@ -37,121 +37,121 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import idmUserDetails from './UserDetails';
-    import Captcha from '../common/Captcha';
-    import kbaSecurityAnswerDefinitionStage from './KBASecurityAnswerDefinitionStage';
-    import TermsAndConditions from './TermsAndConditions';
-    import Consent from './Consent';
-    import LoadingButton from '@/components/utils/LoadingButton';
+import _ from 'lodash';
+import Captcha from '../common/Captcha';
+import Consent from './Consent';
+import idmUserDetails from './UserDetails';
+import kbaSecurityAnswerDefinitionStage from './KBASecurityAnswerDefinitionStage';
+import LoadingButton from '@/components/utils/LoadingButton';
+import TermsAndConditions from './TermsAndConditions';
 
-    /**
-     * @description Selfservice stage that is used for combing multiple selfservice stages (User details, Captcha, KBA, Terms and Confitions and Consent)
-     *
-     **/
-    export default {
-        name: 'All-In-One-Registration',
-        props: {
-            selfServiceDetails: { required: true }
-        },
-        components: {
-            idmUserDetails,
-            kbaSecurityAnswerDefinitionStage,
-            TermsAndConditions,
-            Consent,
-            Captcha,
-            'fr-loading-button': LoadingButton
-        },
-        data () {
-            let data = {
-                stages: {},
-                consentCheck: true,
-                loading: false
-            };
+/**
+ * @description Selfservice stage that is used for combing multiple selfservice stages (User details, Captcha, KBA, Terms and Confitions and Consent)
+ *
+ **/
+export default {
+    name: 'All-In-One-Registration',
+    props: {
+        selfServiceDetails: { required: true }
+    },
+    components: {
+        idmUserDetails,
+        kbaSecurityAnswerDefinitionStage,
+        TermsAndConditions,
+        Consent,
+        Captcha,
+        'fr-loading-button': LoadingButton
+    },
+    data () {
+        let data = {
+            stages: {},
+            consentCheck: true,
+            loading: false
+        };
 
-            _.each(this.selfServiceDetails.requirements.stages, (name) => {
-                data.stages[name] = true;
+        _.each(this.selfServiceDetails.requirements.stages, (name) => {
+            data.stages[name] = true;
+        });
+
+        return data;
+    },
+    methods: {
+        getData () {
+            let data = {};
+
+            /* istanbul ignore next */
+            _.each(this.$children, (child) => {
+                let childData = {};
+
+                if (child.getData) {
+                    childData = child.getData();
+                }
+
+                data = _.merge(data, childData);
             });
+
+            if (this.selfServiceDetails.requirements.consentEnabled) {
+                data.consentGiven = 'true';
+            }
 
             return data;
         },
-        methods: {
-            getData () {
-                let data = {};
 
-                /* istanbul ignore next */
-                _.each(this.$children, (child) => {
-                    let childData = {};
+        saveCheck () {
+            this.loading = true;
 
-                    if (child.getData) {
-                        childData = child.getData();
-                    }
-
-                    data = _.merge(data, childData);
+            if (this.selfServiceDetails.requirements.consentEnabled) {
+                this.isValid().then(() => {
+                    this.$refs.consentModal.show();
                 });
+            } else {
+                /* istanbul ignore next */
+                this.isValid().then(() => {
+                    this.save();
+                });
+            }
+        },
 
-                if (this.selfServiceDetails.requirements.consentEnabled) {
-                    data.consentGiven = 'true';
-                }
+        save () {
+            this.$emit('advanceStage', this.getData());
+            this.loading = false;
+        },
 
-                return data;
-            },
-
-            saveCheck () {
-                this.loading = true;
-
-                if (this.selfServiceDetails.requirements.consentEnabled) {
-                    this.isValid().then(() => {
-                        this.$refs.consentModal.show();
-                    });
-                } else {
-                    /* istanbul ignore next */
-                    this.isValid().then(() => {
-                        this.save();
-                    });
-                }
-            },
-
-            save () {
-                this.$emit('advanceStage', this.getData());
-                this.loading = false;
-            },
-
-            isValid () {
-                let childChecks = [],
-                    validPromise = new Promise((resolve, reject) => {
-                        if (this.$children) {
-                            _.each(this.$children, (child, index) => {
-                                /* istanbul ignore next */
-                                if (this.$children[index].isValid) {
-                                    childChecks.push(this.$children[index].isValid());
-                                }
-                            });
-                        }
-
-                        Promise.all(childChecks).then((results) => {
-                            let validCheck = true;
-
-                            _.each(results, (check) => {
-                                /* istanbul ignore next */
-                                if (check === false) {
-                                    validCheck = false;
-                                }
-                            });
-
-                            if (validCheck) {
-                                resolve({'success': true});
-                            } else {
-                                this.displayNotification('error', this.$t('pages.selfservice.registration.pleaseComplete'));
-                                this.loading = false;
+        isValid () {
+            let childChecks = [],
+                validPromise = new Promise((resolve, reject) => {
+                    if (this.$children) {
+                        _.each(this.$children, (child, index) => {
+                            /* istanbul ignore next */
+                            if (this.$children[index].isValid) {
+                                childChecks.push(this.$children[index].isValid());
                             }
                         });
-                    });
+                    }
 
-                return validPromise;
-            }
+                    Promise.all(childChecks).then((results) => {
+                        let validCheck = true;
+
+                        _.each(results, (check) => {
+                            /* istanbul ignore next */
+                            if (check === false) {
+                                validCheck = false;
+                            }
+                        });
+
+                        if (validCheck) {
+                            resolve({ 'success': true });
+                        } else {
+                            this.displayNotification('error', this.$t('pages.selfservice.registration.pleaseComplete'));
+                            this.loading = false;
+                        }
+                    });
+                });
+
+            return validPromise;
         }
-    };
+    }
+};
 </script>
 
 <style scoped></style>

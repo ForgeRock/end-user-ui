@@ -24,48 +24,48 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import ListGroup from '@/components/utils/ListGroup';
-    import ListItem from '@/components/utils/ListItem';
+import _ from 'lodash';
+import ListGroup from '@/components/utils/ListGroup';
+import ListItem from '@/components/utils/ListItem';
 
-    /**
-     * @description Displays available user preferences, these are typically true/false values associated with a managed resource (e.g. Do you want to recieve marketing emails?).
-     *
-     */
-    export default {
-        name: 'Preferences',
-        components: {
-            'fr-list-group': ListGroup,
-            'fr-list-item': ListItem
-        },
-        data () {
-            return {
-                preferences: {}
-            };
-        },
-        mounted () {
-            this.loadData();
-        },
-        methods: {
-            loadData () {
-                let keys = _.keys(this.$root.userStore.state.profile.preferences),
-                    preferences = _.cloneDeep(this.$root.userStore.state.schema.properties.preferences.properties);
+/**
+ * @description Displays available user preferences, these are typically true/false values associated with a managed resource (e.g. Do you want to recieve marketing emails?).
+ *
+ */
+export default {
+    name: 'Preferences',
+    components: {
+        'fr-list-group': ListGroup,
+        'fr-list-item': ListItem
+    },
+    data () {
+        return {
+            preferences: {}
+        };
+    },
+    mounted () {
+        this.loadData();
+    },
+    methods: {
+        loadData () {
+            let keys = _.keys(this.$root.userStore.state.profile.preferences),
+                preferences = _.cloneDeep(this.$root.userStore.state.schema.properties.preferences.properties);
 
-                _.each(keys, (key) => {
-                    preferences[key].value = this.$root.userStore.state.profile.preferences[key];
-                    delete preferences[key].type;
-                });
+            _.each(keys, (key) => {
+                preferences[key].value = this.$root.userStore.state.profile.preferences[key];
+                delete preferences[key].type;
+            });
 
-                this.preferences = preferences;
-            },
-            generatePatch (preference, value) {
-                return [{operation: 'replace', field: '/preferences/' + preference, value}];
-            },
-            savePreferences (preference, value) {
-                this.$emit('updateProfile', this.generatePatch(preference, value));
-            }
+            this.preferences = preferences;
+        },
+        generatePatch (preference, value) {
+            return [{ operation: 'replace', field: '/preferences/' + preference, value }];
+        },
+        savePreferences (preference, value) {
+            this.$emit('updateProfile', this.generatePatch(preference, value));
         }
-    };
+    }
+};
 </script>
 
 <style scoped>

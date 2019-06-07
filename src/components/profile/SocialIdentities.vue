@@ -47,7 +47,7 @@
 
             <div slot="modal-footer" class="w-100">
                 <div class="float-right">
-                    <b-btn variant="outline-secondary" @click="hideModal">{{$t('common.form.close')}}</b-btn>
+                    <b-btn variant="outline-secondary mr-2" @click="hideModal">{{$t('common.form.close')}}</b-btn>
                     <b-btn type="button" variant="danger" @click="disconnectProvider">{{$t('pages.profile.socialSignIn.disconnect')}}</b-btn>
                 </div>
             </div>
@@ -56,134 +56,134 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import ListGroup from '@/components/utils/ListGroup';
-    import ListItem from '@/components/utils/ListItem';
-    import SocialIdentityPanel from './SocialIdentityPanel';
+import _ from 'lodash';
+import ListGroup from '@/components/utils/ListGroup';
+import ListItem from '@/components/utils/ListItem';
+import SocialIdentityPanel from './SocialIdentityPanel';
 
-    /**
-     * @description Handles displaying a users social providers, will also allow a user to configure a new social provider based on available providers
-     *
-     * @fires POST resource/name/ID?_action=bind&provider=provider (e.g. managed/user/fakeID?_action=bind&provider=google) - Binds a provider based on a return client token from the provider
-     * @fires GET /identityProviders - List of available social providers
-     * @fires POST managed/user/ID?_fields=idps/* (e.g. managed/user/fakeId?_fields=idps/*) - List of social providers already configured for the current logged in resource.
-     * @fires POST /identityProviders?_action=getAuthRedirect - Generated the redirect information for a selected social provider
-     * @fires POST resource/name/ID?_action=unbind&provider=provider (e.g. managed/user/fakeID?_action=unbind&provider=google) - Unbinds a social provider from the current sessions user
-     *
-     */
-    export default {
-        name: 'Social-Identities',
-        components: {
-            'fr-list-group': ListGroup,
-            'fr-list-item': ListItem,
-            'fr-social-identity-panel': SocialIdentityPanel
-        },
-        props: {
-            'clientToken': String,
-            'linkedProvider': String
-        },
-        data () {
-            return {
-                'allAvailableProviders': [],
-                'connectedProviders': [],
-                'providers': [],
-                'toDisconnect': {}
-            };
-        },
-        created () {
-            if (!_.isUndefined(this.clientToken)) {
-                const socialInstance = this.getRequestService();
-                /* istanbul ignore next */
-                socialInstance.post(`${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=bind&provider=${this.linkedProvider}`, JSON.stringify(this.clientToken))
-                    .then(() => {
-                        this.getAllConnectedProviders(this.getRequestService({
-                            headers: this.getAnonymousHeaders()
-                        }));
-                        this.displayNotification('success', `${_.find(this.providers, {provider: this.linkedProvider}).uiConfig.buttonDisplayName} has been linked`);
-                        delete this.clientToken;
-                    })
-                    .catch((error) => {
-                        /* istanbul ignore next */
-                        this.displayNotification('error', error.response.data.message);
-                    });
-            }
-        },
-        mounted () {
+/**
+ * @description Handles displaying a users social providers, will also allow a user to configure a new social provider based on available providers
+ *
+ * @fires POST resource/name/ID?_action=bind&provider=provider (e.g. managed/user/fakeID?_action=bind&provider=google) - Binds a provider based on a return client token from the provider
+ * @fires GET /identityProviders - List of available social providers
+ * @fires POST managed/user/ID?_fields=idps/* (e.g. managed/user/fakeId?_fields=idps/*) - List of social providers already configured for the current logged in resource.
+ * @fires POST /identityProviders?_action=getAuthRedirect - Generated the redirect information for a selected social provider
+ * @fires POST resource/name/ID?_action=unbind&provider=provider (e.g. managed/user/fakeID?_action=unbind&provider=google) - Unbinds a social provider from the current sessions user
+ *
+ */
+export default {
+    name: 'Social-Identities',
+    components: {
+        'fr-list-group': ListGroup,
+        'fr-list-item': ListItem,
+        'fr-social-identity-panel': SocialIdentityPanel
+    },
+    props: {
+        'clientToken': String,
+        'linkedProvider': String
+    },
+    data () {
+        return {
+            'allAvailableProviders': [],
+            'connectedProviders': [],
+            'providers': [],
+            'toDisconnect': {}
+        };
+    },
+    created () {
+        if (!_.isUndefined(this.clientToken)) {
+            const socialInstance = this.getRequestService();
             /* istanbul ignore next */
-            this.loadData();
-        },
-        computed: {
-            disconnectedProvider () {
-                let providerName = _.get(this.toDisconnect, 'uiConfig.buttonDisplayName');
-                return providerName || '';
-            }
-        },
-        methods: {
-            loadData () {
-                this.providers = [];
-                /* istanbul ignore next */
-                const socialInstance = this.getRequestService({
-                    headers: this.getAnonymousHeaders()
+            socialInstance.post(`${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=bind&provider=${this.linkedProvider}`, JSON.stringify(this.clientToken))
+                .then(() => {
+                    this.getAllConnectedProviders(this.getRequestService({
+                        headers: this.getAnonymousHeaders()
+                    }));
+                    this.displayNotification('success', `${_.find(this.providers, { provider: this.linkedProvider }).uiConfig.buttonDisplayName} has been linked`);
+                    delete this.clientToken;
+                })
+                .catch((error) => {
+                    /* istanbul ignore next */
+                    this.displayNotification('error', error.response.data.message);
                 });
+        }
+    },
+    mounted () {
+        /* istanbul ignore next */
+        this.loadData();
+    },
+    computed: {
+        disconnectedProvider () {
+            let providerName = _.get(this.toDisconnect, 'uiConfig.buttonDisplayName');
+            return providerName || '';
+        }
+    },
+    methods: {
+        loadData () {
+            this.providers = [];
+            /* istanbul ignore next */
+            const socialInstance = this.getRequestService({
+                headers: this.getAnonymousHeaders()
+            });
 
-                /* istanbul ignore next */
-                socialInstance.get('/identityProviders')
-                    .then((response) => {
-                        this.allAvailableProviders = response.data.providers;
-                        this.getAllConnectedProviders(socialInstance);
-                    })
-                    .catch((error) => {
-                        this.displayNotification('error', error.response.data.message);
-                    });
-            },
-            getAllConnectedProviders (socialInstance) {
-                /* istanbul ignore next */
-                socialInstance.get(`${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=idps/*`)
-                    .then((response) => {
-                        this.connectedProviders = response.data.idps;
-                        this.providers = this.setProviders();
-                    })
-                    .catch((error) => {
-                        this.displayNotification('error', error.response.data.message);
-                    });
-            },
-            setProviders () {
-                let providers = [];
-                _.each(this.allAvailableProviders, (provider) => {
-                    let matchFound = false;
+            /* istanbul ignore next */
+            socialInstance.get('/identityProviders')
+                .then((response) => {
+                    this.allAvailableProviders = response.data.providers;
+                    this.getAllConnectedProviders(socialInstance);
+                })
+                .catch((error) => {
+                    this.displayNotification('error', error.response.data.message);
+                });
+        },
+        getAllConnectedProviders (socialInstance) {
+            /* istanbul ignore next */
+            socialInstance.get(`${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=idps/*`)
+                .then((response) => {
+                    this.connectedProviders = response.data.idps;
+                    this.providers = this.setProviders();
+                })
+                .catch((error) => {
+                    this.displayNotification('error', error.response.data.message);
+                });
+        },
+        setProviders () {
+            let providers = [];
+            _.each(this.allAvailableProviders, (provider) => {
+                let matchFound = false;
 
-                    _.each(this.connectedProviders, (idp) => {
-                        if (_.includes(idp._refResourceCollection, provider.provider)) {
-                            matchFound = true;
-                            providers.push(_.extend(idp, provider));
-                        }
-                    });
-
-                    if (!matchFound) {
-                        providers.push(provider);
+                _.each(this.connectedProviders, (idp) => {
+                    if (_.includes(idp._refResourceCollection, provider.provider)) {
+                        matchFound = true;
+                        providers.push(_.extend(idp, provider));
                     }
                 });
 
-                return providers;
-            },
-            showModal (provider) {
-                this.toDisconnect = _.find(this.providers, {'provider': provider});
-                this.$refs.disconnectModal.show();
-            },
-            hideModal () {
-                this.toDisconnect = {};
-                this.$refs.disconnectModal.hide();
-            },
-            connectProvider (provider) {
-                const socialInstance = this.getRequestService({
-                    headers: this.getAnonymousHeaders()
-                });
+                if (!matchFound) {
+                    providers.push(provider);
+                }
+            });
 
-                /* istanbul ignore next */
-                socialInstance.post('/identityProviders?_action=getAuthRedirect', {
-                    'provider': provider,
-                    'landingPage': `${window.location.protocol}/#/${window.location.host}/login?_oauthReturn=true&provider=${provider}&gotoURL=profile`
-                })
+            return providers;
+        },
+        showModal (provider) {
+            this.toDisconnect = _.find(this.providers, { 'provider': provider });
+            this.$refs.disconnectModal.show();
+        },
+        hideModal () {
+            this.toDisconnect = {};
+            this.$refs.disconnectModal.hide();
+        },
+        connectProvider (provider) {
+            const socialInstance = this.getRequestService({
+                headers: this.getAnonymousHeaders()
+            });
+
+            /* istanbul ignore next */
+            socialInstance.post('/identityProviders?_action=getAuthRedirect', {
+                'provider': provider,
+                'landingPage': `${window.location.protocol}/#/${window.location.host}/login?_oauthReturn=true&provider=${provider}&gotoURL=profile`
+            })
                 .then((response) => {
                     localStorage.setItem('linkedProvider', provider);
                     localStorage.setItem('dataStoreToken', response.data.token);
@@ -193,28 +193,28 @@
                     /* istanbul ignore next */
                     this.displayNotification('error', error.response.data.message);
                 });
-            },
-            disconnectProvider () {
-                /* istanbul ignore next */
-                const socialInstance = this.getRequestService({
-                    headers: this.getAnonymousHeaders()
-                });
+        },
+        disconnectProvider () {
+            /* istanbul ignore next */
+            const socialInstance = this.getRequestService({
+                headers: this.getAnonymousHeaders()
+            });
 
-                /* istanbul ignore next */
-                socialInstance.post(`${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=unbind&provider=${this.toDisconnect.provider}`)
-                    .then(() => {
-                        this.connectedProviders.splice(_.findIndex(this.connectedProviders, {'provider': this.toDisconnect.provider}), 1);
-                        this.providers = this.setProviders();
-                        this.displayNotification('success', `${_.find(this.providers, {provider: this.toDisconnect.provider}).uiConfig.buttonDisplayName} has been unlinked`);
-                        this.hideModal();
-                    })
-                    .catch((error) => {
-                        this.displayNotification('error', this.$t(error.response.data.message));
-                        this.hideModal();
-                    });
-            }
+            /* istanbul ignore next */
+            socialInstance.post(`${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=unbind&provider=${this.toDisconnect.provider}`)
+                .then(() => {
+                    this.connectedProviders.splice(_.findIndex(this.connectedProviders, { 'provider': this.toDisconnect.provider }), 1);
+                    this.providers = this.setProviders();
+                    this.displayNotification('success', `${_.find(this.providers, { provider: this.toDisconnect.provider }).uiConfig.buttonDisplayName} has been unlinked`);
+                    this.hideModal();
+                })
+                .catch((error) => {
+                    this.displayNotification('error', this.$t(error.response.data.message));
+                    this.hideModal();
+                });
         }
-    };
+    }
+};
 </script>
 
 <style lang="scss" scoped>

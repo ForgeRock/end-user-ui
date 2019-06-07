@@ -61,238 +61,238 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import axios from 'axios';
-    import CreateResource from '@/components/access/CreateResource';
+import _ from 'lodash';
+import axios from 'axios';
+import CreateResource from '@/components/access/CreateResource';
 
-    /**
-     * @description Controlling component for delegated admin, allows for listing available resources and connects to the create, delete and edit features.
-     *
-     * @fires GET schema/type/name/ (e.g. schema/managed/user) - Schema for a resource (e.g. managed/user schema)
-     * @fires GET privilege/type/name/ (e.g. privilege/managed/user/) - Privileges for a resource (e.g. managed/user)
-     * @fires GET resource/name?_queryFilter=filter&_pageSize=10&_totalPagedResultsPolicy=EXACT (e.g. managed/user?_queryFilter=true&_pageSize=10&_totalPagedResultsPolicy=EXACT) -
-     * List resource items, limited to 10 returned items and makes use of a query filter search if provided (defaults to queryFilter = true if none provided by the user).
-     */
-    export default {
-        name: 'Access',
-        components: {
-            'fr-create-resource': CreateResource
-        },
-        data () {
-            return {
-                name: this.$route.params.resourceName,
-                resource: this.$route.params.resourceType,
-                schemaProperties: {},
-                isRowSelected: false,
-                tableHover: true,
-                gridData: [],
-                columns: [],
-                displayFields: [],
-                currentPage: 1,
-                lastPage: false,
-                sortBy: null,
-                sortDesc: false,
-                sortDirection: 'asc',
-                filter: '',
-                createProperties: [],
-                userCanUpdate: false
-            };
-        },
-        mounted () {
-            this.loadData();
-        },
-        methods: {
-            loadData () {
-                const idmInstance = this.getRequestService();
+/**
+ * @description Controlling component for delegated admin, allows for listing available resources and connects to the create, delete and edit features.
+ *
+ * @fires GET schema/type/name/ (e.g. schema/managed/user) - Schema for a resource (e.g. managed/user schema)
+ * @fires GET privilege/type/name/ (e.g. privilege/managed/user/) - Privileges for a resource (e.g. managed/user)
+ * @fires GET resource/name?_queryFilter=filter&_pageSize=10&_totalPagedResultsPolicy=EXACT (e.g. managed/user?_queryFilter=true&_pageSize=10&_totalPagedResultsPolicy=EXACT) -
+ * List resource items, limited to 10 returned items and makes use of a query filter search if provided (defaults to queryFilter = true if none provided by the user).
+ */
+export default {
+    name: 'Access',
+    components: {
+        'fr-create-resource': CreateResource
+    },
+    data () {
+        return {
+            name: this.$route.params.resourceName,
+            resource: this.$route.params.resourceType,
+            schemaProperties: {},
+            isRowSelected: false,
+            tableHover: true,
+            gridData: [],
+            columns: [],
+            displayFields: [],
+            currentPage: 1,
+            lastPage: false,
+            sortBy: null,
+            sortDesc: false,
+            sortDirection: 'asc',
+            filter: '',
+            createProperties: [],
+            userCanUpdate: false
+        };
+    },
+    mounted () {
+        this.loadData();
+    },
+    methods: {
+        loadData () {
+            const idmInstance = this.getRequestService();
 
-                /* istanbul ignore next */
-                axios.all([
-                    idmInstance.get(`schema/${this.resource}/${this.name}`),
-                    idmInstance.get(`privilege/${this.resource}/${this.name}`)]).then(axios.spread((schema, privilege) => {
-                        if (privilege.data.VIEW.allowed) {
-                            // Generate columns for display and filtering for read/query
-                            _.each(privilege.data.VIEW.properties, (readProp) => {
-                                let propSchema = schema.data.properties[readProp];
-                                if (
-                                    this.columns.length <= 3 &&
+            /* istanbul ignore next */
+            axios.all([
+                idmInstance.get(`schema/${this.resource}/${this.name}`),
+                idmInstance.get(`privilege/${this.resource}/${this.name}`)]).then(axios.spread((schema, privilege) => {
+                if (privilege.data.VIEW.allowed) {
+                    // Generate columns for display and filtering for read/query
+                    _.each(privilege.data.VIEW.properties, (readProp) => {
+                        let propSchema = schema.data.properties[readProp];
+                        if (
+                            this.columns.length <= 3 &&
                                     _.isUndefined(propSchema.encryption) &&
                                     _.includes(['string', 'boolean', 'number'], propSchema.type)
-                                ) {
-                                    this.columns.push({
-                                        key: readProp,
-                                        label: propSchema.title,
-                                        sortable: true,
-                                        sortDirection: 'desc'
-                                    });
-
-                                    this.displayFields.push(readProp);
-                                }
+                        ) {
+                            this.columns.push({
+                                key: readProp,
+                                label: propSchema.title,
+                                sortable: true,
+                                sortDirection: 'desc'
                             });
+
+                            this.displayFields.push(readProp);
                         }
-
-                        if (privilege.data.UPDATE) {
-                            this.userCanUpdate = true;
-                        }
-
-                        this.schemaProperties = schema.data.properties;
-
-                        if (privilege.data.CREATE.allowed) {
-                            // Generate create list for create resource dialog
-                            _.each(privilege.data.CREATE.properties, (createProp) => {
-                                if (schema.data.properties[createProp].type === 'string' || schema.data.properties[createProp].type === 'number' || schema.data.properties[createProp].type === 'boolean') {
-                                    schema.data.properties[createProp].key = createProp;
-
-                                    _.each(schema.data.required, (requiredKey) => {
-                                        if (requiredKey === schema.data.properties[createProp].key) {
-                                            schema.data.properties[createProp].required = true;
-                                        }
-                                    });
-
-                                    this.createProperties.push(schema.data.properties[createProp]);
-                                }
-                            });
-                        }
-
-                        this.loadGrid('true', this.displayFields, this.displayFields[0], 1);
-                    }))
-                    .catch((error) => {
-                        this.displayNotification('error', error.response.data.message);
                     });
-            },
-            loadGrid (filter, fields, sortField, page) {
-                const idmInstance = this.getRequestService();
+                }
 
-                /* istanbul ignore next */
-                idmInstance.get(this.buildGridUrl(filter, fields, sortField, page)).then((resourceData) => {
-                    // this.totalRows = resourceData.data.totalPagedResults;
-                    if (resourceData.data.pagedResultsCookie) {
-                        this.lastPage = false;
-                    } else {
-                        this.lastPage = true;
-                    }
+                if (privilege.data.UPDATE) {
+                    this.userCanUpdate = true;
+                }
 
-                    this.gridData = resourceData.data.result;
+                this.schemaProperties = schema.data.properties;
+
+                if (privilege.data.CREATE.allowed) {
+                    // Generate create list for create resource dialog
+                    _.each(privilege.data.CREATE.properties, (createProp) => {
+                        if (schema.data.properties[createProp].type === 'string' || schema.data.properties[createProp].type === 'number' || schema.data.properties[createProp].type === 'boolean') {
+                            schema.data.properties[createProp].key = createProp;
+
+                            _.each(schema.data.required, (requiredKey) => {
+                                if (requiredKey === schema.data.properties[createProp].key) {
+                                    schema.data.properties[createProp].required = true;
+                                }
+                            });
+
+                            this.createProperties.push(schema.data.properties[createProp]);
+                        }
+                    });
+                }
+
+                this.loadGrid('true', this.displayFields, this.displayFields[0], 1);
+            }))
+                .catch((error) => {
+                    this.displayNotification('error', error.response.data.message);
                 });
-            },
-            buildGridUrl (filter, fields, sortField, page) {
-                let resourceUrl = `${this.resource}/${this.name}?_queryFilter=${filter}&_pageSize=10&_totalPagedResultsPolicy=EXACT`;
+        },
+        loadGrid (filter, fields, sortField, page) {
+            const idmInstance = this.getRequestService();
 
-                if (_.isNull(sortField)) {
-                    // If there is no sortField default to sorting on the first column.
-                    sortField = fields[0];
-                }
-
-                resourceUrl = `${resourceUrl}&_sortKeys=${sortField}`;
-
-                if (fields.length) {
-                    resourceUrl = `${resourceUrl}&_fields=${fields.join(',')}`;
-                }
-
-                if (page > 1) {
-                    // Pagination starts at 1 and we need to go back an additional one to get the previous page
-                    let offsetCalc = (page - 1) * 10;
-
-                    resourceUrl = `${resourceUrl}&_pagedResultsOffset=${offsetCalc}`;
-                }
-
-                return resourceUrl;
-            },
-            calculateSort (sortDesc, sortBy) {
-                let sortUrl = null;
-
-                if (!_.isNull(sortBy)) {
-                    if (sortDesc) {
-                        sortUrl = `${sortBy}`;
-                    } else {
-                        sortUrl = `-${sortBy}`;
-                    }
-                }
-
-                return sortUrl;
-            },
-            sortingChanged (sort) {
-                this.currentPage = 1;
-                this.lastPage = false;
-
-                this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, this.calculateSort(sort.sortDesc, sort.sortBy), 1);
-            },
-            paginationChange (page) {
-                /* istanbul ignore next */
-                this.currentPage = page;
-                this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, this.calculateSort(this.sortDesc, this.sortBy), page);
-            },
-            search () {
-                this.sortBy = null;
-                this.sortDesc = false;
-                this.currentPage = 1;
-                this.lastPage = false;
-
-                this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, null, 1);
-            },
-            generateSearch (filter, displayFields, schemaProps) {
-                let filterUrl = '';
-
-                if (filter.length > 0) {
-                    _.each(displayFields, (field, index) => {
-                        let type = 'string';
-
-                        if (!_.isUndefined(schemaProps)) {
-                            type = schemaProps[field].type;
-                        }
-
-                        // Search based on number and proper number value
-                        if (type === 'number' && !_.isNaN(_.toNumber(filter))) {
-                            if ((index + 1) < displayFields.length) {
-                                filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
-                            } else {
-                                filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
-                            }
-                        // Search based on boolean and proper boolean true/false
-                        } else if (type === 'boolean' && (filter === 'true' || filter === 'false')) {
-                            if ((index + 1) < displayFields.length) {
-                                filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
-                            } else {
-                                filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
-                            }
-                        // Fallback to general string search if all other criteria fails
-                        } else {
-                            if ((index + 1) < displayFields.length) {
-                                filterUrl = `${filterUrl}${field}+sw+"${filter}"+OR+`;
-                            } else {
-                                filterUrl = `${filterUrl}${field}+sw+"${filter}"`;
-                            }
-                        }
-                    });
+            /* istanbul ignore next */
+            idmInstance.get(this.buildGridUrl(filter, fields, sortField, page)).then((resourceData) => {
+                // this.totalRows = resourceData.data.totalPagedResults;
+                if (resourceData.data.pagedResultsCookie) {
+                    this.lastPage = false;
                 } else {
-                    filterUrl = 'true';
+                    this.lastPage = true;
                 }
 
-                return filterUrl;
-            },
-            clear () {
-                this.filter = '';
-                this.sortBy = null;
-                this.sortDesc = false;
-                this.currentPage = 1;
+                this.gridData = resourceData.data.result;
+            });
+        },
+        buildGridUrl (filter, fields, sortField, page) {
+            let resourceUrl = `${this.resource}/${this.name}?_queryFilter=${filter}&_pageSize=10&_totalPagedResultsPolicy=EXACT`;
 
-                this.loadGrid('true', this.displayFields, null, 1);
-            },
-            resourceClicked (item) {
-                if (this.userCanUpdate) {
-                    this.$router.push({
-                        name: 'EditResource',
-                        params: {
-                            resourceType: this.resource,
-                            resourceName: this.name,
-                            resourceId: item._id
-                        }
-                    });
+            if (_.isNull(sortField)) {
+                // If there is no sortField default to sorting on the first column.
+                sortField = fields[0];
+            }
+
+            resourceUrl = `${resourceUrl}&_sortKeys=${sortField}`;
+
+            if (fields.length) {
+                resourceUrl = `${resourceUrl}&_fields=${fields.join(',')}`;
+            }
+
+            if (page > 1) {
+                // Pagination starts at 1 and we need to go back an additional one to get the previous page
+                let offsetCalc = (page - 1) * 10;
+
+                resourceUrl = `${resourceUrl}&_pagedResultsOffset=${offsetCalc}`;
+            }
+
+            return resourceUrl;
+        },
+        calculateSort (sortDesc, sortBy) {
+            let sortUrl = null;
+
+            if (!_.isNull(sortBy)) {
+                if (sortDesc) {
+                    sortUrl = `${sortBy}`;
                 } else {
-                    this.displayNotification('error', this.$t('pages.access.unableToEditResource', { resource: this.name }));
+                    sortUrl = `-${sortBy}`;
                 }
             }
+
+            return sortUrl;
+        },
+        sortingChanged (sort) {
+            this.currentPage = 1;
+            this.lastPage = false;
+
+            this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, this.calculateSort(sort.sortDesc, sort.sortBy), 1);
+        },
+        paginationChange (page) {
+            /* istanbul ignore next */
+            this.currentPage = page;
+            this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, this.calculateSort(this.sortDesc, this.sortBy), page);
+        },
+        search () {
+            this.sortBy = null;
+            this.sortDesc = false;
+            this.currentPage = 1;
+            this.lastPage = false;
+
+            this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, null, 1);
+        },
+        generateSearch (filter, displayFields, schemaProps) {
+            let filterUrl = '';
+
+            if (filter.length > 0) {
+                _.each(displayFields, (field, index) => {
+                    let type = 'string';
+
+                    if (!_.isUndefined(schemaProps)) {
+                        type = schemaProps[field].type;
+                    }
+
+                    // Search based on number and proper number value
+                    if (type === 'number' && !_.isNaN(_.toNumber(filter))) {
+                        if ((index + 1) < displayFields.length) {
+                            filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
+                        } else {
+                            filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
+                        }
+                        // Search based on boolean and proper boolean true/false
+                    } else if (type === 'boolean' && (filter === 'true' || filter === 'false')) {
+                        if ((index + 1) < displayFields.length) {
+                            filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
+                        } else {
+                            filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
+                        }
+                        // Fallback to general string search if all other criteria fails
+                    } else {
+                        if ((index + 1) < displayFields.length) {
+                            filterUrl = `${filterUrl}${field}+sw+"${filter}"+OR+`;
+                        } else {
+                            filterUrl = `${filterUrl}${field}+sw+"${filter}"`;
+                        }
+                    }
+                });
+            } else {
+                filterUrl = 'true';
+            }
+
+            return filterUrl;
+        },
+        clear () {
+            this.filter = '';
+            this.sortBy = null;
+            this.sortDesc = false;
+            this.currentPage = 1;
+
+            this.loadGrid('true', this.displayFields, null, 1);
+        },
+        resourceClicked (item) {
+            if (this.userCanUpdate) {
+                this.$router.push({
+                    name: 'EditResource',
+                    params: {
+                        resourceType: this.resource,
+                        resourceName: this.name,
+                        resourceId: item._id
+                    }
+                });
+            } else {
+                this.displayNotification('error', this.$t('pages.access.unableToEditResource', { resource: this.name }));
+            }
         }
-    };
+    }
+};
 </script>
 
 <style lang="scss" scoped>

@@ -13,24 +13,24 @@
 </template>
 
 <script>
-    /**
-     * @description Container for holding ListItem.vue, together both components can be used to display a list of items with varying degrees of customization
-     *
-     **/
-    export default {
-        name: 'List-Group',
-        props: {
-            'title': {
-                type: String
-            },
-            'subtitle': {
-                type: String
-            }
+/**
+ * @description Container for holding ListItem.vue, together both components can be used to display a list of items with varying degrees of customization
+ *
+ **/
+export default {
+    name: 'List-Group',
+    props: {
+        'title': {
+            type: String
         },
-        data () {
-            return {};
+        'subtitle': {
+            type: String
         }
-    };
+    },
+    data () {
+        return {};
+    }
+};
 </script>
 
 <style lang="scss" scoped>

@@ -37,58 +37,58 @@
 </template>
 
 <script>
-    import _ from 'lodash';
+import _ from 'lodash';
 
-    /**
-     * @description Widget that provides generic fallback for a workflow process
-     *
-     **/
-    export default {
-        name: 'Generic-Process',
-        props: ['workflowDetails', 'id'],
-        data () {
-            let tempFormFields = [],
-                tempFormValues = {
-                    _processDefinitionId: this.id
-                };
+/**
+ * @description Widget that provides generic fallback for a workflow process
+ *
+ **/
+export default {
+    name: 'Generic-Process',
+    props: ['workflowDetails', 'id'],
+    data () {
+        let tempFormFields = [],
+            tempFormValues = {
+                _processDefinitionId: this.id
+            };
 
-            // Establish type and default values
-            _.each(this.workflowDetails, (detail) => {
-                let detailKey = _.lowerCase(detail.name);
+        // Establish type and default values
+        _.each(this.workflowDetails, (detail) => {
+            let detailKey = _.lowerCase(detail.name);
 
-                tempFormFields.push({
-                    name: detail.name,
-                    key: detailKey,
-                    type: detail.type.name,
-                    value: detail.type.value
-                });
-
-                if (detail.type.name === 'boolean') {
-                    tempFormValues[detailKey] = false;
-                } else if (detail.type.name === 'number') {
-                    tempFormValues[detailKey] = 0;
-                } else if (detail.type.name === 'string') {
-                    tempFormValues[detailKey] = '';
-                }
+            tempFormFields.push({
+                name: detail.name,
+                key: detailKey,
+                type: detail.type.name,
+                value: detail.type.value
             });
 
-            return {
-                formFields: tempFormFields,
-                formValues: tempFormValues
-            };
-        },
-        methods: {
-            resetForm () {
-                _.each(this.formValues, (value, key) => {
-                    if (_.isNumber(value)) {
-                        this.formValues[key] = 0;
-                    } else if (_.isBoolean(value)) {
-                        this.formValues[key] = false;
-                    } else {
-                        this.formValues[key] = '';
-                    }
-                });
+            if (detail.type.name === 'boolean') {
+                tempFormValues[detailKey] = false;
+            } else if (detail.type.name === 'number') {
+                tempFormValues[detailKey] = 0;
+            } else if (detail.type.name === 'string') {
+                tempFormValues[detailKey] = '';
             }
+        });
+
+        return {
+            formFields: tempFormFields,
+            formValues: tempFormValues
+        };
+    },
+    methods: {
+        resetForm () {
+            _.each(this.formValues, (value, key) => {
+                if (_.isNumber(value)) {
+                    this.formValues[key] = 0;
+                } else if (_.isBoolean(value)) {
+                    this.formValues[key] = false;
+                } else {
+                    this.formValues[key] = '';
+                }
+            });
         }
-    };
+    }
+};
 </script>

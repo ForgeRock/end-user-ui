@@ -27,42 +27,44 @@
 </template>
 
 <script>
-    /**
-     * @description Used in conjunction with ListGroup.vue, this is the individual item in each list display.
-     *
-     **/
-    export default {
-        name: 'List-Item',
-        props: {
-            'collapsible': {
-                type: Boolean,
-                default: false
-            },
-            'panelShown': {
-                type: Boolean,
-                default: false
-            },
-            'hoverItem': {
-                type: Boolean,
-                default: false
-            }
+/**
+ * @description Used in conjunction with ListGroup.vue, this is the individual item in each list display.
+ *
+ **/
+export default {
+    name: 'List-Item',
+    props: {
+        'collapsible': {
+            type: Boolean,
+            default: false
         },
-        data () {
-            return {
-                id: null
-            };
+        'panelShown': {
+            type: Boolean,
+            default: false
         },
-        beforeMount () {
-            this.id = 'listItem' + this._uid;
-        },
-        computed: {
-            toggleId () {
-                if (this.collapsible) {
-                    return this.id;
-                }
+        'hoverItem': {
+            type: Boolean,
+            default: false
+        }
+    },
+    data () {
+        return {
+            id: null
+        };
+    },
+    beforeMount () {
+        this.id = 'listItem' + this._uid;
+    },
+    computed: {
+        toggleId () {
+            if (this.collapsible) {
+                return this.id;
+            } else {
+                return null;
             }
         }
-    };
+    }
+};
 </script>
 <style lang="scss" scoped>
     .media {

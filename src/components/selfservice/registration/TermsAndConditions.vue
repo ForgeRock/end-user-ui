@@ -23,35 +23,35 @@
 </template>
 
 <script>
-    /**
-     * @description Selfservice stage for terms and conditions depending on all in one displays as a dialog or inline text depending at allinone
-     *
-     **/
-    export default {
-        name: 'Terms-And-Conditions',
-        props: {
-            selfServiceDetails: { required: true },
-            inline: {
-                required: false,
-                default: false
-            }
-        },
-        methods: {
-            getData () {
-                return {
-                    accept: 'true'
-                };
-            },
-
-            save () {
-                this.$emit('advanceStage', this.getData());
-            },
-
-            isValid () {
-                return Promise.resolve(true);
-            }
+/**
+ * @description Selfservice stage for terms and conditions depending on all in one displays as a dialog or inline text depending at allinone
+ *
+ **/
+export default {
+    name: 'Terms-And-Conditions',
+    props: {
+        selfServiceDetails: { required: true },
+        inline: {
+            required: false,
+            default: false
         }
-    };
+    },
+    methods: {
+        getData () {
+            return {
+                accept: 'true'
+            };
+        },
+
+        save () {
+            this.$emit('advanceStage', this.getData());
+        },
+
+        isValid () {
+            return Promise.resolve(true);
+        }
+    }
+};
 </script>
 
 <style scoped></style>

@@ -18,47 +18,47 @@
 </template>
 
 <script>
-    import Welcome from '@/components/dashboard/widgets/WelcomeWidget';
-    import Workflow from '@/components/dashboard/widgets/WorkflowControlWidget';
+import Welcome from '@/components/dashboard/widgets/WelcomeWidget';
+import Workflow from '@/components/dashboard/widgets/WorkflowControlWidget';
 
-    /**
-     * @description Controlling component for the dashboard, loads widgets set and configured in the ui-dashboard config file.
-     *
-     * @fires GET config/ui/dashboard - Read of the config file ui-dashboard.json
-     */
-    export default {
-        name: 'Dashboard',
-        components: {
-            Welcome,
-            Workflow
-        },
-        data () {
-            return {
-                widgets: [],
-                userDetails: this.$root.userStore.getUserState()
-            };
-        },
-        mounted () {
-            this.loadData();
-        },
-        methods: {
-            loadData () {
-                /* istanbul ignore next */
-                this.getRequestService().get('config/ui/dashboard')
-                    .then(({data}) => {
-                        this.widgets = data.dashboard.widgets;
+/**
+ * @description Controlling component for the dashboard, loads widgets set and configured in the ui-dashboard config file.
+ *
+ * @fires GET config/ui/dashboard - Read of the config file ui-dashboard.json
+ */
+export default {
+    name: 'Dashboard',
+    components: {
+        Welcome,
+        Workflow
+    },
+    data () {
+        return {
+            widgets: [],
+            userDetails: this.$root.userStore.getUserState()
+        };
+    },
+    mounted () {
+        this.loadData();
+    },
+    methods: {
+        loadData () {
+            /* istanbul ignore next */
+            this.getRequestService().get('config/ui/dashboard')
+                .then(({ data }) => {
+                    this.widgets = data.dashboard.widgets;
 
-                        if (this.$root.applicationStore.state.workflow) {
-                            this.widgets.push({
-                                type: 'Workflow',
-                                size: 'large'
-                            });
-                        }
-                    })
-                    .catch((error) => {
-                        this.displayNotification('error', error.response.data.message);
-                    });
-            }
+                    if (this.$root.applicationStore.state.workflow) {
+                        this.widgets.push({
+                            type: 'Workflow',
+                            size: 'large'
+                        });
+                    }
+                })
+                .catch((error) => {
+                    this.displayNotification('error', error.response.data.message);
+                });
         }
-    };
+    }
+};
 </script>

@@ -5,7 +5,7 @@
             :panelShown="false">
 
             <template slot="list-item-header" class="overflow:hidden;">
-                    <fr-fallback-image :src="mapping.icon" class="mr-3" width="24" height="24" :alt="mapping.name" fallback="fa-gear"></fr-fallback-image>
+                    <fr-fallback-image :src="mapping.icon" class="mr-3" width="24" height="24" :alt="mapping.name" fallback="fa-cog"></fr-fallback-image>
                     <div class="media-body" style="width: 100%">
                         <div class="d-block">
                             <h6 class="my-0">{{mapping.displayName}}</h6>
@@ -36,7 +36,7 @@
 
                         <div slot="modal-footer">
                             <div class="float-right">
-                                <b-btn variant="outline-secondary" @click.stop.prevent="hideModal(mapping.name)">{{$t('common.form.cancel')}}</b-btn>
+                                <b-btn variant="outline-secondary mr-2" @click.stop.prevent="hideModal(mapping.name)">{{$t('common.form.cancel')}}</b-btn>
                                 <b-btn type="button" :variant="mapping.consented ? 'danger' : 'primary'" @click.stop.prevent="toggleConsentAndHideModal(mapping)">
                                     {{$t(`pages.profile.consent.${mapping.consented ? 'deny' : 'allow'}`)}}
                                 </b-btn>
@@ -53,99 +53,99 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import moment from 'moment';
-    import FallbackImage from '@/components/utils/FallbackImage';
-    import ListGroup from '@/components/utils/ListGroup';
-    import ListItem from '@/components/utils/ListItem';
-    import AccessLevel from './AccessLevel';
+import _ from 'lodash';
+import AccessLevel from './AccessLevel';
+import FallbackImage from '@/components/utils/FallbackImage';
+import ListGroup from '@/components/utils/ListGroup';
+import ListItem from '@/components/utils/ListItem';
+import moment from 'moment';
 
-    /**
-     * @description Controls the display of a users currently consented mappings (where their data is sent).
-     *
-     * @fires POST consent?_action=getConsentMappings - Gets a list of available mappings for consent in conjunction with the consent portion of a users profile this is
-     * used to display which mappings are consented to and can be consented out of.
-     *
-     */
-    export default {
-        name: 'Consent',
-        components: {
-            'fr-list-group': ListGroup,
-            'fr-list-item': ListItem,
-            'fr-access-level': AccessLevel,
-            'fr-fallback-image': FallbackImage
-        },
-        props: [ 'consentedMappings' ],
-        data () {
-            return {
-                consentableMappings: []
-            };
-        },
-        computed: {
-            mappings () {
-                return this.consentableMappings.map((mapping) => {
-                    let consentedMapping = _.find(this.consentedMappings, { mapping: mapping.name }),
-                        modalHeaderPath = 'pages.profile.consent.';
+/**
+ * @description Controls the display of a users currently consented mappings (where their data is sent).
+ *
+ * @fires POST consent?_action=getConsentMappings - Gets a list of available mappings for consent in conjunction with the consent portion of a users profile this is
+ * used to display which mappings are consented to and can be consented out of.
+ *
+ */
+export default {
+    name: 'Consent',
+    components: {
+        'fr-list-group': ListGroup,
+        'fr-list-item': ListItem,
+        'fr-access-level': AccessLevel,
+        'fr-fallback-image': FallbackImage
+    },
+    props: [ 'consentedMappings' ],
+    data () {
+        return {
+            consentableMappings: []
+        };
+    },
+    computed: {
+        mappings () {
+            return this.consentableMappings.map((mapping) => {
+                let consentedMapping = _.find(this.consentedMappings, { mapping: mapping.name }),
+                    modalHeaderPath = 'pages.profile.consent.';
 
-                    mapping.showDetails = false;
+                mapping.showDetails = false;
 
-                    if (!_.isUndefined(consentedMapping)) {
-                        mapping.consented = true;
-                        mapping.consentDate = consentedMapping.consentDate;
-                        modalHeaderPath += 'denyConsentHeader';
-                        mapping.subTitle = `${this.$t('pages.profile.consent.authorized')} ${moment(mapping.consentDate).format('MMMM Do YYYY')}`;
-                    } else {
-                        mapping.consented = false;
-                        modalHeaderPath += 'allowConsentHeader';
-                        mapping.subTitle = this.$t('pages.profile.consent.notAuthorized');
-                    }
-
-                    mapping.modalHeader = this.$t(modalHeaderPath);
-                    return mapping;
-                });
-            }
-        },
-        created () {
-            /* istanbul ignore next */
-            this.getRequestService()
-                .get(`consent?_queryFilter=/source eq "${this.$root.userStore.state.managedResource}"`)
-                .then(({data}) => {
-                    this.consentableMappings = data.result;
-                });
-        },
-        methods: {
-            showModal (name) {
-                _.first(this.$refs[name]).show();
-            },
-            toggleConsentAndHideModal (mapping) {
-                this.toggleConsent(mapping);
-                this.hideModal(mapping.name);
-            },
-            hideModal (name) {
-                _.first(this.$refs[name]).hide();
-            },
-            generatePatch (mapping) {
-                let { consentDate, name } = mapping,
-                    value = {
-                        consentDate,
-                        mapping: name
-                    },
-                    field = '/consentedMappings',
-                    operation;
-
-                if (!mapping.consented) {
-                    value.consentDate = new Date().toISOString();
-                    field += '/-';
-                    operation = 'add';
+                if (!_.isUndefined(consentedMapping)) {
+                    mapping.consented = true;
+                    mapping.consentDate = consentedMapping.consentDate;
+                    modalHeaderPath += 'denyConsentHeader';
+                    mapping.subTitle = `${this.$t('pages.profile.consent.authorized')} ${moment(mapping.consentDate).format('MMMM Do YYYY')}`;
                 } else {
-                    operation = 'remove';
+                    mapping.consented = false;
+                    modalHeaderPath += 'allowConsentHeader';
+                    mapping.subTitle = this.$t('pages.profile.consent.notAuthorized');
                 }
 
-                return [{ field, operation, value }];
-            },
-            toggleConsent (mapping, event) {
-                this.$emit('updateProfile', this.generatePatch(mapping));
-            }
+                mapping.modalHeader = this.$t(modalHeaderPath);
+                return mapping;
+            });
         }
-    };
+    },
+    created () {
+        /* istanbul ignore next */
+        this.getRequestService()
+            .get(`consent?_queryFilter=/source eq "${this.$root.userStore.state.managedResource}"`)
+            .then(({ data }) => {
+                this.consentableMappings = data.result;
+            });
+    },
+    methods: {
+        showModal (name) {
+            _.first(this.$refs[name]).show();
+        },
+        toggleConsentAndHideModal (mapping) {
+            this.toggleConsent(mapping);
+            this.hideModal(mapping.name);
+        },
+        hideModal (name) {
+            _.first(this.$refs[name]).hide();
+        },
+        generatePatch (mapping) {
+            let { consentDate, name } = mapping,
+                value = {
+                    consentDate,
+                    mapping: name
+                },
+                field = '/consentedMappings',
+                operation;
+
+            if (!mapping.consented) {
+                value.consentDate = new Date().toISOString();
+                field += '/-';
+                operation = 'add';
+            } else {
+                operation = 'remove';
+            }
+
+            return [{ field, operation, value }];
+        },
+        toggleConsent (mapping, event) {
+            this.$emit('updateProfile', this.generatePatch(mapping));
+        }
+    }
+};
 </script>

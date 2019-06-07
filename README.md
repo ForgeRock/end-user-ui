@@ -35,9 +35,15 @@
 - Check that you have the latest npm with `npm install npm@latest -g`
 - Clone or download the repo: `https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser` or `https://github.com/ForgeRock/end-user-ui`
 - Navigate to your `openidm-enduser` directory and install dependencies with npm: `npm install`
-- Update `proxyTable:target` in `/config/index.js` to point to your target IDM
+- Update `proxyTable:target` in `vue.config.js` to point to your target IDM
 - Start up target IDM (default startup is `http://localhost:8080`)
 - Start development server with npm: `npm run dev`
+
+### Optional Help
+
+Vue provides a CLI to help with managing clients if you wish to make use of it you can do the following
+- Run command `npm install -g @vue/cli` to install the Vue Client
+- Then to open the management UI use `vue ui`
 
 <a name="development-server"></a>
 ## Development server
@@ -48,7 +54,7 @@
 - Assumes `openidm` is the context for the rest service (e.g. http://localhost:8080/openidm/info). If this is not the case, change idmContext `/src/main.js`, or context `/index.html`.
 - Supports hot reloading and error display when code is changed
 - Includes its own [testing](#testing)
-- Built off [Vue Webpack Template](http://vuejs-templates.github.io/webpack/)
+- Built off [Vue CLI 3](https://cli.vuejs.org/config/)
 
 <a name="development-server-tools"></a>
 ## Development server tools
@@ -59,13 +65,7 @@
 <a name="testing"></a>
 ## Testing
 
-- Run tests with npm: `npm test`
-
-Running tests provides a console display with test results and generates a viewable testing result report for browser display `test/unit/coverage/lcov-report`.
-
-- Run tests for browser debugging: `npm run unit:watch`
-
-This command runs two copies of the tests - one in the phantom JS headless browser and another at `localhost:9876` that can be used to watch or debug on your local browser.
+- Run tests with npm: `npm run test:unit`
 
 <a name="testing-tools"></a>
 ## Testing tools
@@ -74,10 +74,10 @@ The following testing tools are installed when you install the project dependenc
 
 - [Vue testing utils](https://vue-test-utils.vuejs.org/) - Testing util library for Vue components
 - [Sinon](https://sinonjs.org/) - Testing util library (stubs and spies)
-- [Karma](https://karma-runner.github.io/2.0/index.html) - Testing harness
+- [Mocha-Webpack](http://zinserjan.github.io/mocha-webpack/) - Testing harness
 - [Mocha](https://mochajs.org/) - Testing framework
 - [Chai](http://chaijs.com/) - Assertion library
-- [PhantomJS](https://github.com/ariya/phantomjs) - Headless browser
+- [JSDom](https://github.com/jsdom/jsdom) - Browser simulation
 
 <a name="application-structure"></a>
 ## Application structure
@@ -85,6 +85,12 @@ The following testing tools are installed when you install the project dependenc
 To help you with navigation, the application has the following basic layout:
 
 ```
+tests/ - Folder containing the application tests
+│
+public/
+├── static/ - Images and files that will not be processed by webpack
+├── favicon.ico - Website fav icon
+├── index.html - Application index.html
 src/
 ├── components/ - General application components
 │    ├── access/ - Delegated admin components
@@ -96,13 +102,18 @@ src/
 │    ├── Login.vue/ - Base login page for the application
 │    ├── NotFound.vue/ - 404 page
 │    └── OAuthReturn.vue/ - Handles OAuth returns for registration and login
-├── router/ - Application routes
+├── assets - Images that will be processed by webpack
+├── router - Application routes
+├── i18n - Translation loader
 ├── scss/ - SCSS / CSS styling files
 ├── store/ - Shared data sources for components
-├── translations/ - Translation files
+├── locales/ - Translation files
 ├── App.vue - The base application Vue component
 └── main.js - Initialization Javascript file
-
+│
+vue.config.js - Vue CLI configuration File
+│
+Package.json - Node package JSON for dependency management
 ```
 
 <a name="application-tools"></a>
@@ -131,25 +142,27 @@ Adding and changing an existing message for the `en` base language involves eith
 Keys follow JSON structure; for example, if you wanted to edit the navigation bar `Profile` to `User Profile` you would need to locate the appropriate key `en.pages.app.profile` and change the text.
 Inside of your Vue application you would then make use of that key with the built in translation function `{{$t('pages.app.profile')}}` or `this.$t('pages.app.profile')`.
 
-Adding a new translation language means expanding the current JSON contained in `src/translations/index.js` with the corresponding language code and appropriate mirrored structure.
-
+Adding a new translation language means creating a new translation file inside of locales folder with a key matching the translation language code.
 
 For example:
 
-``` json
-
-{
-    en: {
-        welcome: 'Welcome'
-    },
-
-    fr: {
-        welcome: 'Bienvenue'
-    }
-}
-
+```
+en.json
+fr.json
+gr.json
 ```
 
+Then creating a JSON key structure that should be mirrored across all of the language files.
+
+For example:
+
+``` JSON
+    {
+        dashboard: {
+            welcomeMessage: 'Welcome!'
+        }
+    }
+```
 <a name="deployment"></a>
 ## Deployment
 
@@ -201,14 +214,11 @@ npm run dev --theme=red
 # build for production with minification
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
-
 # build with theme loaded
 npm run build --theme=red
 
 # run all tests
-npm test
+npm run test:unit
 ```
 
 A `Dockerfile` is provided that bundles the contents of the `dist/` directory,

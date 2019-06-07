@@ -1,18 +1,16 @@
 import _ from 'lodash';
 import App from './App';
+import ApplicationStore from './store/Application';
 import axios from 'axios';
 import BootstrapVue from 'bootstrap-vue/dist/bootstrap-vue.esm.min';
+import i18n from './i18n';
 import Notifications from 'vue-notification';
-import Router from 'vue-router';
+import PromisePoly from 'es6-promise';
 import router from './router';
-import translations from './translations';
+import ToggleButton from 'vue-js-toggle-button';
 import UserStore from './store/User';
-import ApplicationStore from './store/Application';
 import VeeValidate from 'vee-validate';
 import Vue from 'vue';
-import VueI18n from 'vue-i18n';
-import ToggleButton from 'vue-js-toggle-button';
-import PromisePoly from 'es6-promise';
 import AppAuthHelper from 'appauthhelper';
 import SessionCheck from 'oidcsessioncheck';
 
@@ -20,18 +18,6 @@ import SessionCheck from 'oidcsessioncheck';
 Vue.config.productionTip = false;
 
 PromisePoly.polyfill();
-
-// Add translation capability
-/*
-  Basic Translation Example:
-
-  HTML: {{ $t("pages.resources.externalResources") }}
-  JS: this.$t("pages.resources.externalResources")
- */
-Vue.use(VueI18n);
-
-// Setup router
-Vue.use(Router);
 
 // Router guard to check authenticated routes
 router.beforeEach((to, from, next) => {
@@ -63,23 +49,23 @@ router.beforeEach((to, from, next) => {
                     authInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
                     authInstance.post(`privilege?_action=listPrivileges`),
                     authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, privilege, schema) => {
-                        UserStore.setProfileAction(profile.data);
-                        UserStore.setSchemaAction(schema.data);
-                        UserStore.setAccess(privilege.data);
+                    UserStore.setProfileAction(profile.data);
+                    UserStore.setSchemaAction(schema.data);
+                    UserStore.setAccess(privilege.data);
 
-                        next();
-                    }));
+                    next();
+                }));
             },
-                () => {
-                    // Recheck class in case of double login load using from location
-                    document.body.className = '';
+            () => {
+                // Recheck class in case of double login load using from location
+                document.body.className = '';
 
-                    if (_.has(from, 'meta.bodyClass')) {
-                        document.body.className = (document.body.className + from.meta.bodyClass).trim();
-                    }
+                if (_.has(from, 'meta.bodyClass')) {
+                    document.body.className = (document.body.className + from.meta.bodyClass).trim();
+                }
 
-                    next({name: 'Login'});
-                });
+                next({ name: 'Login' });
+            });
         } else {
             next();
         }
@@ -90,12 +76,7 @@ router.beforeEach((to, from, next) => {
 
 // Ready translated locale messages
 // IDM Context default
-const i18n = new VueI18n({
-        locale: 'en',
-        fallbackLocale: 'en',
-        messages: translations
-    }),
-    idmContext = window.context || '/openidm';
+const idmContext = window.context || '/openidm';
 
 // Globally load bootstrap vue components for use
 Vue.use(BootstrapVue);
@@ -113,7 +94,7 @@ Vue.use(BootstrapVue);
         validator: 'new'
     }
  */
-Vue.use(VeeValidate, {inject: false, fastExit: false});
+Vue.use(VeeValidate, { inject: false, fastExit: false });
 
 /*
     Basic Notification Example:
@@ -125,7 +106,6 @@ Vue.use(VeeValidate, {inject: false, fastExit: false});
     });
  */
 Vue.use(Notifications);
-
 Vue.use(ToggleButton);
 
 // Global mixin for making openIDM REST calls
@@ -169,7 +149,7 @@ Vue.mixin({
                 return response;
             }, (error) => {
                 if (error.response && error.response.data && error.response.data.code === 401) {
-                    this.$router.push({name: 'Login'});
+                    this.$router.push({ name: 'Login' });
 
                     return Promise.reject(error);
                 } else if (_.isUndefined(error.response)) {
@@ -230,18 +210,18 @@ var startApp = function () {
         axios.all([
             idmInstance.get('/info/uiconfig'),
             idmInstance.get('info/features?_queryFilter=true')]).then(axios.spread((uiConfig, availability) => {
-                if (uiConfig.data.configuration.lang) {
-                    i18n.locale = uiConfig.data.configuration.lang;
-                }
+            if (uiConfig.data.configuration.lang) {
+                i18n.locale = uiConfig.data.configuration.lang;
+            }
 
-                if (uiConfig.data.configuration.amDataEndpoints) {
-                    ApplicationStore.setAmDataEndpointsAction(uiConfig.data.configuration.amDataEndpoints);
-                }
+            if (uiConfig.data.configuration.amDataEndpoints) {
+                ApplicationStore.setAmDataEndpointsAction(uiConfig.data.configuration.amDataEndpoints);
+            }
 
-                ApplicationStore.setEnduserSelfservice(availability.data.result);
+            ApplicationStore.setEnduserSelfservice(availability.data.result);
 
-                return loadApp();
-            }))
+            return loadApp();
+        }))
             .catch(() => {
                 return loadApp();
             });

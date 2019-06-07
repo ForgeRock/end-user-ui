@@ -7,7 +7,7 @@
         {{$t('pages.uma.resources.warningMessage')}}
         <div slot="modal-footer">
             <div class="float-right">
-                <b-btn variant="outline-secondary" @click="hideModal">{{$t('pages.uma.resources.cancel')}}</b-btn>
+                <b-btn variant="outline-secondary mr-2" @click="hideModal">{{$t('pages.uma.resources.cancel')}}</b-btn>
                 <b-btn type="button" variant="danger" @click="unshare">{{$t('pages.uma.resources.unshare')}}</b-btn>
             </div>
         </div>
@@ -15,27 +15,27 @@
 </template>
 
 <script>
-    /**
-     * @description Dialog for warning a user and confirming they want to stop sharing a resource
-     *
-     **/
-    export default {
-        name: 'Unshare',
-        components: {},
-        data () {
-            return {};
+/**
+ * @description Dialog for warning a user and confirming they want to stop sharing a resource
+ *
+ **/
+export default {
+    name: 'Unshare',
+    components: {},
+    data () {
+        return {};
+    },
+    props: ['resourceId', 'resourceName'],
+    methods: {
+        hideModal () {
+            this.$refs.fsModal.hide();
         },
-        props: ['resourceId', 'resourceName'],
-        methods: {
-            hideModal () {
-                this.$refs.fsModal.hide();
-            },
-            unshare () {
-                this.$emit('unshareResource', this.resourceId);
-                this.hideModal();
-            }
+        unshare () {
+            this.$emit('unshareResource', this.resourceId);
+            this.hideModal();
         }
-    };
+    }
+};
 </script>
 
 <style lang="scss">

@@ -132,7 +132,7 @@
                         </goals>
                         <phase>test</phase>
                         <configuration>
-                            <arguments>run test</arguments>
+                            <arguments>run test:unit</arguments>
                         </configuration>
                     </execution>
                     <execution>

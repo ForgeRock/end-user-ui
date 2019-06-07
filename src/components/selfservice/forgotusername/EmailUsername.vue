@@ -5,11 +5,11 @@
 </template>
 
 <script>
-    /**
-     * @description Selfservice stage for username recovery, displays a message notifying a user they have been sent an email
-     *
-     **/
-    export default {
-        name: 'Email-Username'
-    };
+/**
+ * @description Selfservice stage for username recovery, displays a message notifying a user they have been sent an email
+ *
+ **/
+export default {
+    name: 'Email-Username'
+};
 </script>

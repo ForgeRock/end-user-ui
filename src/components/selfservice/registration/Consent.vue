@@ -12,35 +12,35 @@
 </template>
 
 <script>
-    /**
-     * @description Selfservice stage for consent depending on all in one displays as a dialog or a basic page text display
-     *
-     **/
-    export default {
-        name: 'Consent',
-        props: {
-            selfServiceDetails: { required: true },
-            inline: {
-                required: false,
-                default: false
-            }
-        },
-        methods: {
-            getData () {
-                return {
-                    consentGiven: 'true'
-                };
-            },
-
-            save () {
-                this.$emit('advanceStage', this.getData());
-            },
-
-            isValid () {
-                return Promise.resolve(true);
-            }
+/**
+ * @description Selfservice stage for consent depending on all in one displays as a dialog or a basic page text display
+ *
+ **/
+export default {
+    name: 'Consent',
+    props: {
+        selfServiceDetails: { required: true },
+        inline: {
+            required: false,
+            default: false
         }
-    };
+    },
+    methods: {
+        getData () {
+            return {
+                consentGiven: 'true'
+            };
+        },
+
+        save () {
+            this.$emit('advanceStage', this.getData());
+        },
+
+        isValid () {
+            return Promise.resolve(true);
+        }
+    }
+};
 </script>
 
 <style scoped></style>

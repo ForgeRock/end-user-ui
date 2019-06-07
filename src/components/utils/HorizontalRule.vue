@@ -7,14 +7,14 @@
 </template>
 
 <script>
-    /**
-     * @description Component for making a horizontal rule line with text in the middle
-     *
-     **/
-    export default {
-        name: 'Horizontal-Rule',
-        props: ['insert']
-    };
+/**
+ * @description Component for making a horizontal rule line with text in the middle
+ *
+ **/
+export default {
+    name: 'Horizontal-Rule',
+    props: ['insert']
+};
 </script>
 
 <style lang="scss" scoped>

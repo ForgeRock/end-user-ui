@@ -28,57 +28,55 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import ListGroup from '@/components/utils/ListGroup';
-    import ListItem from '@/components/utils/ListItem';
-    import styles from '@/scss/main.scss';
-    import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
-    import Process from './Process';
+import _ from 'lodash';
+import styles from '@/scss/main.scss';
+import ListGroup from '@/components/utils/ListGroup';
+import ListItem from '@/components/utils/ListItem';
+import Process from './Process';
 
-    /**
-     * @description Dashboard widget that displays a list of available processes that can be started
-     *
-     **/
-    export default {
-        name: 'Processes',
-        props: {
-            'processes': {
-                type: Object,
-                default: () => {
-                    return {};
-                }
-            }
-        },
-        data () {
-            return {
-                loadingColor: styles.baseColor
-            };
-        },
-        components: {
-            'fr-list-group': ListGroup,
-            'fr-list-item': ListItem,
-            'fr-process': Process,
-            BounceLoader
-        },
-        methods: {
-            isEmpty: _.isEmpty,
-            reset (id) {
-                let process = _.first(this.$refs[id]);
-
-                if (process) {
-                    process.reset();
-                }
-            },
-            cancel (id) {
-                let cancelBtn = _.first(this.$refs[`cancel-${id}`]);
-
-                if (cancelBtn) {
-                    this.reset(id);
-                    cancelBtn.click();
-                }
+/**
+* @description Dashboard widget that displays a list of available processes that can be started
+*
+**/
+export default {
+    name: 'Processes',
+    props: {
+        'processes': {
+            type: Object,
+            default: () => {
+                return {};
             }
         }
-    };
+    },
+    data () {
+        return {
+            loadingColor: styles.baseColor
+        };
+    },
+    components: {
+        'fr-list-group': ListGroup,
+        'fr-list-item': ListItem,
+        'fr-process': Process
+    },
+    methods: {
+        isEmpty: _.isEmpty,
+        reset (id) {
+            let process = _.first(this.$refs[id]);
+
+            if (process) {
+                process.reset();
+            }
+        },
+        cancel (id) {
+            let cancelBtn = _.first(this.$refs[`cancel-${id}`]);
+
+            if (cancelBtn) {
+                this.reset(id);
+                cancelBtn.click();
+            }
+        }
+    }
+};
 </script>
 
 <style lang="scss" scoped></style>

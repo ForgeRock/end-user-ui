@@ -191,14 +191,15 @@ select.custom-select {
 .nav-tabs {
   margin-bottom: 1.875rem;
 }
+
 .nav-tabs .nav-link {
   color: $nav-tabs-link-color;
   border-radius: 0;
   border-left: none;
   border-right: none;
 }
-.nav-tabs .nav-link.active,
-.nav-tabs .nav-item.show .nav-link {
+
+.nav-tabs .nav-item .nav-link.active {
   background: transparent;
   border-color: transparent;
   border-radius: 0;

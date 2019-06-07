@@ -5,12 +5,12 @@
                 <ul class="sidebar-nav">
                     <li class="sidebar-brand">
                         <router-link class="d-flex" active-class=""  :to="{ name: 'Dashboard'}">
-                            <img src="static/images/horizontal-logo-white.svg" :alt="$t('common.form.logo')" style="width:131px;" class="align-self-center sidebar-brand-logo" />
-                            <img src="static/images/vertical-logo-white.svg" :alt="$t('common.form.logo')"  style="height:28px;" class="align-self-center sidebar-brand-mark" />
+                            <img :src="require('@/assets/images/horizontal-logo-white.svg')" :alt="$t('common.form.logo')" style="width:131px;" class="align-self-center sidebar-brand-logo" />
+                            <img :src="require('@/assets/images/vertical-logo-white.svg')" :alt="$t('common.form.logo')"  style="height:28px;" class="align-self-center sidebar-brand-mark" />
                         </router-link>
                     </li>
                     <li>
-                        <router-link  :to="{ name: 'Dashboard'}"><i class="fa fa-fw mr-3 fa-tachometer"></i><span class="sidebar-item-text">{{$t('pages.app.dashboard')}}</span></router-link>
+                        <router-link  :to="{ name: 'Dashboard'}"><i class="fa fa-fw mr-3 fa-tachometer-alt"></i><span class="sidebar-item-text">{{$t('pages.app.dashboard')}}</span></router-link>
                     </li>
                     <li>
                         <router-link :to="{ name: 'Profile'}"><i class="fa fa-fw mr-3 fa-street-view"></i><span class="sidebar-item-text">{{$t('pages.app.profile')}}</span></router-link>
@@ -41,7 +41,7 @@
                         <fr-notification></fr-notification>
                         <b-nav-item-dropdown class="fr-main-dropdown" right>
                             <template slot="button-content">
-                                {{$t('pages.app.user')}} <b-img src="static/images/profile-default.png" rounded="circle" width="24" height="24" alt="img" class="m-1" />
+                                {{$t('pages.app.user')}} <b-img :src="require('@/assets/images/profile-default.png')" rounded="circle" width="24" height="24" alt="img" class="m-1" />
                             </template>
                             <b-dropdown-item active-class="fr-no-active" exact-active-class="fr-no-active" :to="{ name: 'Profile'}">{{$t('pages.app.profile')}}</b-dropdown-item>
                             <b-dropdown-item v-if="this.$root.userStore.state.adminUser" href="/admin/">{{$t('pages.app.admin')}}</b-dropdown-item>
@@ -62,7 +62,7 @@
             <template slot="body" slot-scope="props">
                 <div :class="[{ 'alert-success': (props.item.type == 'success'), 'alert-warning': (props.item.type == 'warning'), 'alert-danger': (props.item.type == 'error'), 'alert-info': (props.item.type == 'info')}, 'alert', 'alert-dismissible', 'd-flex', 'p-3', 'pr-5', 'position-relative']" role="alert">
                     <div :class="[{ 'text-success': (props.item.type == 'success'), 'text-warning': (props.item.type == 'warning'), 'text-danger': (props.item.type == 'error'), 'text-info': (props.item.type == 'info')}, 'alert-icon', 'mr-3', 'align-self-top']">
-                        <i :class="[{ 'fa-check-circle-o': (props.item.type == 'success'), 'fa-exclamation-triangle': (props.item.type == 'warning'), 'fa-times-circle': (props.item.type == 'error'), 'fa-info-circle': (props.item.type == 'info')}, 'fa', 'fa-lg']"></i>
+                        <i :class="[{ 'fa-check-circle': (props.item.type == 'success'), 'fa-exclamation-triangle': (props.item.type == 'warning'), 'fa-times-circle': (props.item.type == 'error'), 'fa-info-circle': (props.item.type == 'info')}, 'fa', 'fa-lg']"></i>
                     </div>
                     <div class="fr-alert-content align-self-center">
                         <p class="mb-0 text-left" v-html="props.item.text"></p>
@@ -77,41 +77,41 @@
 </template>
 
 <script>
-    import ToolbarNotification from '@/components/utils/ToolbarNotification';
-    import _ from 'lodash';
+import ToolbarNotification from '@/components/utils/ToolbarNotification';
+import _ from 'lodash';
 
-    export default {
-        name: 'App',
-        components: {
-            'fr-notification': ToolbarNotification
+export default {
+    name: 'App',
+    components: {
+        'fr-notification': ToolbarNotification
+    },
+    data: function () {
+        return {
+            toggled: false
+        };
+    },
+    methods: {
+        onToggle () {
+            this.toggled = !this.toggled;
         },
-        data: function () {
-            return {
-                toggled: false
-            };
-        },
-        methods: {
-            onToggle () {
-                this.toggled = !this.toggled;
-            },
-            accessIcon (icon) {
-                let iconClass = 'fa fa-fw mr-3 ';
+        accessIcon (icon) {
+            let iconClass = 'fa fa-fw mr-3 ';
 
-                if (icon.length) {
-                    iconClass = iconClass + icon;
-                } else {
-                    iconClass = iconClass + 'fa-cube';
-                }
-
-                return iconClass;
+            if (icon.length) {
+                iconClass = iconClass + icon;
+            } else {
+                iconClass = iconClass + 'fa-cube';
             }
-        },
-        filters: {
-            capitalize: function (value) {
-                return _.capitalize(value);
-            }
+
+            return iconClass;
         }
-    };
+    },
+    filters: {
+        capitalize: function (value) {
+            return _.capitalize(value);
+        }
+    }
+};
 </script>
 
 <!--
@@ -125,6 +125,8 @@
     // Currently variable and theming loaded through node
     @import "~bootstrap/scss/bootstrap.scss";
     @import "scss/main.scss";
+    @import "~bootstrap-vue/dist/bootstrap-vue.css";
+    @import "~@fortawesome/fontawesome-free/css/all.css";
 
     #app {
         -webkit-transition: all 0.2s ease;

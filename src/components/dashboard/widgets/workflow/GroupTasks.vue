@@ -30,76 +30,76 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import ListGroup from '@/components/utils/ListGroup';
-    import ListItem from '@/components/utils/ListItem';
-    import AssignTask from './AssignTask';
+import _ from 'lodash';
+import AssignTask from './AssignTask';
+import ListGroup from '@/components/utils/ListGroup';
+import ListItem from '@/components/utils/ListItem';
 
-    /**
-     * @description Dashboard widget that lists available group tasks that can be assigned
-     *
-     **/
-    export default {
-        name: 'Group-Tasks',
-        props: {
-            tasks: Object
+/**
+ * @description Dashboard widget that lists available group tasks that can be assigned
+ *
+ **/
+export default {
+    name: 'Group-Tasks',
+    props: {
+        tasks: Object
+    },
+    data () {
+        return { panelShown: {}, onHidden: null };
+    },
+    components: {
+        'fr-list-group': ListGroup,
+        'fr-list-item': ListItem,
+        'fr-assign-task': AssignTask
+    },
+    methods: {
+        isEmpty: _.isEmpty,
+        first: _.first,
+        setShown (id) {
+            this.$set(this.panelShown, id, true);
         },
-        data () {
-            return { panelShown: {}, onHidden: null };
-        },
-        components: {
-            'fr-list-group': ListGroup,
-            'fr-list-item': ListItem,
-            'fr-assign-task': AssignTask
-        },
-        methods: {
-            isEmpty: _.isEmpty,
-            first: _.first,
-            setShown (id) {
-                this.$set(this.panelShown, id, true);
-            },
-            setHidden (id) {
-                this.$set(this.panelShown, id, false);
+        setHidden (id) {
+            this.$set(this.panelShown, id, false);
 
-                if (_.isFunction(this.onHidden)) {
-                    this.onHidden();
-                    this.onHidden = null;
-                }
-            },
-            cancel (id) {
-                _.first(this.$refs[`cancel-${id}`]).click();
-            },
-            assignTask ({id, assignee}) {
-                const task = this.tasks[id].task;
-
-                this.onHidden = () => {
-                    this.$emit('updateAssignment', { assignee, id, task });
-                };
-
-                this.cancel(id);
+            if (_.isFunction(this.onHidden)) {
+                this.onHidden();
+                this.onHidden = null;
             }
         },
-        watch: {
-            tasks: {
-                /**
+        cancel (id) {
+            _.first(this.$refs[`cancel-${id}`]).click();
+        },
+        assignTask ({ id, assignee }) {
+            const task = this.tasks[id].task;
+
+            this.onHidden = () => {
+                this.$emit('updateAssignment', { assignee, id, task });
+            };
+
+            this.cancel(id);
+        }
+    },
+    watch: {
+        tasks: {
+            /**
                 * This function sets the state of panelShown. Anytime new tasks are added to the tasks prop,
                 * the prop key is added to the panelShown object with an initial state of `false`.
                 */
-                handler (val, oldVal) {
-                    let newVals = _.difference(_.keys(val), _.keys(oldVal));
+            handler (val, oldVal) {
+                let newVals = _.difference(_.keys(val), _.keys(oldVal));
 
-                    if (_.isUndefined(this.panelShown)) {
-                        this.panelShown = {};
-                    }
+                if (_.isUndefined(this.panelShown)) {
+                    this.panelShown = {};
+                }
 
-                    newVals.forEach((val) => {
-                        this.$set(this.panelShown, val, false);
-                    });
-                },
-                deep: true
-            }
+                newVals.forEach((val) => {
+                    this.$set(this.panelShown, val, false);
+                });
+            },
+            deep: true
         }
-    };
+    }
+};
 </script>
 
 <style lang="scss" scoped></style>

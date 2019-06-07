@@ -11,48 +11,48 @@
 </template>
 
 <script>
-    import HorizontalRule from '@/components/utils/HorizontalRule';
-    import KBADefinitionFormGroup from '@/components/selfservice/common/KBADefinitionFormGroup';
+import KBADefinitionFormGroup from '@/components/selfservice/common/KBADefinitionFormGroup';
+import HorizontalRule from '@/components/utils/HorizontalRule';
 
-    /**
-     * @description Selfservice stage that handles the initial KBA during registration functions the same in allinone
-     *
-     **/
-    export default {
-        name: 'KBA-Security-Answer-Definition-Stage',
-        props: {
-            selfServiceDetails: { required: true },
-            inline: {
-                required: false,
-                default: false
-            }
-        },
-        components: {
-            'fr-horizontal-rule': HorizontalRule,
-            'fr-kba-form-group': KBADefinitionFormGroup
-        },
-        data () {
-            return {};
-        },
-        methods: {
-            getData () {
-                return this.$refs.kbaFormGroup.getData();
-            },
-
-            save () {
-                /* istanbul ignore next */
-                this.isValid().then((valid) => {
-                    if (valid) {
-                        this.$emit('advanceStage', this.getData());
-                    }
-                });
-            },
-            isValid () {
-                /* istanbul ignore next */
-                return this.$refs.kbaFormGroup.isValid();
-            }
+/**
+ * @description Selfservice stage that handles the initial KBA during registration functions the same in allinone
+ *
+ **/
+export default {
+    name: 'KBA-Security-Answer-Definition-Stage',
+    props: {
+        selfServiceDetails: { required: true },
+        inline: {
+            required: false,
+            default: false
         }
-    };
+    },
+    components: {
+        'fr-horizontal-rule': HorizontalRule,
+        'fr-kba-form-group': KBADefinitionFormGroup
+    },
+    data () {
+        return {};
+    },
+    methods: {
+        getData () {
+            return this.$refs.kbaFormGroup.getData();
+        },
+
+        save () {
+            /* istanbul ignore next */
+            this.isValid().then((valid) => {
+                if (valid) {
+                    this.$emit('advanceStage', this.getData());
+                }
+            });
+        },
+        isValid () {
+            /* istanbul ignore next */
+            return this.$refs.kbaFormGroup.isValid();
+        }
+    }
+};
 </script>
 
 <style scoped>

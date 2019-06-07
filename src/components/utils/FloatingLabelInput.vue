@@ -26,85 +26,85 @@
 </template>
 
 <script>
-    import _ from 'lodash';
-    import ValidationError from '@/components/utils/ValidationError';
+import _ from 'lodash';
+import ValidationError from '@/components/utils/ValidationError';
 
-    /**
-     * @description Input with a floating label in the center, this will move when a user types into the input (example can be found on the default login page)
-     *
-     **/
-    export default {
-        name: 'Floating-Label-Input',
-        components: {
-            'fr-validation-error': ValidationError
-        },
-        props: {
-            label: String,
-            type: String,
-            autofocus: String,
-            fieldName: String,
-            validateRules: [String, Object],
-            reveal: Boolean,
-            showErrorState: { type: Boolean, default: true },
-            defaultValue: { required: false }
-        },
-        inject: ['$validator'],
-        data () {
-            return {
-                inputValue: '',
-                id: null,
-                floatLabels: false,
-                hideLabel: true,
-                inputType: this.type,
-                show: true
-            };
-        },
-        beforeMount () {
-            this.id = 'floatingLabelInput' + this._uid;
-        },
-        mounted () {
-            /* istanbul ignore next */
-            _.delay(_.bind(() => {
-                if (navigator.userAgent.indexOf('Edge') >= 0) {
-                    if (document.getElementById(`${this.id}`).value.length) {
-                        this.floatLabels = true;
-                        this.inputValue = document.getElementById(`${this.id}`).value;
-                    }
-                } else if (navigator.userAgent.indexOf('Chrome') >= 0) {
-                    if (document.querySelectorAll(`#${this.id}:-webkit-autofill`).length > 0) {
-                        this.floatLabels = true;
-                    }
+/**
+ * @description Input with a floating label in the center, this will move when a user types into the input (example can be found on the default login page)
+ *
+ **/
+export default {
+    name: 'Floating-Label-Input',
+    components: {
+        'fr-validation-error': ValidationError
+    },
+    props: {
+        label: String,
+        type: String,
+        autofocus: String,
+        fieldName: String,
+        validateRules: [String, Object],
+        reveal: Boolean,
+        showErrorState: { type: Boolean, default: true },
+        defaultValue: { required: false }
+    },
+    inject: ['$validator'],
+    data () {
+        return {
+            inputValue: '',
+            id: null,
+            floatLabels: false,
+            hideLabel: true,
+            inputType: this.type,
+            show: true
+        };
+    },
+    beforeMount () {
+        this.id = 'floatingLabelInput' + this._uid;
+    },
+    mounted () {
+        /* istanbul ignore next */
+        _.delay(_.bind(() => {
+            if (navigator.userAgent.indexOf('Edge') >= 0) {
+                if (document.getElementById(`${this.id}`).value.length) {
+                    this.floatLabels = true;
+                    this.inputValue = document.getElementById(`${this.id}`).value;
                 }
-                this.hideLabel = false;
-            }, this), 400);
-
-            if (this.defaultValue) {
-                this.inputValue = this.defaultValue;
-            }
-
-            // Browser consistent focus fix
-            if (this.autofocus === 'true') {
-                this.$refs.input.focus();
-            }
-        },
-        methods: {
-            revealText: function () {
-                if (this.inputType === 'password') {
-                    this.inputType = 'text';
-                    this.show = false;
-                } else {
-                    this.inputType = 'password';
-                    this.show = true;
+            } else if (navigator.userAgent.indexOf('Chrome') >= 0) {
+                if (document.querySelectorAll(`#${this.id}:-webkit-autofill`).length > 0) {
+                    this.floatLabels = true;
                 }
             }
-        },
-        watch: {
-            inputValue: function (newVal) {
-                this.floatLabels = newVal.length > 0;
-                this.$emit('input', newVal);
+            this.hideLabel = false;
+        }, this), 400);
+
+        if (this.defaultValue) {
+            this.inputValue = this.defaultValue;
+        }
+
+        // Browser consistent focus fix
+        if (this.autofocus === 'true') {
+            this.$refs.input.focus();
+        }
+    },
+    methods: {
+        revealText: function () {
+            if (this.inputType === 'password') {
+                this.inputType = 'text';
+                this.show = false;
+            } else {
+                this.inputType = 'password';
+                this.show = true;
             }
         }
-    };
+    },
+    watch: {
+        inputValue: function (newVal) {
+            this.floatLabels = newVal.length > 0;
+            this.$emit('input', newVal);
+        }
+    }
+};
 </script>
 
 <style lang="scss" scoped>

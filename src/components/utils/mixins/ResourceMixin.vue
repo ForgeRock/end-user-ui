@@ -1,78 +1,78 @@
 <script>
-    import _ from 'lodash';
+import _ from 'lodash';
 
-    /**
-     * @description Resource management mixin used for generating an update patch and  handling policy errors
-     *
-     **/
-    export default {
-        name: 'Resource-Mixin',
-        methods: {
-            generateUpdatePatch (o, n) {
-                let originalFrom = _.cloneDeep(o),
-                    newForm = _.cloneDeep(n),
-                    changes;
+/**
+ * @description Resource management mixin used for generating an update patch and  handling policy errors
+ *
+ **/
+export default {
+    name: 'Resource-Mixin',
+    methods: {
+        generateUpdatePatch (o, n) {
+            let originalFrom = _.cloneDeep(o),
+                newForm = _.cloneDeep(n),
+                changes;
 
-                if (_.isArray(newForm)) {
-                    changes = _.filter(newForm, (field, index) => {
-                        if (field.value !== originalFrom[index].value) {
-                            return true;
-                        }
-                        return false;
-                    });
-                } else {
-                    changes = [];
+            if (_.isArray(newForm)) {
+                changes = _.filter(newForm, (field, index) => {
+                    if (field.value !== originalFrom[index].value) {
+                        return true;
+                    }
+                    return false;
+                });
+            } else {
+                changes = [];
 
-                    _.each(newForm, (value, key) => {
-                        if (originalFrom[key] !== newForm[key]) {
-                            changes.push({
-                                value: newForm[key],
-                                name: key
-                            });
-                        }
-                    });
-                }
-
-                return _.map(changes, (formField) => {
-                    if (formField.value === '' || formField.value === null) {
-                        return {operation: 'remove', field: '/' + formField.name};
-                    } else {
-                        return {operation: 'add', field: '/' + formField.name, value: formField.value};
+                _.each(newForm, (value, key) => {
+                    if (originalFrom[key] !== newForm[key]) {
+                        changes.push({
+                            value: newForm[key],
+                            name: key
+                        });
                     }
                 });
-            },
+            }
 
-            findPolicyError (errorResponse, properties) {
-                let error = [];
+            return _.map(changes, (formField) => {
+                if (formField.value === '' || formField.value === null) {
+                    return { operation: 'remove', field: '/' + formField.name };
+                } else {
+                    return { operation: 'add', field: '/' + formField.name, value: formField.value };
+                }
+            });
+        },
 
-                if (_.has(errorResponse, 'data.detail.failedPolicyRequirements')) {
-                    _.each(errorResponse.data.detail.failedPolicyRequirements, (policy) => {
-                        if (policy.policyRequirements.length > 0) {
-                            let displayTitle = '',
-                                foundProperty = _.find(properties, (prop) => { return prop.key === policy.property; }),
-                                params = policy.policyRequirements[0].params || {};
+        findPolicyError (errorResponse, properties) {
+            let error = [];
 
-                            if (foundProperty) {
-                                if (foundProperty.title) {
-                                    displayTitle = foundProperty.title;
-                                } else {
-                                    displayTitle = foundProperty.key;
-                                }
+            if (_.has(errorResponse, 'data.detail.failedPolicyRequirements')) {
+                _.each(errorResponse.data.detail.failedPolicyRequirements, (policy) => {
+                    if (policy.policyRequirements.length > 0) {
+                        let displayTitle = '',
+                            foundProperty = _.find(properties, (prop) => { return prop.key === policy.property; }),
+                            params = policy.policyRequirements[0].params || {};
 
-                                params.property = displayTitle;
+                        if (foundProperty) {
+                            if (foundProperty.title) {
+                                displayTitle = foundProperty.title;
+                            } else {
+                                displayTitle = foundProperty.key;
                             }
 
-                            error.push({
-                                exists: displayTitle.length > 0,
-                                field: policy.property,
-                                msg: this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, params)
-                            });
+                            params.property = displayTitle;
                         }
-                    });
-                }
 
-                return error;
+                        error.push({
+                            exists: displayTitle.length > 0,
+                            field: policy.property,
+                            msg: this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, params)
+                        });
+                    }
+                });
             }
+
+            return error;
         }
-    };
+    }
+};
 </script>

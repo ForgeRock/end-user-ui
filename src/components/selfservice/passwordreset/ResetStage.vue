@@ -5,7 +5,7 @@
         </b-alert>
     </div>
     <div v-else-if="typeof selfServiceDetails.error !== 'string'">
-        <b-form v-if @keyup.enter="save" @submit.prevent>
+        <b-form @keyup.enter="save" @submit.prevent>
                 <fr-policy-password-input policyApi="selfservice/reset" v-model="password" name="password" :label="$t('pages.selfservice.passwordReset.newPassword')" ></fr-policy-password-input>
             <b-button @click="save" :block="true" size="lg" variant="primary">
                 {{$t("pages.selfservice.passwordReset.changePassword")}}
@@ -24,34 +24,34 @@
 </template>
 
 <script>
-    import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
+import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
 
-    /**
-     * @description Selfservice stage for password reset, handles the final result of password reset, either displaying an error or that the reset has been complete
-     *
-     **/
-    export default {
-        name: 'Reset-Stage',
-        components: {
-            'fr-policy-password-input': PolicyPasswordInput
-        },
-        props: {
-            selfServiceDetails: { required: true }
-        },
-        data () {
+/**
+* @description Selfservice stage for password reset, handles the final result of password reset, either displaying an error or that the reset has been complete
+*
+**/
+export default {
+    name: 'Reset-Stage',
+    components: {
+        'fr-policy-password-input': PolicyPasswordInput
+    },
+    props: {
+        selfServiceDetails: { required: true }
+    },
+    data () {
+        return {
+            password: ''
+        };
+    },
+    methods: {
+        getData () {
             return {
-                password: ''
+                password: this.password
             };
         },
-        methods: {
-            getData () {
-                return {
-                    password: this.password
-                };
-            },
-            save () {
-                this.$emit('advanceStage', this.getData());
-            }
+        save () {
+            this.$emit('advanceStage', this.getData());
         }
-    };
+    }
+};
 </script>

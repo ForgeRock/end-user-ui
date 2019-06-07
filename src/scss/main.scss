@@ -17,6 +17,10 @@
   }
 }
 
+.modal-backdrop {
+  opacity: .5;
+}
+
 // Application adjustments (not related to themes
 // Center spinner
 .v-spinner {
@@ -189,9 +193,16 @@ label {
 /*
   Paginator Styles
  */
-.pagination .page-link {
-  border-radius: $pagination-border-radius;
-  margin-left: 4px;
+.pagination{
+
+  .page-link {
+    border-radius: $pagination-border-radius;
+    margin-left: 4px;
+  }
+
+  .disabled.page-item {
+    opacity: .5;
+  }
 }
 
 /**

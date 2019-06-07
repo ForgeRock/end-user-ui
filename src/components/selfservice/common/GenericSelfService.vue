@@ -38,64 +38,64 @@
 </template>
 
 <script>
-    import _ from 'lodash';
+import _ from 'lodash';
 
-    /**
-     * @description Selfservice stage for multiple selfservice flows, attempts to auto generate a form for a user to fill out. Currently
-     * generates only numbers, strings and boolean fields. This stage will only load when no other stage is found.
-     *
-     **/
-    export default {
-        name: 'Generic-Self-Service',
-        props: {
-            selfServiceDetails: { required: true }
-        },
-        data () {
-            let saveData = {},
-                displayDetails = [];
+/**
+ * @description Selfservice stage for multiple selfservice flows, attempts to auto generate a form for a user to fill out. Currently
+ * generates only numbers, strings and boolean fields. This stage will only load when no other stage is found.
+ *
+ **/
+export default {
+    name: 'Generic-Self-Service',
+    props: {
+        selfServiceDetails: { required: true }
+    },
+    data () {
+        let saveData = {},
+            displayDetails = [];
 
-            if (this.selfServiceDetails && this.selfServiceDetails.requirements && this.selfServiceDetails.requirements.properties) {
-                _.each(this.selfServiceDetails.requirements.properties, (prop, key) => {
-                    displayDetails.push({
-                        type: prop.type,
-                        text: prop.description,
-                        key: key
-                    });
-
-                    if (prop.type === 'string') {
-                        saveData[key] = '';
-                    } else if (prop.type === 'boolean') {
-                        saveData[key] = false;
-                    } else {
-                        saveData[key] = null;
-                    }
+        if (this.selfServiceDetails && this.selfServiceDetails.requirements && this.selfServiceDetails.requirements.properties) {
+            _.each(this.selfServiceDetails.requirements.properties, (prop, key) => {
+                displayDetails.push({
+                    type: prop.type,
+                    text: prop.description,
+                    key: key
                 });
-            }
 
-            return {
-                saveFields: saveData,
-                displayDetails: displayDetails
-            };
-        },
-        methods: {
-            getData () {
-                return this.saveFields;
-            },
-
-            save () {
-                this.$emit('advanceStage', this.getData());
-            },
-
-            isValid () {
-                return Promise.resolve(true);
-            }
-        },
-        filters: {
-            startCase (value) {
-                return _.startCase(value);
-            }
+                if (prop.type === 'string') {
+                    saveData[key] = '';
+                } else if (prop.type === 'boolean') {
+                    saveData[key] = false;
+                } else {
+                    saveData[key] = null;
+                }
+            });
         }
-    };
+
+        return {
+            saveFields: saveData,
+            displayDetails: displayDetails
+        };
+    },
+    methods: {
+        getData () {
+            return this.saveFields;
+        },
+
+        save () {
+            this.$emit('advanceStage', this.getData());
+        },
+
+        isValid () {
+            return Promise.resolve(true);
+        }
+    },
+    filters: {
+        startCase (value) {
+            return _.startCase(value);
+        }
+    }
+};
 </script>
 
 <style scoped></style>
