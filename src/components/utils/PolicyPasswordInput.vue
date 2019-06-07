@@ -12,54 +12,80 @@
                 :showErrorState="false"
                 @input="$emit('input', $event)">
 
-                <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="policyFailures"></fr-policy-panel>
+                <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="defaultPolicyFailures || policyFailures"></fr-policy-panel>
             </fr-floating-label-input>
         </slot>
 
         <template v-else>
             <slot name="custom-input"></slot>
-            <fr-policy-panel :policies="policies" :policyFailures="policyFailures"></fr-policy-panel>
+            <fr-policy-panel :policies="policies" :policyFailures="defaultPolicyFailures || policyFailures"></fr-policy-panel>
         </template>
     </b-form-group>
 </template>
 
 <script>
-    import _ from 'lodash';
-    import FloatingLabelInput from './FloatingLabelInput';
-    import PolicyPanel from './PolicyPanel';
+import _ from 'lodash';
+import FloatingLabelInput from './FloatingLabelInput';
+import PolicyPanel from './PolicyPanel';
 
-    /**
-     * @description The main display for the password policy component. Connects a text field to check policy on input to see if password correctly matches configured policy (makes use of policy.json)
-     *
-     * @fires POST /policy/selfservice/registration/?_action=validateObject - Submits an object in its current state to policy for validation against the configured policy
-     *
-     **/
-    export default {
-        name: 'PolicyPasswordInput',
-        inject: ['$validator'],
-        components: {
-            'fr-floating-label-input': FloatingLabelInput,
-            'fr-policy-panel': PolicyPanel
-        },
-        props: {
-            policyApi: { required: true, type: String },
-            value: String,
-            label: String,
-            exclude: {
-                required: false,
-                type: Array,
-                default () {
-                    return [
-                        {
-                            name: 'REQUIRED',
-                            predicate (policyRequirements) {
-                                return _.includes(policyRequirements, 'REQUIRED') && _.includes(policyRequirements, 'MIN_LENGTH');
-                            }
-                        },
-                        'VALID_TYPE',
-                        'CANNOT_CONTAIN_OTHERS'
-                    ];
-                }
+/**
+ * @description The main display for the password policy component. Connects a text field to check policy on input to see if password correctly matches configured policy (makes use of policy.json)
+ *
+ * @fires POST /policy/selfservice/registration/?_action=validateObject - Submits an object in its current state to policy for validation against the configured policy
+ *
+ **/
+export default {
+    name: 'PolicyPasswordInput',
+    inject: ['$validator'],
+    components: {
+        'fr-floating-label-input': FloatingLabelInput,
+        'fr-policy-panel': PolicyPanel
+    },
+    props: {
+        policyApi: { required: true, type: String },
+        defaultPolicyFailures: { required: false, type: Array },
+        value: String,
+        label: String,
+        exclude: {
+            required: false,
+            type: Array,
+            default () {
+                let policyApi = this.policyApi;
+                return [
+                    {
+                        name: 'REQUIRED',
+                        predicate (policyRequirements) {
+                            return _.includes(policyRequirements, 'REQUIRED') && _.includes(policyRequirements, 'MIN_LENGTH');
+                        }
+                    },
+                    {
+                        name: 'IS_NEW',
+                        predicate (policyRequirements) {
+                            return policyApi === 'selfservice/registration';
+                        }
+                    },
+                    'VALID_TYPE',
+                    'CANNOT_CONTAIN_OTHERS'
+                ];
+            }
+        }
+    },
+    data () {
+        return {
+            policies: [],
+            password: this.value
+        };
+    },
+    computed: {
+        policyFailures () {
+            let failures = this.errors.firstByRule('password', 'policy');
+
+            if (_.isUndefined(this.fields.password)) {
+                return 'loading';
+            } else if (_.isNull(failures) && this.fields.password.valid) {
+                return [];
+            } else {
+                return failures;
             }
         },
         data () {
@@ -177,35 +203,29 @@
                 return this.policyApi.match('selfservice') ? 'validateObject' : 'validateProperty';
             }
         },
-        created () {
-            // Initialize the policy service to be used in validation calls and the preliminary get call.
-            const headers = this.getAnonymousHeaders(),
-                policyService = this.getRequestService({headers}),
-                formatPayload = this.formatPayload.bind(this),
-                // Create validation service call and bind to component scope.
-                requestPolicyValidation = function (password) {
-                    let data = formatPayload(password);
+        getAction () {
+            return this.policyApi.match('selfservice') ? 'validateObject' : 'validateProperty';
+        }
+    },
+    created () {
+        // Initialize the policy service to be used in validation calls and the preliminary get call.
+        const headers = this.getAnonymousHeaders(),
+            policyService = this.getRequestService({ headers }),
+            formatPayload = this.formatPayload.bind(this),
+            // Create validation service call and bind to component scope.
+            requestPolicyValidation = function (password) {
+                let data = formatPayload(password);
 
-                    /* istanbul ignore next */
-                    return policyService
-                        .post(`/policy/${this.policyApi}/?_action=${this.getAction()}`, data)
-                        .then(({ data }) => this.toPolicyNames(data))
-                        .catch(() => {
-                            /* istanbul ignore next */
-                            this.displayNotification('error', this.$t('common.policyValidationMessages.policyServiceError'));
-                        });
-                }.bind(this);
+                // remove existing defaultPolicyFailures
+                this.defaultPolicyFailures = null;
 
-            // Extend the validator with the custom validation rule.
-            this.$validator.extend('policy', {
-                validate (value, args) {
-                    // Make policy service call.
-                    /* istanbul ignore next */
-                    return requestPolicyValidation(value).then((policyFailures) => {
-                        return {
-                            valid: _.isEmpty(policyFailures),
-                            data: policyFailures
-                        };
+                /* istanbul ignore next */
+                return policyService
+                    .post(`/policy/${this.policyApi}/?_action=${this.getAction()}`, data)
+                    .then(({ data }) => this.toPolicyNames(data))
+                    .catch(() => {
+                        /* istanbul ignore next */
+                        this.displayNotification('error', this.$t('common.policyValidationMessages.policyServiceError'));
                     });
                 },
                 getMessage (field, params, data) {
