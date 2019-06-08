@@ -8,7 +8,8 @@
             <transition name="slide-fade">
                 <div v-if="wrongPasswordSubmitted" class="alert alert-danger mb-4 text-left" role="alert">
                     {{$t('pages.login.badPassword')}}
-                    <span v-if="this.$root.applicationStore.state.passwordReset">{{$t('pages.login.weCanHelp')}} <router-link  v-if="this.$root.applicationStore.state.passwordReset" to="passwordreset">{{$t('pages.login.recoverPassword')}}</router-link></span>
+                    <span v-if="this.$root.applicationStore.state.passwordReset"><br/>{{$t('pages.login.weCanHelp')}} <router-link v-if="this.$root.applicationStore.state.passwordReset" action="" :to="{name: 'PasswordReset'}">{{$t('pages.login.recoverPassword')}}</router-link></span>
+                    <span v-if="this.$root.applicationStore.state.usernameRecovery"><br/>{{$t('pages.login.weCanHelp')}} <router-link action="" :to="{name: 'ForgotUsername'}">{{$t('pages.login.recoverUsername')}}</router-link></span>
                 </div>
             </transition>
 
