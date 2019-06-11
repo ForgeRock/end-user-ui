@@ -1,4 +1,5 @@
-const webpack = require('webpack'),
+const webpack = require('webpack')
+    CopyWebpackPlugin = require('copy-webpack-plugin'),
     GitRevisionPlugin = require('git-revision-webpack-plugin');
 
 function generateTheme () {
@@ -18,16 +19,55 @@ function generateTheme () {
 };
 
 function generateVariables (env) {
-    return {
-        NODE_ENV: '"production"',
-        amURL: env.npm_config_amURL ? `"${env.npm_config_amURL}"` : undefined,
-        idmURL: env.npm_config_idmURL ? `"${env.npm_config_idmURL}"` : undefined,
-        loginURL: env.npm_config_loginURL ? `"${env.npm_config_loginURL}"` : undefined,
-        platformMode: env.npm_config_platformMode ? `"${env.npm_config_platformMode}"` : false,
-        theme: env.npm_config_theme ? `"${env.npm_config_theme}"` : '"default"',
-        idmClientID: env.npm_config_idmClientID ? `"${env.npm_config_idmClientID}"` : undefined
-    };
+    process.env.VUE_APP_amURL = env.npm_config_amURL ? env.npm_config_amURL : undefined;
+    process.env.VUE_APP_idmURL = env.npm_config_idmURL ? env.npm_config_idmURL : undefined;
+    process.env.VUE_APP_loginURL = env.npm_config_loginURL ? env.npm_config_loginURL : undefined;
+    process.env.VUE_APP_platformMode = env.npm_config_platformMode ? env.npm_config_platformMode : false;
+    process.env.theme = env.npm_config_theme ? env.npm_config_theme : '"default"';
+    process.env.VUE_APP_idmClientID = env.npm_config_idmClientID ? env.npm_config_idmClientID : undefined;
 };
+
+function getPlugins (env) {
+    let plugins = [
+        new webpack.IgnorePlugin({
+            resourceRegExp: /^\.\/locale$/,
+            contextRegExp: /moment$/
+        }),
+        new webpack.BannerPlugin('Copyright 2019 ForgeRock AS. All Rights Reserved \n Use of this code requires a commercial software license with ForgeRock AS. or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.'),
+        new GitRevisionPlugin()
+    ];
+
+    // the process.env variables =>
+    generateVariables(env);
+
+    if (env.npm_config_platformMode) {
+        console.log('platform detected...');
+        plugins.push(new CopyWebpackPlugin([
+            {
+                from: 'node_modules/appauthhelper/appAuthHelperRedirect.html',
+                to: 'appAuthHelperRedirect.html',
+                toType: 'file'
+            },
+            {
+                from: 'node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js',
+                to: 'node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js',
+                toType: 'file'
+            },
+            {
+                from: 'node_modules/oidcsessioncheck/sessionCheck.html',
+                to: 'sessionCheck.html',
+                toType: 'file'
+            },
+            {
+                from: 'node_modules/oidcsessioncheck/sessionCheckFrame.js',
+                to: 'sessionCheckFrame.js',
+                toType: 'file'
+            }
+        ]));
+    }
+
+    return plugins;
+}
 
 module.exports = {
     runtimeCompiler: true,
@@ -48,17 +88,7 @@ module.exports = {
         }
     },
     configureWebpack: {
-        plugins: [
-            new webpack.IgnorePlugin({
-                resourceRegExp: /^\.\/locale$/,
-                contextRegExp: /moment$/
-            }),
-            new webpack.BannerPlugin('Copyright 2019 ForgeRock AS. All Rights Reserved \n Use of this code requires a commercial software license with ForgeRock AS. or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.'),
-            new webpack.DefinePlugin({
-                'process.env': generateVariables(process.env)
-            }),
-            new GitRevisionPlugin()
-        ]
+        plugins: getPlugins(process.env)
     },
     css: {
         loaderOptions: {

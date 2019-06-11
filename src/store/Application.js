@@ -32,28 +32,28 @@ export default {
     },
 
     setEnvironment (env) {
-        if (env.amURL) {
-            this.state.amBaseURL = env.amURL;
+        if (env.VUE_APP_amURL) {
+            this.state.amBaseURL = env.VUE_APP_amURL;
         }
 
-        if (env.idmURL) {
-            this.state.idmBaseURL = env.idmURL;
+        if (env.VUE_APP_idmURL) {
+            this.state.idmBaseURL = env.VUE_APP_idmURL;
         }
 
-        if (env.platformMode) {
-            this.state.platformMode = env.platformMode;
+        if (env.VUE_APP_platformMode) {
+            this.state.platformMode = env.VUE_APP_platformMode;
         }
 
-        if (env.loginURL) {
-            this.state.loginURL = env.loginURL;
+        if (env.VUE_APP_loginURL) {
+            this.state.loginURL = env.VUE_APP_loginURL;
         }
 
-        if (env.theme) {
-            this.state.theme = env.theme;
+        if (env.VUE_APP_theme) {
+            this.state.theme = env.VUE_APP_theme;
         }
 
-        if (env.idmClientID) {
-            this.state.idmClientID = env.idmClientID;
+        if (env.VUE_APP_idmClientID) {
+            this.state.idmClientID = env.VUE_APP_idmClientID;
         }
     },
 
