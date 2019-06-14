@@ -40,8 +40,8 @@ export default {
             this.state.idmBaseURL = env.VUE_APP_idmURL;
         }
 
-        if (env.VUE_APP_platformMode) {
-            this.state.platformMode = env.VUE_APP_platformMode;
+        if (env.VUE_APP_platformMode === 'true') {
+            this.state.platformMode = true;
         }
 
         if (env.VUE_APP_loginURL) {
