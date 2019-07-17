@@ -10,7 +10,7 @@
                 @mouseout="hover(index, provider.uiConfig.buttonCustomStyle)">
 
             <img v-if="provider.uiConfig.buttonImage" :src="'static/' + provider.uiConfig.buttonImage"/>
-            <i v-else :class="['fa fa-lg', provider.uiConfig.iconClass]"></i>
+            <i v-else :class="['fab fa-lg', provider.uiConfig.iconClass]"></i>
 
             <span class="ml-1" v-if="signin">{{$t("pages.selfservice.social.signIn")}} {{provider.uiConfig.buttonDisplayName}}</span>
             <span class="ml-1" v-else>{{$t("pages.selfservice.social.signUp")}} {{provider.uiConfig.buttonDisplayName}}</span>
@@ -94,6 +94,10 @@ export default {
                                 }
                             } else {
                                 this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
+                            }
+
+                            if (provider.provider === "salesforce") {
+                                provider.uiConfig.iconClass = 'fa-salesforce';
                             }
                         });
                     } else if (this.filterProvidersObjects.length) {
