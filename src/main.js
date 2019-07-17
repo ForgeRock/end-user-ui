@@ -11,6 +11,7 @@ import ToggleButton from 'vue-js-toggle-button';
 import UserStore from './store/User';
 import VeeValidate from 'vee-validate';
 import Vue from 'vue';
+import 'core-js/stable';
 
 // Turn off production warning messages
 Vue.config.productionTip = false;

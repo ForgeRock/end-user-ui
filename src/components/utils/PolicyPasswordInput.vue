@@ -195,7 +195,7 @@ export default {
                 let data = formatPayload(password);
 
                 // remove existing defaultPolicyFailures
-                this.defaultPolicyFailures = null;
+                // this.defaultPolicyFailures = null;
 
                 /* istanbul ignore next */
                 return policyService

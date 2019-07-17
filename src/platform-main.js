@@ -13,6 +13,7 @@ import VeeValidate from 'vee-validate';
 import Vue from 'vue';
 import AppAuthHelper from 'appauthhelper';
 import SessionCheck from 'oidcsessioncheck';
+import 'core-js/stable';
 
 // Turn off production warning messages
 Vue.config.productionTip = false;
