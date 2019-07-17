@@ -32,9 +32,9 @@
         created () {
             let queryParams;
 
-            /*
-                This check is for openAM fullstack only. With the return of a special URL #/handleOAuth/
-                We are given a clientToken that we can directly pass on to accountClaiming / Registration
+            /** 
+             * This check is for openAM fullstack only. With the return of a special URL #/handleOAuth/
+             * We are given a clientToken that we can directly pass on to accountClaiming / Registration
             */
             if (this.$route.params.amData) {
                 queryParams = {};

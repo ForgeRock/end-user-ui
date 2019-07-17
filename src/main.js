@@ -223,7 +223,11 @@ Vue.mixin({
                         });
                     }
 
-                    this.logoutUser();
+                    if (_.has(this.$root.applicationStore.state, 'amDataEndpoints') &&
+                        this.$root.applicationStore.state.amDataEndpoints !== null
+                    ) {
+                        this.logoutUser();
+                    }
 
                     return Promise.reject(error);
                 } else if (_.isUndefined(error.response)) {
@@ -261,7 +265,6 @@ Vue.mixin({
             let idmInstance = this.getRequestService({
                 headers: this.getAnonymousHeaders()
             });
-
             /* istanbul ignore next */
             idmInstance.post('/authentication?_action=logout').then((response) => {
                 this.$root.userStore.clearStoreAction();
