@@ -11,7 +11,7 @@
                 @mouseout="hover(index, provider.uiConfig.buttonCustomStyle)">
 
             <img v-if="provider.uiConfig.buttonImage" :src="'static/' + provider.uiConfig.buttonImage"/>
-            <i v-else :class="['fab fa-lg', provider.uiConfig.iconClass]"></i>
+            <i v-else :class="['fa fa-lg', provider.uiConfig.iconClass]"></i>
 
             <span class="ml-1" v-if="signin">{{$t("pages.selfservice.social.signIn")}} {{provider.uiConfig.buttonDisplayName}}</span>
             <span class="ml-1" v-else>{{$t("pages.selfservice.social.signUp")}} {{provider.uiConfig.buttonDisplayName}}</span>
@@ -91,13 +91,13 @@
                                 } else {
                                     this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
                                 }
+
+                                if (provider.provider === 'salesforce') {
+                                    provider.uiConfig.iconClass = 'fa-salesforce';
+                                }
                             });
                         } else if (this.filterProvidersObjects.length) {
                             this.providers = this.filterProvidersObjects;
-                        }
-
-                        if (provider.provider === "salesforce") {
-                            provider.uiConfig.iconClass = 'fa-salesforce';
                         }
                     })
                     .catch((error) => {
@@ -120,19 +120,19 @@
                         'provider': provider,
                         'landingPage': `${window.location.protocol}/${window.location.host}/#/login?_oauthReturn=true&provider=${provider}&gotoURL=%23`
                     })
-                    .then((response) => {
-                        localStorage.setItem('dataStoreToken', response.data.token);
-                        window.location.href = response.data.redirect;
-                    })
-                    .catch((error) => {
+                        .then((response) => {
+                            localStorage.setItem('dataStoreToken', response.data.token);
+                            window.location.href = response.data.redirect;
+                        })
+                        .catch((error) => {
                         /* istanbul ignore next */
+                            this.displayNotification('error', error.response.data.message);
+                        });
+                })
+                    .catch((error) => {
+                    /* istanbul ignore next */
                         this.displayNotification('error', error.response.data.message);
                     });
-                })
-                .catch((error) => {
-                    /* istanbul ignore next */
-                    this.displayNotification('error', error.response.data.message);
-                });
             }
         }
     };

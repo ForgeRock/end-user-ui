@@ -32,7 +32,7 @@
         created () {
             let queryParams;
 
-            /** 
+            /**
              * This check is for openAM fullstack only. With the return of a special URL #/handleOAuth/
              * We are given a clientToken that we can directly pass on to accountClaiming / Registration
             */
@@ -104,7 +104,9 @@
                                    Basically re-logging in on every request with a valid am token. We also need to
                                    grab the logoutUrl so we can use that to kill not only the idm session
                                    but also the am session. */
-                                if (_.has(this.$root.applicationStore.state, 'amDataEndpoints')) {
+                                if (_.has(this.$root.applicationStore.state, 'amDataEndpoints') &&
+                                    this.$root.applicationStore.state.amDataEndpoints !== null
+                                ) {
                                     this.$root.applicationStore.setAuthHeadersAction({
                                         'X-OpenIDM-OAuth-Login': 'true',
                                         'X-OpenIDM-DataStoreToken': dataStoreToken,
