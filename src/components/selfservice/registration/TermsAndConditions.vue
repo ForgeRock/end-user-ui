@@ -6,14 +6,14 @@
 
         <b-modal id="termsModal" hide-footer :title="$t('pages.selfservice.registration.termsAndConditions.title')">
             <div class="d-block text-center">
-                <p>{{selfServiceDetails.requirements.terms}}</p>
+                <p v-html="selfServiceDetails.requirements.terms">{{selfServiceDetails.requirements.terms}}</p>
             </div>
         </b-modal>
     </div>
     <div v-else>
         <h3>{{$t("pages.selfservice.registration.termsAndConditions.title")}}</h3>
         <div class="d-block text-center">
-            <p>{{selfServiceDetails.requirements.terms}}</p>
+            <p v-html="selfServiceDetails.requirements.terms">{{selfServiceDetails.requirements.terms}}</p>
         </div>
 
         <b-button v-if="inline === false" @click="save" :block="true" size="lg" variant="primary">
