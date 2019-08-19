@@ -96,7 +96,7 @@ export default {
                                 this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
                             }
 
-                            if (provider.provider === "salesforce") {
+                            if (provider.provider === 'salesforce') {
                                 provider.uiConfig.iconClass = 'fa-salesforce';
                             }
                         });

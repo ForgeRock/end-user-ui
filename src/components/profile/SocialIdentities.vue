@@ -11,7 +11,8 @@
                     <div class="flex-grow-1">
                         <b-img v-if="provider.uiConfig.buttonImage" :src="'static/' + provider.uiConfig.buttonImage" width="24" height="24" class="mr-3"/>
                         <span v-else class="fr-social-icon mr-3 text-center" :style="`background: ${provider.uiConfig.iconBackground}; color:${provider.uiConfig.iconFontColor};`">
-                            <i :class="['fa', provider.uiConfig.iconClass]"></i>
+                            <i v-if="provider.uiConfig.iconClass === 'fa-cloud'" :class="['fa', provider.uiConfig.iconClass]"></i>
+                            <i v-else :class="['fab', provider.uiConfig.iconClass]"></i>
                         </span>
 
                         <span>{{provider.uiConfig.buttonDisplayName}}</span>

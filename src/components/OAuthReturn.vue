@@ -104,7 +104,9 @@ export default {
                                    Basically re-logging in on every request with a valid am token. We also need to
                                    grab the logoutUrl so we can use that to kill not only the idm session
                                    but also the am session. */
-                            if (_.has(this.$root.applicationStore.state, 'amDataEndpoints')) {
+                            if (_.has(this.$root.applicationStore.state, 'amDataEndpoints') &&
+                                this.$root.applicationStore.state.amDataEndpoints !== null
+                            ) {
                                 this.$root.applicationStore.setAuthHeadersAction({
                                     'X-OpenIDM-OAuth-Login': 'true',
                                     'X-OpenIDM-DataStoreToken': dataStoreToken,
