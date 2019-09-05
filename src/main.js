@@ -214,7 +214,7 @@ Vue.mixin({
                     if (_.has(this.$root.applicationStore.state, 'amDataEndpoints') &&
                         this.$root.applicationStore.state.amDataEndpoints !== null
                     ) {
-                        this.logoutUser();
+                        this.logoutUser(true);
                     }
 
                     return Promise.reject(error);
@@ -248,7 +248,7 @@ Vue.mixin({
             });
         },
         // Log a user out of their existing session (both normal and fullstack)
-        logoutUser: function () {
+        logoutUser: function (amLogout) {
             /* istanbul ignore next */
             let idmInstance = this.getRequestService({
                 headers: this.getAnonymousHeaders()
@@ -267,8 +267,36 @@ Vue.mixin({
 
                 this.$router.push({ name: 'Login' });
             }, () => {
-                // if an error is thrown here reloading the page will clean up the state of the app
-                window.location.reload(true);
+                if (amLogout) {
+                    let baseUrl = this.$root.applicationStore.state.amDataEndpoints.baseUrl.replace(/realms\/[a-zA-Z0-9]*\/users\//, ''),
+                        amInstance = axios.create({
+                            baseURL: baseUrl,
+                            timeout: 5000,
+                            headers: {
+                                'Content-type': 'application/json',
+                                'Accept-API-Version': 'protocol=1.0,resource=2.0'
+                            }
+                        }),
+                        doLogout = () => {
+                            this.displayNotification('error', this.$t('config.messages.sessionExpired'));
+                            _.delay(() => {
+                                window.location.reload(true);
+                            }, 4000);
+                        };
+
+                    amInstance.post('sessions?_action=logout', {}, { withCredentials: true }).then(() => {
+                        this.amLogoutSuccess = true;
+                        doLogout();
+                    }, () => {
+                        if (!this.amLogoutSuccess) {
+                            this.amLogoutSuccess = true;
+                            doLogout();
+                        }
+                    });
+                } else {
+                    // if an error is thrown here reloading the page will clean up the state of the app
+                    window.location.reload(true);
+                }
             });
         },
         // Check if progressive profile is needed
