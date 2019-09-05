@@ -5,7 +5,8 @@ export default
             messages: {
                 socialProviders: {
                     cannotUnbind: 'Before disabling provider create a local password'
-                }
+                },
+                "sessionExpired": "Session expired; redirecting to login..."
             }
         },
         common: {
