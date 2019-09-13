@@ -56,7 +56,13 @@ export default {
         },
         reloadPage (event) {
             event.preventDefault();
-            window.location.reload();
+
+            if (_.has(this.$route,'params.queryParams')) {
+                delete this.$route.params.queryParams;
+                this.$router.push('/passwordreset');
+            } else {
+                window.location.reload();
+            }
         }
     },
     watch: {
