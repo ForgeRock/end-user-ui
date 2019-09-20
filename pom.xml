@@ -25,7 +25,9 @@
         <node.version>v9.5.0</node.version>
         <npm.version>5.6.0</npm.version>
         <!-- properties read by docker-maven-plugin -->
-        <docker.push.registry>forgerock-docker-public.bintray.io</docker.push.registry>
+        <docker.push.registry>gcr.io</docker.push.registry>
+        <docker.promotion.folder>docker-build</docker.promotion.folder>
+        <docker.tag>${project.version}</docker.tag>
         <docker.imagePropertyConfiguration>override</docker.imagePropertyConfiguration>
         <docker.source.dir>./</docker.source.dir>
     </properties>
@@ -191,7 +193,7 @@
                 <configuration>
                     <images>
                         <image>
-                            <name>forgerock/end-user-ui</name>
+                          <name>${docker.push.registry}/forgerock-io/end-user-ui/${docker.promotion.folder:${docker.tag}</name>
                             <build>
                                 <dockerFile>Dockerfile</dockerFile>
                                 <!--
