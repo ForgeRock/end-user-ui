@@ -193,7 +193,7 @@
                 <configuration>
                     <images>
                         <image>
-                          <name>${docker.push.registry}/forgerock-io/end-user-ui/${docker.promotion.folder:${docker.tag}</name>
+                          <name>${docker.push.registry}/forgerock-io/end-user-ui/${docker.promotion.folder}:${docker.tag}</name>
                             <build>
                                 <dockerFile>Dockerfile</dockerFile>
                                 <!--
