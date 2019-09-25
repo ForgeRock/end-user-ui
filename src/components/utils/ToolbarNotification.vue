@@ -133,13 +133,12 @@ export default {
                 });
         },
         loadData () {
-            /* istanbul ignore next */
             if (!_.isNull(this.$root.userStore.state.userId)) {
                 this.getRequestService()
                     .get(`/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=_notifications/*`)
                     .then(({ data }) => {
                         if (data._notifications) {
-                            this.notifications = data._notifications;
+                            this.notifications = this.sortByDate(data._notifications);
                         } else {
                             this.notifications = [];
                         }
@@ -148,6 +147,12 @@ export default {
                     })
                     .catch(() => {});
             }
+        },
+        /**
+         * Sorts input data by creation date, with newest at the top
+         */
+        sortByDate (data) {
+            return _.sortBy(data, 'createDate').reverse();
         }
     }
 };
