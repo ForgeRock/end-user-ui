@@ -56,6 +56,10 @@ export default {
         },
         reloadPage (event) {
             event.preventDefault();
+            let hash = window.location.hash;
+
+            // remove any `code` after last foward slash in url
+            window.location.hash = hash.substr(0, hash.lastIndexOf('/') + 1);
             window.location.reload();
         }
     },
