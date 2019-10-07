@@ -233,7 +233,6 @@ export default {
             let filterUrl = '';
 
             if (filter.length > 0) {
-                filter = encodeURIComponent(filter);
                 _.each(displayFields, (field, index) => {
                     let type = 'string';
 
@@ -241,22 +240,22 @@ export default {
                         type = schemaProps[field].type;
                     }
 
+                    // Search based on number and proper number value
                     if (type === 'number' && !_.isNaN(_.toNumber(filter))) {
-                        // Search based on number and proper number value
                         if ((index + 1) < displayFields.length) {
                             filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
                         } else {
                             filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
                         }
+                    // Search based on boolean and proper boolean true/false
                     } else if (type === 'boolean' && (filter === 'true' || filter === 'false')) {
-                        // Search based on boolean and proper boolean true/false
                         if ((index + 1) < displayFields.length) {
                             filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
                         } else {
                             filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
                         }
+                    // Fallback to general string search if all other criteria fails
                     } else {
-                        // Fallback to general string search if all other criteria fails
                         if ((index + 1) < displayFields.length) {
                             filterUrl = `${filterUrl}${field}+sw+"${filter}"+OR+`;
                         } else {
