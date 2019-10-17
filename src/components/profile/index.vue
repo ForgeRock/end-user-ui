@@ -4,8 +4,8 @@
             <b-col class="profileCol mb-4" lg="4">
                 <b-card class="text-center mb-4">
                     <b-img :src="require('@/assets/images/profile-default.png')" rounded="circle" width="112" height="112" alt="img" class="m-1 mb-3" />
-                    <h4>{{fullName}}</h4>
-                    <span class="text-muted">{{email}}</span>
+                    <h4 class="text-truncate">{{fullName}}</h4>
+                    <div class="text-muted text-truncate">{{email}}</div>
                     <b-button v-if="$root.userStore.state.internalUser === false" ref="editProfileButton" variant="primary" block class="mt-4" v-b-modal.userDetailsModal>
                         {{$t('pages.profile.editPersonalInfo')}}
                     </b-button>
