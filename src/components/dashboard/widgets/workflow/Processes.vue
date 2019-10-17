@@ -28,7 +28,7 @@
 </template>
 
 <script>
-    import _ from 'lodash';
+    import { first, isEmpty } from 'lodash';
     import ListGroup from '@/components/utils/ListGroup';
     import ListItem from '@/components/utils/ListItem';
     import styles from '@/scss/main.scss';
@@ -61,16 +61,16 @@
             BounceLoader
         },
         methods: {
-            isEmpty: _.isEmpty,
+            isEmpty: isEmpty,
             reset (id) {
-                let process = _.first(this.$refs[id]);
+                let process = first(this.$refs[id]);
 
                 if (process) {
                     process.reset();
                 }
             },
             cancel (id) {
-                let cancelBtn = _.first(this.$refs[`cancel-${id}`]);
+                let cancelBtn = first(this.$refs[`cancel-${id}`]);
 
                 if (cancelBtn) {
                     this.reset(id);

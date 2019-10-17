@@ -57,7 +57,7 @@ export default {
         reloadPage (event) {
             event.preventDefault();
 
-            if (_.has(this.$route,'params.queryParams')) {
+            if (has(this.$route, 'params.queryParams')) {
                 delete this.$route.params.queryParams;
                 this.$router.push('/passwordreset');
             } else {

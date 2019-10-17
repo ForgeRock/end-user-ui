@@ -52,9 +52,9 @@
 
                 // Fallback to generic component when no provided JS
                 if (this.processDefinition.formGenerationTemplate) {
-                    initializeForm = Function(`return ${this.processDefinition.formGenerationTemplate}`); // eslint-disable-line
+                    initializeForm = Function(`"use strict"; return ${this.processDefinition.formGenerationTemplate}`)(); // eslint-disable-line
 
-                    return initializeForm();
+                    return initializeForm;
                 } else {
                     this.genericWorkflow = true;
 
