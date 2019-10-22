@@ -248,6 +248,7 @@
                 "removeConfirmation": "Are you sure you want to remove \"{applicationName}\" from your list of authorized applications?",
                 "removeSuccess": "\"{applicationName}\" successfully removed.",
                 "expires": "Expires: ",
+                "never": "Never",
                 "noApplications": "No Authorized Applications"
             },
             "trustedDevices": {

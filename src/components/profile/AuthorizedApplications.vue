@@ -12,7 +12,7 @@
                         <div>
                             {{application._id}}
                         </div>
-                        <small class="text-muted subtext">{{$t('pages.profile.oauthApplications.expires')}} {{new Date(application.expiryDateTime).toUTCString()}}</small>
+                        <small class="text-muted subtext">{{$t('pages.profile.oauthApplications.expires')}} {{getExpirationDateString(application)}}</small>
                     </div>
                     <a class="align-self-center flex-grow-2 text-right" @click.prevent="showConfirmationModal(application)" href="#">{{$t('common.form.remove')}}</a>
                 </div>
@@ -69,6 +69,13 @@ export default {
         this.loadData();
     },
     methods: {
+        getExpirationDateString (application) {
+            if (application.expiryDateTime) {
+                return new Date(application.expiryDateTime).toUTCString();
+            } else {
+                return this.$t('pages.profile.oauthApplications.never');
+            }
+        },
         loadData () {
             /* istanbul ignore next */
             let userName = this.$root.userStore.state.userName,
