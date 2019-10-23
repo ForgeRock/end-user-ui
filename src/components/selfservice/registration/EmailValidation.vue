@@ -6,7 +6,7 @@
 
 <script>
 /**
- * @description Stage ofr handling email validation
+ * @description Stage for handling email validation
  *
  **/
 export default {
