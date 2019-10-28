@@ -56,8 +56,12 @@ export default {
             return this.process.processDefinition;
         },
         formProperties () {
-            return !_.isNull(this.processDefinition) ? this.processDefinition.formProperties : [];
-        },
+                if (this.processDefinition && this.processDefinition.formProperties) {
+                    return this.processDefinition.formProperties;
+                } else {
+                    return [];
+                }
+            },
         task () {
             return this.taskDefinition.task;
         },
@@ -65,9 +69,13 @@ export default {
             return this.task._id;
         },
         taskDetails () {
-            return this.formProperties.reduce((acc, property) => {
-                return acc.concat({ _id: property._id, name: property.name, value: this.task.variables[property._id] });
-            }, []);
+            if (this.formProperties) {
+                return this.formProperties.reduce((acc, property) => {
+                    return acc.concat({ _id: property._id, name: property.name, value: this.task.variables[property._id] });
+                }, []);
+            } else {
+                return [];
+            }
         },
         assigneeOptions () {
             let loggedUserName = this.$root.userStore.state.userName;
