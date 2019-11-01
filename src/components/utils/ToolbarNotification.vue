@@ -134,7 +134,7 @@ export default {
         },
         loadData () {
             if (!_.isNull(this.$root.userStore.state.userId)) {
-                this.getRequestService({ headers: { 'Cache-Control': 'no-store' } })
+                this.getRequestService({ headers: { 'Cache-Control': 'no-store, no-cache' } })
                     .get(`/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=_notifications/*`)
                     .then(({ data }) => {
                         if (data._notifications) {
