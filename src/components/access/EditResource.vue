@@ -22,7 +22,7 @@
             </b-col>
         </b-row>
 
-        <b-tabs content-class="mt-4" flex-column flex-sm-row>
+        <b-tabs content-class="mt-4" nav-class="nav-bar-border" flex-column flex-sm-row>
             <b-tab :title="this.$t('pages.access.details')" active>
                 <b-card>
                     <template v-if="displayProperties.length > 0">
@@ -49,8 +49,16 @@
                                     <fr-validation-error :validatorErrors="errors" :fieldName="`mainEdit.${field.key}`"></fr-validation-error>
                                 </b-form-group>
 
+                                <fr-relationship-edit v-else-if="field.type === 'relationship'"
+                                    :parentResource='resource + "/" + name'
+                                    :relationshipProperty='field'
+                                    :key="'editResource' +index"
+                                    :index="index"
+                                    :value="formFields[field.key]"
+                                    :setValue="setSingletonRelationshipValue" />
+
                                 <!-- for boolean values -->
-                                <b-form-group :key="'createResource' +index" v-if="field.type === 'boolean'">
+                                <b-form-group :key="'editResource' +index" v-if="field.type === 'boolean'">
                                     <div class="form-row">
                                         <label class="col-form-label col-sm-3" :for="field.title">{{field.title}}</label>
 
@@ -91,6 +99,29 @@
                                         </div>
                                     </div>
                                 </b-form-group>
+
+                                <!-- for singletonRelationhip values -->
+                                <b-form-group
+                                    :key="'readResource' +index"
+                                    v-if="field.type === 'relationship'">
+                                    <div class="form-row">
+                                        <label class="col-form-label col-sm-3" :for="field.title">{{field.title}}</label>
+                                        <div v-if="formFields[field.key]" class="media-body">
+                                            <!-- Using the first display field here "[0]"-->
+                                            <div class="text-bold pl-1">{{formFields[field.key][getRelationshipDisplayFields(field, formFields[field.key])[0]]}}</div>
+                                            <div>
+                                                <!-- Loop over the rest of the display fields and print each in a span -->
+                                                <span
+                                                    v-for="(displayField, displayFieldIndex) in getRelationshipDisplayFields(field, formFields[field.key])"
+                                                    :key="`displayField_${displayField}_${displayFieldIndex}`"
+                                                    v-show="displayFieldIndex !== 0"
+                                                    class="pl-1 pr-1 text-muted">
+                                                    {{formFields[field.key][displayField]}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </b-form-group>
                             </template>
                         </template>
                         <div v-if="!disableSaveButton" class="float-right mt-4">
@@ -102,6 +133,15 @@
                     </span>
                 </b-card>
             </b-tab>
+            <!-- Add a tab for each viewable/editable relationship array property -->
+            <template v-for="(relationshipProperty) in relationshipProperties">
+                <b-tab
+                    v-if="relationshipProperty.type === 'array'"
+                    :title="relationshipProperty.title"
+                    :key="`${relationshipProperty}_tab`">
+                    <fr-relationship-array :parentResource='resource + "/" + name' :parentId='id' :relationshipArrayProperty='relationshipProperty'/>
+                </b-tab>
+            </template>
         </b-tabs>
 
         <b-modal v-if="canDelete" id="deleteModal"
@@ -150,6 +190,8 @@
 import _ from 'lodash';
 import axios from 'axios';
 import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
+import RelationshipArray from '@/components/access/RelationshipArray';
+import RelationshipEdit from '@/components/access/RelationshipEdit';
 import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 import ValidationError from '@/components/utils/ValidationError';
 
@@ -167,7 +209,9 @@ export default {
     name: 'Edit-Resource',
     components: {
         'fr-validation-error': ValidationError,
-        'fr-password-policy-input': PolicyPasswordInput
+        'fr-password-policy-input': PolicyPasswordInput,
+        'fr-relationship-array': RelationshipArray,
+        'fr-relationship-edit': RelationshipEdit
     },
     mixins: [
         ResourceMixin
@@ -187,7 +231,8 @@ export default {
             displayNameField: '',
             displaySecondaryTitleField: '',
             formFields: {},
-            oldFormFields: {}
+            oldFormFields: {},
+            relationshipProperties: []
         };
     },
     mounted () {
@@ -203,13 +248,52 @@ export default {
             /* istanbul ignore next */
             axios.all([
                 idmInstance.get(`schema/${this.resource}/${this.name}`),
-                idmInstance.get(`privilege/${this.resource}/${this.name}/${this.id}`),
-                idmInstance.get(`${this.resource}/${this.name}/${this.id}`)]).then(axios.spread((schema, privilege, resourceDetails) => {
-                this.generateDisplay(schema.data, privilege.data, resourceDetails.data);
+                idmInstance.get(`privilege/${this.resource}/${this.name}/${this.id}`)]).then(axios.spread((schema, privilege) => {
+                let resourceUrl = '';
+
+                this.relationshipProperties = this.getRelationshipProperties(schema.data, privilege.data);
+
+                resourceUrl = this.buildResourceUrl();
+
+                idmInstance.get(resourceUrl).then((resourceDetails) => {
+                    this.generateDisplay(schema.data, privilege.data, resourceDetails.data);
+                }).catch((error) => {
+                    this.displayNotification('error', error.response.data.message);
+                });
             }))
                 .catch((error) => {
                     this.displayNotification('error', error.response.data.message);
                 });
+        },
+        buildResourceUrl () {
+            let url = `${this.resource}/${this.name}/${this.id}?_fields=*`;
+            const singletons = _.filter(this.relationshipProperties, { type: 'relationship' });
+
+            if (singletons.length) {
+                url += `,${_.map(singletons, (prop) => { return prop.propName + '/*'; }).join(',')}`;
+            }
+
+            return url;
+        },
+        getRelationshipProperties (schema, privilege) {
+            return _.pickBy(schema.properties, (property, key) => {
+                const hasPermission = privilege.VIEW.properties.indexOf(key) > -1 || privilege.UPDATE.properties.indexOf(key) > -1,
+                    isRelationship = property.type === 'relationship' || (property.type === 'array' && property.items.type === 'relationship');
+
+                property.propName = key;
+
+                if (isRelationship) {
+                    property.isReadOnly = privilege.UPDATE.properties.indexOf(key) === -1;
+                }
+
+                return isRelationship && hasPermission;
+            });
+        },
+        setSingletonRelationshipValue (property, value) {
+            this.formFields[property] = value;
+        },
+        getRelationshipDisplayFields (property, value) {
+            return _.find(property.resourceCollection, { path: value._refResourceCollection }).query.fields;
         },
         generateDisplay (schema, privilege, resourceDetails) {
             this.oldFormFields = _.pick(resourceDetails, privilege.VIEW.properties);
@@ -248,7 +332,7 @@ export default {
                     tempProp.key = createPriv.attribute;
 
                     // Try and do some primary detection for a display name
-                    if ((_.toLower(createPriv.attribute) === 'username' || _.toLower(createPriv.attribute) === 'name') && this.displayNameField.length === 0) {
+                    if (createPriv.attrubute !== '_id' && this.displayNameField.length === 0) {
                         this.displayNameField = createPriv.attribute;
                     }
 
@@ -416,3 +500,11 @@ export default {
     }
 };
 </script>
+
+<style lang="scss" scoped>
+    /deep/ {
+        .nav-bar-border {
+            border-bottom: 1px solid $gray-300;
+        }
+    }
+</style>

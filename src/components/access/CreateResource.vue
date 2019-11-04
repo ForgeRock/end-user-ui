@@ -7,7 +7,7 @@
         </div>
         <b-row>
             <b-col>
-                <!-- Creating resource currently only supports String, Number and Boolean -->
+                <!-- Creating resource currently only supports String, Number, Boolean, and singleton relationships -->
                 <b-form v-if="createProperties.length > 0" class="mb-3" name="edit-personal-form">
                     <template v-for="(field, index) in createProperties">
                         <b-form-group :key="'createResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
@@ -48,6 +48,15 @@
                                 </div>
                             </div>
                         </b-form-group>
+
+                        <!-- for singletonRelationhip values -->
+                        <fr-relationship-edit v-if="field.type === 'relationship'"
+                            :parentResource='resourceType + "/" + resourceName'
+                            :relationshipProperty='field'
+                            :index="index"
+                            :key="'createResource' +index"
+                            :setValue="setSingletonRelationshipValue"
+                            :newResource="true" />
                     </template>
 
                     <!-- Special logic for password -->
@@ -85,6 +94,7 @@
 <script>
 import _ from 'lodash';
 import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
+import RelationshipEdit from '@/components/access/RelationshipEdit';
 import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 import ValidationError from '@/components/utils/ValidationError';
 
@@ -104,7 +114,8 @@ export default {
     name: 'Create-Resource',
     components: {
         'fr-validation-error': ValidationError,
-        'fr-password-policy-input': PolicyPasswordInput
+        'fr-password-policy-input': PolicyPasswordInput,
+        'fr-relationship-edit': RelationshipEdit
     },
     mixins: [
         ResourceMixin
@@ -134,6 +145,8 @@ export default {
         _.each(this.createProperties, (prop) => {
             if (prop.type === 'string' || prop.type === 'number') {
                 tempFormFields[prop.key] = '';
+            } else if (prop.type === 'relationship') {
+                tempFormFields[prop.key] = {};
             } else {
                 tempFormFields[prop.key] = false;
             }
@@ -234,6 +247,12 @@ export default {
             if (_.isArray(this.$refs.focusInput)) {
                 this.$refs.focusInput[0].focus();
             }
+        },
+        getRelationshipDisplayFields (property, value) {
+            return _.find(property.resourceCollection, { path: value._refResourceCollection }).query.fields;
+        },
+        setSingletonRelationshipValue (property, value) {
+            this.formFields[property] = value;
         }
     }
 };
