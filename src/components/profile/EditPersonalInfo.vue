@@ -1,5 +1,5 @@
 <template>
-    <b-modal id="userDetailsModal" class="fr-full-screen" ref="fsModal" cancel-variant="outline-secondary" @show="setModal" @keydown.enter.native.prevent="saveForm">
+    <b-modal id="userDetailsModal" modal-class="fr-full-screen" ref="fsModal" cancel-variant="outline-secondary" @show="setModal" @keydown.enter.native.prevent="saveForm">
 
         <div slot="modal-header" class="d-flex w-100 h-100">
             <h5 class="modal-title align-self-center text-center">{{title}}</h5>
@@ -102,7 +102,7 @@
         },
         methods: {
             generateFormFields () {
-                let {order, properties, required} = this.schema,
+                let { order, properties, required } = this.schema,
                     filteredOrder = _.filter(order, (propName) => {
                         return properties[propName].viewable &&
                             properties[propName].userEditable &&

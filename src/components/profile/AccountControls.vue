@@ -32,7 +32,7 @@
                 </div>
             </fr-list-item>
         </fr-list-group>
-        <b-modal id="deleteAccountModal" class="fr-full-screen" ref="deleteModal" cancel-variant="outline-secondary">
+        <b-modal id="deleteAccountModal" modal-class="fr-full-screen" ref="deleteModal" cancel-variant="outline-secondary">
             <div slot="modal-header" class="d-flex w-100 h-100">
                 <h5 class="modal-title align-self-center text-center">{{$t('pages.profile.accountControls.deleteModalTitle')}}</h5>
                 <button type="button" aria-label="Close" class="close" @click="hideModal"><i class="fa fa-times"></i></button>
@@ -137,9 +137,9 @@
                     data = JSON.stringify(result.data, null, 4);
 
                     if (navigator.msSaveBlob) {
-                        return navigator.msSaveBlob(new Blob([data], {type: 'data:application/json'}), downloadName);
+                        return navigator.msSaveBlob(new Blob([data], { type: 'data:application/json' }), downloadName);
                     } else {
-                        const blob = new Blob([data], {type: 'data:application/json'}),
+                        const blob = new Blob([data], { type: 'data:application/json' }),
                             e = document.createEvent('MouseEvents'),
                             a = document.createElement('a');
 

@@ -12,13 +12,13 @@
                 :showErrorState="false"
                 @input="$emit('input', $event)">
 
-                <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="defaultPolicyFailures || policyFailures"></fr-policy-panel>
+                <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="defaults || policyFailures"></fr-policy-panel>
             </fr-floating-label-input>
         </slot>
 
         <template v-else>
             <slot name="custom-input"></slot>
-            <fr-policy-panel :policies="policies" :policyFailures="defaultPolicyFailures || policyFailures"></fr-policy-panel>
+            <fr-policy-panel :policies="policies" :policyFailures="defaults || policyFailures"></fr-policy-panel>
         </template>
     </b-form-group>
 </template>
@@ -72,6 +72,7 @@ export default {
     },
     data () {
         return {
+            defaults: this.defaultPolicyFailures,
             policies: [],
             password: this.value
         };
@@ -194,8 +195,8 @@ export default {
             requestPolicyValidation = function (password) {
                 let data = formatPayload(password);
 
-                // remove existing defaultPolicyFailures
-                this.defaultPolicyFailures = null;
+                // remove existing defaults
+                this.defaults = null;
 
                 /* istanbul ignore next */
                 return policyService

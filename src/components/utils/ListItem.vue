@@ -73,18 +73,25 @@
             align-self: center;
         }
     }
+    
+    .fr-hover-item {
+        position: relative;
+    }
 
     .list-item-cursor {
         cursor: default;
     }
 
-    .fr-hover-item:hover {
-        cursor: pointer;
+    .list-group-item {
+        &:hover {
+            cursor: pointer;
 
-        .list-group-item {
-            background-color: $fr-hover-list-color;
+            .list-group-item {
+                background-color: $fr-hover-list-color;
+            }
         }
     }
+
 
     .collapsible:last-of-type > .list-group-item.collapsed {
         border-bottom-right-radius: $border-radius;
