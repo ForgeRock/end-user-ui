@@ -79,12 +79,15 @@ export default {
     .list-item-cursor {
         cursor: default;
     }
+    .fr-hover-item {
+        position: relative;
 
-    .fr-hover-item:hover {
-        cursor: pointer;
+        &:hover {
+            cursor: pointer;
 
-        .list-group-item {
-            background-color: $fr-hover-list-color;
+            .list-group-item {
+                background-color: $fr-hover-list-color;
+            }
         }
     }
 

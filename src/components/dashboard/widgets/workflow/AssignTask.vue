@@ -56,12 +56,12 @@ export default {
             return this.process.processDefinition;
         },
         formProperties () {
-                if (this.processDefinition && this.processDefinition.formProperties) {
-                    return this.processDefinition.formProperties;
-                } else {
-                    return [];
-                }
-            },
+            if (this.processDefinition && this.processDefinition.formProperties) {
+                return this.processDefinition.formProperties;
+            } else {
+                return [];
+            }
+        },
         task () {
             return this.taskDefinition.task;
         },

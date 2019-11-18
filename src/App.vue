@@ -45,7 +45,7 @@
                             </template>
                             <b-dropdown-item active-class="fr-no-active" exact-active-class="fr-no-active" :to="{ name: 'Profile'}">{{$t('pages.app.profile')}}</b-dropdown-item>
                             <b-dropdown-item v-if="this.$root.userStore.state.adminUser" href="/admin/">{{$t('pages.app.admin')}}</b-dropdown-item>
-                            <b-dropdown-divider class="m-0"></b-dropdown-divider>
+                            <b-dropdown-divider></b-dropdown-divider>
                             <b-dropdown-item @click.prevent="logoutUser()">{{$t('pages.app.signOut')}}</b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>
