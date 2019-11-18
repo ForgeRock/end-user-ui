@@ -79,14 +79,6 @@ describe('EditPersonalInfo.vue', () => {
         });
     });
 
-    it('hides modal on close', () => {
-        wrapper.vm.hideModal();
-
-        Vue.nextTick(() => {
-            expect(wrapper.find('#userDetailsModal').isVisible()).to.equal(false);
-        });
-    });
-
     it('creates patches array correctly', () => {
         let original = [{
                 name: 'description',
@@ -127,12 +119,6 @@ describe('EditPersonalInfo.vue', () => {
         expect(patches[2].value).to.equal('Vancouver');
     });
 
-    it('allows enter to fire save', () => {
-        const spy = sinon.spy(wrapper.vm, 'saveForm');
-
-        wrapper.find('#userDetailsModal').trigger('keydown.enter');
-        expect(spy.called);
-    });
     describe('#generateFormFields', () => {
         it('should create the proper fields based on schema', () => {
             let formFields = wrapper.vm.generateFormFields(),
@@ -141,11 +127,11 @@ describe('EditPersonalInfo.vue', () => {
             expect(formFields).to.be.an('Array');
             expect(formFields.length).to.equal(1);
             expect(firstFormField).to.be.an('object')
-                .and.to.include({name: 'test'})
-                .and.to.include({title: 'test title'})
-                .and.to.include({value: 'test'})
-                .and.to.include({type: 'string'})
-                .and.to.include({required: false});
+                .and.to.include({ name: 'test' })
+                .and.to.include({ title: 'test title' })
+                .and.to.include({ value: 'test' })
+                .and.to.include({ type: 'string' })
+                .and.to.include({ required: false });
         });
     });
 });
