@@ -72,6 +72,7 @@
             "CANNOT_CONTAIN_OTHERS": "Must not share characters with %{disallowedFields}",
             "VALID_EMAIL_ADDRESS_FORMAT": "Invalid email format (example@example.com)",
             "UNIQUE": "%{property} must be unique",
+            "VALID_USERNAME": "Invalid username",
             "IS_NEW": "Must not be the same as the previous %{historyLength} passwords",
             "test": "succeed",
             "policyServiceError": {
@@ -80,7 +81,8 @@
             },
             "successMessages": {
                 "password": "Your password is secure!"
-            }
+            },
+            "policyValidationFailed": "Policy validation failed for '%{property}'"
         }
     },
     "pages": {

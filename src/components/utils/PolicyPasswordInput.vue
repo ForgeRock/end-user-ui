@@ -12,13 +12,13 @@
                 :showErrorState="false"
                 @input="$emit('input', $event)">
 
-                <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="defaultPolicyFailures || policyFailures"></fr-policy-panel>
+                <fr-policy-panel slot="validationError" :policies="policies" :policyFailures="(showDefaultPolicyFailures) ?  defaultPolicyFailures : policyFailures"></fr-policy-panel>
             </fr-floating-label-input>
         </slot>
 
         <template v-else>
             <slot name="custom-input"></slot>
-            <fr-policy-panel :policies="policies" :policyFailures="defaultPolicyFailures || policyFailures"></fr-policy-panel>
+            <fr-policy-panel :policies="policies" :policyFailures="(showDefaultPolicyFailures) ?  defaultPolicyFailures : policyFailures"></fr-policy-panel>
         </template>
     </b-form-group>
 </template>
@@ -73,8 +73,28 @@ export default {
     data () {
         return {
             policies: [],
-            password: this.value
+            password: this.value,
+            failedExcludedPolicies: [],
+            showDefaultPolicyFailures: false
         };
+    },
+    watch: {
+        failedExcludedPolicies (value) {
+            let policy = value[0];
+
+            if (policy) {
+                let policyError = this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, policy.policyRequirements[0].params),
+                    errorMessage = `${this.$t(`common.policyValidationMessages.policyValidationFailed`, { property: policy.property })}: ${policyError}`;
+
+                /* istanbul ignore next */
+                this.displayNotification('error', errorMessage);
+
+                this.failedExcludedPolicies = [];
+            }
+        },
+        defaultPolicyFailures (newVal) {
+            this.showDefaultPolicyFailures = true;
+        }
     },
     computed: {
         policyFailures () {
@@ -200,8 +220,22 @@ export default {
                 /* istanbul ignore next */
                 return policyService
                     .post(`/policy/${this.policyApi}/?_action=${this.getAction()}`, data)
-                    .then(({ data }) => this.toPolicyNames(data))
-                    .catch(() => {
+                    .then(({ data }) => {
+                        if (data.failedPolicyRequirements) {
+                            _.map(data.failedPolicyRequirements, (failedPolicyRequirement) => {
+                                if (failedPolicyRequirement.property === 'password') {
+                                    this.showDefaultPolicyFailures = false;
+
+                                    // if the failure is included in excluded policies add it to the failedExcludedPolicies list
+                                    if (_.includes(this.exclude, failedPolicyRequirement.policyRequirements[0].policyRequirement)) {
+                                        this.failedExcludedPolicies.push(failedPolicyRequirement);
+                                    }
+                                }
+                            });
+                        }
+
+                        return this.toPolicyNames(data);
+                    }).catch(() => {
                         /* istanbul ignore next */
                         this.displayNotification('error', this.$t('common.policyValidationMessages.policyServiceError'));
                     });

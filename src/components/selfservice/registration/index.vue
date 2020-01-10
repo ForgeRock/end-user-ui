@@ -221,9 +221,9 @@ export default {
                 let policy = errorResponse.data.detail.failedPolicyRequirements[0];
 
                 if (policy.policyRequirements.length > 0) {
-                    policyError = this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, { property: policy.property });
+                    policyError = this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, policy.policyRequirements[0].params);
 
-                    errorMessage = `${errorMessage}: ${policyError}`;
+                    errorMessage = `${this.$t(`common.policyValidationMessages.policyValidationFailed`, { property: policy.property })}: ${policyError}`;
                 }
             }
 

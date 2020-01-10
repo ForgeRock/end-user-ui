@@ -5,8 +5,8 @@
                 <h6>{{$t('pages.profile.accountSecurity.password')}}</h6>
             </div>
             <div class="d-flex ml-3 align-self-center">
-                <div class="btn btn-sm btn-link float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
-                <div class="btn btn-sm btn-link float-right btn-edit">{{$t('common.form.reset')}}</div>
+                <div v-show="showCancelButton" class="btn btn-sm btn-link float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
+                <div v-show="!showCancelButton" class="btn btn-sm btn-link float-right btn-edit" @click="showCancelButton = true">{{$t('common.form.reset')}}</div>
             </div>
         </div>
 
@@ -86,7 +86,8 @@ export default {
             showCurrent: true,
             inputCurrent: 'password',
             inputNew: 'password',
-            userId: this.$root.userStore.getUserState().userId
+            userId: this.$root.userStore.getUserState().userId,
+            showCancelButton: false
         };
     },
     methods: {
@@ -94,6 +95,7 @@ export default {
             this.currentPassword = '';
             this.newPassword = '';
             this.errors.clear();
+            this.showCancelButton = false;
         },
         resetComponent () {
             this.loading = false;
