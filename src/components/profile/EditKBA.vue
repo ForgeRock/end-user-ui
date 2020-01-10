@@ -5,8 +5,8 @@
                 <h6 class="my-0">{{$t('pages.profile.accountSecurity.securityQuestions')}}</h6>
             </div>
             <div class="d-flex ml-3 align-self-center">
-                <div class="btn btn-link btn-sm float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
-                <div class="btn btn-link btn-sm float-right btn-edit">{{$t('common.form.edit')}}</div>
+                <div v-show="showCancelButton" class="btn btn-sm btn-link float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
+                <div v-show="!showCancelButton" class="btn btn-sm btn-link float-right btn-edit" @click="showCancelButton = true">{{$t('common.form.reset')}}</div>
             </div>
         </div>
 
@@ -15,7 +15,7 @@
                 <b-row>
                     <b-col sm="8">
                         <fieldset v-for="(select, id) in selected" :key="id" class="pb-3">
-                            
+
                             <label>{{$t('common.user.kba.question')}} {{select.index}}</label>
                             <b-form-select class="mb-3"
                                 v-model="select.selected"
@@ -23,8 +23,8 @@
 
                             <div v-if="select && select.selected === customIndex" class="pb-3">
                                 <label>{{$t('pages.profile.accountSecurity.custom')}}</label>
-                                <b-form-input type="text" 
-                                    v-model.trim="select.custom" 
+                                <b-form-input type="text"
+                                    v-model.trim="select.custom"
                                     v-validate="'required'"
                                     data-vv-validate-on="submit"
                                     :name="$t('pages.profile.accountSecurity.custom')  + select.index"
@@ -36,7 +36,7 @@
                             <div class="form-group mb-0">
                                 <label>{{$t('common.user.kba.answer')}}</label>
                                 <b-form-input type="text" class="form-control"
-                                    v-model.trim="select.answer" 
+                                    v-model.trim="select.answer"
                                     v-validate="'required'"
                                     data-vv-validate-on="submit"
                                     :data-vv-as="$t('common.user.kba.answer')"
@@ -48,8 +48,8 @@
 
                             <hr v-if="id !== selected.length - 1" class="mb-3 mt-4">
                         </fieldset>
-                        
-                        <fr-loading-button type="button" variant="primary" class="ld-ext-right mb-3" 
+
+                        <fr-loading-button type="button" variant="primary" class="ld-ext-right mb-3"
                             :label="$t('common.user.kba.saveQuestions')"
                             :loading="loading"
                             @click="onSaveKBA"></fr-loading-button>
@@ -87,7 +87,8 @@
                 selectOptions: [],
                 selected: [],
                 customIndex: null,
-                loading: false
+                loading: false,
+                showCancelButton: false
             };
         },
         mounted () {
@@ -100,17 +101,17 @@
 
                 // set form state based on stored user questions
                 _.times(minimumRequired, (index) => {
-                    this.selected.push({selected: null, index: index + 1, answer: '', custom: ''});
+                    this.selected.push({ selected: null, index: index + 1, answer: '', custom: '' });
                 });
 
                 // create select options
                 this.selectOptions = _.map(this.questions, (question, key) => {
-                    return {value: key, text: question[locale] || question[fallbackLocale], disabled: true};
+                    return { value: key, text: question[locale] || question[fallbackLocale], disabled: true };
                 });
 
                 this.customIndex = this.selectOptions.length + 1;
-                this.selectOptions.unshift({value: null, text: this.$t('common.user.kba.selectQuestion'), disabled: true});
-                this.selectOptions.push({value: this.customIndex, text: this.$t('common.user.kba.custom'), disabled: false});
+                this.selectOptions.unshift({ value: null, text: this.$t('common.user.kba.selectQuestion'), disabled: true });
+                this.selectOptions.push({ value: this.customIndex, text: this.$t('common.user.kba.custom'), disabled: false });
             },
 
             generatePatch () {
@@ -142,6 +143,7 @@
                 this.selectOptions = [];
                 this.selected = [];
                 this.customIndex = null;
+                this.showCancelButton = false;
 
                 this.questions = this.kbaData.questions;
                 this.initializeForm(this.kbaData.minimumAnswersToDefine);
@@ -156,7 +158,7 @@
 
                         this.$emit('updateKBA', this.generatePatch(), { onSuccess: () => {
                             this.$refs.cancel.click();
-                        }});
+                        } });
                     }
                 });
             },

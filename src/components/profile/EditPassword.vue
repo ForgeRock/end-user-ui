@@ -5,8 +5,8 @@
                 <h6>{{$t('pages.profile.accountSecurity.password')}}</h6>
             </div>
             <div class="d-flex ml-3 align-self-center">
-                <div class="btn btn-sm btn-link float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
-                <div class="btn btn-sm btn-link float-right btn-edit">{{$t('common.form.edit')}}</div>
+                <div v-show="showCancelButton" class="btn btn-sm btn-link float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
+                <div v-show="!showCancelButton" class="btn btn-sm btn-link float-right btn-edit" @click="showCancelButton = true">{{$t('common.form.reset')}}</div>
             </div>
         </div>
 
@@ -16,7 +16,7 @@
                     <b-col sm="8">
                         <b-form-group>
                             <label for="currentPassword">{{$t('pages.profile.accountSecurity.currentPassword')}}</label>
-                            <div class="form-label-password form-label-group mb-0"> 
+                            <div class="form-label-password form-label-group mb-0">
                                 <b-form-input id="currentPassword" name="currentPassword" data-vv-validate-on="submit" :data-vv-as="$t('pages.profile.accountSecurity.currentPassword')" :class="[{'is-invalid': errors.has('currentPassword')}, 'form-control']" :type="inputCurrent" v-model="currentPassword" v-validate="'required'"></b-form-input>
                                 <div class="input-group-append">
                                     <b-btn @click="revealCurrent" class="btn btn-secondary" type="button">
@@ -31,7 +31,7 @@
 
                             <b-form-group class="mb-3" slot="custom-input">
                                 <label for="newPassword">{{$t('pages.profile.accountSecurity.newPassword')}}</label>
-                                <div class="form-label-password form-label-group mb-0"> 
+                                <div class="form-label-password form-label-group mb-0">
                                     <b-form-input id="newPassword" :type="inputNew" v-model="newPassword" name="password" v-validate.initial="'required|policy'"></b-form-input>
                                     <div class="input-group-append">
                                         <button @click="revealNew" class="btn btn-secondary" type="button">
@@ -40,10 +40,10 @@
                                     </div>
                                 </div>
                             </b-form-group>
-                        
+
                         </fr-password-policy-input>
 
-                        <fr-loading-button type="button" variant="primary" class="ld-ext-right mb-3" 
+                        <fr-loading-button type="button" variant="primary" class="ld-ext-right mb-3"
                             :label="$t('pages.profile.accountSecurity.savePassword')"
                             :loading="loading"
                             @click="onSavePassword"></fr-loading-button>
@@ -57,8 +57,8 @@
 </template>
 <script>
     import ListItem from '@/components/utils/ListItem';
-    import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
     import LoadingButton from '@/components/utils/LoadingButton';
+    import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
     import ValidationError from '@/components/utils/ValidationError';
 
     /**
@@ -86,7 +86,8 @@
                 showCurrent: true,
                 inputCurrent: 'password',
                 inputNew: 'password',
-                userId: this.$root.userStore.getUserState().userId
+                userId: this.$root.userStore.getUserState().userId,
+                showCancelButton: false
             };
         },
         methods: {
@@ -94,6 +95,7 @@
                 this.currentPassword = '';
                 this.newPassword = '';
                 this.errors.clear();
+                this.showCancelButton = false;
             },
             resetComponent () {
                 this.loading = false;
@@ -114,7 +116,7 @@
                         'X-Requested-With': 'XMLHttpRequest',
                         'X-OpenIDM-Reauth-Password': this.currentPassword
                     },
-                    payload = [{operation: 'add', field: '/password', value: this.newPassword}],
+                    payload = [{ operation: 'add', field: '/password', value: this.newPassword }],
                     onSuccess = this.resetComponent.bind(this),
                     onError = this.displayError.bind(this);
 

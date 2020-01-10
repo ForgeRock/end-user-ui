@@ -34,17 +34,17 @@
 
 <script>
     import _ from 'lodash';
-    import AllInOneRegistration from '@/components/selfservice/registration/AllInOneRegistration';
     import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
-    import Captcha from '@/components/selfservice/common/Captcha';
+    import styles from '@/scss/main.scss';
     import CenterCard from '@/components/utils/CenterCard';
+    import AllInOneRegistration from '@/components/selfservice/registration/AllInOneRegistration';
+    import Captcha from '@/components/selfservice/common/Captcha';
     import Consent from '@/components/selfservice/registration/Consent';
     import emailValidation from '@/components/selfservice/registration/EmailValidation';
     import GenericSelfService from '@/components/selfservice/common/GenericSelfService';
     import idmUserDetails from '@/components/selfservice/registration/UserDetails';
     import kbaSecurityAnswerDefinitionStage from '@/components/selfservice/registration/KBASecurityAnswerDefinitionStage.vue';
     import SelfserviceAPI from '@/components/selfservice/mixins/SelfserviceAPIMixin';
-    import styles from '@/scss/main.scss';
     import TermsAndConditions from '@/components/selfservice/registration/TermsAndConditions';
 
     const customTitleComponents = [
@@ -221,9 +221,9 @@
                     let policy = errorResponse.data.detail.failedPolicyRequirements[0];
 
                     if (policy.policyRequirements.length > 0) {
-                        policyError = this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, { property: policy.property });
+                        policyError = this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, policy.policyRequirements[0].params);
 
-                        errorMessage = `${errorMessage}: ${policyError}`;
+                        errorMessage = `${this.$t(`common.policyValidationMessages.policyValidationFailed`, { property: policy.property })}: ${policyError}`;
                     }
                 }
 
@@ -257,10 +257,10 @@
                             });
                         }
                     })
-                    .catch((error) => {
-                        /* istanbul ignore next */
-                        this.displayNotification('error', error.response.data.message);
-                    });
+                        .catch((error) => {
+                            /* istanbul ignore next */
+                            this.displayNotification('error', error.response.data.message);
+                        });
                 });
             }
         }

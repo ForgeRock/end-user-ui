@@ -256,7 +256,8 @@ Vue.mixin({
             this.$notify({
                 group: 'IDMMessages',
                 type: notificationType,
-                text: message
+                text: message,
+                ignoreDuplicates: true
             });
         },
         // Log a user out of their existing session (both normal and fullstack)

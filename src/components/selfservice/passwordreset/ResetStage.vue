@@ -78,6 +78,12 @@ export default {
                     let failedPolicy = find(val.requirements.error.detail.failedPolicyRequirements, { property: 'password' });
 
                     if (failedPolicy && failedPolicy.policyRequirements) {
+                        let policyError = this.$t(`common.policyValidationMessages.${failedPolicy.policyRequirements[0].policyRequirement}`, failedPolicy.policyRequirements[0].params),
+                            errorMessage = `${this.$t(`common.policyValidationMessages.policyValidationFailed`, { property: failedPolicy.property })}: ${policyError}`;
+
+                        /* istanbul ignore next */
+                        this.displayNotification('error', errorMessage);
+
                         this.defaultPolicyFailures = map(failedPolicy.policyRequirements, 'policyRequirement');
                     }
                 }

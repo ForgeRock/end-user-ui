@@ -26,7 +26,8 @@ export default
                 new: 'New',
                 yes: 'Yes',
                 no: 'No',
-                delete: 'Delete'
+                delete: 'Delete',
+                reset: 'Reset'
             },
             placeholders: {
                 password: 'Password',
@@ -74,6 +75,7 @@ export default
                 'VALID_EMAIL_ADDRESS_FORMAT': 'Invalid email format (example@example.com)',
                 'IS_NEW': 'Must not be the same as the previous %{historyLength} passwords',
                 'UNIQUE': '%{property} must be unique',
+                'VALID_USERNAME': 'Invalid username',
                 'test': 'succeed',
                 policyServiceError: {
                     registration: 'Unable to register. Please try again later.',
@@ -81,7 +83,8 @@ export default
                 },
                 successMessages: {
                     password: 'Your password is secure!'
-                }
+                },
+                'policyValidationFailed': "Policy validation failed for '%{property}'"
             }
         },
         pages: {
