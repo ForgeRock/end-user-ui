@@ -41,7 +41,7 @@
                         <fr-notification></fr-notification>
                         <b-nav-item-dropdown class="fr-main-dropdown" right>
                             <template slot="button-content">
-                                {{$t('pages.app.user')}} <b-img :src="require('@/assets/images/profile-default.png')" rounded="circle" width="24" height="24" alt="img" class="m-1" />
+                                {{ fullName }} <b-img :src="require('@/assets/images/profile-default.png')" rounded="circle" width="24" height="24" alt="img" class="m-1" />
                             </template>
                             <b-dropdown-item active-class="fr-no-active" exact-active-class="fr-no-active" :to="{ name: 'Profile'}">{{$t('pages.app.profile')}}</b-dropdown-item>
                             <b-dropdown-item v-if="this.$root.userStore.state.adminUser" href="/admin/">{{$t('pages.app.admin')}}</b-dropdown-item>
@@ -89,6 +89,21 @@ export default {
         return {
             toggled: false
         };
+    },
+    computed: {
+        fullName () {
+            let fullName = '';
+
+            if (this.$root.userStore.state.givenName.length > 0 || this.$root.userStore.state.sn.length > 0) {
+                fullName = _.startCase(this.$root.userStore.state.givenName + ' ' + this.$root.userStore.state.sn);
+            } else if (this.$root.userStore.state.userName) {
+                fullName = this.$root.userStore.state.userName;
+            } else {
+                fullName = this.$root.userStore.state.userId;
+            }
+
+            return _.truncate(fullName);
+        }
     },
     methods: {
         onToggle () {
