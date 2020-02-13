@@ -44,14 +44,14 @@
                             <b-form-checkbox class="pl-4" disabled v-model="allRowsSelected"/>
                     </div>
                 </template>
-                <template slot="selected" slot-scope="data">
+                <template v-slot:cell(selected)="data">
                     <b-form-checkbox
                         class="pl-4"
                         :id="'rowSelectCheckbox_' + relationshipArrayProperty.key + data.index"
                         disabled
                         v-model="data.rowSelected"/>
                 </template>
-                <template slot="_relationshipDetails" slot-scope="data">
+                <template v-slot:cell(_relationshipDetails)="data">
                     <div class="media cursor-pointer" @click="resourceClicked(data.item)">
                         <div class="media-body">
                             <div class="text-bold">{{data.value[0]}}</div>
