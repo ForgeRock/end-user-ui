@@ -46,7 +46,7 @@
                     :max-height="600"
                     :show-no-results="false"
                     :hide-selected="true"
-                    @search-change="setOptions"
+                    @search-change="debounceHandleSearchChange"
                     @select="setSelected"
                     @open="setSelected"
                     :show-no-options="false">
@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { map, each, find, has } from 'lodash';
+import { map, each, find, has, debounce } from 'lodash';
 import Multiselect from 'vue-multiselect';
 
 export default {
@@ -156,7 +156,9 @@ export default {
             rescourceCollectionTypes: [],
             isLoading: false,
             resourceCollections: [],
-            isRelationshipArray: false
+            isRelationshipArray: false,
+            loading: true,
+            debounceHandleSearchChange: debounce(this.handleSearchChange, 1000)
         };
     },
     mounted () {
@@ -202,6 +204,9 @@ export default {
                     this.displayNotification('error', error.response.data.message);
                 });
         },
+        handleSearchChange (query) {
+            this.setOptions(query);
+        },
         setOptions (query) {
             const maxPageSize = 10,
                 displayFields = this.resourceCollection.query.fields;
@@ -214,6 +219,7 @@ export default {
             }
 
             if (query) {
+                this.isLoading = true;
                 queryFilter = map(displayFields, (field) => { return `/${field} sw "${query}"`; }).join(' or ');
 
                 const urlQuery = `?_sortKeys=${this.resourceCollection.query.fields[0]}&_pageSize=${maxPageSize}&_fields=${displayFields.join(',')}&_queryFilter=${queryFilter}`,
@@ -223,6 +229,7 @@ export default {
                     each(queryResults.data.result, (resource) => {
                         this.options.push({ value: this.resourceCollection.path + '/' + resource._id, resource, displayFields });
                     });
+                    this.isLoading = false;
                 })
                     .catch((error) => {
                         this.displayNotification('error', error.response.data.message);
@@ -281,6 +288,14 @@ export default {
     .multiselect__input {
       position: relative;
       top: 3px;
+    }
+
+    .multiselect__spinner {
+       margin-top: 8px;
+    }
+
+    .multiselect__spinner:after, .multiselect__spinner:before {
+      border-top-color: $primary;
     }
   }
 }

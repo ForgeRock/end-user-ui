@@ -138,7 +138,7 @@
                 <b-tab
                     v-if="relationshipProperty.type === 'array'"
                     :title="relationshipProperty.title"
-                    :key="`${relationshipProperty}_tab`">
+                    :key="`${relationshipProperty.propName}_tab`">
                     <fr-relationship-array :parentResource='resource + "/" + name' :parentId='id' :relationshipArrayProperty='relationshipProperty'/>
                 </b-tab>
             </template>

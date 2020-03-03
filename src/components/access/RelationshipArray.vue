@@ -220,7 +220,7 @@ export default {
             });
         },
         buildGridUrl (page) {
-            let resourceUrl = `${this.parentResource}/${this.parentId}/${this.relationshipArrayProperty.propName}?_queryFilter=true&_pageSize=${this.gridPageSize}&_totalPagedResultsPolicy=EXACT&_fields=`;
+            let resourceUrl = `${this.parentResource}/${this.parentId}/${this.relationshipArrayProperty.propName}?_queryFilter=true&_pageSize=${this.gridPageSize}&_fields=`;
 
             if (page > 1) {
                 // Pagination starts at 1 and we need to go back an additional one to get the previous page
