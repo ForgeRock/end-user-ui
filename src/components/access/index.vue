@@ -36,9 +36,17 @@
                      class="mb-0"
                      :sort-direction="sortDirection"
                      @row-clicked="resourceClicked"
-                     @sort-changed="sortingChanged">
+                     @sort-changed="sortingChanged"
+                     :busy="isLoading"
+                     :class="[{'hide-header': isLoading }]">
+                     <template v-slot:table-busy>
+                        <div class="text-center p-5">
+                          <b-spinner class="align-middle spinner-large text-primary my-4"></b-spinner>
+                          <div>{{ $t("common.form.loading") }} {{ plural(name) }}...</div>
+                        </div>
+                    </template>
             </b-table>
-            <div class="card-footer py-2">
+            <div v-if="!isLoading" class="card-footer py-2">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center mb-0">
                         <li @click.prevent="currentPage === 1 ? '' : paginationChange(1)" :class="[{ disabled: currentPage === 1 }, 'page-item']">
@@ -62,6 +70,7 @@
 
 <script>
 import _ from 'lodash';
+import pluralize from 'pluralize';
 import axios from 'axios';
 import CreateResource from '@/components/access/CreateResource';
 
@@ -70,7 +79,7 @@ import CreateResource from '@/components/access/CreateResource';
  *
  * @fires GET schema/type/name/ (e.g. schema/managed/user) - Schema for a resource (e.g. managed/user schema)
  * @fires GET privilege/type/name/ (e.g. privilege/managed/user/) - Privileges for a resource (e.g. managed/user)
- * @fires GET resource/name?_queryFilter=filter&_pageSize=10&_totalPagedResultsPolicy=EXACT (e.g. managed/user?_queryFilter=true&_pageSize=10&_totalPagedResultsPolicy=EXACT) -
+ * @fires GET resource/name?_queryFilter=filter&_pageSize=10 (e.g. managed/user?_queryFilter=true&_pageSize=10) -
  * List resource items, limited to 10 returned items and makes use of a query filter search if provided (defaults to queryFilter = true if none provided by the user).
  */
 export default {
@@ -95,7 +104,8 @@ export default {
             sortDirection: 'asc',
             filter: '',
             createProperties: [],
-            userCanUpdate: false
+            userCanUpdate: false,
+            isLoading: true
         };
     },
     mounted () {
@@ -163,6 +173,8 @@ export default {
         loadGrid (filter, fields, sortField, page) {
             const idmInstance = this.getRequestService();
 
+            this.isLoading = true;
+
             /* istanbul ignore next */
             idmInstance.get(this.buildGridUrl(filter, fields, sortField, page)).then((resourceData) => {
                 // this.totalRows = resourceData.data.totalPagedResults;
@@ -173,10 +185,14 @@ export default {
                 }
 
                 this.gridData = resourceData.data.result;
+                this.isLoading = false;
+            }).catch((error) => {
+                this.isLoading = false;
+                this.displayNotification('error', error.response.data.message);
             });
         },
         buildGridUrl (filter, fields, sortField, page) {
-            let resourceUrl = `${this.resource}/${this.name}?_queryFilter=${filter}&_pageSize=10&_totalPagedResultsPolicy=EXACT`;
+            let resourceUrl = `${this.resource}/${this.name}?_queryFilter=${filter}&_pageSize=10`;
 
             if (_.isNull(sortField)) {
                 // If there is no sortField default to sorting on the first column.
@@ -292,6 +308,9 @@ export default {
             } else {
                 this.displayNotification('error', this.$t('pages.access.unableToEditResource', { resource: this.name }));
             }
+        },
+        plural (txt) {
+            return pluralize(txt);
         }
     }
 };
@@ -303,6 +322,15 @@ export default {
             a[role="menuitemradio"] {
                 display: none !important;
             }
+        }
+
+        .spinner-large {
+            width: 10rem;
+            height: 10rem;
+        }
+
+        .hide-header > thead {
+            display:none !important;
         }
     }
 
