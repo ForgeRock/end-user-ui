@@ -182,7 +182,7 @@ Vue.mixin({
         // Generated an axios ajax request service for consistent use of calls to IDM
         getRequestService: function (config) {
             let baseURL = idmContext,
-                timeout = 5000,
+                timeout = 0,
                 headers = {
                     'content-type': 'application/json',
                     'cache-control': 'no-cache',

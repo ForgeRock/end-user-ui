@@ -27,7 +27,8 @@ export default
                 yes: 'Yes',
                 no: 'No',
                 delete: 'Delete',
-                reset: 'Reset'
+                reset: 'Reset',
+                loading: 'Loading'
             },
             placeholders: {
                 password: 'Password',

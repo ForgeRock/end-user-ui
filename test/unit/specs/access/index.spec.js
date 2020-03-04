@@ -62,7 +62,7 @@ describe('ListResource.vue', () => {
 
         wrapper.setMethods({ loadGrid: () => {} });
 
-        expect(wrapper.vm.buildGridUrl('test', ['test'], ['test'], 2)).to.equal('test/test?_queryFilter=test&_pageSize=10&_totalPagedResultsPolicy=EXACT&_sortKeys=test&_fields=test&_pagedResultsOffset=10');
+        expect(wrapper.vm.buildGridUrl('test', ['test'], ['test'], 2)).to.equal('test/test?_queryFilter=test&_pageSize=10&_sortKeys=test&_fields=test&_pagedResultsOffset=10');
     });
 
     it('Access sort column', () => {
