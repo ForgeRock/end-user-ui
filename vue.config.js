@@ -1,4 +1,4 @@
-const webpack = require('webpack')
+const webpack = require('webpack'),
     CopyWebpackPlugin = require('copy-webpack-plugin'),
     GitRevisionPlugin = require('git-revision-webpack-plugin');
 
@@ -70,6 +70,7 @@ function getPlugins (env) {
 }
 
 module.exports = {
+    publicPath: './',
     runtimeCompiler: true,
     pages: {
         index: {
