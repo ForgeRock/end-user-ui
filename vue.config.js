@@ -1,6 +1,5 @@
 const webpack = require('webpack'),
-    CopyWebpackPlugin = require('copy-webpack-plugin'),
-    GitRevisionPlugin = require('git-revision-webpack-plugin');
+    CopyWebpackPlugin = require('copy-webpack-plugin');
 
 function generateTheme () {
     let variableLoad = `
@@ -33,8 +32,7 @@ function getPlugins (env) {
             resourceRegExp: /^\.\/locale$/,
             contextRegExp: /moment$/
         }),
-        new webpack.BannerPlugin('Copyright 2019 ForgeRock AS. All Rights Reserved \n Use of this code requires a commercial software license with ForgeRock AS. or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.'),
-        new GitRevisionPlugin()
+        new webpack.BannerPlugin('Copyright 2019-2020 ForgeRock AS. All Rights Reserved \n Use of this code requires a commercial software license with ForgeRock AS. or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.')
     ];
 
     // the process.env variables =>

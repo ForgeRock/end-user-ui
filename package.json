@@ -40,7 +40,6 @@
     "@vue/eslint-config-standard": "4.0.0",
     "@vue/test-utils": "1.0.0-beta.29",
     "babel-eslint": "10.0.1",
-    "git-revision-webpack-plugin": "3.0.3",
     "chai": "4.1.2",
     "cross-env": "5.0.1",
     "eslint": "5.8.0",
