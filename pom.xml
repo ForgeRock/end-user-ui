@@ -15,7 +15,7 @@
 
 		<groupId>org.forgerock.openidm</groupId>
     <artifactId>openidm-ui-mirai</artifactId>
-        <version>6.5.0.11</version>
+        <version>6.5.0.12-SNAPSHOT</version>
     <name>Mirai UI</name>
     <packaging>pom</packaging>
 
