@@ -9,13 +9,13 @@ export default {
     name: 'Resource-Mixin',
     methods: {
         generateUpdatePatch (o, n) {
-            let originalFrom = _.cloneDeep(o),
+            let originalForm = _.cloneDeep(o),
                 newForm = _.cloneDeep(n),
                 changes;
 
             if (_.isArray(newForm)) {
                 changes = _.filter(newForm, (field, index) => {
-                    if (field.value !== originalFrom[index].value) {
+                    if (field.value !== originalForm[index].value) {
                         return true;
                     }
                     return false;
@@ -24,7 +24,7 @@ export default {
                 changes = [];
 
                 _.each(newForm, (value, key) => {
-                    if (originalFrom[key] !== newForm[key]) {
+                    if (!_.isEqual(originalForm[key],newForm[key])) {
                         changes.push({
                             value: newForm[key],
                             name: key
