@@ -1,56 +1,23 @@
 <script>
-import _ from 'lodash';
+import { cloneDeep, each, filter, find, has, isArray, isEqual, map } from "lodash";
 
 /**
  * @description Resource management mixin used for generating an update patch and  handling policy errors
  *
- **/
+ */
 export default {
-    name: 'Resource-Mixin',
-    methods: {
-        generateUpdatePatch (o, n) {
-            let originalForm = _.cloneDeep(o),
-                newForm = _.cloneDeep(n),
-                changes;
-
-            if (_.isArray(newForm)) {
-                changes = _.filter(newForm, (field, index) => {
-                    if (field.value !== originalForm[index].value) {
-                        return true;
-                    }
-                    return false;
-                });
-            } else {
-                changes = [];
-
-                _.each(newForm, (value, key) => {
-                    if (!_.isEqual(originalForm[key],newForm[key])) {
-                        changes.push({
-                            value: newForm[key],
-                            name: key
-                        });
-                    }
-                });
-            }
-
-            return _.map(changes, (formField) => {
-                if (formField.value === '' || formField.value === null) {
-                    return { operation: 'remove', field: '/' + formField.name };
-                } else {
-                    return { operation: 'add', field: '/' + formField.name, value: formField.value };
-                }
-            });
-        },
-
+    "name": "Resource-Mixin",
+    // eslint-disable-next-line sort-keys
+    "methods": {
         findPolicyError (errorResponse, properties) {
-            let error = [];
+            const error = [];
 
-            if (_.has(errorResponse, 'data.detail.failedPolicyRequirements')) {
-                _.each(errorResponse.data.detail.failedPolicyRequirements, (policy) => {
+            if (has(errorResponse, "data.detail.failedPolicyRequirements")) {
+                each(errorResponse.data.detail.failedPolicyRequirements, (policy) => {
                     if (policy.policyRequirements.length > 0) {
-                        let displayTitle = '',
-                            foundProperty = _.find(properties, (prop) => { return prop.key === policy.property; }),
-                            params = policy.policyRequirements[0].params || {};
+                        let displayTitle = "";
+                        const foundProperty = find(properties, (prop) => prop.key === policy.property),
+                            parameters = policy.policyRequirements[0].params || {};
 
                         if (foundProperty) {
                             if (foundProperty.title) {
@@ -59,19 +26,51 @@ export default {
                                 displayTitle = foundProperty.key;
                             }
 
-                            params.property = displayTitle;
+                            parameters.property = displayTitle;
                         }
 
                         error.push({
-                            exists: displayTitle.length > 0,
-                            field: policy.property,
-                            msg: this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, params)
+                            "exists": displayTitle.length > 0,
+                            "field": policy.property,
+                            "msg": this.$t(`common.policyValidationMessages.${policy.policyRequirements[0].policyRequirement}`, parameters)
                         });
                     }
                 });
             }
 
             return error;
+        },
+        generateUpdatePatch (original, new_) {
+            const newForm = cloneDeep(new_),
+                originalForm = cloneDeep(original);
+            let changes = null;
+
+            if (isArray(newForm)) {
+                changes = filter(newForm, (field, index) => {
+                    if (field.value !== originalForm[index].value) {
+                        return true;
+                    }
+                    return false;
+                });
+            } else {
+                changes = [];
+
+                each(newForm, (value, key) => {
+                    if (!isEqual(originalForm[key], newForm[key])) {
+                        changes.push({
+                            "name": key,
+                            "value": newForm[key]
+                        });
+                    }
+                });
+            }
+
+            return map(changes, (formField) => {
+                if (formField.value === "" || formField.value === null) {
+                    return { "field": `/${formField.name}`, "operation": "remove" };
+                }
+                return { "field": `/${formField.name}`, "operation": "add", "value": formField.value };
+            });
         }
     }
 };

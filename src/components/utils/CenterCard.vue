@@ -2,38 +2,39 @@
 <template>
     <b-container fluid class="px-0 h-100 d-flex">
         <div class="fr-m-auto fr-center-card align-self-center">
-            <b-card no-body
-                    class="border-xs-0 border-sm d-flex fr-stretch-card"
-                    header-tag="header"
-                    footer-tag="footer">
-
+            <b-card
+                no-body
+                class="border-xs-0 border-sm d-flex fr-stretch-card"
+                header-tag="header"
+                footer-tag="footer"
+            >
                 <b-card-header class="d-flex align-items-center flex-fill">
                     <!--For dark theme use vertical-logo-white.svg version of logo-->
 
                     <div class="d-flex flex-fill flex-column justify-content-center">
                         <b-img v-if="showLogo" class="fr-logo mb-3 mt-2" :src="require('@/assets/images/vertical-logo.svg')" fluid :alt="$t('common.form.logo')" />
-                        <slot name="center-card-header"></slot>
+                        <slot name="center-card-header" />
                     </div>
                 </b-card-header>
 
-                <slot name="center-card-body"></slot>
-                <slot name="center-card-footer"></slot>
+                <slot name="center-card-body" />
+                <slot name="center-card-footer" />
             </b-card>
         </div>
-
     </b-container>
 </template>
 <script>
+
 /**
  * @description Card container that will stay horizontally and vertically center on the screen (example can be found on the default login page)
  *
- **/
+ */
 export default {
-    name: 'Center-Card',
-    props: {
-        'showLogo': {
-            type: Boolean,
-            default: false
+    "name": "Center-Card",
+    "props": {
+        "showLogo": {
+            "default": false,
+            "type": Boolean
         }
     }
 };

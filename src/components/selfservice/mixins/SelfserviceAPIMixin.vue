@@ -1,5 +1,5 @@
 <script>
-import _ from 'lodash';
+import { extend, has, isUndefined, last } from "lodash";
 
 /**
  * @description Mixin used for selfservice proceesses handles the general progression through the selfservice stages as well as calling the appropriate loading function
@@ -11,52 +11,29 @@ import _ from 'lodash';
  *
  */
 export default {
-    name: 'Selfservice-API',
-    methods: {
-        loadData () {
-            /* istanbul ignore next */
-            const selfServiceInstance = this.getRequestService({
-                headers: this.getAnonymousHeaders()
-            });
-                /* istanbul ignore next */
-            selfServiceInstance.get(`/selfservice/${this.apiType}`)
-                .then((selfServiceDetails) => {
-                    this.setChildComponent(selfServiceDetails.data.type, selfServiceDetails.data);
-                })
-                .catch((error) => {
-                    /*
-                            If we are in progressive profiling mode we need to route back to login.
-                            This can happen if a user reloads the progressive profile page while
-                            in fullStack mode. We need to hit the login route again to start the
-                            process over.
-                        */
-                    if (_.has(this.$router.currentRoute, 'params.profileProcess')) {
-                        this.$router.push('/login');
-                    } else {
-                        /* istanbul ignore next */
-                        this.displayNotification('error', error.response.data.message);
-                    }
-                });
-        },
+    "name": "Selfservice-API",
+    // eslint-disable-next-line sort-keys
+    "methods": {
+        // eslint-disable-next-line max-statements
         advanceStage (data, noSessionFalse) {
             /* istanbul ignore next */
             let headers = this.getAnonymousHeaders();
             /* istanbul ignore next */
             if (noSessionFalse && !this.$root.applicationStore.state.authHeaders) {
                 headers = {
-                    'X-OpenIDM-NoSession': false,
-                    'X-OpenIDM-Password': null,
-                    'X-OpenIDM-Username': null
+                    "X-OpenIDM-NoSession": false,
+                    "X-OpenIDM-Password": null,
+                    "X-OpenIDM-Username": null
                 };
             }
 
             /* istanbul ignore next */
-            const selfServiceInstance = this.getRequestService({
-                    headers: _.extend(headers, { 'X-Requested-With': 'XMLHttpRequest' })
-                }),
-                saveData = {
-                    input: {}
-                };
+            const saveData = {
+                    "input": {}
+                },
+                selfServiceInstance = this.getRequestService({
+                    "headers": extend(headers, { "X-Requested-With": "XMLHttpRequest" })
+                });
 
             /* istanbul ignore next */
             if (this.selfServiceDetails && this.selfServiceDetails.token) {
@@ -75,34 +52,53 @@ export default {
             }
 
             /* istanbul ignore next */
-            selfServiceInstance.post(`/selfservice/${this.apiType}?_action=submitRequirements`, saveData)
-                .then((selfServiceDetails) => {
+            selfServiceInstance.post(`/selfservice/${this.apiType}?_action=submitRequirements`, saveData).
+                then((selfServiceDetails) => {
                     this.setChildComponent(selfServiceDetails.data.type, selfServiceDetails.data);
-                })
-                .catch((error) => {
-                    if (!_.isUndefined(this.apiErrorCallback)) {
+                }).
+                catch((error) => {
+                    if (!isUndefined(this.apiErrorCallback)) {
                         this.apiErrorCallback(error);
                     }
                 });
         },
-        parseQueryParams (queryParams) {
-            /*
-                    example =>
-                    queryParams = '&token=MY_TOKEN&code=MY_CODE'
-                    returns {
-                        token: 'MY_TOKEN',
-                        code: 'MY_CODE'
+        loadData () {
+            /* istanbul ignore next */
+            const selfServiceInstance = this.getRequestService({
+                "headers": this.getAnonymousHeaders()
+            });
+                /* istanbul ignore next */
+            selfServiceInstance.get(`/selfservice/${this.apiType}`).
+                then((selfServiceDetails) => {
+                    this.setChildComponent(selfServiceDetails.data.type, selfServiceDetails.data);
+                }).
+                // eslint-disable-next-line padded-blocks
+                catch((error) => {
+
+                    /*
+                     * If we are in progressive profiling mode we need to route back to login.
+                     * This can happen if a user reloads the progressive profile page while
+                     * in fullStack mode. We need to hit the login route again to start the
+                     * process over.
+                     */
+                    if (has(this.$router.currentRoute, "params.profileProcess")) {
+                        this.$router.push("/login");
+                    } else {
+                        /* istanbul ignore next */
+                        this.displayNotification("error", error.response.data.message);
                     }
-                */
-            if (!queryParams.match('returnParams')) {
-                return JSON.parse(
-                    `{
-                            ${decodeURI('"' + queryParams.slice(1).replace(/&/g, '","').replace(/=/g, '":"')) + '"'}
-                        }`
-                );
-            } else {
-                return { returnParams: _.last(decodeURIComponent(queryParams).split('returnParams=')) };
+                });
+        },
+        parseQueryParams (queryParameters) {
+            if (queryParameters.match("returnParams")) {
+                return { "returnParams": last(decodeURIComponent(queryParameters).split("returnParams=")) };
             }
+            return JSON.parse(`{
+                            ${`${decodeURI(`"${queryParameters.
+        slice(1).
+        replace(/&/gu, "\",\"").
+        replace(/[=]/gu, "\":\"")}`)}"`}
+                        }`);
         }
     }
 };

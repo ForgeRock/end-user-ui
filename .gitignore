@@ -18,3 +18,37 @@ target
 *.ntvs*
 *.njsproj
 *.sln
+
+# ignore packages, archive and installation files
+**/build/
+**/install/
+**/node_modules/
+**/target/
+*.war
+*.zip
+*.tar.bz2
+*.tar.gz
+*.tgz
+*.pyc
+*.log
+*.lock
+package-lock.json
+
+# ignore temp files
+*~
+.*.swp
+.*.bak
+nohup.out
+Thumbs.db
+.DS_Store
+tmp/
+temp/
+
+.ssh/
+.vscode/
+.env
+logs/
+
+awscli-bundle/
+**/*.properties
+**/*.retry
