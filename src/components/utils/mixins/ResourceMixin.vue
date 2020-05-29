@@ -24,7 +24,7 @@ export default {
                 changes = [];
 
                 _.each(newForm, (value, key) => {
-                    if (!_.isEqual(originalForm[key],newForm[key])) {
+                    if (!_.isEqual(originalForm[key], newForm[key])) {
                         changes.push({
                             value: newForm[key],
                             name: key

@@ -233,7 +233,8 @@ Vue.mixin({
             let headers = this.$root.applicationStore.state.authHeaders || {
                 'X-OpenIDM-NoSession': true,
                 'X-OpenIDM-Password': 'anonymous',
-                'X-OpenIDM-Username': 'anonymous'
+                'X-OpenIDM-Username': 'anonymous',
+                'cache-control': 'no-cache'
             };
 
             return headers;
