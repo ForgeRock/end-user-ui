@@ -17,6 +17,27 @@ import 'core-js/stable';
 Vue.config.productionTip = false;
 PromisePoly.polyfill();
 
+// Ready translated locale messages
+// IDM Context default
+const idmContext = window.context || '/openidm',
+    setSchemaProperties = function (schema) {
+        if (_.has(schema, 'data.properties')) {
+            schema.data.order.forEach((propName) => {
+                let prop = schema.data.properties[propName];
+
+                if (prop) {
+                    // If the property is nullable type will be an array so we need to grab the first array item that is not null to determine property type
+                    if (_.isArray(prop.type)) {
+                        prop.isNullable = true;
+                        prop.type = _.reject(prop.type, 'null')[0];
+                    }
+                }
+            });
+        }
+
+        return schema;
+    };
+
 // Add translation capability
 /*
   Basic Translation Example:
@@ -97,8 +118,9 @@ router.beforeEach((to, from, next) => {
                         authInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
                         authInstance.post(`privilege?_action=listPrivileges`),
                         authInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, privilege, schema) => {
+                        const scrubbedSchema = setSchemaProperties(schema);
                         UserStore.setProfileAction(profile.data);
-                        UserStore.setSchemaAction(schema.data);
+                        UserStore.setSchemaAction(scrubbedSchema.data);
                         UserStore.setAccess(privilege.data);
 
                         next();
@@ -129,10 +151,6 @@ router.beforeEach((to, from, next) => {
         next();
     }
 });
-
-// Ready translated locale messages
-// IDM Context default
-const idmContext = window.context || '/openidm';
 
 // Globally load bootstrap vue components for use
 Vue.use(BootstrapVue);
@@ -238,6 +256,16 @@ Vue.mixin({
             };
 
             return headers;
+        },
+        getSchema: function (resourcePath) {
+            /* istanbul ignore next */
+            let idmServiceInstance = this.getRequestService({
+                headers: this.getAnonymousHeaders()
+            });
+
+            return idmServiceInstance.get(`schema/${resourcePath}`).then((schema) => {
+                return setSchemaProperties(schema);
+            });
         },
         // Display a application notification
         displayNotification: function (notificationType, message) {

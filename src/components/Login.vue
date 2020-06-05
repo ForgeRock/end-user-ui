@@ -104,7 +104,7 @@ export default {
                         axios.all([
                             loginServiceInstance.get(`${userDetails.data.authorization.component}/${userDetails.data.authorization.id}`),
                             loginServiceInstance.post(`privilege?_action=listPrivileges`),
-                            loginServiceInstance.get(`schema/${userDetails.data.authorization.component}`)]).then(axios.spread((profile, privilege, schema) => {
+                            this.getSchema(userDetails.data.authorization.component)]).then(axios.spread((profile, privilege, schema) => {
                             this.$root.userStore.setProfileAction(profile.data);
                             this.$root.userStore.setSchemaAction(schema.data);
                             this.$root.userStore.setAccess(privilege.data);

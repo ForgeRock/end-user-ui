@@ -247,7 +247,7 @@ export default {
 
             /* istanbul ignore next */
             axios.all([
-                idmInstance.get(`schema/${this.resource}/${this.name}`),
+                this.getSchema(`${this.resource}/${this.name}`),
                 idmInstance.get(`privilege/${this.resource}/${this.name}/${this.id}`)]).then(axios.spread((schema, privilege) => {
                 let resourceUrl = '';
 

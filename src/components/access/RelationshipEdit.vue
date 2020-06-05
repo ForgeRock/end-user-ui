@@ -180,8 +180,6 @@ export default {
     },
     methods: {
         setResourceCollectionType (rescourceCollectionType) {
-            const idmInstance = this.getRequestService();
-
             let index = 0;
 
             if (rescourceCollectionType) {
@@ -196,7 +194,7 @@ export default {
             this.showResourceType = this.allResourceCollections.length > 1;
 
             /* istanbul ignore next */
-            return idmInstance.get(`schema/${this.resourceCollection.path}`).then((schema) => {
+            return this.getSchema(this.resourceCollection.path).then((schema) => {
                 this.resourceCollection.schema = schema.data;
                 this.setOptions();
             })

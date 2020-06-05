@@ -117,7 +117,7 @@ export default {
 
             /* istanbul ignore next */
             axios.all([
-                idmInstance.get(`schema/${this.resource}/${this.name}`),
+                this.getSchema(`${this.resource}/${this.name}`),
                 idmInstance.get(`privilege/${this.resource}/${this.name}`)]).then(axios.spread((schema, privilege) => {
                 if (privilege.data.VIEW.allowed) {
                     // Generate columns for display and filtering for read/query
