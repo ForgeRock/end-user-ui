@@ -1,30 +1,31 @@
 <template>
-    <b-form>
-        <fr-social-buttons v-if="!isSocialReg" :signin="false"></fr-social-buttons>
-        <b-form-group class="mb-0" v-for="(property, key) in userDetails" :key="key">
-            <fr-floating-label-input
-                    :defaultValue="property.socialValue"
-                    :fieldName="key"
-                    :label="property.description"
-                    :validateRules="calculateValidation(property)"
-                    type="text"
-                    v-model="saveDetails[key]"></fr-floating-label-input>
-        </b-form-group>
+    <ValidationObserver ref="observer" slim>
+        <b-form>
+            <fr-social-buttons v-if="!isSocialReg" :signin="false"></fr-social-buttons>
+            <b-form-group class="mb-0" v-for="(property, key) in userDetails" :key="key">
+                <fr-floating-label-input
+                        :defaultValue="property.socialValue"
+                        :fieldName="key"
+                        :label="property.description"
+                        :validateRules="calculateValidation(property)"
+                        type="text"
+                        v-model="saveDetails[key]"></fr-floating-label-input>
+            </b-form-group>
 
-        <fr-policy-password-input v-if="!isSocialReg" policyApi="selfservice/registration" v-model="saveDetails.password" name="password"></fr-policy-password-input>
-
-        <!-- Vue Bootstrap custom radio button seems to have problems so just using none component-->
-        <div class="form-group mb-4">
-            <div v-for="(preference, key) in userPreferences" :key="key" class="custom-control custom-checkbox mb-2">
-                <input v-model="saveDetails.preferences[key]" type="checkbox" class="custom-control-input" :id="key">
-                <label class="custom-control-label" :for="key">{{preference.description}}</label>
+            <fr-password-policy-input v-if="!isSocialReg" policyApi="selfservice/registration" :cols="1" v-model="saveDetails.password" />
+            <!-- Vue Bootstrap custom radio button seems to have problems so just using none component-->
+            <div class="form-group mb-4">
+                <div v-for="(preference, key) in userPreferences" :key="key" class="custom-control custom-checkbox mb-2">
+                    <input v-model="saveDetails.preferences[key]" type="checkbox" class="custom-control-input" :id="key">
+                    <label class="custom-control-label" :for="key">{{preference.description}}</label>
+                </div>
             </div>
-        </div>
 
-        <b-button v-if="inline === false" @click="save" :block="true" size="lg" variant="primary">
-            {{$t("common.form.signUp")}}
-        </b-button>
-    </b-form>
+            <b-button v-if="inline === false" @click="save" :block="true" size="lg" variant="primary">
+                {{$t("common.form.signUp")}}
+            </b-button>
+        </b-form>
+    </ValidationObserver>
 </template>
 
 <script>
@@ -41,11 +42,8 @@ export default {
     name: 'User-Details',
     components: {
         'fr-floating-label-input': FloatingLabelInput,
-        'fr-policy-password-input': PolicyPasswordInput,
+        'fr-password-policy-input': PolicyPasswordInput,
         'fr-social-buttons': SocialButtons
-    },
-    $_veeValidate: {
-        validator: 'new'
     },
     props: {
         selfServiceDetails: { required: true },
@@ -143,7 +141,7 @@ export default {
 
         isValid () {
             /* istanbul ignore next */
-            return this.$validator.validateAll();
+            return this.$refs.observer.validate();
         }
     }
 };

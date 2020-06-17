@@ -20,7 +20,7 @@ export default {
         roles: null,
         internalUser: false,
         adminUser: false,
-        profile: null,
+        profile: {},
         schema: null,
         access: [],
         givenName: '',
@@ -120,7 +120,7 @@ export default {
         this.state.userId = null;
         this.state.managedResource = null;
         this.state.roles = null;
-        this.state.profile = null;
+        this.state.profile = {};
         this.state.schema = null;
         this.state.givenName = '';
         this.state.sn = '';

@@ -8,77 +8,69 @@
         <b-row>
             <b-col>
                 <!-- Creating resource currently only supports String, Number, Boolean, and singleton relationships -->
-                <b-form v-if="createProperties.length > 0" class="mb-3" name="edit-personal-form">
-                    <template v-for="(field, index) in createProperties">
-                        <b-form-group :key="'createResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
-                            <label v-if="field.title" class="float-left" :for="field.title">{{field.title}}</label>
-                            <label v-else class="float-left" :for="field.key">{{field.key}}</label>
+                <ValidationObserver ref="observer" slim>
+                    <b-form v-if="createProperties.length > 0" class="mb-3" name="edit-personal-form">
+                        <template v-for="(field, index) in createProperties">
+                            <b-form-group :key="'createResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
+                                <label v-if="field.title" class="float-left" :for="'create-resource-' +field.key">{{field.title}}</label>
+                                <label v-else class="float-left" :for="'create-resource-' +field.key">{{field.key}}</label>
+                                <ValidationProvider :rules="`${field.required ? 'required' : ''}`" :name="field.title" :vid="field.key" v-slot="validationContext">
+                                    <b-form-input
+                                        :id="'create-resource-' +field.key"
+                                        :type="field.type === 'string' ? 'text' : field.type"
+                                        :state="getValidationState(validationContext)"
+                                        v-model.trim="formFields[index]" />
+                                    <b-form-invalid-feedback>{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                                </ValidationProvider>
+                            </b-form-group>
 
-                            <input  :ref="index === 0 ? 'focusInput' : ''" v-if="field.type === 'string'" v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
-                                   :name="field.key"
-                                   type="text"
-                                   :class="[{'is-invalid': errors.has(field.key)}, 'form-control']"
-                                   :data-vv-as="field.title"
-                                   :autocomplete="field.key"
-                                   v-model.trim="formFields[field.key]">
+                            <!-- for boolean values -->
+                            <b-form-group :key="'createResource' +index" v-if="field.type === 'boolean'">
+                                <div class="d-flex flex-column">
+                                    <label class="mr-auto" :for="field.title">{{field.title}}</label>
 
-                            <input :ref="index === 0 ? 'focusInput' : ''" v-else v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
-                                   :name="field.key"
-                                   type="number"
-                                   :class="[{'is-invalid': errors.has(field.key)}, 'form-control']"
-                                   :data-vv-as="field.title"
-                                   :autocomplete="field.key"
-                                   v-model.number="formFields[field.key]">
-                            <fr-validation-error :validatorErrors="errors" :fieldName="field.key"></fr-validation-error>
-                        </b-form-group>
-
-                        <!-- for boolean values -->
-                        <b-form-group :key="'createResource' +index" v-if="field.type === 'boolean'">
-                            <div class="d-flex flex-column">
-                                <label class="mr-auto" :for="field.title">{{field.title}}</label>
-
-                                <div class="mr-auto">
-                                    <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                                   :height="28"
-                                                   :width="56"
-                                                   :sync="true"
-                                                   :cssColors="true"
-                                                   :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
-                                                   v-model="formFields[field.key]"/>
+                                    <div class="mr-auto">
+                                        <toggle-button class="mt-2 p-0 fr-toggle-primary"
+                                                    :height="28"
+                                                    :width="56"
+                                                    :sync="true"
+                                                    :cssColors="true"
+                                                    :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
+                                                    v-model="formFields[field.key]"/>
+                                    </div>
                                 </div>
-                            </div>
-                        </b-form-group>
+                            </b-form-group>
 
-                        <!-- for singletonRelationhip values -->
-                        <fr-relationship-edit v-if="field.type === 'relationship'"
-                            :parentResource='resourceType + "/" + resourceName'
-                            :relationshipProperty='field'
-                            :index="index"
-                            :key="'createResource' +index"
-                            :setValue="setSingletonRelationshipValue"
-                            :newResource="true" />
+                            <!-- for singletonRelationhip values -->
+                            <fr-relationship-edit v-if="field.type === 'relationship'"
+                                :parentResource='resourceType + "/" + resourceName'
+                                :relationshipProperty='field'
+                                :index="index"
+                                :key="'createResource' +index"
+                                :setValue="setSingletonRelationshipValue"
+                                :newResource="true" />
+                        </template>
+
+                        <!-- Special logic for password -->
+                        <fr-password-policy-input v-if="passwordCheck" :policyApi="`${resourceType}/${resourceName}/policyTest`" v-model="formFields['password']">
+                            <b-form-group class="mb-3" slot="custom-input">
+                                <label for="createPassword">{{$t('pages.access.password')}}</label>
+                                <div class="form-label-password form-label-group mb-0">
+                                    <b-form-input id="createPassword" autocomplete="password" :type="passwordInputType" v-model="formFields['password']" name="password" v-validate.initial="'required|policy'"></b-form-input>
+                                    <div class="input-group-append">
+                                        <button @click="revealNew" class="btn btn-secondary" type="button">
+                                            <i :class="[{'fa-eye-slash': !showPassword}, {'fa-eye': showPassword}, 'fa']"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </b-form-group>
+
+                        </fr-password-policy-input>
+                    </b-form>
+                    <template v-else>
+                        <h3 class="text-center">{{$t('pages.access.noFields')}}</h3>
                     </template>
-
-                    <!-- Special logic for password -->
-                    <fr-password-policy-input v-if="passwordCheck" :policyApi="`${resourceType}/${resourceName}/policyTest`" v-model="formFields['password']">
-                        <b-form-group class="mb-3" slot="custom-input">
-                            <label for="createPassword">{{$t('pages.access.password')}}</label>
-                            <div class="form-label-password form-label-group mb-0">
-                                <b-form-input id="createPassword" autocomplete="password" :type="passwordInputType" v-model="formFields['password']" name="password" v-validate.initial="'required|policy'"></b-form-input>
-                                <div class="input-group-append">
-                                    <button @click="revealNew" class="btn btn-secondary" type="button">
-                                        <i :class="[{'fa-eye-slash': !showPassword}, {'fa-eye': showPassword}, 'fa']"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </b-form-group>
-
-                    </fr-password-policy-input>
-
-                </b-form>
-                <template v-else>
-                    <h3 class="text-center">{{$t('pages.access.noFields')}}</h3>
-                </template>
+                </ValidationObserver>
             </b-col>
         </b-row>
 
@@ -96,7 +88,6 @@ import _ from 'lodash';
 import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
 import RelationshipEdit from '@/components/access/RelationshipEdit';
 import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
-import ValidationError from '@/components/utils/ValidationError';
 
 /**
  * @description Dialog used for managing the create portion of delegated admin. Auto generates fields based on backend return.
@@ -113,7 +104,6 @@ import ValidationError from '@/components/utils/ValidationError';
 export default {
     name: 'Create-Resource',
     components: {
-        'fr-validation-error': ValidationError,
         'fr-password-policy-input': PolicyPasswordInput,
         'fr-relationship-edit': RelationshipEdit
     },
@@ -134,9 +124,6 @@ export default {
             type: String,
             required: true
         }
-    },
-    $_veeValidate: {
-        validator: 'new'
     },
     data () {
         let tempFormFields = {},
@@ -170,13 +157,13 @@ export default {
             const idmInstance = this.getRequestService();
 
             /* istanbul ignore next */
-            this.$validator.validateAll().then((valid) => {
+            this.$refs.observer.validate().then((valid) => {
                 if (valid) {
                     let saveData = this.cleanData(_.clone(this.formFields));
 
                     idmInstance.post(`${this.resourceType}/${this.resourceName}?_action=create`, saveData).then(() => {
                         this.$emit('refreshGrid');
-                        this.errors.clear();
+                        this.$refs.observer.reset();
                         this.hideModal();
 
                         this.displayNotification('success', this.$t('pages.access.successCreate', { resource: _.capitalize(this.resourceName) }));
@@ -184,14 +171,19 @@ export default {
                     (error) => {
                         let generatedErrors = this.findPolicyError(error.response, this.createProperties);
 
-                        this.errors.clear();
-
                         if (generatedErrors.length > 0) {
+                            let tempDisplayErrors = {};
+
                             _.each(generatedErrors, (generatedError) => {
                                 if (generatedError.exists) {
-                                    this.errors.add(generatedError);
+                                    if (tempDisplayErrors[generatedError.field] !== undefined) {
+                                        tempDisplayErrors[generatedError.field].push(generatedError.msg);
+                                    } else {
+                                        tempDisplayErrors[generatedError.field] = [generatedError.msg];
+                                    }
                                 }
                             });
+                            this.$refs.observer.setErrors(tempDisplayErrors);
                         } else {
                             this.displayNotification('error', this.$t('pages.access.invalidCreate'));
                         }
@@ -209,7 +201,9 @@ export default {
         },
         // Clean dialog after closing/saving
         resetDialog () {
-            this.errors.clear();
+            if (this.$refs.observer) {
+                this.$refs.observer.reset();
+            }
 
             this.passwordInputType = 'password';
             this.showPassword = true;

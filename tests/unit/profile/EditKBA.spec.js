@@ -5,7 +5,26 @@ import EditKBA from '@/components/profile/EditKBA';
 import BootstrapVue from 'bootstrap-vue';
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
+import {
+    ValidationObserver,
+    ValidationProvider,
+    extend
+} from 'vee-validate';
 import Sinon from 'sinon';
+
+import * as rules from 'vee-validate/dist/rules';
+
+Vue.mixin({
+    methods: {
+        getValidationState ({ dirty, validated, valid = null }) {
+            return dirty || validated ? valid : null;
+        }
+    }
+});
+
+Object.keys(rules).forEach(rule => {
+    extend(rule, rules[rule]);
+});
 
 describe('EditKBA.vue', () => {
     let sandbox = null;
@@ -15,7 +34,7 @@ describe('EditKBA.vue', () => {
     beforeEach(function () {
         sandbox = Sinon.sandbox.create();
 
-        sandbox.stub(EditKBA, 'mounted').callsFake(function () {
+        sandbox.stub(EditKBA, 'created').callsFake(function () {
             _.noop();
         });
     });
@@ -26,6 +45,10 @@ describe('EditKBA.vue', () => {
 
     it('AccountSecurity page loaded', () => {
         const wrapper = shallowMount(EditKBA, {
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             i18n
         });
 
@@ -34,6 +57,10 @@ describe('EditKBA.vue', () => {
 
     it('creates fieldsets for the number of required questions', () => {
         const wrapper = shallowMount(EditKBA, {
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             i18n
         });
 
@@ -47,6 +74,10 @@ describe('EditKBA.vue', () => {
 
     it('creates select options based on defined kba questions', () => {
         const wrapper = shallowMount(EditKBA, {
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             i18n
         });
 
@@ -75,6 +106,10 @@ describe('EditKBA.vue', () => {
 
         beforeEach(() => {
             wrapper = shallowMount(EditKBA, {
+                stubs: {
+                    ValidationProvider,
+                    ValidationObserver
+                },
                 i18n
             });
         });

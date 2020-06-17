@@ -1,12 +1,11 @@
 <template>
-    <fr-list-item :collapsible="true" :panelShown="false">
+    <fr-list-item :collapsible="true" :panelShown="false"  @show="showCancelButton = true" @hide="showCancelButton = true; clearComponent()">>
         <div slot="list-item-header" class="d-inline-flex w-100 media">
             <div class="media-body align-self-center">
-                <h6>{{$t('pages.profile.accountSecurity.password')}}</h6>
+                <h6 class="mt-2">{{$t('pages.profile.accountSecurity.password')}}</h6>
             </div>
             <div class="d-flex ml-3 align-self-center">
-                <div v-show="showCancelButton" class="btn btn-sm btn-link float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
-                <div v-show="!showCancelButton" class="btn btn-sm btn-link float-right btn-edit" @click="showCancelButton = true">{{$t('common.form.reset')}}</div>
+                <div v-show="showCancelButton" class="btn btn-sm btn-link float-right btn-cancel p-0" ref="cancel">{{$t('common.form.cancel')}}</div>
             </div>
         </div>
 
@@ -15,33 +14,17 @@
                 <b-row>
                     <b-col sm="8">
                         <b-form-group>
-                            <label for="currentPassword">{{$t('pages.profile.accountSecurity.currentPassword')}}</label>
-                            <div class="form-label-password form-label-group mb-0">
-                                <b-form-input id="currentPassword" name="currentPassword" data-vv-validate-on="submit" :data-vv-as="$t('pages.profile.accountSecurity.currentPassword')" :class="[{'is-invalid': errors.has('currentPassword')}, 'form-control']" :type="inputCurrent" v-model="currentPassword" v-validate="'required'"></b-form-input>
-                                <div class="input-group-append">
-                                    <b-btn @click="revealCurrent" class="btn btn-secondary" type="button">
-                                        <i :class="[{'fa-eye-slash': !showCurrent}, {'fa-eye': showCurrent}, 'fa']"></i>
-                                    </b-btn>
-                                </div>
-                            </div>
-                            <fr-validation-error :validatorErrors="errors" fieldName="currentPassword"></fr-validation-error>
+                            <fr-floating-label-input
+                                name="currentPassword"
+                                fieldName="currentPassword"
+                                type="password"
+                                v-model="currentPassword"
+                                :label="$t('pages.profile.accountSecurity.currentPassword')"
+                                :reveal="true"
+                                :showErrorState="false" />
                         </b-form-group>
 
-                        <fr-password-policy-input :policyApi="`${this.$root.userStore.state.managedResource}/${userId}`" v-model="newPassword">
-
-                            <b-form-group class="mb-3" slot="custom-input">
-                                <label for="newPassword">{{$t('pages.profile.accountSecurity.newPassword')}}</label>
-                                <div class="form-label-password form-label-group mb-0">
-                                    <b-form-input id="newPassword" :type="inputNew" v-model="newPassword" name="password" v-validate.initial="'required|policy'"></b-form-input>
-                                    <div class="input-group-append">
-                                        <button @click="revealNew" class="btn btn-secondary" type="button">
-                                            <i :class="[{'fa-eye-slash': !showNew}, {'fa-eye': showNew}, 'fa']"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </b-form-group>
-
-                        </fr-password-policy-input>
+                        <fr-password-policy-input :policyApi="`${this.$root.userStore.state.managedResource}/${userId}`" v-model="newPassword" />
 
                         <fr-loading-button type="button" variant="primary" class="ld-ext-right mb-3"
                             :label="$t('pages.profile.accountSecurity.savePassword')"
@@ -59,7 +42,8 @@
 import ListItem from '@/components/utils/ListItem';
 import LoadingButton from '@/components/utils/LoadingButton';
 import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
-import ValidationError from '@/components/utils/ValidationError';
+import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
+import { noop } from 'lodash';
 
 /**
  * @description Allows a user to change their password, makes use of policy password component, similar to registration it will only allow a user to change password
@@ -67,15 +51,12 @@ import ValidationError from '@/components/utils/ValidationError';
  *
  */
 export default {
-    $_veeValidate: {
-        validator: 'new'
-    },
     name: 'Edit-Password',
     components: {
         'fr-list-item': ListItem,
+        'fr-floating-label-input': FloatingLabelInput,
         'fr-loading-button': LoadingButton,
-        'fr-password-policy-input': PolicyPasswordInput,
-        'fr-validation-error': ValidationError
+        'fr-password-policy-input': PolicyPasswordInput
     },
     data () {
         return {
@@ -94,7 +75,6 @@ export default {
         clearComponent () {
             this.currentPassword = '';
             this.newPassword = '';
-            this.errors.clear();
             this.showCancelButton = false;
         },
         resetComponent () {
@@ -103,35 +83,15 @@ export default {
             this.newPassword = '';
             this.$refs.cancel.click();
         },
-        displayError (error) {
-            if (error.response.status === 403) {
-                this.errors.add({
-                    field: 'currentPassword',
-                    msg: 'Incorrect password provided'
-                });
-            }
-        },
         onSavePassword () {
             const headers = {
                     'X-Requested-With': 'XMLHttpRequest',
                     'X-OpenIDM-Reauth-Password': this.encodeRFC5987IfNecessary(this.currentPassword)
                 },
                 payload = [{ operation: 'add', field: '/password', value: this.newPassword }],
-                onSuccess = this.resetComponent.bind(this),
-                onError = this.displayError.bind(this);
+                onSuccess = this.resetComponent.bind(this);
 
-            this.errors.clear();
-
-            this.$validator.validateAll().then((valid) => {
-                if (valid) {
-                    this.$emit('updateProfile', payload, { headers, onSuccess, onError });
-                } else {
-                    this.displayNotification('error', this.$t('pages.profile.accountSecurity.invalidPassword'));
-                }
-            });
-        },
-        validate () {
-            return this.$validator.validateAll();
+            this.$emit('updateProfile', payload, { headers, onSuccess, noop });
         },
         revealNew () {
             if (this.inputNew === 'password') {

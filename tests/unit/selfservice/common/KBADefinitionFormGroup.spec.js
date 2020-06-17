@@ -4,20 +4,21 @@ import i18n from '@/i18n';
 import BootstrapVue from 'bootstrap-vue';
 import { expect } from 'chai';
 import { mount, shallowMount } from '@vue/test-utils';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 
 describe('KBADefinitionFormGroup Component', () => {
     Vue.use(BootstrapVue);
-    Vue.use(VeeValidate, { inject: false, fastExit: false });
-
-    const v = new VeeValidate.Validator();
 
     let wrapper,
         mountOptions = {
-            provide: () => ({
-                $validator: v
-            }),
             i18n,
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 selfServiceDetails: {
                     requirements: {
@@ -122,51 +123,6 @@ describe('KBADefinitionFormGroup Component', () => {
             questionId: '2',
             answer: 'google'
         });
-    });
-
-    it('allows selecting defined questions', () => {
-        wrapper = mount(KBASecurityAnswerDefinitionStage, {
-            i18n,
-            provide: () => ({
-                $validator: v
-            }),
-            propsData: {
-                selfServiceDetails: {
-                    requirements: {
-                        properties: {
-                            kba: {
-                                minItems: 2,
-                                questions: [
-                                    {
-                                        question: {
-                                            en: 'What\'s your favorite color?'
-                                        },
-                                        id: '1'
-                                    },
-                                    {
-                                        question: {
-                                            en: 'Who was your first employer?'
-                                        },
-                                        id: '2'
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // select defined questions
-        wrapper.vm.selected = [
-            { selected: '1' },
-            { selected: '2' }
-        ];
-
-        // inputs should match the number of questions selected
-        expect(wrapper.findAll('input').length).to.equal(2);
-        // should not find a 'question' input
-        expect(wrapper.findAll('input[name="question"]').length).to.equal(0);
     });
 
     it('should get duplicates from custom question text and defined questions', () => {

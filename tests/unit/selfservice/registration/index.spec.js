@@ -2,7 +2,10 @@ import _ from 'lodash';
 import Vue from 'vue';
 import Registration from '@/components/selfservice/registration';
 import i18n from '@/i18n';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 import Sinon from 'sinon';
 import BootstrapVue from 'bootstrap-vue';
 import { expect } from 'chai';
@@ -13,7 +16,6 @@ describe.skip('Registration.vue', () => {
     var sandbox = null;
 
     Vue.use(BootstrapVue);
-    Vue.use(VeeValidate, { inject: false, fastExit: false });
 
     beforeEach(function () {
         sandbox = Sinon.createSandbox();
@@ -34,7 +36,9 @@ describe.skip('Registration.vue', () => {
         const wrapper = mount(Registration, {
             i18n,
             stubs: {
-                'router-link': true
+                'router-link': true,
+                ValidationProvider,
+                ValidationObserver
             }
         });
 
@@ -45,7 +49,9 @@ describe.skip('Registration.vue', () => {
         const wrapper = mount(Registration, {
             i18n,
             stubs: {
-                'router-link': true
+                'router-link': true,
+                ValidationProvider,
+                ValidationObserver
             }
         });
 
@@ -56,7 +62,9 @@ describe.skip('Registration.vue', () => {
         const wrapper = shallowMount(Registration, {
             i18n,
             stubs: {
-                'router-link': true
+                'router-link': true,
+                ValidationProvider,
+                ValidationObserver
             }
         });
 
@@ -69,7 +77,9 @@ describe.skip('Registration.vue', () => {
         const wrapper = mount(Registration, {
             i18n,
             stubs: {
-                'router-link': true
+                'router-link': true,
+                ValidationProvider,
+                ValidationObserver
             }
         });
 
@@ -83,7 +93,9 @@ describe.skip('Registration.vue', () => {
         const wrapper = mount(Registration, {
             i18n,
             stubs: {
-                'router-link': true
+                'router-link': true,
+                ValidationProvider,
+                ValidationObserver
             }
         });
 
@@ -112,7 +124,9 @@ describe.skip('Registration.vue', () => {
         const wrapper = shallowMount(Registration, {
                 i18n,
                 stubs: {
-                    'router-link': true
+                    'router-link': true,
+                    ValidationProvider,
+                    ValidationObserver
                 }
             }),
             customTitleComponents = [

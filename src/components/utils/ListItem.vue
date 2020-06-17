@@ -142,7 +142,6 @@ export default {
     .noncollapse {
         background-color: $card-bg;
         border-bottom-color: transparent;
-        cursor: initial;
     }
 
 </style>

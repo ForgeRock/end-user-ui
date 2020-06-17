@@ -4,6 +4,10 @@ import i18n from '@/i18n';
 import { expect } from 'chai';
 import BootstrapVue from 'bootstrap-vue';
 import { shallowMount } from '@vue/test-utils';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 import Sinon from 'sinon';
 
 describe('EditResource.vue', () => {
@@ -35,7 +39,9 @@ describe('EditResource.vue', () => {
         const wrapper = shallowMount(EditResource, {
             i18n,
             stubs: {
-                'router-link': true
+                'router-link': true,
+                ValidationProvider,
+                ValidationObserver
             },
             mocks: {
                 $route
@@ -49,7 +55,9 @@ describe('EditResource.vue', () => {
         const wrapper = shallowMount(EditResource, {
             i18n,
             stubs: {
-                'router-link': true
+                'router-link': true,
+                ValidationProvider,
+                ValidationObserver
             },
             mocks: {
                 $route
@@ -114,7 +122,9 @@ describe('EditResource.vue', () => {
         const wrapper = shallowMount(EditResource, {
             i18n,
             stubs: {
-                'router-link': true
+                'router-link': true,
+                ValidationProvider,
+                ValidationObserver
             },
             mocks: {
                 $route

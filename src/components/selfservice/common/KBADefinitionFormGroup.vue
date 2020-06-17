@@ -1,32 +1,35 @@
 <template>
     <div>
-        <b-form-group label-text-align="left" class="mb-0"
-            v-for="(answer, key) in answers" :key="key">
+        <ValidationObserver ref="observer" slim>
+            <b-form-group label-text-align="left" class="mb-0"
+                v-for="(answer, key) in answers" :key="key">
 
-            <b-form-select class="mb-3"
-                v-model="answer.questionId"
-                :options="options"></b-form-select>
+                    <b-form-select class="mb-3"
+                        v-model="answer.questionId"
+                        :options="options"></b-form-select>
 
-            <fr-floating-label-input class="mb-3" type="text"
-                v-if="answer.questionId === customIndex"
-                v-model.trim="answer.customQuestion"
-                :fieldName="$t('common.user.kba.question').toLowerCase() + key"
-                :label="$t('common.user.kba.question')"
-                :validateRules="{required: true, unique_question: getDuplicates(key)}"></fr-floating-label-input>
+                    <fr-floating-label-input class="mb-3" type="text"
+                        v-if="answer.questionId === customIndex"
+                        v-model.trim="answer.customQuestion"
+                        :fieldName="$t('common.user.kba.question').toLowerCase() + key"
+                        :label="$t('common.user.kba.question')"
+                        :validateRules="{required: true, unique_question: getDuplicates(key)}"></fr-floating-label-input>
 
-            <fr-floating-label-input class="mb-3" type="text"
-                v-model.trim="answer.answer"
-                :fieldName="$t('common.user.kba.answer').toLowerCase() + key"
-                :label="$t('common.user.kba.answer')"
-                :validateRules="'required'"></fr-floating-label-input>
+                    <fr-floating-label-input class="mb-3" type="text"
+                        v-model.trim="answer.answer"
+                        :fieldName="$t('common.user.kba.answer').toLowerCase() + key"
+                        :label="$t('common.user.kba.answer')"
+                        :validateRules="'required'"></fr-floating-label-input>
 
-            <hr v-if="key !== answers.length - 1">
-        </b-form-group>
+                <hr v-if="key !== answers.length - 1">
+            </b-form-group>
+        </ValidationObserver>
     </div>
 </template>
 <script>
 import _ from 'lodash';
 import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
+import { extend } from 'vee-validate';
 
 /**
  * @description Common selfservice component for defining security questions
@@ -41,13 +44,9 @@ export default {
             default: false
         }
     },
-    $_veeValidate: {
-        validator: 'new'
-    },
     components: {
         'fr-floating-label-input': FloatingLabelInput
     },
-    inject: ['$validator'],
     data () {
         let kba = this.selfServiceDetails.requirements.properties.kba,
             answers = _.times(kba.minItems, () => ({ answer: null, questionId: null, customQuestion: null })),
@@ -94,12 +93,12 @@ export default {
         },
         isValid () {
             /* istanbul ignore next */
-            return this.$validator.validateAll();
+            return this.$refs.observer.validate();
         }
     },
     created () {
         /* istanbul ignore next */
-        this.$validator.extend('unique_question', {
+        extend('unique_question', {
             getMessage: (field, exclusions) => this.$t('common.user.kba.notUnique'),
             validate: (value, exclusions) => {
                 const trimToLower = (string) => _.trim(_.toLower(string));

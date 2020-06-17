@@ -5,22 +5,23 @@ import BootstrapVue from 'bootstrap-vue';
 import Sinon from 'sinon';
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 
 describe('KBAUpdate.vue', () => {
     Vue.use(BootstrapVue);
-    Vue.use(VeeValidate, { inject: false, fastExit: false });
-
-    const v = new VeeValidate.Validator();
 
     let wrapper;
 
     beforeEach(() => {
         wrapper = shallowMount(KBAUpdate, {
-            provide: () => ({
-                $validator: v
-            }),
             i18n,
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 selfServiceDetails: {
                     requirements: {

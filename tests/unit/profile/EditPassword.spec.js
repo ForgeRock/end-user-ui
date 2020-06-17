@@ -4,14 +4,16 @@ import EditPassword from '@/components/profile/EditPassword';
 import BootstrapVue from 'bootstrap-vue';
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 import Sinon from 'sinon';
 
 describe.skip('EditPassword.vue', () => {
     let sandbox = null;
 
-    const v = new VeeValidate.Validator(),
-        applicationStore = {
+    const applicationStore = {
             state: {
                 workflow: false,
                 passwordReset: false,
@@ -55,9 +57,10 @@ describe.skip('EditPassword.vue', () => {
     it('PasswordReset page loaded', () => {
         const wrapper = shallowMount(EditPassword, {
             sync: true,
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             mocks: {
                 applicationStore,
                 userStore
@@ -71,9 +74,10 @@ describe.skip('EditPassword.vue', () => {
     it('Incorrect password error', () => {
         const wrapper = shallowMount(EditPassword, {
             sync: true,
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             mocks: {
                 applicationStore,
                 userStore
@@ -93,9 +97,10 @@ describe.skip('EditPassword.vue', () => {
     it('revealNew method changes input state', () => {
         const wrapper = shallowMount(EditPassword, {
             sync: true,
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             mocks: {
                 applicationStore,
                 userStore
@@ -117,9 +122,10 @@ describe.skip('EditPassword.vue', () => {
     it('revealCurrent method changes input state', () => {
         const wrapper = shallowMount(EditPassword, {
             sync: true,
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             mocks: {
                 applicationStore,
                 userStore
@@ -142,9 +148,10 @@ describe.skip('EditPassword.vue', () => {
         it('should reset data and visual elements', () => {
             const wrapper = shallowMount(EditPassword, {
                     sync: true,
-                    provide: () => ({
-                        $validator: v
-                    }),
+                    stubs: {
+                        ValidationProvider,
+                        ValidationObserver
+                    },
                     mocks: {
                         applicationStore,
                         userStore
@@ -166,10 +173,11 @@ describe.skip('EditPassword.vue', () => {
     describe('#onSavePassword', () => {
         it('should emit "patch" with payload and config', () => {
             const wrapper = shallowMount(EditPassword, {
+                stubs: {
+                    ValidationProvider,
+                    ValidationObserver
+                },
                 sync: true,
-                provide: () => ({
-                    $validator: v
-                }),
                 mocks: {
                     applicationStore,
                     userStore

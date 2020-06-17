@@ -5,15 +5,22 @@ import { expect } from 'chai';
 import BootstrapVue from 'bootstrap-vue';
 import { mount } from '@vue/test-utils';
 import ToggleButton from 'vue-js-toggle-button';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
+import flushPromises from 'flush-promises';
 
 describe('CreateResource.vue', () => {
     Vue.use(BootstrapVue);
     Vue.use(ToggleButton);
-    Vue.use(VeeValidate, { inject: false, fastExit: false });
 
     it('Create resource dialog loaded', () => {
         const wrapper = mount(CreateResource, {
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             i18n,
             propsData: {
                 createProperties: [{
@@ -32,6 +39,10 @@ describe('CreateResource.vue', () => {
     it('Display policy error message', () => {
         const wrapper = mount(CreateResource, {
             i18n,
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 createProperties: [{
                     key: 'test',
@@ -60,9 +71,13 @@ describe('CreateResource.vue', () => {
         expect(error[0].msg).to.equal('Invalid email format (example@example.com)');
     });
 
-    it('Clean dialog after close', () => {
+    it('Clean dialog after close', async () => {
         const wrapper = mount(CreateResource, {
             i18n,
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 createProperties: [{
                     key: 'test',
@@ -76,7 +91,8 @@ describe('CreateResource.vue', () => {
                 }],
                 resourceName: 'testName',
                 resourceType: 'testType'
-            }
+            },
+            sync: false
         });
 
         wrapper.setData({
@@ -85,8 +101,9 @@ describe('CreateResource.vue', () => {
                 boolTest: true
             }
         });
-
         wrapper.vm.hideModal();
+
+        await flushPromises();
 
         expect(wrapper.vm.formFields.test).to.equal('');
         expect(wrapper.vm.formFields.boolTest).to.equal(false);
@@ -121,6 +138,10 @@ describe('CreateResource.vue', () => {
     it('Clean save data', () => {
         const wrapper = mount(CreateResource, {
             i18n,
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 createProperties: [{
                     key: 'password',

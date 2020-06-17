@@ -44,6 +44,7 @@
 // Tweak just a few things for checkboxes.
 .custom-checkbox {
   text-align: left;
+  padding-left: 2rem;
 
   .custom-control-label::before {
     @include border-radius($custom-checkbox-indicator-border-radius);

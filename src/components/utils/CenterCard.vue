@@ -75,7 +75,7 @@ export default {
         .card-body {
             padding: 20px 40px 40px;
             @include media-breakpoint-between(sm, xl) {
-                padding: 20px 40px 40px;
+                padding: 20px 40px 20px;
             }
         }
 

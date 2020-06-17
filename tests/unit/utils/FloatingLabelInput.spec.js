@@ -3,18 +3,20 @@ import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
 import BootstrapVue from 'bootstrap-vue';
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 
 describe('FloatingLabelInput.vue', () => {
     Vue.use(BootstrapVue);
 
-    const v = new VeeValidate.Validator();
-
     it('Floating Label Input component loaded', () => {
         const wrapper = shallowMount(FloatingLabelInput, {
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 label: '',
                 type: '',
@@ -28,9 +30,10 @@ describe('FloatingLabelInput.vue', () => {
 
     it('Floating Label Input emits a change on value change', () => {
         const wrapper = shallowMount(FloatingLabelInput, {
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 label: '',
                 type: '',
@@ -46,9 +49,10 @@ describe('FloatingLabelInput.vue', () => {
 
     it('Floating Label password reveal', () => {
         const wrapper = shallowMount(FloatingLabelInput, {
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 label: '',
                 type: 'password',

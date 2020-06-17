@@ -4,46 +4,49 @@ import i18n from '@/i18n';
 import BootstrapVue from 'bootstrap-vue';
 import { expect } from 'chai';
 import { mount } from '@vue/test-utils';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 import Sinon from 'sinon';
 import _ from 'lodash';
 
 describe('EditPersonalInfo.vue', () => {
     Vue.use(BootstrapVue);
 
-    const v = new VeeValidate.Validator(),
-        userStore = {
-            state: {
-                givenName: '',
-                sn: '',
-                email: '',
-                userName: '',
-                profile: {
-                    test: 'test'
+    const userStore = {
+        state: {
+            givenName: '',
+            sn: '',
+            email: '',
+            userName: '',
+            profile: {
+                test: 'test'
+            },
+            schema: {
+                order: ['test'],
+                properties: {
+                    test: {
+                        viewable: true,
+                        type: 'string',
+                        title: 'test title',
+                        userEditable: true
+                    }
                 },
-                schema: {
-                    order: ['test'],
-                    properties: {
-                        test: {
-                            viewable: true,
-                            type: 'string',
-                            title: 'test title',
-                            userEditable: true
-                        }
-                    },
-                    required: []
-                }
+                required: []
             }
-        };
+        }
+    };
 
     let wrapper;
 
     beforeEach(() => {
         wrapper = mount(EditPersonalInfo, {
-            provide: () => ({
-                $validator: v
-            }),
             i18n,
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             mocks: {
                 userStore
             },
@@ -65,14 +68,6 @@ describe('EditPersonalInfo.vue', () => {
 
     it('renders a title', () => {
         expect(wrapper.vm.title).to.equal('Edit your personal info');
-    });
-
-    it('TermsAndConditions validation', (done) => {
-        wrapper.vm.isValid().then((response) => {
-            expect(response).to.equal(true);
-
-            done();
-        });
     });
 
     it('creates patches array correctly', () => {

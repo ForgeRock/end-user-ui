@@ -9,7 +9,14 @@ import PromisePoly from 'es6-promise';
 import router from './router';
 import ToggleButton from 'vue-js-toggle-button';
 import UserStore from './store/User';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider,
+    extend,
+    localize
+} from 'vee-validate';
+import en from 'vee-validate/dist/locale/en.json';
+import * as rules from 'vee-validate/dist/rules';
 import Vue from 'vue';
 import 'core-js/stable';
 
@@ -155,20 +162,24 @@ router.beforeEach((to, from, next) => {
 // Globally load bootstrap vue components for use
 Vue.use(BootstrapVue);
 
-/*
-    Basic Validation Example:
-    <p :class="{ 'control': true }">
-        <input v-validate="'required|email'" :class="{'input': true, 'is-danger': errors.has('email') }" name="email" type="text" placeholder="Email">
-        <span v-show="errors.has('email')" class="help is-danger">{{ errors.first('email') }}</span>
-    </p>
+// Register validation components for global use
+Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('ValidationObserver', ValidationObserver);
+Object.keys(rules).forEach(rule => {
+    extend(rule, rules[rule]);
+});
 
-    To use VeeValidate in a component include:
-
-    $_veeValidate: {
-        validator: 'new'
+// How to add an extra validation rule
+extend('date_format', {
+    validate (value) {
+        return value.match(/^\d{2}[.//]\d{2}[.//]\d{4}$/);
+    },
+    message: () => {
+        return 'Invalid date format';
     }
- */
-Vue.use(VeeValidate, { inject: false, fastExit: false });
+});
+
+localize('en', en);
 
 /*
     Basic Notification Example:
@@ -185,6 +196,10 @@ Vue.use(ToggleButton);
 // Global mixin for making openIDM REST calls
 Vue.mixin({
     methods: {
+        // Get validation state for a form field
+        getValidationState ({ dirty, validated, valid = null }) {
+            return dirty || validated ? valid : null;
+        },
         // Generated an axios ajax request service for consistent use of calls to IDM
         getRequestService: function (config) {
             let baseURL = idmContext,

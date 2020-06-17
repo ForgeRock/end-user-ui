@@ -1,27 +1,30 @@
 <template>
-    <b-form @keyup.enter="save" @submit.prevent>
-        <p class='text-center mb-4'>
-            {{$t(`pages.selfservice.passwordReset.kbaVerificationStageDescription`)}}
-        </p>
-        <div class="form-group text-left"
-            v-for="(value, key) in answers"
-            :key="key">
-            <label class="col-form-label pt-0 pb-2" :for="key">{{questionText[key]}}</label>
+    <ValidationObserver ref="observer" slim>
+        <b-form @keyup.enter="save" @submit.prevent>
+            <p class='text-center mb-4'>
+                {{$t(`pages.selfservice.passwordReset.kbaVerificationStageDescription`)}}
+            </p>
+            <div class="form-group text-left"
+                v-for="(value, key) in answers"
+                :key="key">
+                <ValidationProvider rules="required" :name="questionText[key]" :vid="key" v-slot="validationContext">
+                    <label class="col-form-label pt-0 pb-2" :for="key">{{questionText[key]}}</label>
 
-            <input :ref="key" :key="key" v-validate="'required'" :data-vv-as="$t('common.user.kba.answer')" autofocus="true" :class="{'form-control': true, 'is-invalid': errors.has(key)}" :name="key" :id="key"  v-model.trim="answers[key]" />
-            <fr-validation-error :validatorErrors="errors" :fieldName="key"></fr-validation-error>
-        </div>
+                    <b-form-input :ref="key" :key="key" :autofocus="true" :name="key" :id="key"  v-model.trim="answers[key]" />
+                    <b-form-invalid-feedback>{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                </ValidationProvider>
+            </div>
 
-        <b-button @click="save" :block="true" size="lg" variant="primary">
-            {{$tc('common.user.kba.submitAnswers', selfServiceDetails.requirements.required.length)}}
-        </b-button>
+            <b-button @click="save" :block="true" size="lg" variant="primary">
+                {{$tc('common.user.kba.submitAnswers', selfServiceDetails.requirements.required.length)}}
+            </b-button>
 
-    </b-form>
+        </b-form>
+    </ValidationObserver>
 </template>
 
 <script>
 import _ from 'lodash';
-import ValidationError from '@/components/utils/ValidationError';
 
 /**
  * @description Selfservice stage for password reset, handles securing a users password change with verifying KBA answers
@@ -29,10 +32,7 @@ import ValidationError from '@/components/utils/ValidationError';
  **/
 export default {
     name: 'Kba-Verification',
-    inject: ['$validator'],
-    components: {
-        'fr-validation-error': ValidationError
-    },
+    components: {},
     props: {
         selfServiceDetails: { required: true }
     },
@@ -54,12 +54,6 @@ export default {
             answers: required.reduce((acc, answer) => _.set(acc, answer, ''), {})
         };
     },
-    mounted () {
-        // This will auto focus as long as one answer field is generated
-        if (this.$refs && this.$refs['answer1']) {
-            this.$refs['answer1'][0].focus();
-        }
-    },
     methods: {
         emitData () {
             this.$emit('advanceStage', this.getData());
@@ -69,7 +63,7 @@ export default {
         },
         isValid () {
             /* istanbul ignore next */
-            return this.$validator.validateAll();
+            return this.$refs.observer.validate();
         },
         save () {
             /* istanbul ignore next */

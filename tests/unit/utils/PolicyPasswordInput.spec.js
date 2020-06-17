@@ -4,7 +4,10 @@ import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
 import i18n from '@/i18n';
 import BootstrapVue from 'bootstrap-vue';
 import Sinon from 'sinon';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 import { expect } from 'chai';
 import { shallowMount, mount } from '@vue/test-utils';
 import _ from 'lodash';
@@ -13,16 +16,14 @@ PolicyPasswordInput.created = Sinon.stub();
 
 describe('PasswordPolicyInput.vue', () => {
     Vue.use(BootstrapVue);
-    Vue.use(VeeValidate, { inject: false, fastExit: false });
-
-    const v = new VeeValidate.Validator();
 
     describe('proper render', () => {
         let wrapper = shallowMount(PolicyPasswordInput, {
             i18n,
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: { policyApi: 'reset' }
         });
 
@@ -43,9 +44,10 @@ describe('PasswordPolicyInput.vue', () => {
     describe('#isPasswordPolicyItem', () => {
         let wrapper = shallowMount(PolicyPasswordInput, {
             i18n,
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: { policyApi: 'reset' }
         });
 
@@ -67,9 +69,10 @@ describe('PasswordPolicyInput.vue', () => {
     describe('#toSimplePolicyObject', () => {
         let wrapper = shallowMount(PolicyPasswordInput, {
             i18n,
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: { policyApi: 'reset' }
         });
 
@@ -100,9 +103,10 @@ describe('PasswordPolicyInput.vue', () => {
     describe('#toPolicyNames', () => {
         let wrapper = shallowMount(PolicyPasswordInput, {
             i18n,
-            provide: () => ({
-                $validator: v
-            }),
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: { policyApi: 'reset' }
         });
 
@@ -130,59 +134,14 @@ describe('PasswordPolicyInput.vue', () => {
         });
     });
 
-    describe('#makeExclusions', () => {
-        let wrapper = shallowMount(PolicyPasswordInput, {
-                i18n,
-                provide: () => ({
-                    $validator: v
-                }),
-                propsData: { policyApi: 'reset' }
-            }),
-            policyRequirementSet = {
-                'policyRequirements': [
-                    'REQUIRED',
-                    'MIN_LENGTH'
-                ],
-                'policies': [
-                    {
-                        'policyRequirements': [
-                            'REQUIRED'
-                        ]
-                    },
-                    {
-                        'policyRequirements': [
-                            'MIN_LENGTH'
-                        ]
-                    }
-                ]
-            };
-
-        it('should remove policies with strings specified in "exclude" prop', () => {
-            wrapper.setProps({ exclude: ['REQUIRED'] });
-            let unexcludedPolicies = wrapper.vm.makeExclusions(policyRequirementSet).policies;
-
-            expect(unexcludedPolicies).to.deep.equal([{ policyRequirements: ['MIN_LENGTH'] }]);
-        });
-
-        it('should remove policies specified as {name<String>, predicate<Function>} in "exclude" prop', () => {
-            wrapper.setProps({ exclude: [{
-                name: 'REQUIRED',
-                predicate: (n) => _.includes(n, 'MIN_LENGTH')
-            }] });
-
-            let unexcludedPolicies = wrapper.vm.makeExclusions(policyRequirementSet).policies;
-
-            expect(unexcludedPolicies).to.deep.equal([{ policyRequirements: ['MIN_LENGTH'] }]);
-        });
-    });
-
     // both of these tests no longer seem to work
     describe.skip('#formatPayload', () => {
         let wrapper = mount(PolicyPasswordInput, {
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             i18n,
-            provide: () => ({
-                $validator: v
-            }),
             propsData: { policyApi: 'reset' }
         });
 
@@ -194,10 +153,11 @@ describe('PasswordPolicyInput.vue', () => {
     });
     describe.skip('#getAction', () => {
         let wrapper = mount(PolicyPasswordInput, {
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             i18n,
-            provide: () => ({
-                $validator: v
-            }),
             propsData: {
                 policyApi: 'reset'
             }

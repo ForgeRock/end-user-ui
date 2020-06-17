@@ -1,7 +1,10 @@
 import Vue from 'vue';
 import UserDetails from '@/components/selfservice/registration/UserDetails';
 import i18n from '@/i18n';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 import BootstrapVue from 'bootstrap-vue';
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
@@ -11,11 +14,14 @@ UserDetails.components['fr-policy-password-input'] = Sinon.stub();
 
 describe('UserDetails.vue', () => {
     Vue.use(BootstrapVue);
-    Vue.use(VeeValidate, { inject: false, fastExit: false });
 
     it('User Details component loaded', () => {
         const wrapper = shallowMount(UserDetails, {
             i18n,
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 selfServiceDetails: {}
             }
@@ -27,6 +33,10 @@ describe('UserDetails.vue', () => {
     it('User Details calculate validators', () => {
         const wrapper = shallowMount(UserDetails, {
                 i18n,
+                stubs: {
+                    ValidationProvider,
+                    ValidationObserver
+                },
                 propsData: {
                     selfServiceDetails: {}
                 }
@@ -46,6 +56,10 @@ describe('UserDetails.vue', () => {
 
         const wrapper = shallowMount(UserDetails, {
             i18n,
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 selfServiceDetails: {
                     tag: 'initial',

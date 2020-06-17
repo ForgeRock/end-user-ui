@@ -1,33 +1,31 @@
 <template>
     <div class="mb-3">
-        <div :class="[{'form-label-password': reveal}, 'form-label-group', 'mb-0']" ref="floatingLabelGroup">
-            <input :type="inputType"
-                   :id="id"
-                   :class="[{'polyfillPlaceholder': floatLabels, 'is-invalid': errors.has(fieldName) && showErrorState }, 'form-control']"
-                   :autofocus="autofocus"
-                   v-model="inputValue"
-                   :placeholder="label"
-                   v-validate="validateRules"
-                   :data-vv-as="label"
-                   data-vv-validate-on="submit"
-                   ref="input"
-                   :name="fieldName"/>
-            <div v-if="reveal" class="input-group-append">
-                <button @click="revealText" class="btn btn-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
+        <ValidationProvider :rules="validateRules" :vid="id" :name="label" v-slot="validationContext">
+            <div :class="[{'form-label-password': reveal}, 'form-label-group', 'mb-0']" ref="floatingLabelGroup">
+                <input :type="inputType"
+                    :id="id"
+                    :class="[{'polyfillPlaceholder': floatLabels, 'is-invalid': validationContext.errors.length > 0 && showErrorState }, 'form-control']"
+                    :autofocus="autofocus"
+                    v-model="inputValue"
+                    :placeholder="label"
+                    ref="input"
+                    :name="fieldName"/>
+
+                <div v-if="reveal" class="input-group-append">
+                    <button @click="revealText" class="btn btn-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
+                </div>
+
+                <label :hidden="hideLabel" :for="id">{{ label }}</label>
             </div>
-
-            <label :hidden="hideLabel" :for="id">{{ label }}</label>
-
-        </div>
-        <slot name="validationError">
-            <fr-validation-error :validatorErrors="errors" :fieldName="fieldName"></fr-validation-error>
-        </slot>
+            <slot name="validationError">
+                <p class="text-danger">{{ validationContext.errors[0] }}</p>
+            </slot>
+        </ValidationProvider>
     </div>
 </template>
 
 <script>
 import _ from 'lodash';
-import ValidationError from '@/components/utils/ValidationError';
 
 /**
  * @description Input with a floating label in the center, this will move when a user types into the input (example can be found on the default login page)
@@ -35,23 +33,26 @@ import ValidationError from '@/components/utils/ValidationError';
  **/
 export default {
     name: 'Floating-Label-Input',
-    components: {
-        'fr-validation-error': ValidationError
-    },
+    components: {},
     props: {
         label: String,
         type: String,
         autofocus: String,
         fieldName: String,
-        validateRules: [String, Object],
+        validateRules: {
+            type: [String, Object]
+        },
         reveal: Boolean,
         showErrorState: { type: Boolean, default: true },
-        defaultValue: { required: false }
+        defaultValue: { required: false },
+        value: {
+            type: String,
+            default () { return ''; }
+        }
     },
-    inject: ['$validator'],
     data () {
         return {
-            inputValue: '',
+            inputValue: this.value,
             id: null,
             floatLabels: false,
             hideLabel: true,
@@ -102,6 +103,9 @@ export default {
         inputValue: function (newVal) {
             this.floatLabels = newVal.length > 0;
             this.$emit('input', newVal);
+        },
+        value: function () {
+            this.inputValue = this.value;
         }
     }
 };

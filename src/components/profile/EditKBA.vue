@@ -1,61 +1,61 @@
 <template>
-    <fr-list-item :collapsible="true" :panelShown="false">
+    <fr-list-item :collapsible="true" :panelShown="false"  @show="showCancelButton = true" @hide="showCancelButton = true; clearComponent()">
         <div slot="list-item-header" class="d-inline-flex w-100 media">
             <div class="media-body align-self-center">
-                <h6 class="my-0">{{$t('pages.profile.accountSecurity.securityQuestions')}}</h6>
+                <h6 class="mt-2">{{$t('pages.profile.accountSecurity.securityQuestions')}}</h6>
             </div>
             <div class="d-flex ml-3 align-self-center">
-                <div v-show="showCancelButton" class="btn btn-sm btn-link float-right btn-cancel" @click="clearComponent()" ref="cancel">{{$t('common.form.cancel')}}</div>
-                <div v-show="!showCancelButton" class="btn btn-sm btn-link float-right btn-edit" @click="showCancelButton = true">{{$t('common.form.reset')}}</div>
+                <div v-show="showCancelButton" class="btn btn-sm btn-link float-right btn-cancel p-0" ref="cancel">{{$t('common.form.cancel')}}</div>
             </div>
         </div>
 
         <div v-if="selected.length" slot="list-item-collapse-body" class="d-inline-flex w-100">
-            <b-form class="w-100">
-                <b-row>
-                    <b-col sm="8">
-                        <fieldset v-for="(select, id) in selected" :key="id" class="pb-3">
+            <ValidationObserver ref="observer" slim>
+                <b-form class="w-100">
+                    <b-row>
+                        <b-col sm="8">
+                            <fieldset v-for="(select, id) in selected" :key="'kba-question-body-' +id" class="pb-3">
+                                <label>{{$t('common.user.kba.question')}} {{select.index}}</label>
+                                <b-form-select class="mb-3"
+                                    v-model="select.selected"
+                                    :options="selectOptions"></b-form-select>
 
-                            <label>{{$t('common.user.kba.question')}} {{select.index}}</label>
-                            <b-form-select class="mb-3"
-                                v-model="select.selected"
-                                :options="selectOptions"></b-form-select>
+                                <b-form-group>
+                                    <ValidationProvider v-if="select && select.selected === customIndex" class="pb-3" rules="required" :name="$t('pages.profile.accountSecurity.custom') + ' ' +select.index" v-slot="validationContext">
+                                        <label :for="'fr-kba-custom-question'  + select.index">{{$t('pages.profile.accountSecurity.custom')}}</label>
+                                        <b-form-input type="text"
+                                            :id="'fr-kba-custom-question'  + select.index"
+                                            v-model.trim="select.custom"
+                                            :state="getValidationState(validationContext)"
+                                            :name="'fr-kba-custom-question'  + select.index"></b-form-input>
 
-                            <div v-if="select && select.selected === customIndex" class="pb-3">
-                                <label>{{$t('pages.profile.accountSecurity.custom')}}</label>
-                                <b-form-input type="text"
-                                    v-model.trim="select.custom"
-                                    v-validate="'required'"
-                                    data-vv-validate-on="submit"
-                                    :name="$t('pages.profile.accountSecurity.custom')  + select.index"
-                                    :class="[{'is-invalid': errors.has($t('pages.profile.accountSecurity.custom') + select.index)}, 'form-control']"></b-form-input>
+                                        <b-form-invalid-feedback :id="'fr-kba-common-feedback'  + select.index">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                                    </ValidationProvider>
+                                </b-form-group>
 
-                                <fr-validation-error :validatorErrors="errors" :fieldName="$t('pages.profile.accountSecurity.custom') + select.index"></fr-validation-error>
-                            </div>
+                                <b-form-group class="mb-0">
+                                    <ValidationProvider rules="required" :name="$t('common.user.kba.answer') + ' ' +select.index" v-slot="validationContext">
+                                        <label :for="'fr-kba-common-question'  + select.index">{{$t('common.user.kba.answer')}}</label>
+                                        <b-form-input :id="'fr-kba-common-question'  + select.index" type="text"
+                                            v-model.trim="select.answer"
+                                            :state="getValidationState(validationContext)"
+                                            :name="'fr-kba-common-question'  + select.index"></b-form-input>
 
-                            <div class="form-group mb-0">
-                                <label>{{$t('common.user.kba.answer')}}</label>
-                                <b-form-input type="text" class="form-control"
-                                    v-model.trim="select.answer"
-                                    v-validate="'required'"
-                                    data-vv-validate-on="submit"
-                                    :data-vv-as="$t('common.user.kba.answer')"
-                                    :name="$t('common.user.kba.answer') + select.index"
-                                    :class="[{'is-invalid': errors.has($t('common.user.kba.answer') + select.index)}, 'form-control']"></b-form-input>
+                                        <b-form-invalid-feedback :id="'fr-kba-common-feedback'  + select.index">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                                    </ValidationProvider>
+                                </b-form-group>
 
-                                <fr-validation-error :validatorErrors="errors" :fieldName="$t('common.user.kba.answer') + select.index"></fr-validation-error>
-                            </div>
+                                <hr v-if="id !== selected.length - 1" class="mb-3 mt-4">
+                            </fieldset>
 
-                            <hr v-if="id !== selected.length - 1" class="mb-3 mt-4">
-                        </fieldset>
-
-                        <fr-loading-button type="button" variant="primary" class="ld-ext-right mb-3"
-                            :label="$t('common.user.kba.saveQuestions')"
-                            :loading="loading"
-                            @click="onSaveKBA"></fr-loading-button>
-                    </b-col>
-                </b-row>
-            </b-form>
+                            <fr-loading-button type="button" variant="primary" class="ld-ext-right mb-3"
+                                :label="$t('common.user.kba.saveQuestions')"
+                                :loading="loading"
+                                @click="onSaveKBA"></fr-loading-button>
+                        </b-col>
+                    </b-row>
+                </b-form>
+            </ValidationObserver>
         </div>
     </fr-list-item>
 </template>
@@ -64,7 +64,6 @@
 import _ from 'lodash';
 import ListItem from '@/components/utils/ListItem';
 import LoadingButton from '@/components/utils/LoadingButton';
-import ValidationError from '@/components/utils/ValidationError';
 
 /**
  * @description Allows a user to change their KBA, will ensure based on KBA configuration a user must match the systems KBA requirements.
@@ -74,11 +73,7 @@ export default {
     name: 'Edit-KBA',
     components: {
         'fr-list-item': ListItem,
-        'fr-loading-button': LoadingButton,
-        'fr-validation-error': ValidationError
-    },
-    $_veeValidate: {
-        validator: 'new'
+        'fr-loading-button': LoadingButton
     },
     props: ['kbaData'],
     data () {
@@ -91,7 +86,7 @@ export default {
             showCancelButton: false
         };
     },
-    mounted () {
+    created () {
         this.questions = this.kbaData.questions;
         this.initializeForm(this.kbaData.minimumAnswersToDefine);
     },
@@ -148,11 +143,11 @@ export default {
             this.questions = this.kbaData.questions;
             this.initializeForm(this.kbaData.minimumAnswersToDefine);
 
-            this.errors.clear();
+            this.$refs.observer.reset();
         },
 
         onSaveKBA () {
-            this.isValid().then((valid) => {
+            this.$refs.observer.validate().then((valid) => {
                 if (valid) {
                     this.loading = true;
 
@@ -161,11 +156,6 @@ export default {
                     } });
                 }
             });
-        },
-
-        isValid () {
-            /* istanbul ignore next */
-            return this.$validator.validateAll();
         }
     },
     watch: {

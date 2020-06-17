@@ -4,21 +4,22 @@ import i18n from '@/i18n';
 import BootstrapVue from 'bootstrap-vue';
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
-import VeeValidate from 'vee-validate';
+import {
+    ValidationObserver,
+    ValidationProvider
+} from 'vee-validate';
 import Sinon from 'sinon';
 
 describe('KBASecurityAnswerDefinitionStage.vue', () => {
     Vue.use(BootstrapVue);
-    Vue.use(VeeValidate, { inject: false, fastExit: false });
-
-    const v = new VeeValidate.Validator();
 
     let wrapper,
         mountOptions = {
-            provide: () => ({
-                $validator: v
-            }),
             i18n,
+            stubs: {
+                ValidationProvider,
+                ValidationObserver
+            },
             propsData: {
                 selfServiceDetails: {
                     requirements: {
