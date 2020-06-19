@@ -126,6 +126,10 @@
                     });
                 }
 
+                if (property.pattern) {
+                    validators.push(`regex:${property.pattern}`);
+                }
+
                 return validators.join('|');
             },
 
