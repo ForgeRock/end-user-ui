@@ -28,10 +28,7 @@ def releaseBuild = new MavenReleaseBuild(steps, env, currentBuild,
 
 def slackChannel = '#sustaining-idm'
 def emailNotificationMailingList = ['idm-sustaining@forgerock.com']
-releaseBuild.setBuildFailureEmailNotificationPolicy([
-    [$class: "FirstFailingBuildSuspectsRecipientProvider"], // individuals who contributed to a commit that broke the build
-    [$class: "RequesterRecipientProvider"]                  // the user who launched the build
-])
+releaseBuild.setBuildFailureEmailNotificationPolicy([ brokenBuildSuspects(), requestor() ])
 def stageErrorMessage
 
 currentBuild.displayName = "#${env.BUILD_NUMBER} - IDM EndUser UI ${params.RELEASE_VERSION}"
@@ -73,7 +70,10 @@ timestamps {
         SHORT_GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
       }
 
-      withCredentials([string(credentialsId: 'whitesource-key-openidm-enduser', variable: 'WS_PRODUCT_KEY')]) {
+      withCredentials([
+              string(credentialsId: 'whitesource-key-openidm-enduser', variable: 'WS_PRODUCT_KEY'),
+              string(credentialsId: 'whitesource-ci-user-key', variable: 'WS_USER_KEY'),
+      ]) {
         stage ('Maven release build') {
           stageErrorMessage = 'The Maven build failed, please check the console output'
 
@@ -87,8 +87,9 @@ timestamps {
           ]
 
           def properties = [
-            'ci.scm.revision': SHORT_GIT_COMMIT,
-            'whitesource.product.key': WS_PRODUCT_KEY
+            'ci.scm.revision'        : SHORT_GIT_COMMIT,
+            'whitesource.product.key': env.WS_PRODUCT_KEY,
+            'whitesource.user.key'   : env.WS_USER_KEY,
           ]
 
           mvnProfiles = profiles.join(',')

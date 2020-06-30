@@ -10,12 +10,12 @@
     <parent>
         <groupId>org.forgerock</groupId>
         <artifactId>forgerock-parent</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.5</version>
     </parent>
 
-		<groupId>org.forgerock.openidm</groupId>
+	<groupId>org.forgerock.openidm</groupId>
     <artifactId>openidm-ui-mirai</artifactId>
-        <version>6.5.0.14-SNAPSHOT</version>
+    <version>6.5.0.14-SNAPSHOT</version>
     <name>Mirai UI</name>
     <packaging>pom</packaging>
 
