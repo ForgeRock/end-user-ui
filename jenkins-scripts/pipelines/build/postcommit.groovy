@@ -15,7 +15,7 @@ def build() {
 
   slackChannel = '#idm-ui'
   emailNotificationMailingList = ['openidm-dev@forgerock.com, jason.browne@forgerock.com, brendan.miller@forgerock.com']
-  postcommitBuild.setBuildFailureEmailNotificationPolicy([[$class: "FirstFailingBuildSuspectsRecipientProvider"]]) // individuals who contributed to a commit that broke the build
+  postcommitBuild.setBuildFailureEmailNotificationPolicy([ brokenBuildSuspects() ])
 
   def javaVersion = '8'
   def mavenVersion = '3.2.5'
@@ -45,11 +45,12 @@ def build() {
       withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
                "MAVEN_OPTS=${mavenBuildOptions}",
                "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-
-        withCredentials([string(credentialsId: 'whitesource-key-openidm-enduser', variable: 'WS_PRODUCT_KEY')]) {
-
-          sh "mvn -B -e -U clean deploy -Dci.scm.revision=${SHORT_GIT_COMMIT} -Psource-copyright,thirdpartylicensing -Dwhitesource.product.key=${WS_PRODUCT_KEY}"
-
+        withCredentials([
+                string(credentialsId: 'whitesource-key-openidm-enduser', variable: 'WS_PRODUCT_KEY'),
+                string(credentialsId: 'whitesource-ci-user-key', variable: 'WS_USER_KEY'),
+        ]) {
+          sh "mvn -B -e -U clean deploy -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
+                  " -Dwhitesource.product.key=${env.WS_PRODUCT_KEY} -Dwhitesource.user.key=${env.WS_USER_KEY}"
         }
       }
     }
