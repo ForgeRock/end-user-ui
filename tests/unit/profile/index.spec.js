@@ -29,10 +29,7 @@ describe('Profile.vue', () => {
                     workflow: false,
                     passwordReset: false,
                     usernameRecovery: false,
-                    registration: false,
-                    authHeaders: null,
-                    authLogoutUrl: null,
-                    amDataEndpoints: null
+                    registration: false
                 }
             };
 

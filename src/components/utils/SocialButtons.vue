@@ -83,18 +83,7 @@ export default {
 
                     if (this.providers.length) {
                         _.each(this.providers, (provider, index) => {
-                            /* If this is fullStack we need to tell the app to use oauth
-                                   headers on authenticated requests after being logged inspect
-                                   then immediately redirect to am's login. */
-                            if (provider.provider === 'OPENAM' && this.providers.length === 1) {
-                                if (!window.location.search && this.signin === true) {
-                                    this.goToIDP('OPENAM');
-                                } else {
-                                    this.providers.splice((index - 1), 1);
-                                }
-                            } else {
-                                this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
-                            }
+                            this.$set(this.socialButtonStyles, index, provider.uiConfig.buttonCustomStyle);
 
                             if (provider.provider === 'salesforce') {
                                 provider.uiConfig.iconClass = 'fa-salesforce';

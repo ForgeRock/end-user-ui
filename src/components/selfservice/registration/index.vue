@@ -169,17 +169,6 @@ export default {
                 } else {
                     this.autoLogin(details.additions.credentialJwt, details.additions.successUrl);
                 }
-            } else if (type === 'openAMAutoLogin' && details.status) {
-                if (_.has(details, 'additions.successUrl')) {
-                    // If there is a provided success url then follow it.
-                    /* istanbul ignore next */
-                    window.location.href = details.additions.successUrl;
-                } else {
-                    // Otherwise, redirect to login and send success notification.
-                    this.$router.push('/login');
-                    /* istanbul ignore next */
-                    this.displayNotification('success', this.$t('pages.selfservice.registration.createdAccount'));
-                }
             } else {
                 let stageCheck = false;
 

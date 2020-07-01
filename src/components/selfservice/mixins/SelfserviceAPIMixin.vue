@@ -42,7 +42,7 @@ export default {
             /* istanbul ignore next */
             let headers = this.getAnonymousHeaders();
             /* istanbul ignore next */
-            if (noSessionFalse && !this.$root.applicationStore.state.authHeaders) {
+            if (noSessionFalse) {
                 headers = {
                     'X-OpenIDM-NoSession': false,
                     'X-OpenIDM-Password': null,

@@ -97,7 +97,6 @@ src/
 │    ├── dashboard/ - Dashboard widgets and workflow integration
 │    ├── profile/ - Profile management components (KBA, password change, profile edit, social management, etc.)
 │    ├── selfservice/ - Components for the various self-service flows (username recovery, password reset, registration, progressive profile, etc.)
-│    ├── uma/ - User Managed Access integration
 │    ├── utils/ - Variety of support components that are used throughout the application
 │    ├── Login.vue/ - Base login page for the application
 │    ├── NotFound.vue/ - 404 page

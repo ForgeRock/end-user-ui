@@ -17,12 +17,7 @@
                 <b-tabs content-class="mt-4">
                     <b-tab :title="$t('pages.profile.settings')" active>
                         <fr-account-security @updateProfile="updateProfile" @updateKBA="updateKBA"></fr-account-security>
-                        <!--
-                            UI check for platform, if platform need to load a different social based component
-                        -->
-                        <fr-social-identities v-if="$root.userStore.state.internalUser === false && $root.applicationStore.state.platformMode === false" :clientToken="clientToken" :linkedProvider="linkedProvider"></fr-social-identities>
-                        <fr-authorized-applications v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-authorized-applications>
-                        <fr-trusted-devices v-if="$root.applicationStore.state.amDataEndpoints && $root.userStore.state.internalUser === false"></fr-trusted-devices>
+                        <fr-social-identities v-if="$root.userStore.state.internalUser === false" :clientToken="clientToken" :linkedProvider="linkedProvider"></fr-social-identities>
                         <fr-preferences v-if="$root.userStore.state.internalUser === false" @updateProfile="updateProfile"></fr-preferences>
                         <fr-consent v-if="$root.userStore.state.internalUser === false" :consentedMappings="profile.consentedMappings" @updateProfile="updateProfile"></fr-consent>
                         <fr-account-controls></fr-account-controls>
@@ -55,8 +50,6 @@ export default {
         'fr-account-security': () => import('@/components/profile/AccountSecurity'),
         'fr-edit-personal-info': () => import('@/components/profile/EditPersonalInfo'),
         'fr-preferences': () => import('@/components/profile/Preferences'),
-        'fr-trusted-devices': () => import('@/components/profile/TrustedDevices'),
-        'fr-authorized-applications': () => import('@/components/profile/AuthorizedApplications'),
         'fr-consent': () => import('@/components/profile/Consent'),
         'fr-social-identities': () => import('@/components/profile/SocialIdentities')
     },

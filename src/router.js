@@ -1,6 +1,5 @@
 import Router from 'vue-router';
 import Vue from 'vue';
-import ApplicationStore from './store/Application';
 
 Vue.use(Router);
 
@@ -31,9 +30,7 @@ export default new Router({
             component: () => import('@/components/Login'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
             beforeEnter: (to, from, next) => {
-                if (ApplicationStore.state.platformMode) {
-                    window.location = ApplicationStore.state.loginURL;
-                } else if (window.location.search && window.location.search.match(/state|oauth_token/)) {
+                if (window.location.search && window.location.search.match(/state|oauth_token/)) {
                     next('/oauthReturn');
                 } else {
                     next();
@@ -124,14 +121,6 @@ export default new Router({
             name: 'ProgressiveProfileInitiate',
             component: () => import('@/components/selfservice/progressiveprofile'),
             meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
-        },
-        {
-            path: '/sharing',
-            name: 'Sharing',
-            component: () => import('@/components/uma'),
-            meta: {
-                authenticate: true
-            }
         },
         /*
         {

@@ -32,7 +32,6 @@ describe('AccountSecurity.vue', () => {
             },
             applicationStore = {
                 state: {
-                    platformMode: false
                 }
             },
             wrapper = shallowMount(AccountSecurity, {
@@ -55,7 +54,6 @@ describe('AccountSecurity.vue', () => {
                 },
                 applicationStore = {
                     state: {
-                        platformMode: false
                     }
                 },
                 wrapper = shallowMount(AccountSecurity, {

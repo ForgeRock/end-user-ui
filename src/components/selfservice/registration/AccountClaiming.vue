@@ -158,25 +158,17 @@ export default {
                         this.socialVerification = true;
                     }
                 }
-            } else if ((type === 'localAutoLogin' || type === 'openAMAutoLogin') && _.isUndefined(details.additions.claimedProfile)) {
-                if (sessionStorage.getItem('amSocialToken')) {
-                    let tempToken = sessionStorage.getItem('amSocialToken');
-
-                    this.$router.push({ name: 'Registration', params: { clientToken: tempToken } });
-                } else {
-                    this.$router.push({ name: 'Registration', params: { clientToken: this.clientToken } });
-                }
+            } else if (type === 'localAutoLogin' && _.isUndefined(details.additions.claimedProfile)) {
+                this.$router.push({ name: 'Registration', params: { clientToken: this.clientToken } });
             } else if (details.tag === 'end' && details.status.success) {
                 const socialLoginInstance = this.getRequestService({
                     headers: {
                         'X-OpenIDM-NoSession': 'false',
                         'X-OpenIDM-OAuth-Login': 'true',
-                        'X-OpenIDM-DataStoreToken': sessionStorage.getItem('amSocialToken') || this.clientToken,
+                        'X-OpenIDM-DataStoreToken': this.clientToken,
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
-
-                sessionStorage.removeItem('amSocialToken');
 
                 socialLoginInstance.post('/authentication?_action=login')
                     .then((userDetails) => {
