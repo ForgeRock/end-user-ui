@@ -1,21 +1,21 @@
 <template>
     <div>
-        <fr-list-group :title="this.$t('pages.workflow.unassignedTasks')">
+        <fr-list-group class="mt-0" :title="this.$t('pages.workflow.unassignedTasks')">
             <template v-if="!isEmpty(tasks)">
                 <transition-group name="fade" mode="out-in">
                     <fr-list-item :collapsible="true" v-for="(taskDefinition, id) in tasks" :key="`groupTask_${id}`" :ref="`collapse-${id}`" @shown="setShown(id)" @hidden="setHidden(id)">
                         <div slot="list-item-header" class="d-inline-flex w-100 media">
                             <div class="media-body align-self-center">
-                                <h6 class="mb-1 mt-2">{{taskDefinition.name}}</h6>
+                                <h6 class="mb-1 mt-0">{{taskDefinition.name}}</h6>
                                 <small class="text-muted d-block mb-2">{{$t('pages.workflow.notAssigned')}}</small>
                             </div>
-                            <div class="d-flex ml-3 align-self-center">
-                                <div class="btn btn-sm btn-link float-right btn-cancel" :ref="`cancel-${id}`">{{$t('common.form.cancel')}}</div>
-                                <div class="btn btn-sm btn-link float-right btn-edit">{{$t('pages.workflow.assign')}}</div>
+                            <div class="d-flex mb-3 ml-3 align-self-center">
+                                <b-button v-if="panelShown[id] === true" variant="link" size="sm" class="btn-cancel mb-2" :ref="`cancel-${id}`">{{$t('common.form.cancel')}}</b-button>
+                                <b-button v-else variant="link" size="sm" class="btn-edit">{{$t('pages.workflow.assign')}}</b-button>
                             </div>
                         </div>
                         <div slot="list-item-collapse-body" class="d-inline-flex w-100">
-                            <fr-assign-task :taskDefinition="taskDefinition" @loadProcess="(process) => $emit('loadProcess', process)" @assignTask="assignTask"></fr-assign-task>
+                            <fr-assign-task :shown="panelShown[id]" :taskDefinition="taskDefinition" @loadProcess="(process) => $emit('loadProcess', process)" @assignTask="assignTask"></fr-assign-task>
                         </div>
                     </fr-list-item>
                 </transition-group>

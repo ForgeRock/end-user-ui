@@ -2,14 +2,14 @@
     <div>
         <fr-list-group :title="this.$t('pages.workflow.startProcess')">
             <template v-if="!isEmpty(processes)">
-                <fr-list-item :collapsible="true" v-for="(process, id) in processes" :key="id" @hide="reset(id)" @show="$emit('loadProcess', process)">
+                <fr-list-item :collapsible="true" v-for="(process, id) in processes" :key="id" @hide="reset(id)" @show="show(id)">
                     <div slot="list-item-header" class="d-inline-flex w-100 media">
                         <div class="media-body align-self-center">
                             <h6>{{process.name}}</h6>
                         </div>
                         <div class="d-flex ml-3 align-self-center">
-                            <div class="btn btn-sm btn-link float-right btn-cancel" :ref="`cancel-${id}`">{{$t('common.form.cancel')}}</div>
-                            <div class="btn btn-sm btn-link float-right btn-edit">{{$t('pages.workflow.start')}}</div>
+                            <b-button v-if="panelShown[id] === true" variant="link" size="sm" :ref="`cancel-${id}`" class="btn-edit pb-2">{{ $t('common.form.cancel' )}}</b-button>
+                            <b-button v-else variant="link" size="sm" class="btn-edit">{{ $t('common.form.edit' )}}</b-button>
                         </div>
                     </div>
 
@@ -49,7 +49,10 @@ export default {
         }
     },
     data () {
+        let panelShown = {};
+
         return {
+            panelShown,
             loadingColor: styles.baseColor
         };
     },
@@ -60,8 +63,14 @@ export default {
     },
     methods: {
         isEmpty: _.isEmpty,
+        show (id) {
+            this.$set(this.panelShown, id, true);
+            this.$emit('loadProcess', this.processes[id]);
+        },
         reset (id) {
             let process = _.first(this.$refs[id]);
+
+            this.$set(this.panelShown, id, false);
 
             if (process) {
                 process.reset();
@@ -74,6 +83,15 @@ export default {
                 this.reset(id);
                 cancelBtn.click();
             }
+        }
+    },
+    watch: {
+        processes (val, oldVal) {
+            let newVals = _.difference(_.keys(val), _.keys(oldVal));
+
+            _.forEach(newVals, (process, id) => {
+                this.panelShown[id] = false;
+            });
         }
     }
 };
