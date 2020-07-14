@@ -16,9 +16,9 @@
                     <div class="col-sm-10">
                         <b-card>
                             <dl class="row m-0">
-                                <template v-for="detail in taskDetails">
-                                    <dt class="col-6">{{detail.name}}</dt>
-                                    <dd class="col-6">{{detail.value}} </dd>
+                                <template v-for="detail in taskDetailsList">
+                                    <dt :key="`taskname-${index}-${uniqueId}`" class="col-6">{{ detail.name }}</dt>
+                                    <dd :key="`taskvalue-${index}-${uniqueId}`" class="col-6 text-muted">{{ detail.value || 'n/a' }} </dd>
                                 </template>
                            </dl>
                         </b-card>
@@ -41,49 +41,23 @@
      **/
     export default {
         name: 'Assign-Task',
-        props: ['taskDefinition'],
+        props: ['taskDefinition', 'shown'],
         data () {
             return {
+                taskDetailsList: [],
                 workflowService: null,
-                selected: this.$root.userStore.state.userName
+                selected: this.$root.userStore.state.userName,
+                uniqueId: null
             };
         },
+        mounted () {
+            this.uniqueId = this._uid;
+        },
         computed: {
-            process () {
-                return this.taskDefinition.process;
-            },
-            processDefinition () {
-                if (this.process.processDefinition === null) {
-                    this.$emit('loadProcess', this.process);
-                }
-                return this.process.processDefinition;
-            },
-            formProperties () {
-                if (this.processDefinition && this.processDefinition.formProperties) {
-                    return this.processDefinition.formProperties;
-                } else {
-                    return [];
-                }
-            },
-            task () {
-                return this.taskDefinition.task;
-            },
-            id () {
-                return this.task._id;
-            },
-            taskDetails () {
-                if (this.formProperties) {
-                    return this.formProperties.reduce((acc, property) => {
-                        return acc.concat({ _id: property._id, name: property.name, value: this.task.variables[property._id] });
-                    }, []);
-                } else {
-                    return [];
-                }
-            },
             assigneeOptions () {
                 let loggedUserName = this.$root.userStore.state.userName;
-                if (!_.isEmpty(this.task.usersToAssign)) {
-                    return this.task.usersToAssign.map(({username, displayableName}) => {
+                if (!_.isEmpty(this.taskDefinition.task.usersToAssign)) {
+                    return this.taskDefinition.task.usersToAssign.map(({username, displayableName}) => {
                         let value = username,
                             text = username === loggedUserName ? this.$t('pages.workflow.me') : displayableName;
                         return {value, text};
@@ -95,7 +69,25 @@
         },
         methods: {
             assignTask () {
-                this.$emit('assignTask', { id: this.id, assignee: this.selected });
+                this.$emit('assignTask', { id: this.taskDefinition.task._id, assignee: this.selected });
+            },
+            generateDisplayDetails (formProperties, variables) {
+                return formProperties.reduce((acc, property) => {
+                    return acc.concat({ _id: property._id, name: property.name, value: variables[property._id] });
+                }, []);
+            }
+        },
+        watch: {
+            shown (val) {
+                if (val &&
+                    (_.isNull(this.taskDefinition.process.processDefinition) || _.isUndefined(this.taskDefinition.process.processDefinition)) &&
+                    this.taskDetailsList.length === 0) {
+                    this.getRequestService().get(`/workflow/processdefinition/${this.taskDefinition.task.processDefinitionId}`).then((processDetails) => {
+                        this.taskDetailsList = this.generateDisplayDetails(processDetails.data.formProperties, this.taskDefinition.task.variables);
+                    });
+                } else if (this.taskDetailsList.length === 0) {
+                    this.taskDetailsList = this.generateDisplayDetails(this.taskDefinition.process.processDefinition.formProperties, this.taskDefinition.task.variables);
+                }
             }
         }
     };

@@ -8,14 +8,14 @@
                             <div class="media-body align-self-center">
                                 <h6>{{task.name}}</h6>
                             </div>
-                            <div v-if="!isEmpty(task.task.candidates.candidateGroups)" class="btn btn-sm btn-link float-right" @click.stop="requeue(id)">{{$t('pages.workflow.requeue')}}</div>
-                            <div class="d-flex ml-3 align-self-center">
-                                <div class="btn btn-sm btn-link float-right btn-cancel" :ref="`cancel-${id}`">{{$t('common.form.cancel')}}</div>
-                                <div class="btn btn-sm btn-link float-right btn-edit">{{$t('common.form.edit')}}</div>
+                            <div class="d-flex flex-row ml-2 align-self-center">
+                                <b-button v-if="!isEmpty(task.task.candidates.candidateGroups)" variant="link" size="sm" @click.stop="requeue(id)">{{ $t('pages.workflow.requeue') }}</b-button>
+                                <b-button v-if="panelShown[id] === true" variant="link" size="sm" :ref="`cancel-${id}`" class="btn-edit pb-2">{{ $t('common.form.cancel' )}}</b-button>
+                                <b-button v-else variant="link" size="sm" class="btn-edit">{{ $t('common.form.edit' )}}</b-button>
                             </div>
                         </div>
                         <div slot="list-item-collapse-body" class="d-inline-flex w-100">
-                            <fr-task :taskInstance="task":ref="id" @loadProcess="(process) => $emit('loadProcess', process)" @cancel="cancel" @completeTask="completeTask"></fr-task>
+                            <fr-task :shown="panelShown[id]" :taskInstance="task" :ref="id" @loadProcess="(process) => $emit('loadProcess', process)" @cancel="cancel" @completeTask="completeTask"></fr-task>
                         </div>
                     </fr-list-item>
                 </transition-group>
@@ -45,7 +45,16 @@
             tasks: Object
         },
         data () {
-            return {panelShown: {}, onHidden: null};
+            let panelShown = {};
+
+            _.forEach(this.tasks, (value, id) => {
+                panelShown[id] = false;
+            });
+
+            return {
+                panelShown,
+                onHidden: null
+            };
         },
         components: {
             'fr-list-group': ListGroup,

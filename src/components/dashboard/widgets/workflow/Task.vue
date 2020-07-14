@@ -5,8 +5,8 @@
                    @submit="submit"
                    @cancel="cancel"
                    :processDefinition="processDefinition"
-                   :taskDefinition="task"
-                   :variables="variables"></component>
+                   :taskDefinition="taskInstance.task"
+                   :variables="taskInstance.task.variables"></component>
         <GenericTask v-else-if="showGenericTask === true && processDefinition !== null"
                      :variables="taskInstance.task.variables"
                      :task-fields="taskInstance.task.taskDefinition.formProperties"
@@ -30,11 +30,18 @@
      **/
     export default {
         name: 'Task',
-        props: ['taskInstance'],
+        props: ['taskInstance', 'shown'],
         data () {
+            let temporaryProcessInstance = null;
+
+            if (this.taskInstance.process && this.taskInstance.process.processDefinition) {
+                temporaryProcessInstance = this.taskInstance.process.processDefinition;
+            }
+
             return {
                 showGenericTask: false,
-                loadingColor: styles.baseColor
+                loadingColor: styles.baseColor,
+                processDefinition: temporaryProcessInstance
             };
         },
         components: {
@@ -42,47 +49,32 @@
             GenericTask
         },
         computed: {
-            process () {
-                return this.taskInstance.process;
-            },
-            processDefinition () {
-                if (this.process.processDefinition === null) {
-                    this.$emit('loadProcess', this.process);
-                }
-                return this.process.processDefinition;
-            },
-            formProperties () {
-                return this.processDefinition ? this.processDefinition.formProperties : [];
-            },
-            task () {
-                return this.taskInstance.task;
-            },
-            taskDetails () {
-                return this.formProperties.reduce((acc, property) => {
-                    return acc.concat({ _id: property._id, name: property.name, value: this.task.variables[property._id] });
-                }, []);
-            },
-            variables () {
-                return _.get(this, 'task.variables');
-            },
             taskForm () {
-                const formGenerationTemplate = this.task.taskDefinition.formGenerationTemplate,
+                const formGenerationTemplate = this.taskInstance.task.taskDefinition.formGenerationTemplate,
                     initializeForm = formGenerationTemplate ? Function(`return ${formGenerationTemplate}`) : null // eslint-disable-line
 
                 if (!_.isNull(initializeForm)) {
                     return initializeForm();
                 } else {
-                    this.showGenericTask = true;
                     return null;
                 }
             }
         },
         methods: {
             submit (formData) {
-                this.$emit('completeTask', { id: this.task._id, formData });
+                this.$emit('completeTask', { id: this.taskInstance.task._id, formData });
             },
             cancel () {
-                this.$emit('cancel', this.task._id);
+                this.$emit('cancel', this.taskInstance.task._id);
+            }
+        },
+        watch: {
+            shown (val) {
+                if (val && _.isNull(this.processDefinition)) {
+                    this.getRequestService().get(`/workflow/processdefinition/${this.taskInstance.task.processDefinitionId}`).then((processDetails) => {
+                        this.processDefinition = processDetails.data;
+                    });
+                }
             }
         }
     };

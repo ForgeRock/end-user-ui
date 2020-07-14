@@ -161,33 +161,8 @@ describe('Workflow MyTasks Widget Component', () => {
     });
 
     describe('tasks watcher', () => {
-        it('should set panelShown for new stuff', () => {
-            const setSpy = sinon.spy();
-
-            wrapper.vm.$set = setSpy;
-            wrapper.setProps({
-                tasks: {
-                    test1: { task: { _id: 'test task 1', candidates: { candidateGroups: ['test-role'] } } },
-                    test2: { task: { _id: 'test task 2', candidates: { candidateGroups: ['test-role'] } } }
-                }
-            });
-
-            expect(setSpy.called).to.equal(true);
-        });
-
         it('should create panelShown if it does not exist', () => {
-            const setSpy = sinon.spy();
-
-            wrapper.vm.$set = setSpy;
-            wrapper.vm.panelShown = undefined;
-            wrapper.setProps({
-                tasks: {
-                    test1: { task: { _id: 'test task 1', candidates: { candidateGroups: ['test-role'] } } },
-                    test2: { task: { _id: 'test task 2', candidates: { candidateGroups: ['test-role'] } } }
-                }
-            });
-
-            expect(setSpy.called).to.equal(true);
+            expect(wrapper.vm.panelShown['test1']).to.equal(false);
         });
     });
 });
