@@ -11,7 +11,7 @@
                 <b-col sm="8" offset-sm="2">
                     <ValidationObserver ref="observer" slim>
                         <b-form style="flex-direction: column;" v-if="formFields.length > 0" class="mb-3 fr-edit-personal-form" name="edit-personal-form">
-                            <template v-for="(field, index) in formFields">
+                            <template v-for="(field, index) in displayFields">
                                 <b-form-group style="min-width: 200px;" :key="index" v-if="field.type === 'string' || field.type === 'number'">
                                     <label :for="field.title">{{field.title}}</label>
                                     <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
@@ -94,12 +94,20 @@ export default {
             this.$root.$emit('bv::show::modal', 'userDetailsModal');
         }
     },
+    computed: {
+        displayFields () {
+            let { properties } = this.schema,
+                filterFields = _.filter(this.formFields, (field) => {
+                    return properties[field.name].userEditable;
+                });
+            return filterFields;
+        }
+    },
     methods: {
         generateFormFields () {
             let { order, properties, required } = this.schema,
                 filteredOrder = _.filter(order, (propName) => {
                     return properties[propName].viewable &&
-                            properties[propName].userEditable &&
                             properties[propName].type !== 'array' &&
                             properties[propName].type !== 'object';
                 }),
