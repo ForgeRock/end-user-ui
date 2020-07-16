@@ -131,12 +131,8 @@ export default {
             type: Object,
             required: true
         },
-        parentResource: {
-            type: String,
-            required: true
-        },
         value: {
-            type: Object,
+            type: [Object, String],
             required: false
         },
         index: {

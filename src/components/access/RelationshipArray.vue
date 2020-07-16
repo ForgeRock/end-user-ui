@@ -97,7 +97,6 @@ of the MIT license. See the LICENSE file for details.
             :title="'Add ' + relationshipArrayProperty.title">
 
             <fr-relationship-edit
-                :parentResource='parentResource'
                 :relationshipProperty='relationshipArrayProperty'
                 :index="0"
                 :setValue="addNewRelationship" />

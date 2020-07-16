@@ -50,7 +50,6 @@ of the MIT license. See the LICENSE file for details.
 
                             <!-- for singletonRelationhip values -->
                             <fr-relationship-edit v-if="field.type === 'relationship'"
-                                :parentResource='resourceType + "/" + resourceName'
                                 :relationshipProperty='field'
                                 :index="index"
                                 :key="'createResource' +index"
