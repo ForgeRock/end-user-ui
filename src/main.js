@@ -376,8 +376,7 @@ Vue.mixin({
             /* istanbul ignore next */
             let encoded = encodeURIComponent(headerValue)
                 .replace(/['()]/g, escape)
-                .replace(/\*/g, '%2A')
-                .replace(/%(?:7C|60|5E)/g, unescape);
+                .replace(/\*/g, '%2A');
             /* istanbul ignore next */
             return encoded === headerValue ? headerValue : "UTF-8''" + encoded;
         }
