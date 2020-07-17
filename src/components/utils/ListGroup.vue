@@ -1,3 +1,10 @@
+<!--
+Copyright (c) 2020 ForgeRock. All rights reserved.
+
+This software may be modified and distributed under the terms
+of the MIT license. See the LICENSE file for details.
+-->
+
 <template>
     <b-card no-body class="mb-3">
         <slot name="list-group-header">

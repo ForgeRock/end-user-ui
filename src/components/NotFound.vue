@@ -1,3 +1,10 @@
+<!--
+Copyright (c) 2020 ForgeRock. All rights reserved.
+
+This software may be modified and distributed under the terms
+of the MIT license. See the LICENSE file for details.
+-->
+
 <template>
     <b-container id="notFoundContainer" class="h-100 d-flex" fluid>
         <div style="width: 350px;" class="m-auto align-self-center text-center">

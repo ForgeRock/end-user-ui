@@ -1,3 +1,10 @@
+<!--
+Copyright (c) 2020 ForgeRock. All rights reserved.
+
+This software may be modified and distributed under the terms
+of the MIT license. See the LICENSE file for details.
+-->
+
 <template>
     <fr-list-group v-show="mappings.length" :title="$t('pages.profile.consent.title')" :subtitle="$t('pages.profile.consent.subtitle')">
         <fr-list-item v-for="mapping in mappings" :key="mapping.name"

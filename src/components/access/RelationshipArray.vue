@@ -1,4 +1,11 @@
- <template>
+<!--
+Copyright (c) 2020 ForgeRock. All rights reserved.
+
+This software may be modified and distributed under the terms
+of the MIT license. See the LICENSE file for details.
+-->
+
+<template>
     <div class="card mt-3">
         <div v-show="!relationshipArrayProperty.isReadOnly" class="px-4 py-2">
             <b-row>

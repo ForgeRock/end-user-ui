@@ -1,3 +1,10 @@
+<!--
+Copyright (c) 2020 ForgeRock. All rights reserved.
+
+This software may be modified and distributed under the terms
+of the MIT license. See the LICENSE file for details.
+-->
+
 <template>
     <div v-if="this.providers.length > 0">
         <fr-list-group :title="$t('pages.profile.socialSignIn.title')" :subtitle="$t('pages.profile.socialSignIn.subtitle')">

@@ -1,3 +1,10 @@
+<!--
+Copyright (c) 2020 ForgeRock. All rights reserved.
+
+This software may be modified and distributed under the terms
+of the MIT license. See the LICENSE file for details.
+-->
+
 <template>
     <fr-list-item :collapsible="true" :panelShown="false"  @show="showCancelButton = true" @hide="showCancelButton = true; clearComponent()">
         <div slot="list-item-header" class="d-inline-flex w-100 media">

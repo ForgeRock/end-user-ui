@@ -1,3 +1,10 @@
+<!--
+Copyright (c) 2020 ForgeRock. All rights reserved.
+
+This software may be modified and distributed under the terms
+of the MIT license. See the LICENSE file for details.
+-->
+
 <template functional>
     <dl class="row">
         <dt class="col-xl-5 mb-3">{{parent.$t('pages.profile.consent.accountAccess')}}</dt>

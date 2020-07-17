@@ -1,6 +1,8 @@
+# Copyright (c) 2020 ForgeRock. All rights reserved.
 #
-# Copyright 2019 ForgeRock AS. All Rights Reserved
-#
+# This software may be modified and distributed under the terms
+# of the MIT license. See the LICENSE file for details.
+
 FROM nginxinc/nginx-unprivileged
 
 COPY dist/ /opt/www

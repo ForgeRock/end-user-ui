@@ -1,3 +1,10 @@
+<!--
+Copyright (c) 2020 ForgeRock. All rights reserved.
+
+This software may be modified and distributed under the terms
+of the MIT license. See the LICENSE file for details.
+-->
+
 <template>
     <b-form @keyup.enter="save" @submit.prevent v-if="selfServiceDetails.requirements.uiConfig">
         <b-form-group class="mb-0" v-for="property in selfServiceDetails.requirements.attributes"  :key="property.name">
