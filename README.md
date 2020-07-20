@@ -191,7 +191,7 @@ The default project includes three themes:
 
 The project also includes a style guide, available when running the development server. To access the style guide:
 
-- Start the development server `npm run dev` and navigate to `src/router/index.js`.
+- Start the development server `npm run dev` and navigate to `src/router.js`.
 - Uncomment `import Styleguide from '../../styleguide/Styleguide'`; and the corresponding commented out style guide route.
 - Navigate to `http://localhost:8081/#/styleguide`.
 
