@@ -26,7 +26,7 @@ of the MIT license. See the LICENSE file for details.
                                         :id="'create-resource-' +field.key"
                                         :type="field.type === 'string' ? 'text' : field.type"
                                         :state="getValidationState(validationContext)"
-                                        v-model.trim="formFields[index]" />
+                                        v-model.trim="formFields[field.key]" />
                                     <b-form-invalid-feedback>{{ validationContext.errors[0] }}</b-form-invalid-feedback>
                                 </ValidationProvider>
                             </b-form-group>
@@ -139,7 +139,7 @@ export default {
             if (prop.type === 'string' || prop.type === 'number') {
                 tempFormFields[prop.key] = '';
             } else if (prop.type === 'relationship') {
-                tempFormFields[prop.key] = {};
+                tempFormFields[prop.key] = null;
             } else {
                 tempFormFields[prop.key] = false;
             }
