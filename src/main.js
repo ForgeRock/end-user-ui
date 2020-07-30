@@ -6,11 +6,12 @@
  * of the MIT license. See the LICENSE file for details.
  */
 
+import 'core-js/stable';
 import _ from 'lodash';
 import App from './App';
 import ApplicationStore from './store/Application';
 import axios from 'axios';
-import BootstrapVue from 'bootstrap-vue/dist/bootstrap-vue.esm.min';
+import BootstrapVue from 'bootstrap-vue';
 import i18n from './i18n';
 import Notifications from 'vue-notification';
 import PromisePoly from 'es6-promise';
@@ -26,7 +27,6 @@ import {
 import en from 'vee-validate/dist/locale/en.json';
 import * as rules from 'vee-validate/dist/rules';
 import Vue from 'vue';
-import 'core-js/stable';
 
 // Turn off production warning messages
 Vue.config.productionTip = false;
