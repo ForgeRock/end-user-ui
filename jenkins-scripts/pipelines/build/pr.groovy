@@ -42,7 +42,7 @@ def build() {
                "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
 
         withCredentials([
-                string(credentialsId: 'whitesource-key-openidm-enduser', variable: 'WS_PRODUCT_KEY'),
+                string(credentialsId: 'whitesource-key-openidm-enduser-sustaining-6.5.x', variable: 'WS_PRODUCT_KEY'),
                 string(credentialsId: 'whitesource-ci-user-key', variable: 'WS_USER_KEY'),
         ]) {
           sh "mvn -B -e -U clean verify -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
