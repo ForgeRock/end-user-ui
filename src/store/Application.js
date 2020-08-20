@@ -1,5 +1,4 @@
-/* eslint-disable sort-keys */
-import { each, find } from "lodash";
+import _ from 'lodash';
 
 /**
  * State - Enduser data store information
@@ -16,7 +15,22 @@ import { each, find } from "lodash";
  *      @param {string} idmClientID - IDM client ID used for platform calls in conjunction with AM
  */
 export default {
-    // eslint-disable-next-line max-statements
+    state: {
+        workflow: false,
+        passwordReset: false,
+        usernameRecovery: false,
+        registration: false,
+        authHeaders: null,
+        amDataEndpoints: null,
+        loginRedirect: null,
+        amBaseURL: null,
+        idmBaseURL: '/openidm',
+        loginURL: null,
+        platformMode: false,
+        theme: 'default',
+        idmClientID: null
+    },
+
     setEnvironment (env) {
         if (env.VUE_APP_amURL) {
             this.state.amBaseURL = env.VUE_APP_amURL;
@@ -26,7 +40,7 @@ export default {
             this.state.idmBaseURL = env.VUE_APP_idmURL;
         }
 
-        if (env.VUE_APP_platformMode === "true") {
+        if (env.VUE_APP_platformMode === 'true') {
             this.state.platformMode = true;
         }
 
@@ -41,22 +55,6 @@ export default {
         if (env.VUE_APP_idmClientID) {
             this.state.idmClientID = env.VUE_APP_idmClientID;
         }
-    },
-
-    "state": {
-        "amBaseURL": null,
-        "amDataEndpoints": null,
-        "authHeaders": null,
-        "idmBaseURL": "/openidm",
-        "idmClientID": null,
-        "loginRedirect": null,
-        "loginURL": null,
-        "passwordReset": false,
-        "platformMode": false,
-        "registration": false,
-        "theme": "default",
-        "usernameRecovery": false,
-        "workflow": false
     },
 
     setAmDataEndpointsAction (amDataEndpoints) {
@@ -100,14 +98,14 @@ export default {
     },
 
     setEnduserSelfservice (availability) {
-        each(availability, (feature) => {
-            if (feature.name === "retrieveUsername" && find(feature.endpoints, (element) => element === "selfservice/username")) {
+        _.each(availability, (feature) => {
+            if (feature.name === 'retrieveUsername' && _.find(feature.endpoints, (el) => { return el === 'selfservice/username'; })) {
                 this.setUsernameRecoveryAction(feature.enabled);
-            } else if (feature.name === "passwordReset" && find(feature.endpoints, (element) => element === "selfservice/reset")) {
+            } else if (feature.name === 'passwordReset' && _.find(feature.endpoints, (el) => { return el === 'selfservice/reset'; })) {
                 this.setPasswordResetAction(feature.enabled);
-            } else if (feature.name === "registration" && find(feature.endpoints, (element) => element === "selfservice/registration")) {
+            } else if (feature.name === 'registration' && _.find(feature.endpoints, (el) => { return el === 'selfservice/registration'; })) {
                 this.setRegistrationAction(feature.enabled);
-            } else if (feature.name === "workflow") {
+            } else if (feature.name === 'workflow') {
                 this.setWorkflowAction(feature.enabled);
             }
         });

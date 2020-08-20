@@ -1,83 +1,76 @@
 <template>
     <div class="mb-3">
-        <div ref="floatingLabelGroup" :class="[{'form-label-password': reveal}, 'form-label-group', 'mb-0']">
-            <input
-                :id="id"
-                ref="input"
-                v-model="inputValue"
-                v-validate="validateRules"
-                :type="inputType"
-                :class="[{'polyfillPlaceholder': floatLabels, 'is-invalid': errors.has(fieldName) && showErrorState }, 'form-control']"
-                :autofocus="autofocus"
-                :placeholder="label"
-                :data-vv-as="label"
-                data-vv-validate-on="submit"
-                :name="fieldName"
-            >
+        <div :class="[{'form-label-password': reveal}, 'form-label-group', 'mb-0']" ref="floatingLabelGroup">
+            <input :type="inputType"
+                   :id="id"
+                   :class="[{'polyfillPlaceholder': floatLabels, 'is-invalid': errors.has(fieldName) && showErrorState }, 'form-control']"
+                   :autofocus="autofocus"
+                   v-model="inputValue"
+                   :placeholder="label"
+                   v-validate="validateRules"
+                   :data-vv-as="label"
+                   data-vv-validate-on="submit"
+                   ref="input"
+                   :name="fieldName"/>
             <div v-if="reveal" class="input-group-append">
-                <button class="btn btn-secondary" type="button" @click="revealText"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']" /></button>
+                <button @click="revealText" class="btn btn-secondary" type="button"><i :class="[{'fa-eye-slash': !show}, {'fa-eye': show}, 'fa']"></i></button>
             </div>
 
             <label :hidden="hideLabel" :for="id">{{ label }}</label>
+
         </div>
         <slot name="validationError">
-            <fr-validation-error :validator-errors="errors" :field-name="fieldName" />
+            <fr-validation-error :validatorErrors="errors" :fieldName="fieldName"></fr-validation-error>
         </slot>
     </div>
 </template>
 
 <script>
-import { bind, delay } from "lodash";
-import ValidationError from "./ValidationError";
+import _ from 'lodash';
+import ValidationError from '@/components/utils/ValidationError';
 
 /**
  * @description Input with a floating label in the center, this will move when a user types into the input (example can be found on the default login page)
  *
- */
+ **/
 export default {
-    "name": "Floating-Label-Input",
-    // eslint-disable-next-line sort-keys
+    name: 'Floating-Label-Input',
+    components: {
+        'fr-validation-error': ValidationError
+    },
+    props: {
+        label: String,
+        type: String,
+        autofocus: String,
+        fieldName: String,
+        validateRules: [String, Object],
+        reveal: Boolean,
+        showErrorState: { type: Boolean, default: true },
+        defaultValue: { required: false }
+    },
+    inject: ['$validator'],
     data () {
         return {
-            "floatLabels": false,
-            "hideLabel": true,
-            "id": null,
-            "inputType": this.type,
-            "inputValue": "",
-            "show": true
+            inputValue: '',
+            id: null,
+            floatLabels: false,
+            hideLabel: true,
+            inputType: this.type,
+            show: true
         };
     },
-    // eslint-disable-next-line sort-keys
     beforeMount () {
-        // eslint-disable-next-line no-underscore-dangle
-        this.id = `floatingLabelInput${this._uid}`;
-    },
-    "components": {
-        "fr-validation-error": ValidationError
-    },
-    "inject": ["$validator"],
-    "methods": {
-        revealText () {
-            if (this.inputType === "password") {
-                this.inputType = "text";
-                this.show = false;
-            } else {
-                this.inputType = "password";
-                this.show = true;
-            }
-        }
+        this.id = 'floatingLabelInput' + this._uid;
     },
     mounted () {
         /* istanbul ignore next */
-        delay(bind(() => {
-            if (navigator.userAgent.includes("Edge")) {
-                // eslint-disable-next-line unicorn/prefer-query-selector
-                if (document.getElementById(`${this.id}`).value.length > 0) {
+        _.delay(_.bind(() => {
+            if (navigator.userAgent.indexOf('Edge') >= 0) {
+                if (document.getElementById(`${this.id}`).value.length) {
                     this.floatLabels = true;
-                    // eslint-disable-next-line unicorn/prefer-query-selector
                     this.inputValue = document.getElementById(`${this.id}`).value;
                 }
-            } else if (navigator.userAgent.includes("Chrome")) {
+            } else if (navigator.userAgent.indexOf('Chrome') >= 0) {
                 if (document.querySelectorAll(`#${this.id}:-webkit-autofill`).length > 0) {
                     this.floatLabels = true;
                 }
@@ -90,24 +83,25 @@ export default {
         }
 
         // Browser consistent focus fix
-        if (this.autofocus === "true") {
+        if (this.autofocus === 'true') {
             this.$refs.input.focus();
         }
     },
-    "props": {
-        "autofocus": String,
-        "defaultValue": { "required": false },
-        "fieldName": String,
-        "label": String,
-        "reveal": Boolean,
-        "showErrorState": { "default": true, "type": Boolean },
-        "type": String,
-        "validateRules": [String, Object]
+    methods: {
+        revealText: function () {
+            if (this.inputType === 'password') {
+                this.inputType = 'text';
+                this.show = false;
+            } else {
+                this.inputType = 'password';
+                this.show = true;
+            }
+        }
     },
-    "watch": {
-        inputValue (newValue) {
-            this.floatLabels = newValue.length > 0;
-            this.$emit("input", newValue);
+    watch: {
+        inputValue: function (newVal) {
+            this.floatLabels = newVal.length > 0;
+            this.$emit('input', newVal);
         }
     }
 };

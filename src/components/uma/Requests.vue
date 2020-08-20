@@ -7,29 +7,29 @@
                         <b-list-group-item v-for="(request, index) in requests" :key="index">
                             <div class="d-sm-flex">
                                 <div class="media-body align-self-center mb-2 mb-sm-0">
-                                    <div class="mb-2"><small><strong>{{ request.user }}</strong> {{ $t('pages.uma.requests.requestedAccess') }}</small></div>
+                                    <div class="mb-2"><small><strong>{{request.user}}</strong> {{$t('pages.uma.requests.requestedAccess')}}</small></div>
                                     <div class="media mb-1">
                                         <div class="d-flex mr-2 align-self-center">
-                                            <fr-fallback-image v-if="request.icon_uri" :src="request.icon_uri" height="30" width="30" fallback="fa-file-alt" />
+                                            <fr-fallback-image v-if="request.icon_uri" :src="request.icon_uri" height="30" width="30" fallback="fa-file-alt"></fr-fallback-image>
                                         </div>
                                         <div class="media-body align-self-center">
                                             <div class="media-body align-self-center">
-                                                {{ request.resource }}
+                                                {{request.resource}}
                                             </div>
                                         </div>
                                     </div>
-                                    <small class="text-muted">{{ request.when | formatTime }}</small>
+                                    <small class="text-muted">{{request.when | formatTime}}</small>
                                 </div>
-                                <div v-if="!request.decision" class="d-flex justify-content-start ml-sm-3 align-self-center">
-                                    <a href="#" class="pr-3" @click="finalizeAccess(request, index, 'approve')">{{ $t('pages.uma.requests.allow') }}</a>
-                                    <a href="#" class="px-2" @click="finalizeAccess(request, index, 'deny')">{{ $t('pages.uma.requests.deny') }}</a>
+                                <div class="d-flex justify-content-start ml-sm-3 align-self-center" v-if="!request.decision">
+                                    <a href="#" class="pr-3" @click="finalizeAccess(request, index, 'approve')">{{$t('pages.uma.requests.allow')}}</a>
+                                    <a href="#" class="px-2" @click="finalizeAccess(request, index, 'deny')">{{$t('pages.uma.requests.deny')}}</a>
                                 </div>
-                                <div v-if="request.decision" class="d-flex justify-content-start ml-sm-3 align-self-center">
-                                    <div v-if="request.allowed" class="allow text-success">
-                                        <i class="fa fa-check fa-fw" /> {{ $t('pages.uma.requests.allowed') }}
+                                <div class="d-flex justify-content-start ml-sm-3 align-self-center" v-if="request.decision">
+                                    <div class="allow text-success" v-if="request.allowed">
+                                        <i class="fa fa-check fa-fw"></i> {{$t('pages.uma.requests.allowed')}}
                                     </div>
-                                    <div v-if="!request.allowed" class="deny text-danger">
-                                        <i class="fa fa-ban fa-fw" /> {{ $t('pages.uma.requests.denied') }}
+                                    <div class="deny text-danger" v-if="!request.allowed">
+                                        <i class="fa fa-ban fa-fw"></i> {{$t('pages.uma.requests.denied')}}
                                     </div>
                                 </div>
                             </div>
@@ -42,45 +42,44 @@
 </template>
 
 <script>
-import moment from "moment";
-import FallbackImage from "../utils/FallbackImage";
+import moment from 'moment';
+import FallbackImage from '@/components/utils/FallbackImage';
 
 /**
  * @description Allows user to request access to a resource
  *
- */
+ **/
 export default {
-    "name": "Requests",
-    // eslint-disable-next-line sort-keys
-    "components": {
-        "fr-fallback-image": FallbackImage
+    name: 'Requests',
+    components: {
+        'fr-fallback-image': FallbackImage
     },
-    "filters": {
+    props: ['requests'],
+    filters: {
         formatTime (dateString) {
-            const eventDate = moment(dateString);
+            let eventDate = moment(dateString);
 
-            if (eventDate.isSame(moment(), "day")) {
+            if (eventDate.isSame(moment(), 'day')) {
                 return eventDate.fromNow();
+            } else {
+                return eventDate.format('LT');
             }
-            return eventDate.format("LT");
         }
     },
-    "methods": {
+    methods: {
         finalizeAccess (request, index, action) {
             this.requests[index].decision = true;
 
-            // eslint-disable-next-line no-underscore-dangle
-            this.$emit("finalizeResourceAccess", request._id, action, {
-                "onSuccess": () => {
-                    if (action === "approve") {
+            this.$emit('finalizeResourceAccess', request._id, action, {
+                scopes: request.permissions,
+                onSuccess: () => {
+                    if (action === 'approve') {
                         this.requests[index].allowed = true;
                     }
-                },
-                "scopes": request.permissions
+                }
             });
         }
-    },
-    "props": ["requests"]
+    }
 };
 </script>
 

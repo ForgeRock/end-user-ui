@@ -1,79 +1,83 @@
 <template>
     <b-form>
-        <fr-social-buttons v-if="!isSocialReg" :signin="false" />
-        <b-form-group v-for="(property, key) in userDetails" :key="key" class="mb-0">
+        <fr-social-buttons v-if="!isSocialReg" :signin="false"></fr-social-buttons>
+        <b-form-group class="mb-0" v-for="(property, key) in userDetails" :key="key">
             <fr-floating-label-input
-                v-model="saveDetails[key]"
-                :default-value="property.socialValue"
-                :field-name="key"
-                :label="property.description"
-                :validate-rules="calculateValidation(property)"
-                type="text"
-            />
+                    :defaultValue="property.socialValue"
+                    :fieldName="key"
+                    :label="property.description"
+                    :validateRules="calculateValidation(property)"
+                    type="text"
+                    v-model="saveDetails[key]"></fr-floating-label-input>
         </b-form-group>
 
-        <fr-policy-password-input v-if="!isSocialReg" v-model="saveDetails.password" policy-api="selfservice/registration" name="password" />
+        <fr-policy-password-input v-if="!isSocialReg" policyApi="selfservice/registration" v-model="saveDetails.password" name="password"></fr-policy-password-input>
 
         <!-- Vue Bootstrap custom radio button seems to have problems so just using none component-->
         <div class="form-group mb-4">
             <div v-for="(preference, key) in userPreferences" :key="key" class="custom-control custom-checkbox mb-2">
-                <input :id="key" v-model="saveDetails.preferences[key]" type="checkbox" class="custom-control-input">
-                <label class="custom-control-label" :for="key">{{ preference.description }}</label>
+                <input v-model="saveDetails.preferences[key]" type="checkbox" class="custom-control-input" :id="key">
+                <label class="custom-control-label" :for="key">{{preference.description}}</label>
             </div>
         </div>
 
-        <b-button v-if="inline === false" :block="true" size="lg" variant="primary" @click="save">
-            {{ $t("common.form.signUp") }}
+        <b-button v-if="inline === false" @click="save" :block="true" size="lg" variant="primary">
+            {{$t("common.form.signUp")}}
         </b-button>
     </b-form>
 </template>
 
 <script>
-import { clone, each, get, has, isUndefined } from "lodash";
-import FloatingLabelInput from "../../utils/FloatingLabelInput";
-import PolicyPasswordInput from "../../utils/PolicyPasswordInput";
-import SocialButtons from "../../utils/SocialButtons";
+import _ from 'lodash';
+import FloatingLabelInput from '@/components/utils/FloatingLabelInput';
+import PolicyPasswordInput from '@/components/utils/PolicyPasswordInput';
+import SocialButtons from '@/components/utils/SocialButtons';
 
 /**
  * @description Selfservice stage for generating user details and displaying social buttons available. Works the same alone and in allinone
  *
- */
+ **/
 export default {
-    "name": "User-Details",
-    // eslint-disable-next-line sort-keys
-    "$_veeValidate": {
-        "validator": "new"
+    name: 'User-Details',
+    components: {
+        'fr-floating-label-input': FloatingLabelInput,
+        'fr-policy-password-input': PolicyPasswordInput,
+        'fr-social-buttons': SocialButtons
     },
-    "components": {
-        "fr-floating-label-input": FloatingLabelInput,
-        "fr-policy-password-input": PolicyPasswordInput,
-        "fr-social-buttons": SocialButtons
+    $_veeValidate: {
+        validator: 'new'
     },
-    // eslint-disable-next-line max-statements
+    props: {
+        selfServiceDetails: { required: true },
+        inline: {
+            required: false,
+            default: false
+        }
+    },
     data () {
-        const data = {
-            "isSocialReg": get(this.selfServiceDetails, "tag") !== "initial",
-            "saveDetails": {},
-            "userDetails": {},
-            "userPreferences": {}
+        let data = {
+            userDetails: {},
+            saveDetails: {},
+            userPreferences: {},
+            isSocialReg: _.get(this.selfServiceDetails, 'tag') !== 'initial'
         };
 
         if (this.selfServiceDetails.requirements && this.selfServiceDetails.requirements.registrationProperties) {
             data.userDetails = this.selfServiceDetails.requirements.registrationProperties.properties;
 
-            if (has(this.selfServiceDetails, "requirements.properties.user.default") &&
-                    !isUndefined(this.selfServiceDetails, "requirements.properties.user.default")) {
-                each(this.selfServiceDetails.requirements.properties.user.default, (value, key) => {
+            if (_.has(this.selfServiceDetails, 'requirements.properties.user.default') &&
+                    !_.isUndefined(this.selfServiceDetails, 'requirements.properties.user.default')) {
+                _.each(this.selfServiceDetails.requirements.properties.user.default, (value, key) => {
                     data.userDetails[key].socialValue = value;
                 });
             }
 
-            each(this.selfServiceDetails.requirements.registrationProperties.required, (prop) => {
+            _.each(this.selfServiceDetails.requirements.registrationProperties.required, (prop) => {
                 data.userDetails[prop].required = true;
             });
 
-            each(this.selfServiceDetails.requirements.registrationProperties.properties, (value, key) => {
-                data.saveDetails[key] = "";
+            _.each(this.selfServiceDetails.requirements.registrationProperties.properties, (value, key) => {
+                data.saveDetails[key] = '';
             });
         }
 
@@ -81,38 +85,18 @@ export default {
             data.saveDetails.preferences = {};
             data.userPreferences = this.selfServiceDetails.requirements.registrationPreferences;
 
-            each(data.userPreferences, (value, key) => {
+            _.each(data.userPreferences, (value, key) => {
                 data.saveDetails.preferences[key] = false;
             });
         }
 
-        data.saveDetails.password = "";
+        data.saveDetails.password = '';
 
         return data;
     },
-    "methods": {
-        // Add additional frontend checks for field validation here
-        calculateValidation (property) {
-            const validators = [];
-
-            if (property.required) {
-                validators.push("required");
-            }
-
-            if (property.policies) {
-                // Add policy vee validators correlations here
-                each(property.policies, (policy) => {
-                    if (policy.policyId === "valid-email-address-format") {
-                        validators.push("email");
-                    }
-                });
-            }
-
-            return validators.join("|");
-        },
-
+    methods: {
         getData () {
-            const details = clone(this.saveDetails);
+            let details = _.clone(this.saveDetails);
 
             delete details.confirmPassword;
 
@@ -121,13 +105,28 @@ export default {
             }
 
             return {
-                "user": details
+                user: details
             };
         },
 
-        isValid () {
-            /* istanbul ignore next */
-            return this.$validator.validateAll();
+        // Add additional frontend checks for field validation here
+        calculateValidation (property) {
+            let validators = [];
+
+            if (property.required) {
+                validators.push('required');
+            }
+
+            if (property.policies) {
+                // Add policy vee validators correlations here
+                _.each(property.policies, (policy) => {
+                    if (policy.policyId === 'valid-email-address-format') {
+                        validators.push('email');
+                    }
+                });
+            }
+
+            return validators.join('|');
         },
 
         save () {
@@ -135,19 +134,17 @@ export default {
             /* istanbul ignore next */
             this.isValid().then((valid) => {
                 if (valid) {
-                    this.$emit("advanceStage", this.getData());
+                    this.$emit('advanceStage', this.getData());
                 } else {
-                    this.displayNotification("error", this.$t("pages.selfservice.registration.pleaseComplete"));
+                    this.displayNotification('error', this.$t('pages.selfservice.registration.pleaseComplete'));
                 }
             });
-        }
-    },
-    "props": {
-        "inline": {
-            "default": false,
-            "required": false
         },
-        "selfServiceDetails": { "required": true }
+
+        isValid () {
+            /* istanbul ignore next */
+            return this.$validator.validateAll();
+        }
     }
 };
 </script>

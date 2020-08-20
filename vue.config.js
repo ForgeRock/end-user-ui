@@ -1,10 +1,5 @@
-/* eslint-disable camelcase */
-/* eslint-disable func-style */
-/* eslint-disable no-undefined */
-/* eslint-disable no-process-env */
-const CopyWebpackPlugin = require("copy-webpack-plugin"),
-    webpack = require("webpack");
-
+const webpack = require('webpack'),
+    CopyWebpackPlugin = require('copy-webpack-plugin');
 
 function generateTheme () {
     let variableLoad = `
@@ -17,55 +12,54 @@ function generateTheme () {
         variableLoad += `@import "@/scss/${process.env.npm_config_theme}-theme.scss"; `;
     }
 
-    variableLoad += "@import \"~bootstrap/scss/_variables.scss\";";
+    variableLoad += '@import "~bootstrap/scss/_variables.scss";';
 
     return variableLoad;
-}
+};
 
 function generateVariables (env) {
     process.env.VUE_APP_amURL = env.npm_config_amURL ? env.npm_config_amURL : undefined;
     process.env.VUE_APP_idmURL = env.npm_config_idmURL ? env.npm_config_idmURL : undefined;
     process.env.VUE_APP_loginURL = env.npm_config_loginURL ? env.npm_config_loginURL : undefined;
     process.env.VUE_APP_platformMode = env.npm_config_platformMode ? env.npm_config_platformMode : false;
-    process.env.theme = env.npm_config_theme ? env.npm_config_theme : "\"default\"";
+    process.env.theme = env.npm_config_theme ? env.npm_config_theme : '"default"';
     process.env.VUE_APP_idmClientID = env.npm_config_idmClientID ? env.npm_config_idmClientID : undefined;
-}
+};
 
 function getPlugins (env) {
-    const plugins = [
+    let plugins = [
         new webpack.IgnorePlugin({
-            "contextRegExp": /moment$/u,
-            "resourceRegExp": /^\.\/locale$/u
+            resourceRegExp: /^\.\/locale$/,
+            contextRegExp: /moment$/
         }),
-        new webpack.BannerPlugin("Copyright 2019-2020 ForgeRock AS. All Rights Reserved \n Use of this code requires a commercial software license with ForgeRock AS. or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.")
+        new webpack.BannerPlugin('Copyright 2019-2020 ForgeRock AS. All Rights Reserved \n Use of this code requires a commercial software license with ForgeRock AS. or with one of its affiliates. All use shall be exclusively subject to such license between the licensee and ForgeRock AS.')
     ];
 
-    // The process.env variables =>
+    // the process.env variables =>
     generateVariables(env);
 
     if (env.npm_config_platformMode) {
-        // eslint-disable-next-line no-console
-        console.log("platform detected...");
+        console.log('platform detected...');
         plugins.push(new CopyWebpackPlugin([
             {
-                "from": "node_modules/appauthhelper/appAuthHelperRedirect.html",
-                "to": "appAuthHelperRedirect.html",
-                "toType": "file"
+                from: 'node_modules/appauthhelper/appAuthHelperRedirect.html',
+                to: 'appAuthHelperRedirect.html',
+                toType: 'file'
             },
             {
-                "from": "node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js",
-                "to": "node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js",
-                "toType": "file"
+                from: 'node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js',
+                to: 'node_modules/appauthhelper/appAuthHelperFetchTokensBundle.js',
+                toType: 'file'
             },
             {
-                "from": "node_modules/oidcsessioncheck/sessionCheck.html",
-                "to": "sessionCheck.html",
-                "toType": "file"
+                from: 'node_modules/oidcsessioncheck/sessionCheck.html',
+                to: 'sessionCheck.html',
+                toType: 'file'
             },
             {
-                "from": "node_modules/oidcsessioncheck/sessionCheckFrame.js",
-                "to": "sessionCheckFrame.js",
-                "toType": "file"
+                from: 'node_modules/oidcsessioncheck/sessionCheckFrame.js',
+                to: 'sessionCheckFrame.js',
+                toType: 'file'
             }
         ]));
     }
@@ -74,40 +68,40 @@ function getPlugins (env) {
 }
 
 module.exports = {
-    "configureWebpack": {
-        "plugins": getPlugins(process.env)
+    publicPath: './',
+    runtimeCompiler: true,
+    pages: {
+        index: {
+            // entry for the page
+            entry: process.env.npm_config_platformMode ? './src/platform-main.js' : './src/main.js'
+        }
     },
-    "css": {
-        "loaderOptions": {
-            "sass": {
-                "prependData": generateTheme()
+    devServer: {
+        host: 'localhost',
+        proxy: {
+            '/openidm': {
+                target: 'http://localhost:8080/openidm',
+                pathRewrite: { '^/openidm': '' },
+                changeOrigin: true
             }
         }
     },
-    "devServer": {
-        "host": "localhost",
-        "proxy": {
-            "/openidm": {
-                "changeOrigin": true,
-                "pathRewrite": { "^/openidm": "" },
-                "target": "http://localhost:8080/openidm"
+    configureWebpack: {
+        plugins: getPlugins(process.env)
+    },
+    css: {
+        loaderOptions: {
+            sass: {
+                data: generateTheme()
             }
         }
     },
-    "pages": {
-        "index": {
-            // Entry for the page
-            "entry": process.env.npm_config_platformMode ? "./src/platform-main.js" : "./src/main.js"
+    pluginOptions: {
+        i18n: {
+            locale: 'en',
+            fallbackLocale: 'en',
+            localeDir: 'locales',
+            enableInSFC: false
         }
-    },
-    "pluginOptions": {
-        "i18n": {
-            "enableInSFC": false,
-            "fallbackLocale": "en",
-            "locale": "en",
-            "localeDir": "locales"
-        }
-    },
-    "publicPath": "./",
-    "runtimeCompiler": true
+    }
 };

@@ -1,46 +1,44 @@
 <template>
-    <fr-center-card v-if="selfServiceType !== null && selfServiceType !== 'parameters'" :show-logo="true">
+    <fr-center-card v-if="selfServiceType !== null && selfServiceType !== 'parameters'" :showLogo="true">
         <div slot="center-card-header">
-            <h2 class="h2">{{ $t(`pages.selfservice.headers.reset.title`) }}</h2>
+            <h2 class="h2">{{$t(`pages.selfservice.headers.reset.title`)}}</h2>
         </div>
 
         <b-card-body slot="center-card-body">
-            <component
+            <component ref="selfServiceStage"
                 :is="selfServiceType"
-                ref="selfServiceStage"
-                :self-service-details="selfServiceDetails"
-                :api-type="apiType"
+                :selfServiceDetails="selfServiceDetails"
                 @advanceStage="advanceStage"
-            />
+                :apiType="apiType">
+            </component>
         </b-card-body>
 
         <b-card-footer slot="center-card-footer">
-            <b-link href="#/login">{{ $t("pages.selfservice.signIn") }}</b-link>
+            <b-link href="#/login">{{$t("pages.selfservice.signIn")}}</b-link>
         </b-card-footer>
     </fr-center-card>
 
-    <b-container v-else fluid class="h-100 px-0">
+    <b-container fluid class="h-100 px-0"  v-else>
         <div class="h-100 d-flex">
             <div class="m-auto fr-center-card">
-                <bounce-loader :color="loadingColor" />
+                <bounce-loader :color="loadingColor"></bounce-loader>
             </div>
         </div>
     </b-container>
 </template>
 
 <script>
-import { each, toLower } from "lodash";
-// eslint-disable-next-line import/extensions
-import { BounceLoader } from "vue-spinner/dist/vue-spinner.min.js";
-import styles from "../../../scss/main.scss";
-import CenterCard from "../../utils/CenterCard";
-import Captcha from "../common/Captcha";
-import EmailValidation from "../common/EmailValidation";
-import KbaVerification from "./KbaVerification";
-import GenericSelfService from "../common/GenericSelfService";
-import ResetStage from "./ResetStage";
-import SelfserviceAPI from "../mixins/SelfserviceAPIMixin";
-import UserQuery from "../common/UserQuery";
+import _ from 'lodash';
+import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
+import styles from '@/scss/main.scss';
+import CenterCard from '@/components/utils/CenterCard';
+import Captcha from '@/components/selfservice/common/Captcha';
+import EmailValidation from '@/components/selfservice/common/EmailValidation';
+import KbaVerification from '@/components/selfservice/passwordreset/KbaVerification';
+import GenericSelfService from '@/components/selfservice/common/GenericSelfService';
+import ResetStage from '@/components/selfservice/passwordreset/ResetStage';
+import SelfserviceAPI from '@/components/selfservice/mixins/SelfserviceAPIMixin';
+import UserQuery from '@/components/selfservice/common/UserQuery';
 
 /**
  * @description Selfservice controlling component for recovering a lost password. Makes use of selfservice-reset.json config file.
@@ -48,41 +46,47 @@ import UserQuery from "../common/UserQuery";
  * @mixin - selfservice/mixins/SelfserviceAPIMixin.vue
  */
 export default {
-    "name": "Password-Reset",
-    // eslint-disable-next-line sort-keys
-    "components": {
+    name: 'Password-Reset',
+    components: {
         Captcha,
         EmailValidation,
-        GenericSelfService,
-        ResetStage,
         UserQuery,
-        "bounce-loader": BounceLoader,
-        "fr-center-card": CenterCard,
-        "kbaSecurityAnswerVerificationStage": KbaVerification
+        ResetStage,
+        kbaSecurityAnswerVerificationStage: KbaVerification,
+        GenericSelfService,
+        'bounce-loader': BounceLoader,
+        'fr-center-card': CenterCard
     },
     data () {
         return {
-            "apiType": "reset",
-            "loadingColor": styles.baseColor,
-            "selfServiceDetails": null,
-            "selfServiceType": null
+            selfServiceType: null,
+            selfServiceDetails: null,
+            loadingColor: styles.baseColor,
+            apiType: 'reset'
         };
     },
-    "methods": {
-        apiErrorCallback (error) {
-            this.setChildComponent("resetStage", { "error": error.response.data.message });
-        },
+    mounted () {
+        /* istanbul ignore next */
+        if (this.$route.params.queryParams) {
+            let queryParams = this.parseQueryParams(this.$route.params.queryParams);
+
+            this.advanceStage(queryParams);
+        } else {
+            this.loadData();
+        }
+    },
+    methods: {
         setChildComponent (type, details) {
             this.selfServiceDetails = details;
 
-            if (type === "parameters") {
+            if (type === 'parameters') {
                 this.selfServiceType = null;
                 this.advanceStage({});
             } else {
                 let stageCheck = false;
 
-                each(this.$options.components, (value, key) => {
-                    if (toLower(key) === toLower(type)) {
+                _.each(this.$options.components, (value, key) => {
+                    if (_.toLower(key) === _.toLower(type)) {
                         stageCheck = true;
                     }
                 });
@@ -90,21 +94,16 @@ export default {
                 if (stageCheck) {
                     this.selfServiceType = type;
                 } else {
-                    this.selfServiceType = "GenericSelfService";
+                    this.selfServiceType = 'GenericSelfService';
                 }
             }
+        },
+        apiErrorCallback (error) {
+            this.setChildComponent('resetStage', { error: error.response.data.message });
         }
     },
-    "mixins": [SelfserviceAPI],
-    mounted () {
-        /* istanbul ignore next */
-        if (this.$route.params.queryParams) {
-            const queryParameters = this.parseQueryParams(this.$route.params.queryParams);
-
-            this.advanceStage(queryParameters);
-        } else {
-            this.loadData();
-        }
-    }
+    mixins: [
+        SelfserviceAPI
+    ]
 };
 </script>

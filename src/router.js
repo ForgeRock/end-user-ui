@@ -1,7 +1,6 @@
-/* eslint-disable callback-return */
-import ApplicationStore from "./store/Application";
-import Router from "vue-router";
-import Vue from "vue";
+import Router from 'vue-router';
+import Vue from 'vue';
+import ApplicationStore from './store/Application';
 
 Vue.use(Router);
 
@@ -10,134 +9,142 @@ Vue.use(Router);
  * hideToolbar - Will hide main toolbar when route accessed
  */
 export default new Router({
-    "routes": [
+    routes: [
         {
-            "path": "/",
-            "redirect": "/dashboard"
+            path: '/',
+            redirect: '/dashboard'
         },
         {
-            "component": () => import("@/components/OAuthReturn"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "path": "/handleOAuth/:amData"
+            path: '/handleOAuth/:amData',
+            component: () => import('@/components/OAuthReturn'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
-            "component": () => import("@/components/OAuthReturn"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "path": "/oauthReturn"
+            path: '/oauthReturn',
+            component: () => import('@/components/OAuthReturn'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
-            "path": "/login",
-            // Need alias for catching Facebook and Instragram odd oAuth return
-            // eslint-disable-next-line sort-keys
-            "alias": ["/_=_", "/_"],
-            "beforeEnter": (to, from, next) => {
+            path: '/login',
+            name: 'Login',
+            alias: ['/_=_', '/_'], // Need alias for catching Facebook and Instragram odd oAuth return
+            component: () => import('@/components/Login'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
+            beforeEnter: (to, from, next) => {
                 if (ApplicationStore.state.platformMode) {
                     window.location = ApplicationStore.state.loginURL;
-                } else if (window.location.search && window.location.search.match(/state|oauth_token/u)) {
-                    next("/oauthReturn");
+                } else if (window.location.search && window.location.search.match(/state|oauth_token/)) {
+                    next('/oauthReturn');
                 } else {
                     next();
                 }
-            },
-            "component": () => import("@/components/Login"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "name": "Login"
+            }
         },
         {
-            "component": () => import("@/components/profile"),
-            "meta": { "authenticate": true },
-            "name": "Profile",
-            "path": "/profile",
-            "props": true
+            path: '/profile',
+            name: 'Profile',
+            props: true,
+            component: () => import('@/components/profile'),
+            meta: { authenticate: true }
         },
         {
-            "component": () => import("@/components/access"),
-            "meta": { "authenticate": true },
-            "name": "ListResource",
-            "path": "/list/:resourceType/:resourceName"
+            path: '/list/:resourceType/:resourceName',
+            name: 'ListResource',
+            component: () => import('@/components/access'),
+            meta: { authenticate: true }
         },
         {
-            "component": () => import("@/components/access/EditResource"),
-            "meta": { "authenticate": true },
-            "name": "EditResource",
-            "path": "/edit/:resourceType/:resourceName/:resourceId"
+            path: '/edit/:resourceType/:resourceName/:resourceId',
+            name: 'EditResource',
+            component: () => import('@/components/access/EditResource'),
+            meta: { authenticate: true }
         },
         {
-            "beforeEnter": (to, from, next) => {
+            path: '/dashboard',
+            name: 'Dashboard',
+            component: () => import('@/components/dashboard'),
+            meta: { authenticate: true },
+            beforeEnter: (to, from, next) => {
                 /* istanbul ignore next */
-                if (window.location.search && window.location.search.match(/state|oauth_token/u)) {
+                if (window.location.search && window.location.search.match(/state|oauth_token/)) {
                     next({
-                        "path": "/oauthReturn"
+                        path: '/oauthReturn'
                     });
                 } else {
                     next();
                 }
-            },
-            "component": () => import("@/components/dashboard"),
-            "meta": { "authenticate": true },
-            "name": "Dashboard",
-            "path": "/dashboard"
+            }
         },
         {
-            "component": () => import("@/components/selfservice/registration"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "name": "Registration",
-            "path": "/registration",
-            "props": true
+            path: '/registration',
+            name: 'Registration',
+            component: () => import('@/components/selfservice/registration'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
+            props: true
         },
         {
-            "component": () => import("@/components/selfservice/registration/AccountClaiming"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "name": "AccountClaiming",
-            "path": "/accountClaiming",
-            "props": true
+            path: '/accountClaiming',
+            name: 'AccountClaiming',
+            component: () => import('@/components/selfservice/registration/AccountClaiming'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' },
+            props: true
         },
         {
-            "component": () => import("@/components/selfservice/registration"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "name": "RegistrationEmailValidation",
-            "path": "/registration/:queryParams"
+            path: '/registration/:queryParams',
+            name: 'RegistrationEmailValidation',
+            component: () => import('@/components/selfservice/registration'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
-            "component": () => import("@/components/selfservice/forgotusername"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "name": "ForgotUsername",
-            "path": "/forgotusername"
+            path: '/forgotusername',
+            name: 'ForgotUsername',
+            component: () => import('@/components/selfservice/forgotusername'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
-            "component": () => import("@/components/selfservice/passwordreset"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "name": "PasswordReset",
-            "path": "/passwordreset"
+            path: '/passwordreset',
+            name: 'PasswordReset',
+            component: () => import('@/components/selfservice/passwordreset'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
-            "component": () => import("@/components/selfservice/passwordreset"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "name": "PasswordResetForm",
-            "path": "/passwordreset/:queryParams"
+            path: '/passwordreset/:queryParams',
+            name: 'PasswordResetForm',
+            component: () => import('@/components/selfservice/passwordreset'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
-            "component": () => import("@/components/selfservice/progressiveprofile"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "name": "ProgressiveProfileForm",
-            "path": "/profilecompletion"
+            path: '/profilecompletion',
+            name: 'ProgressiveProfileForm',
+            component: () => import('@/components/selfservice/progressiveprofile'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
-            "component": () => import("@/components/selfservice/progressiveprofile"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "name": "ProgressiveProfileInitiate",
-            "path": "/profilecompletion/:profileProcess"
+            path: '/profilecompletion/:profileProcess',
+            name: 'ProgressiveProfileInitiate',
+            component: () => import('@/components/selfservice/progressiveprofile'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         },
         {
-            "component": () => import("@/components/uma"),
-            "meta": { "authenticate": true },
-            "name": "Sharing",
-            "path": "/sharing"
+            path: '/sharing',
+            name: 'Sharing',
+            component: () => import('@/components/uma'),
+            meta: {
+                authenticate: true
+            }
         },
+        /*
         {
-            "component": () => import("@/components/NotFound"),
-            "meta": { "bodyClass": "fr-body-image", "hideToolbar": true },
-            "path": "*"
+            path: '/styleguide',
+            name: 'Styleguide',
+            component: Styleguide,
+            meta: { hideToolbar: true }
+        },
+        */
+        {
+            path: '*',
+            component: () => import('@/components/NotFound'),
+            meta: { hideToolbar: true, bodyClass: 'fr-body-image' }
         }
     ]
 });

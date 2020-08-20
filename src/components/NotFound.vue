@@ -2,35 +2,34 @@
     <b-container id="notFoundContainer" class="h-100 d-flex" fluid>
         <div style="width: 350px;" class="m-auto align-self-center text-center">
             <div class="fr-speech-bubble">
-                <p><strong class="text-muted">{{ ghostMessage }}</strong></p>
-                <div class="fr-speech-arrow" />
+                <p><strong class="text-muted">{{ghostMessage}}</strong></p>
+                <div class="fr-speech-arrow"></div>
             </div>
-            <b-img :src="require('@/assets/images/ghost.svg')" width="112" height="112" alt="img" class="fr-ghost mb-2" @click="ghostMessage === '404' ? ghostMessage = 'Boo' : ghostMessage = '...'" />
-            <p class="text-centered">{{ $t("pages.notFound.couldNotFind") }}</p>
+            <b-img @click="ghostMessage === '404' ? ghostMessage = 'Boo' : ghostMessage = '...'" :src="require('@/assets/images/ghost.svg')" width="112" height="112" alt="img" class="fr-ghost mb-2" />
+            <p class="text-centered">{{$t("pages.notFound.couldNotFind")}}</p>
 
             <router-link to="/">
                 <b-button style="width:250px;" variant="primary" class="mt-2 mb-2">
-                    {{ $t("pages.notFound.returnToDashboard") }}
+                    {{$t("pages.notFound.returnToDashboard")}}
                 </b-button>
             </router-link>
 
-            <b-img :src="require('@/assets/images/ghost-shadow.svg')" width="112" height="112" alt="img" class="fr-shadow" @click="ghostMessage = '404'" />
+            <b-img @click="ghostMessage = '404'" :src="require('@/assets/images/ghost-shadow.svg')" width="112" height="112" alt="img" class="fr-shadow"/>
         </div>
     </b-container>
 </template>
 
 <script>
-
 /**
  * @description The default 404 page when Vue router is unable to locate a route.
  */
 export default {
+    name: 'NotFound',
     data () {
         return {
-            "ghostMessage": "404"
+            ghostMessage: '404'
         };
-    },
-    "name": "NotFound"
+    }
 };
 </script>
 

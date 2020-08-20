@@ -1,45 +1,43 @@
 <template>
-    <fr-center-card v-if="selfServiceType !== null" :show-logo="true">
+    <fr-center-card :showLogo="true" v-if="selfServiceType !== null">
         <div slot="center-card-header">
-            <h2 class="h2">{{ $t(`pages.selfservice.headers.username.title`) }}</h2>
+            <h2 class="h2">{{$t(`pages.selfservice.headers.username.title`)}}</h2>
         </div>
 
         <b-card-body slot="center-card-body">
-            <component
+            <component ref="selfServiceStage"
                 :is="selfServiceType"
-                ref="selfServiceStage"
-                :self-service-details="selfServiceDetails"
-                :api-type="apiType"
+                :selfServiceDetails="selfServiceDetails"
                 @advanceStage="advanceStage"
-            />
+                :apiType="apiType">
+            </component>
         </b-card-body>
 
         <b-card-footer slot="center-card-footer">
-            <b-link href="#/login">{{ $t("pages.selfservice.signIn") }}</b-link>
+            <b-link href="#/login">{{$t("pages.selfservice.signIn")}}</b-link>
         </b-card-footer>
     </fr-center-card>
 
-    <b-container v-else fluid class="h-100 px-0">
+    <b-container fluid class="h-100 px-0"  v-else>
         <div class="h-100 d-flex">
             <div class="m-auto fr-center-card">
-                <bounce-loader :color="loadingColor" />
+                <bounce-loader :color="loadingColor"></bounce-loader>
             </div>
         </div>
     </b-container>
 </template>
 
 <script>
-import { each, toLower } from "lodash";
-// eslint-disable-next-line import/extensions
-import { BounceLoader } from "vue-spinner/dist/vue-spinner.min.js";
-import styles from "../../../scss/main.scss";
-import CenterCard from "../../utils/CenterCard";
-import Captcha from "../common/Captcha";
-import EmailUsername from "./EmailUsername";
-import GenericSelfService from "../common/GenericSelfService";
-import RetrieveUsername from "./RetrieveUsername";
-import SelfserviceAPI from "../mixins/SelfserviceAPIMixin";
-import UserQuery from "../common/UserQuery";
+import _ from 'lodash';
+import { BounceLoader } from 'vue-spinner/dist/vue-spinner.min.js';
+import styles from '@/scss/main.scss';
+import CenterCard from '@/components/utils/CenterCard';
+import Captcha from '@/components/selfservice/common/Captcha';
+import EmailUsername from '@/components/selfservice/forgotusername/EmailUsername';
+import GenericSelfService from '@/components/selfservice/common/GenericSelfService';
+import RetrieveUsername from '@/components/selfservice/forgotusername/RetrieveUsername';
+import SelfserviceAPI from '@/components/selfservice/mixins/SelfserviceAPIMixin';
+import UserQuery from '@/components/selfservice/common/UserQuery';
 
 /**
  * @description Selfservice controlling component for retrieving a forgotten username. Makes use of selfservice-username.json config file.
@@ -47,37 +45,36 @@ import UserQuery from "../common/UserQuery";
  * @mixin - selfservice/mixins/SelfserviceAPIMixin.vue
  */
 export default {
-    "name": "Forgot-Username",
-    // eslint-disable-next-line sort-keys
-    "components": {
+    name: 'Forgot-Username',
+    components: {
         Captcha,
         EmailUsername,
-        GenericSelfService,
         RetrieveUsername,
         UserQuery,
-        "bounce-loader": BounceLoader,
-        "fr-center-card": CenterCard
+        GenericSelfService,
+        'bounce-loader': BounceLoader,
+        'fr-center-card': CenterCard
     },
     data () {
         return {
-            "apiType": "username",
-            "loadingColor": styles.baseColor,
-            "selfServiceDetails": null,
-            "selfServiceType": null
+            selfServiceType: null,
+            selfServiceDetails: null,
+            loadingColor: styles.baseColor,
+            apiType: 'username'
         };
     },
-    "methods": {
-        apiErrorCallback (error) {
-            /* istanbul ignore next */
-            this.setChildComponent("retrieveUsername", { "error": error.response.data.message });
-        },
+    mounted () {
+        /* istanbul ignore next */
+        this.loadData();
+    },
+    methods: {
         setChildComponent (type, details) {
             this.selfServiceDetails = details;
 
             let stageCheck = false;
 
-            each(this.$options.components, (value, key) => {
-                if (toLower(key) === toLower(type)) {
+            _.each(this.$options.components, (value, key) => {
+                if (_.toLower(key) === _.toLower(type)) {
                     stageCheck = true;
                 }
             });
@@ -85,14 +82,16 @@ export default {
             if (stageCheck) {
                 this.selfServiceType = type;
             } else {
-                this.selfServiceType = "GenericSelfService";
+                this.selfServiceType = 'GenericSelfService';
             }
+        },
+        apiErrorCallback (error) {
+            /* istanbul ignore next */
+            this.setChildComponent('retrieveUsername', { error: error.response.data.message });
         }
     },
-    "mixins": [SelfserviceAPI],
-    mounted () {
-        /* istanbul ignore next */
-        this.loadData();
-    }
+    mixins: [
+        SelfserviceAPI
+    ]
 };
 </script>

@@ -1,31 +1,27 @@
 <template>
     <b-nav-item-dropdown class="fr-notification-icon align-self-center mr-4" right>
-        <template slot="button-content">
-            <i class="fa fa-bell mr-2" />
-            <span v-if="notifications.length > 0" class="badge badge-pill badge-danger">{{ notifications.length }}</span>
+        <template  slot="button-content">
+            <i class="fa fa-bell mr-2"></i>
+            <span v-if="notifications.length > 0" class="badge badge-pill badge-danger">{{notifications.length}}</span>
         </template>
         <b-dropdown-header class="border-bottom py-3">
             <div class="fr-notification-header">
-                <span>{{ $t('pages.app.notifications.title') }} ({{ notifications.length }})</span>
-                <a v-if="notifications.length > 0" class="float-right" href="#" @click.prevent="clearAll()">{{ $t('pages.app.notifications.clearAll') }}</a>
+                <span>{{$t('pages.app.notifications.title')}} ({{notifications.length}})</span>
+                <a v-if="notifications.length > 0" @click.prevent="clearAll()" class="float-right" href="#">{{$t('pages.app.notifications.clearAll')}}</a>
             </div>
         </b-dropdown-header>
 
         <template v-if="notifications.length > 0">
-            <div is="transition-group" class="scrollbox" name="notification-list">
-                <div
-                    v-for="(notification, index) in notifications"
-                    :key="notification._id"
-                    :class="[
-                        `${notification.notificationType}-notification`,
-                        { 'border-bottom': (index + 1) < notifications.length }, 'dropdown-item', 'py-3', 'fr-notification-item']"
-                >
+            <div class="scrollbox" is="transition-group" name="notification-list">
+                <div  v-for="(notification, index) in notifications" :class="[
+                `${notification.notificationType}-notification`,
+                { 'border-bottom': (index + 1) < notifications.length }, 'dropdown-item', 'py-3', 'fr-notification-item']" :key="notification._id">
                     <div class="media">
                         <div class="media-body">
-                            <h6 class="my-0">{{ notification.message }}</h6>
-                            <small class="text-muted">{{ notification.createDate | cleanDate }}</small>
+                            <h6 class="my-0">{{notification.message}}</h6>
+                            <small class="text-muted">{{notification.createDate | cleanDate}}</small>
                         </div>
-                        <b-button variant="sm" type="button" class="btn btn-link my-auto" @click.prevent="clearOne(index)"><i class="fa fa-trash text-muted" /></b-button>
+                        <b-button @click.prevent="clearOne(index)" variant="sm" type="button" class="btn btn-link my-auto"><i class="fa fa-trash text-muted"></i></b-button>
                     </div>
                 </div>
             </div>
@@ -34,7 +30,7 @@
             <div class="mt-4 mb-3 fr-no-notifications fr-notification-item">
                 <div class="media">
                     <div class="media-body align-self-center">
-                        <h6 class="text-center">{{ $t('pages.app.notifications.noNotifications') }}</h6>
+                        <h6 class="text-center">{{$t('pages.app.notifications.noNotifications')}}</h6>
                     </div>
                 </div>
             </div>
@@ -43,8 +39,8 @@
 </template>
 
 <script>
-import { delay, isNull, sortBy } from "lodash";
-import moment from "moment";
+import _ from 'lodash';
+import moment from 'moment';
 
 /**
  * @description Display for system notifications for the logged in user
@@ -59,103 +55,105 @@ import moment from "moment";
  * @fires DELETE /internal/notification - Remove one specific notification based on the notifications ID
  * @fires POST /notification?_action=deleteNotificationsForTarget&target=Id - Removes all notifications for a resource (e.g. managed/user/userID)
  *
- */
+ **/
 export default {
-    "name": "Toolbar-Notification",
-    // eslint-disable-next-line sort-keys
+    name: 'Toolbar-Notification',
     data () {
         return {
-            "notifications": [],
-            "timeoutId": null
+            notifications: [],
+            timeoutId: null
         };
     },
-    "filters": {
+    mounted () {
+        this.loadData();
+    },
+    filters: {
         cleanDate (value) {
-            return `${moment.utc(value).format("LLL")} UTC`;
+            return moment.utc(value).format('LLL') + ' UTC';
         }
     },
-    "methods": {
+    methods: {
+        resetPolling () {
+            /* istanbul ignore next */
+            if (!_.isNull(this.timeoutId)) {
+                clearTimeout(this.timeoutId);
+                this.timeoutId = null;
+            }
+        },
+        startPolling () {
+            let pollingDelay = 3000;
+
+            /* istanbul ignore next */
+            this.timeoutId = _.delay(() => {
+                this.loadData();
+            }, pollingDelay);
+        },
         clearAll () {
             this.notifications = [];
 
-            const { internalUser } = this.$root.userStore.state,
-                target = internalUser ? "internal/user/openidm-admin" : `${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}`;
+            let internalUser = this.$root.userStore.state.internalUser,
+                target = internalUser ? 'internal/user/openidm-admin' : `${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}`;
 
             /* istanbul ignore next */
             this.resetPolling();
 
             /* istanbul ignore next */
-            this.getRequestService().
-                post(`/notification?_action=deleteNotificationsForTarget&target=${target}`).
-                then(() => {
-                    this.displayNotification("success", this.$t("pages.app.notifications.removedAll"));
+            this.getRequestService()
+                .post(`/notification?_action=deleteNotificationsForTarget&target=${target}`)
+                .then(() => {
+                    this.displayNotification('success', this.$t('pages.app.notifications.removedAll'));
 
-                    if (isNull(this.timeoutId)) {
+                    if (_.isNull(this.timeoutId)) {
                         this.startPolling();
                     }
-                }).
-                catch(() => {
-                    this.displayNotification("error", this.$t("pages.app.notifications.failedToClear"));
+                })
+                .catch(() => {
+                    this.displayNotification('error', this.$t('pages.app.notifications.failedToClear'));
                 });
         },
         clearOne (index) {
-            // eslint-disable-next-line no-underscore-dangle
-            const notificationId = this.notifications[index]._id;
+            let notificationId = this.notifications[index]._id;
 
             /* istanbul ignore next */
             this.resetPolling();
 
             this.notifications.splice(index, 1);
             /* istanbul ignore next */
-            this.getRequestService().
-                delete(`/internal/notification/${notificationId}`).
-                then(() => {
-                    this.displayNotification("success", this.$t("pages.app.notifications.removed"));
+            this.getRequestService()
+                .delete(`/internal/notification/${notificationId}`)
+                .then(() => {
+                    this.displayNotification('success', this.$t('pages.app.notifications.removed'));
 
-                    if (isNull(this.timeoutId)) {
+                    if (_.isNull(this.timeoutId)) {
                         this.startPolling();
                     }
-                }).
-                catch(() => {
-                    this.displayNotification("error", this.$t("pages.app.notifications.failedToRemove"));
+                })
+                .catch(() => {
+                    this.displayNotification('error', this.$t('pages.app.notifications.failedToRemove'));
                 });
         },
         loadData () {
-            if (!isNull(this.$root.userStore.state.userId)) {
-                this.getRequestService({ "headers": { "Cache-Control": "no-store, no-cache" } }).
-                    get(`/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=_notifications/*`).
-                    then(({ data }) => {
-                        // eslint-disable-next-line no-underscore-dangle
-                        this.notifications = data._notifications ? this.sortByDate(data._notifications) : [];
-                        this.startPolling();
-                    }).
-                    catch(() => {
-                        this.displayNotification("error", this.$t("pages.app.notifications.failedToLoad"));
-                    });
-            }
-        },
-        resetPolling () {
-            /* istanbul ignore next */
-            if (!isNull(this.timeoutId)) {
-                clearTimeout(this.timeoutId);
-                this.timeoutId = null;
-            }
-        },
-        // Sorts input data by creation date, with newest at the top
-        sortByDate (data) {
-            return sortBy(data, "createDate").reverse();
-        },
-        startPolling () {
-            const pollingDelay = 3000;
+            if (!_.isNull(this.$root.userStore.state.userId)) {
+                this.getRequestService({ headers: { 'Cache-Control': 'no-store, no-cache' } })
+                    .get(`/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_fields=_notifications/*`)
+                    .then(({ data }) => {
+                        if (data._notifications) {
+                            this.notifications = this.sortByDate(data._notifications);
+                        } else {
+                            this.notifications = [];
+                        }
 
-            /* istanbul ignore next */
-            this.timeoutId = delay(() => {
-                this.loadData();
-            }, pollingDelay);
+                        this.startPolling();
+                    })
+                    .catch(() => {});
+            }
+        },
+        /**
+         * Sorts input data by creation date, with newest at the top
+         */
+        sortByDate (data) {
+            return _.sortBy(data, 'createDate').reverse();
         }
-    },
-    mounted () {
-        this.loadData();
     }
 };
 </script>

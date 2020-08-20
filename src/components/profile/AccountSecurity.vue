@@ -1,56 +1,59 @@
 <template>
     <fr-list-group :title="$t('pages.profile.accountSecurity.title')" :subtitle="$t('pages.profile.accountSecurity.subtitle')">
-        <fr-edit-password v-if="$root.applicationStore.state.platformMode === false" @updateProfile="sendUpdateProfile" />
-        <fr-edit-kba v-if="isOnKBA && $root.userStore.state.internalUser === false" :kba-data="kbaData" @updateKBA="sendUpdateKBA" />
+
+        <!--
+            UI check for platform, if platform need to load a different social based component
+        -->
+        <fr-edit-password v-if="$root.applicationStore.state.platformMode === false" @updateProfile="sendUpdateProfile"></fr-edit-password>
+        <fr-edit-kba v-if="isOnKBA && $root.userStore.state.internalUser === false" :kbaData="kbaData" @updateKBA="sendUpdateKBA"></fr-edit-kba>
+
     </fr-list-group>
 </template>
 
 <script>
-import EditKBA from "./EditKBA";
-import EditPassword from "./EditPassword";
-import ListGroup from "../utils/ListGroup";
+import EditKBA from '@/components/profile/EditKBA';
+import EditPassword from '@/components/profile/EditPassword';
+import ListGroup from '@/components/utils/ListGroup';
 
 /**
  * @description Handles displaying account security controls (KBA change and password change)
  *
  */
 export default {
-    "name": "Account-Security",
-    // eslint-disable-next-line sort-keys
-    "components": {
-        "fr-edit-kba": EditKBA,
-        "fr-edit-password": EditPassword,
-        "fr-list-group": ListGroup
-    },
+    name: 'Account-Security',
     data () {
         return {
-            "isOnKBA": false,
-            "kbaData": {}
+            isOnKBA: false,
+            kbaData: {}
         };
     },
-    "methods": {
+    components: {
+        'fr-list-group': ListGroup,
+        'fr-edit-kba': EditKBA,
+        'fr-edit-password': EditPassword
+    },
+    methods: {
         sendUpdateKBA (payload, config) {
-            this.$emit("updateKBA", payload, config);
+            this.$emit('updateKBA', payload, config);
         },
         sendUpdateProfile (payload, config) {
-            this.$emit("updateProfile", payload, config);
+            this.$emit('updateProfile', payload, config);
         }
     },
     mounted () {
         /* istanbul ignore next */
-        const selfServiceInstance = this.getRequestService({
-            "headers": this.getAnonymousHeaders()
+        let selfServiceInstance = this.getRequestService({
+            headers: this.getAnonymousHeaders()
         });
 
-        // eslint-disable-next-line no-warning-comments
-        // TODO: replace this with call to 'Liveness Service'
+        // TODO - replace this with call to 'Liveness Service'
         /* istanbul ignore next */
-        selfServiceInstance.get("selfservice/kba").then((response) => {
+        selfServiceInstance.get('selfservice/kba').then((response) => {
             this.isOnKBA = true;
             this.kbaData = response.data;
-        }).
+        })
             /* istanbul ignore next */
-            catch(() => {
+            .catch(() => {
                 this.isOnKBA = false;
             });
     }

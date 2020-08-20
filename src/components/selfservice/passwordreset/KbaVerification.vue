@@ -1,68 +1,68 @@
 <template>
     <b-form @keyup.enter="save" @submit.prevent>
-        <p class="text-center mb-4">
-            {{ $t(`pages.selfservice.passwordReset.kbaVerificationStageDescription`) }}
+        <p class='text-center mb-4'>
+            {{$t(`pages.selfservice.passwordReset.kbaVerificationStageDescription`)}}
         </p>
-        <div v-for="(value, key) in answers" :key="key" class="form-group text-left">
-            <label class="col-form-label pt-0 pb-2" :for="key">{{ questionText[key] }}</label>
+        <div class="form-group text-left"
+            v-for="(value, key) in answers"
+            :key="key">
+            <label class="col-form-label pt-0 pb-2" :for="key">{{questionText[key]}}</label>
 
-            <input
-                :id="key"
-                :ref="key"
-                :key="key"
-                v-model.trim="answers[key]"
-                v-validate="'required'"
-                :data-vv-as="$t('common.user.kba.answer')"
-                autofocus="true"
-                :class="{'form-control': true, 'is-invalid': errors.has(key)}"
-                :name="key"
-            >
-            <fr-validation-error :validator-errors="errors" :field-name="key" />
+            <input :ref="key" :key="key" v-validate="'required'" :data-vv-as="$t('common.user.kba.answer')" autofocus="true" :class="{'form-control': true, 'is-invalid': errors.has(key)}" :name="key" :id="key"  v-model.trim="answers[key]" />
+            <fr-validation-error :validatorErrors="errors" :fieldName="key"></fr-validation-error>
         </div>
 
-        <b-button :block="true" size="lg" variant="primary" @click="save">
-            {{ $tc('common.user.kba.submitAnswers', selfServiceDetails.requirements.required.length) }}
+        <b-button @click="save" :block="true" size="lg" variant="primary">
+            {{$tc('common.user.kba.submitAnswers', selfServiceDetails.requirements.required.length)}}
         </b-button>
+
     </b-form>
 </template>
 
 <script>
-import { has, mapValues, set } from "lodash";
-import ValidationError from "../../utils/ValidationError";
+import _ from 'lodash';
+import ValidationError from '@/components/utils/ValidationError';
 
 /**
  * @description Selfservice stage for password reset, handles securing a users password change with verifying KBA answers
  *
- */
+ **/
 export default {
-    "name": "Kba-Verification",
-    // eslint-disable-next-line sort-keys
-    "components": {
-        "fr-validation-error": ValidationError
+    name: 'Kba-Verification',
+    inject: ['$validator'],
+    components: {
+        'fr-validation-error': ValidationError
+    },
+    props: {
+        selfServiceDetails: { required: true }
     },
     data () {
-        const { locale, fallbackLocale } = this.$i18n,
+        let { locale, fallbackLocale } = this.$i18n,
             { properties, required } = this.selfServiceDetails.requirements;
 
         return {
-            "answers": required.reduce((accumulator, answer) => set(accumulator, answer, ""), {}),
-            "questionText": mapValues(properties, (value) => {
-                if (has(value, "systemQuestion")) {
-                    return value.systemQuestion[locale] || value.systemQuestion[fallbackLocale];
+            questionText: _.mapValues(properties, (value) => {
+                if (_.has(value, 'systemQuestion')) {
+                    let question = value.systemQuestion[locale] || value.systemQuestion[fallbackLocale];
+                    return question;
                 }
 
-                if (has(value, "userQuestion")) {
+                if (_.has(value, 'userQuestion')) {
                     return value.userQuestion;
                 }
-
-                return null;
-            })
+            }),
+            answers: required.reduce((acc, answer) => _.set(acc, answer, ''), {})
         };
     },
-    "inject": ["$validator"],
-    "methods": {
+    mounted () {
+        // This will auto focus as long as one answer field is generated
+        if (this.$refs && this.$refs['answer1']) {
+            this.$refs['answer1'][0].focus();
+        }
+    },
+    methods: {
         emitData () {
-            this.$emit("advanceStage", this.getData());
+            this.$emit('advanceStage', this.getData());
         },
         getData () {
             return this.answers;
@@ -79,15 +79,6 @@ export default {
                 }
             });
         }
-    },
-    mounted () {
-        // This will auto focus as long as one answer field is generated
-        if (this.$refs && this.$refs.answer1) {
-            this.$refs.answer1[0].focus();
-        }
-    },
-    "props": {
-        "selfServiceDetails": { "required": true }
     }
 };
 </script>

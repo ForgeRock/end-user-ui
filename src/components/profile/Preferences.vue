@@ -1,72 +1,69 @@
 <template>
     <fr-list-group :title="$t('pages.profile.preferences.title')" :subtitle="$t('pages.profile.preferences.subtitle')">
-        <fr-list-item
-            v-for="(obj, preference) in preferences"
-            :key="preference"
+        <fr-list-item v-for="(obj, preference) in preferences" :key="preference"
             :collapsible="false"
-            :panel-shown="false"
-        >
+            :panelShown="false">
+
             <div slot="list-item-header" class="d-inline-flex w-100">
-                <h6 class="mt-3">{{ obj.description }}</h6>
+                <h6 class="mt-3">{{obj.description}}</h6>
 
                 <div class="ml-auto">
-                    <toggle-button
+                    <toggle-button class="mt-2 p-0 fr-toggle-primary"
                         :id="preference"
-                        class="mt-2 p-0 fr-toggle-primary"
                         :height="28"
                         :width="56"
                         :sync="true"
-                        :css-colors="true"
+                        :cssColors="true"
                         :value="obj.value"
-                        @change="savePreferences(preference, $event.value)"
-                    />
+                        @change="savePreferences(preference, $event.value)"/>
                 </div>
             </div>
+
         </fr-list-item>
     </fr-list-group>
 </template>
 
 <script>
-import { cloneDeep, each, keys } from "lodash";
-import ListGroup from "../utils/ListGroup";
-import ListItem from "../utils/ListItem";
+import _ from 'lodash';
+import ListGroup from '@/components/utils/ListGroup';
+import ListItem from '@/components/utils/ListItem';
 
 /**
  * @description Displays available user preferences, these are typically true/false values associated with a managed resource (e.g. Do you want to recieve marketing emails?).
  *
  */
 export default {
-    "name": "Preferences",
-    // eslint-disable-next-line sort-keys
-    "components": {
-        "fr-list-group": ListGroup,
-        "fr-list-item": ListItem
+    name: 'Preferences',
+    components: {
+        'fr-list-group': ListGroup,
+        'fr-list-item': ListItem
     },
     data () {
         return {
-            "preferences": {}
+            preferences: {}
         };
     },
-    "methods": {
-        generatePatch (preference, value) {
-            return [{ "field": `/preferences/${preference}`, "operation": "replace", value }];
-        },
+    mounted () {
+        this.loadData();
+    },
+    methods: {
         loadData () {
-            const preferences = cloneDeep(this.$root.userStore.state.schema.properties.preferences.properties);
+            let keys = _.keys(this.$root.userStore.state.profile.preferences),
+                preferences = _.cloneDeep(this.$root.userStore.state.schema.properties.preferences.properties);
 
-            each(keys(this.$root.userStore.state.profile.preferences), (key) => {
+            _.each(keys, (key) => {
                 preferences[key].value = this.$root.userStore.state.profile.preferences[key];
                 delete preferences[key].type;
             });
 
             this.preferences = preferences;
         },
+        generatePatch (preference, value) {
+            return [{ operation: 'replace', field: '/preferences/' + preference, value }];
+        },
         savePreferences (preference, value) {
-            this.$emit("updateProfile", this.generatePatch(preference, value));
+            this.$emit('updateProfile', this.generatePatch(preference, value));
         }
-    },
-    mounted () {
-        this.loadData();
     }
 };
 </script>
