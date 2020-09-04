@@ -74,6 +74,13 @@
                     this.showSelfService = false;
                 }
 
+                // check to see if there is a redirect_uri in this payload
+                if (_.has(data, 'returnParams')) {
+                    // decode the double encoded returnParams
+                    const returnParams = new URLSearchParams(decodeURIComponent(decodeURIComponent(data.returnParams))),
+                        redirectUriOverride = returnParams.get('redirect_uri');
+                    localStorage.setItem('redirectUriOverride', redirectUriOverride);
+                }
                 /* istanbul ignore next */
                 selfServiceInstance.post(`/selfservice/${this.apiType}?_action=submitRequirements`, saveData)
                     .then((selfServiceDetails) => {

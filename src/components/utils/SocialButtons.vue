@@ -121,8 +121,21 @@
                         'landingPage': `${window.location.protocol}/${window.location.host}/#/login?_oauthReturn=true&provider=${provider}&gotoURL=%23`
                     })
                         .then((response) => {
+                            let redirect = response.data.redirect;
+                            // check for redirectUriOverride
+                            const redirectUriOverride = localStorage.getItem('redirectUriOverride');
+                            if (redirectUriOverride) {
+                                // remove the localStorage item
+                                localStorage.removeItem('redirectUriOverride');
+                                // create a URL object from the current redirect
+                                let newRedirectUrl = new URL(redirect);
+                                // inject the redirectUriOverride into newRedirectUrl
+                                newRedirectUrl.searchParams.set('redirect_uri', redirectUriOverride);
+                                // reset redirect with this new url
+                                redirect = newRedirectUrl.href;
+                            }
                             localStorage.setItem('dataStoreToken', response.data.token);
-                            window.location.href = response.data.redirect;
+                            window.location.href = redirect;
                         })
                         .catch((error) => {
                         /* istanbul ignore next */
