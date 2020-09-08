@@ -321,6 +321,7 @@
                         let saveData = this.generateUpdatePatch(_.clone(this.oldFormFields), _.clone(this.formFields));
 
                         idmInstance.patch(`${this.resource}/${this.name}/${this.id}`, saveData).then(() => {
+                            this.oldFormFields = _.clone(this.formFields);
                             this.displayNotification('success', this.$t('pages.access.successEdited', { resource: _.capitalize(this.name) }));
                         },
                         (error) => {

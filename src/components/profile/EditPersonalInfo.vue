@@ -117,64 +117,64 @@ export default {
                 });
 
             return formFields;
-            },
-            hideModal () {
-                this.$refs.fsModal.hide();
-            },
-            setModal () {
-                let formFields = this.generateFormFields();
+        },
+        hideModal () {
+            this.$refs.fsModal.hide();
+        },
+        setModal () {
+            let formFields = this.generateFormFields();
 
-                this.formFields = formFields;
-                this.originalFormFields = _.cloneDeep(formFields);
-            },
-            saveForm () {
-                /* istanbul ignore next */
-                this.isValid().then((valid) => {
-                    if (valid) {
-                        const idmInstance = this.getRequestService();
-                        let policyFields = {};
+            this.formFields = formFields;
+            this.originalFormFields = _.cloneDeep(formFields);
+        },
+        saveForm () {
+            /* istanbul ignore next */
+            this.isValid().then((valid) => {
+                if (valid) {
+                    const idmInstance = this.getRequestService();
+                    let policyFields = {};
 
-                        _.each(this.formFields, (field) => {
-                            if (field.value !== null) {
-                                policyFields[field.name] = field.value;
-                            }
-                        });
+                    _.each(this.formFields, (field) => {
+                        if (field.value !== null) {
+                            policyFields[field.name] = field.value;
+                        }
+                    });
 
-                        idmInstance.post(`policy/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=validateObject`, policyFields).then((policyResult) => {
-                            if (policyResult.data.failedPolicyRequirements.length === 0) {
-                                this.$emit('updateProfile', this.generateUpdatePatch(this.originalFormFields, this.formFields));
-                                this.errors.clear();
-                                this.hideModal();
-                            } else {
-                                let generatedErrors = this.findPolicyError({
-                                    data: {
-                                        detail: {
-                                            failedPolicyRequirements: policyResult.data.failedPolicyRequirements
-                                        }
+                    idmInstance.post(`policy/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=validateObject`, policyFields).then((policyResult) => {
+                        if (policyResult.data.failedPolicyRequirements.length === 0) {
+                            this.$emit('updateProfile', this.generateUpdatePatch(this.originalFormFields, this.formFields));
+                            this.errors.clear();
+                            this.hideModal();
+                        } else {
+                            let generatedErrors = this.findPolicyError({
+                                data: {
+                                    detail: {
+                                        failedPolicyRequirements: policyResult.data.failedPolicyRequirements
                                     }
-                                }, this.formFields);
-
-                                this.errors.clear();
-
-                                if (generatedErrors.length > 0) {
-                                    _.each(generatedErrors, (generatedError) => {
-                                        if (generatedError.exists) {
-                                            this.errors.add(generatedError);
-                                        }
-                                    });
-                                } else {
-                                    this.displayNotification('error', this.$t('pages.profile.editProfile.failedProfileSave'));
                                 }
+                            }, this.formFields);
+
+                            this.errors.clear();
+
+                            if (generatedErrors.length > 0) {
+                                _.each(generatedErrors, (generatedError) => {
+                                    if (generatedError.exists) {
+                                        this.errors.add(generatedError);
+                                    }
+                                });
+                            } else {
+                                this.displayNotification('error', this.$t('pages.profile.editProfile.failedProfileSave'));
                             }
-                        });
-                    }
-                });
-            },
-            isValid () {
-                return this.$validator.validateAll();
-            }
+                        }
+                    });
+                }
+            });
+        },
+        isValid () {
+            return this.$validator.validateAll();
         }
-    };
+    }
+};
 </script>
 
 <style lang="scss">
