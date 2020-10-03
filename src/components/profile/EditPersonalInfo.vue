@@ -10,37 +10,42 @@
         <b-container>
             <b-row>
                 <b-col sm="8" offset-sm="2">
-                    <ValidationObserver ref="observer" slim>
-                        <b-form style="flex-direction: column;" v-if="formFields.length > 0" class="mb-3 fr-edit-personal-form" name="edit-personal-form">
+                    <b-form style="flex-direction: column;" v-if="formFields.length > 0" class="mb-3 fr-edit-personal-form" name="edit-personal-form">
                         <template v-for="(field, index) in formFields">
-                                <b-form-group style="min-width: 200px;" :key="index" v-if="(field.type === 'string' || field.type === 'number') && field.userEditable">
-                                    <label :for="field.title">{{field.title}}</label>
-                                    <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
-                                    <ValidationProvider :rules="`${field.required ? 'required' : ''}`"  :name="field.name" v-slot="validationContext">
-                                        <b-input
-                                            :name="field.name"
-                                            :type="field.type === 'string' ? 'text' : field.type"
-                                            :state="getValidationState(validationContext)"
-                                            v-model.trim="formFields[index].value" />
-                                        <b-form-invalid-feedback>{{ validationContext.errors[0] }}</b-form-invalid-feedback>
-                                    </ValidationProvider>
-                                </b-form-group>
+                            <b-form-group style="min-width: 200px;" :key="index" v-if="(field.type === 'string' || field.type === 'number') && field.userEditable">
+                                <label :for="field.title">{{field.title}}</label>
+                                <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
 
-                                <!-- for boolean values -->
-                                <b-form-group :key="index" v-if="field.type === 'boolean'">
-                                    <div class="d-flex flex-column">
-                                        <label class="mr-auto" :for="field.title">{{field.title}}</label>
+                                <input v-if="field.type === 'string'" v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
+                                       :name="field.name"
+                                       :type="field.type"
+                                       :class="[{'is-invalid': errors.has(field.name)}, 'form-control']"
+                                       :data-vv-as="field.title"
+                                       v-model.trim="formFields[index].value">
 
-                                        <div class="mr-auto">
-                                            <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                                :height="28"
-                                                :width="56"
-                                                :sync="true"
-                                                :cssColors="true"
-                                                :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
-                                                :value="formFields[index].value"
-                                                @change="formFields[index].value = !formFields[index].value"/>
-                                        </div>
+                                <input v-else v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
+                                       :name="field.name"
+                                       :type="field.type"
+                                       :class="[{'is-invalid': errors.has(field.name)}, 'form-control']"
+                                       :data-vv-as="field.title"
+                                       v-model.number="formFields[index].value">
+                                <fr-validation-error :validatorErrors="errors" :fieldName="field.name"></fr-validation-error>
+                            </b-form-group>
+
+                            <!-- for boolean values -->
+                            <b-form-group :key="index" v-if="field.type === 'boolean'">
+                                <div class="d-flex flex-column">
+                                    <label class="mr-auto" :for="field.title">{{field.title}}</label>
+
+                                    <div class="mr-auto">
+                                        <toggle-button class="mt-2 p-0 fr-toggle-primary"
+                                                       :height="28"
+                                                       :width="56"
+                                                       :sync="true"
+                                                       :cssColors="true"
+                                                       :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
+                                                       :value="formFields[index].value"
+                                                       @change="formFields[index].value = !formFields[index].value"/> 
                                     </div>
                                 </div>
                             </b-form-group>
@@ -49,7 +54,6 @@
                     <template v-else>
                         <h3 class="text-center">{{$t('pages.profile.editProfile.noFields')}}</h3>
                     </template>
-                    </ValidationObserver>
                 </b-col>
             </b-row>
         </b-container>
@@ -65,6 +69,7 @@
 
 <script>
 import _ from 'lodash';
+import ValidationError from '@/components/utils/ValidationError';
 import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 
 /**
@@ -78,11 +83,15 @@ export default {
     mixins: [
         ResourceMixin
     ],
-    components: {},
+    components: {
+        'fr-validation-error': ValidationError
+    },
+    $_veeValidate: {
+            validator: 'new'
+    },
     props: {
         schema: { type: Object, required: true },
         profile: { type: Object, required: true },
-        autoOpen: { type: Boolean, required: false, default: false }
     },
     data () {
         return {
