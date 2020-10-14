@@ -28,7 +28,7 @@
                     <template v-if="displayProperties.length > 0">
                         <template v-for="(field, index) in displayProperties">
                             <template v-if="!field.isReadOnly">
-                                <b-form-group :label="field.title" label-for="field.key" horizontal :key="'editResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
+                                <b-form-group label-cols-sm="2" :label="field.title" label-for="field.key" horizontal :key="'editResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
                                     <b-form-input  :ref="index === 0 ? 'focusInput' : ''" v-if="field.type === 'string'" v-validate="field.required ? 'required' : ''" data-vv-validate-on="submit"
                                             :name="field.key"
                                             type="text"
@@ -67,7 +67,7 @@
                                 </b-form-group>
                             </template>
                             <template v-else>
-                                <b-form-group :label="field.title" label-for="field.key" horizontal :key="'readResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
+                                <b-form-group label-cols-sm="2" :label="field.title" label-for="field.key" horizontal :key="'readResource' +index" v-if="(field.type === 'string' || field.type === 'number') && field.encryption === undefined">
                                     <b-form-input horizontal
                                           type="text"
                                           plaintext
