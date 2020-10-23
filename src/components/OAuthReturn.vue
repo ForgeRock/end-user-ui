@@ -49,8 +49,6 @@ export default {
 
         window.history.pushState('', '', window.location.pathname);
 
-        this.$root.applicationStore.clearAuthHeadersAction();
-
         /* istanbul ignore next */
         const socialInstance = this.getRequestService({
                 headers: _.extend(this.getAnonymousHeaders(), {
