@@ -18,7 +18,7 @@
     "bootstrap": "4.3.1",
     "bootstrap-vue": "2.1.0",
     "es6-promise": "4.2.4",
-    "lodash": "4.17.10",
+    "lodash": "4.17.20",
     "moment": "2.20.1",
     "vee-validate": "2.0.8",
     "vue": "2.6.10",
