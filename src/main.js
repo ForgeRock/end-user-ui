@@ -1,3 +1,4 @@
+import 'core-js/stable';
 import _ from 'lodash';
 import App from './App';
 import axios from 'axios';
