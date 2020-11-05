@@ -87,11 +87,11 @@ export default {
         'fr-validation-error': ValidationError
     },
     $_veeValidate: {
-            validator: 'new'
+        validator: 'new'
     },
     props: {
         schema: { type: Object, required: true },
-        profile: { type: Object, required: true },
+        profile: { type: Object, required: true }
     },
     data () {
         return {
