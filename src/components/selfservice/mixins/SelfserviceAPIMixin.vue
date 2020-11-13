@@ -76,9 +76,9 @@
 
                 // check to see if there is a redirect_uri in this payload
                 if (_.has(data, 'returnParams')) {
-                    // decode the double encoded returnParams
-                    const returnParams = new URLSearchParams(decodeURIComponent(decodeURIComponent(data.returnParams))),
-                        redirectUriOverride = returnParams.get('redirect_uri');
+                    // decode the encoded returnParams
+                    const returnParams = new URLSearchParams(decodeURIComponent(data.returnParams)),
+                        redirectUriOverride = returnParams.get('goto');
                     localStorage.setItem('redirectUriOverride', redirectUriOverride);
                 }
                 /* istanbul ignore next */

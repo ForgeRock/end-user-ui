@@ -127,10 +127,8 @@
                             if (redirectUriOverride) {
                                 // remove the localStorage item
                                 localStorage.removeItem('redirectUriOverride');
-                                // create a URL object from the current redirect
-                                let newRedirectUrl = new URL(redirect);
-                                // inject the redirectUriOverride into newRedirectUrl
-                                newRedirectUrl.searchParams.set('redirect_uri', redirectUriOverride);
+                                // create a URL object from the requested redirect uri
+                                let newRedirectUrl = new URL(redirectUriOverride);
                                 // reset redirect with this new url
                                 redirect = newRedirectUrl.href;
                             }
