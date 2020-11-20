@@ -23,29 +23,31 @@
                     </b-col>
                 </b-row>
             </div>
-            <b-table show-empty
-                     table-responsive
-                     stacked="lg"
-                     :items="gridData"
-                     :fields="columns"
-                     :per-page="0"
-                     :hover="tableHover"
-                     :sort-by.sync="sortBy"
-                     :sort-desc.sync="sortDesc"
-                     :no-local-sorting="true"
-                     class="mb-0"
-                     :sort-direction="sortDirection"
-                     @row-clicked="resourceClicked"
-                     @sort-changed="sortingChanged"
-                     :busy="isLoading"
-                     :class="[{'hide-header': isLoading }]">
-                 <template v-slot:table-busy>
-                    <div class="text-center p-5">
-                      <b-spinner class="align-middle spinner-large text-primary my-4"></b-spinner>
-                      <div>{{ $t("common.form.loading") }} {{ plural(name) }}...</div>
-                    </div>
-                </template>
-            </b-table>
+            <div class="card-body">
+                <b-table show-empty
+                        table-responsive
+                        stacked="lg"
+                        :items="gridData"
+                        :fields="columns"
+                        :per-page="0"
+                        :hover="tableHover"
+                        :sort-by.sync="sortBy"
+                        :sort-desc.sync="sortDesc"
+                        :no-local-sorting="true"
+                        class="mb-0"
+                        :sort-direction="sortDirection"
+                        @row-clicked="resourceClicked"
+                        @sort-changed="sortingChanged"
+                        :busy="isLoading"
+                        :class="[{'hide-header': isLoading }]">
+                        <template v-slot:table-busy>
+                            <div class="text-center p-5">
+                            <b-spinner class="align-middle spinner-large text-primary my-4"></b-spinner>
+                            <div>{{ $t("common.form.loading") }} {{ plural(name) }}...</div>
+                            </div>
+                        </template>
+                </b-table>
+            </div>
             <div v-if="!isLoading" class="card-footer py-2">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center mb-0">
@@ -316,6 +318,12 @@
             a[role="menuitemradio"] {
                 display: none !important;
             }
+        }
+
+        .card-body {
+            padding: 0;
+            border-width: 0;
+            overflow: auto;
         }
 
         .spinner-large {
