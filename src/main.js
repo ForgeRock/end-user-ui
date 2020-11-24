@@ -16,7 +16,6 @@ import i18n from './i18n';
 import Notifications from 'vue-notification';
 import PromisePoly from 'es6-promise';
 import router from './router';
-import ToggleButton from 'vue-js-toggle-button';
 import UserStore from './store/User';
 import {
     ValidationObserver,
@@ -162,7 +161,6 @@ localize('en', en);
     });
  */
 Vue.use(Notifications);
-Vue.use(ToggleButton);
 
 // Global mixin for making openIDM REST calls
 Vue.mixin({

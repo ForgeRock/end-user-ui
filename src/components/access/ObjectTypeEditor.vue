@@ -1,3 +1,10 @@
+<!--
+Copyright (c) 2020 ForgeRock. All rights reserved.
+
+This software may be modified and distributed under the terms
+of the MIT license. See the LICENSE file for details.
+-->
+
 <template>
   <b-card>
       <ValidationObserver ref="observer" slim>
@@ -29,19 +36,17 @@
                           :setValue="setSingletonRelationshipValue" />
 
                       <!-- for boolean values -->
-                      <b-form-group :key="'editResource' +index" v-if="field.type === 'boolean'">
+                      <b-form-group :key="'editResource' + index" v-if="field.type === 'boolean'">
                           <div class="form-row">
                               <label class="col-form-label col-sm-3" :for="field.title">{{field.title}}</label>
 
-                              <div class="mr-auto">
-                                  <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                              :height="28"
-                                              :width="56"
-                                              :sync="true"
-                                              :cssColors="true"
-                                              :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
-                                              v-model="formFields[field.key]"/>
-                              </div>
+                              <b-form-checkbox
+                                  switch
+                                  size="lg"
+                                  class="mt-1 fr-toggle-primary"
+                                  v-model="formFields[field.key]">
+                                  {{ formFields[field.key] ? $t('common.form.yes') : $t('common.form.no') }}
+                              </b-form-checkbox>
                           </div>
                       </b-form-group>
                   </ValidationProvider>
@@ -55,20 +60,18 @@
                   </b-form-group>
 
                   <!-- for boolean values -->
-                  <b-form-group :key="'readResource' +index" v-if="field.type === 'boolean'">
+                  <b-form-group :key="'readResource' + index" v-if="field.type === 'boolean'">
                       <div class="form-row">
                           <label class="col-form-label col-sm-3" :for="field.title">{{field.title}}</label>
 
-                          <div class="mr-auto">
-                              <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                          :height="28"
-                                          :width="56"
-                                          :disabled="true"
-                                          :sync="true"
-                                          :cssColors="true"
-                                          :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
-                                          v-model="formFields[field.key]"/>
-                          </div>
+                          <b-form-checkbox
+                              switch
+                              size="lg"
+                              class="mt-1 fr-toggle-primary"
+                              v-model="formFields[field.key]"
+                              :disabled="true">
+                              {{ formFields[field.key] ? $t('common.form.yes') : $t('common.form.no') }}
+                          </b-form-checkbox>
                       </div>
                   </b-form-group>
 

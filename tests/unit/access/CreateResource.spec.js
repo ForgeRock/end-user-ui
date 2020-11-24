@@ -1,10 +1,14 @@
+// Copyright (c) 2020 ForgeRock. All rights reserved.
+
+// This software may be modified and distributed under the terms
+// of the MIT license. See the LICENSE file for details.
+
 import Vue from 'vue';
 import CreateResource from '@/components/access/CreateResource';
 import i18n from '@/i18n';
 import { expect } from 'chai';
 import BootstrapVue from 'bootstrap-vue';
 import { mount } from '@vue/test-utils';
-import ToggleButton from 'vue-js-toggle-button';
 import {
     ValidationObserver,
     ValidationProvider
@@ -13,7 +17,6 @@ import flushPromises from 'flush-promises';
 
 describe('CreateResource.vue', () => {
     Vue.use(BootstrapVue);
-    Vue.use(ToggleButton);
 
     it('Create resource dialog loaded', () => {
         const wrapper = mount(CreateResource, {
