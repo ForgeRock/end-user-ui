@@ -36,15 +36,13 @@ of the MIT license. See the LICENSE file for details.
                                 <div class="d-flex flex-column">
                                     <label class="mr-auto" :for="field.title">{{field.title}}</label>
 
-                                    <div class="mr-auto">
-                                        <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                                    :height="28"
-                                                    :width="56"
-                                                    :sync="true"
-                                                    :cssColors="true"
-                                                    :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
-                                                    v-model="formFields[field.key]"/>
-                                    </div>
+                                    <b-form-checkbox
+                                        switch
+                                        size="lg"
+                                        class="fr-toggle-primary"
+                                        v-model="formFields[field.key]">
+                                        {{ formFields[field.key] ? $t('common.form.yes') : $t('common.form.no') }}
+                                    </b-form-checkbox>
                                 </div>
                             </b-form-group>
 
