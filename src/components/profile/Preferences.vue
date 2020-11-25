@@ -8,14 +8,13 @@
                 <h6 class="mt-3">{{obj.description}}</h6>
 
                 <div class="ml-auto">
-                    <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                        :id="preference"
-                        :height="28"
-                        :width="56"
-                        :sync="true"
-                        :cssColors="true"
-                        :value="obj.value"
-                        @change="savePreferences(preference, $event.value)"/>
+                    <b-form-checkbox
+                        switch
+                        size="lg"
+                        class="pr-4 pt-1 fr-toggle-primary"
+                        v-model="obj.value"
+                        @change="savePreferences(preference, $event)">
+                    </b-form-checkbox>
                 </div>
             </div>
 

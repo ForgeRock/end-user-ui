@@ -21,12 +21,13 @@
                 <div class="form-row">
                     <label class="col-form-label col-sm-3" :for="field.key">{{field.key | startCase}}</label>
                     <div class="mr-auto">
-                        <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                       :height="28"
-                                       :width="56"
-                                       :sync="true"
-                                       :cssColors="true"
-                                       v-model="saveFields[field.key]"/>
+                        <b-form-checkbox
+                            switch
+                            size="lg"
+                            class="fr-toggle-primary"
+                            v-model="saveFields[field.key]">
+                            {{ saveFields[field.key] ? $t('common.form.yes') : $t('common.form.no') }}
+                        </b-form-checkbox>
                     </div>
                 </div>
             </b-form-group>

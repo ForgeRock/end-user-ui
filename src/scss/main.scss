@@ -134,11 +134,60 @@ label {
 }
 
 .fr-toggle-primary {
-  &.toggled .v-switch-core {
-    background-color: $fr-switch-toggled-bg;
-  }
-  .v-switch-core {
-    background-color: $fr-switch-bg;
+  &.custom-switch.b-custom-control-lg {
+    user-select: none;
+    padding-left: 2rem;
+    .custom-control-input:disabled {
+      ~ .custom-control-label {
+        cursor: initial;
+      }
+    }
+    .custom-control-label {
+      cursor: pointer;
+      font-size: 0.625rem;
+      font-weight: 600;
+      color: white;
+      line-height: 3;
+      padding-top: 0.25rem;
+      z-index: 0;
+      &::before {
+        left: -2rem;
+        height: 1.75rem;
+        width: 3.5rem;
+        border-radius: 1rem;
+        background-color: #c0c9d5;
+        border: none;
+        z-index: -1;
+      }
+      &::after {
+        top: 0.45rem;
+        left: calc( -1.9rem + 2px);
+        width: calc( 1.625rem - 4px);
+        height: calc( 1.625rem - 4px);
+        border-radius: 1rem;
+        background-color: #ffffff;
+      }
+    }
+    .custom-control-input:checked {
+      &:disabled {
+        ~ .custom-control-label {
+          cursor: initial;
+          &::before {
+            background-color: #79C3F6;
+          }
+        }
+      }
+      ~ .custom-control-label {
+        left: -1.4rem;
+        &::before {
+          background-color: #007bff;
+          left: -0.6rem;
+        }
+        &::after {
+          transform: translateX(3.1rem);
+        }
+      }
+    }
   }
 }
 

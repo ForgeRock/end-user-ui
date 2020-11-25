@@ -4,12 +4,10 @@ import VueI18n from 'vue-i18n';
 import BootstrapVue from 'bootstrap-vue';
 import translations from '@/translations';
 import { shallow } from '@vue/test-utils';
-import ToggleButton from 'vue-js-toggle-button';
 
 describe('CreateResource.vue', () => {
     Vue.use(VueI18n);
     Vue.use(BootstrapVue);
-    Vue.use(ToggleButton);
 
     const i18n = new VueI18n({
         locale: 'en',

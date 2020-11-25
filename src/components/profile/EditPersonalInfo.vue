@@ -38,14 +38,13 @@
                                     <label class="mr-auto" :for="field.title">{{field.title}}</label>
 
                                     <div class="mr-auto">
-                                        <toggle-button class="mt-2 p-0 fr-toggle-primary"
-                                                       :height="28"
-                                                       :width="56"
-                                                       :sync="true"
-                                                       :cssColors="true"
-                                                       :labels="{checked: $t('common.form.yes'), unchecked: $t('common.form.no')}"
-                                                       :value="formFields[index].value"
-                                                       @change="formFields[index].value = !formFields[index].value"/> 
+                                        <b-form-checkbox
+                                            switch
+                                            size="lg"
+                                            class="fr-toggle-primary"
+                                            v-model="formFields[index].value">
+                                            {{ formFields[index].value ? $t('common.form.yes') : $t('common.form.no') }}
+                                        </b-form-checkbox>
                                     </div>
                                 </div>
                             </b-form-group>
