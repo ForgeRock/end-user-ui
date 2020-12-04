@@ -3,14 +3,26 @@
         <fr-social-buttons v-if="!isSocialReg" :signin="false"></fr-social-buttons>
         <b-form-group class="mb-0" v-for="(property, key) in userDetails" :key="key">
             <fr-floating-label-input
+                    v-if="property.type === 'string'"
                     :defaultValue="property.socialValue"
                     :fieldName="key"
                     :label="property.description"
                     :validateRules="calculateValidation(property)"
                     type="text"
                     v-model="saveDetails[key]"></fr-floating-label-input>
-        </b-form-group>
 
+            <div v-else-if="property.type === 'boolean'" class="d-flex flex-column mb-4">
+                <label class="mr-auto" :for="property.title">{{property.title}}</label>
+
+                <div class="mr-auto">
+                    <b-form-checkbox
+                        switch
+                        size="lg"
+                        class="fr-toggle-primary"
+                        v-model="saveDetails[key]" />
+                </div>
+            </div>
+        </b-form-group>
         <fr-policy-password-input v-if="!isSocialReg" policyApi="selfservice/registration" v-model="saveDetails.password" name="password"></fr-policy-password-input>
 
         <!-- Vue Bootstrap custom radio button seems to have problems so just using none component-->
@@ -77,7 +89,11 @@
                 });
 
                 _.each(this.selfServiceDetails.requirements.registrationProperties.properties, (value, key) => {
-                    data.saveDetails[key] = '';
+                    if (data.userDetails[key].type === 'boolean') {
+                        data.saveDetails[key] = false;
+                    } else {
+                        data.saveDetails[key] = '';
+                    }
                 });
             }
 
