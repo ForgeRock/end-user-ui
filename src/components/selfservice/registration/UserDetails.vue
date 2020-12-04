@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2021 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -11,12 +11,25 @@ of the MIT license. See the LICENSE file for details.
             <fr-social-buttons v-if="!isSocialReg" :signin="false"></fr-social-buttons>
             <b-form-group class="mb-0" v-for="(property, key) in userDetails" :key="key">
                 <fr-floating-label-input
-                        :defaultValue="property.socialValue"
-                        :fieldName="key"
-                        :label="property.description"
-                        :validateRules="calculateValidation(property)"
-                        type="text"
-                        v-model="saveDetails[key]"></fr-floating-label-input>
+                    v-if="property.type === 'string'"
+                    :defaultValue="property.socialValue"
+                    :fieldName="key"
+                    :label="property.description"
+                    :validateRules="calculateValidation(property)"
+                    type="text"
+                    v-model="saveDetails[key]"></fr-floating-label-input>
+
+                <div v-else-if="property.type === 'boolean'" class="d-flex flex-column mb-4">
+                    <label class="mr-auto" :for="property.title">{{property.title}}</label>
+
+                    <div class="mr-auto">
+                        <b-form-checkbox
+                            switch
+                            size="lg"
+                            class="fr-toggle-primary"
+                            v-model="saveDetails[key]" />
+                    </div>
+                </div>
             </b-form-group>
 
             <fr-password-policy-input v-if="!isSocialReg" policyApi="selfservice/registration" :cols="1" v-model="saveDetails.password" />
@@ -82,7 +95,11 @@ export default {
             });
 
             _.each(this.selfServiceDetails.requirements.registrationProperties.properties, (value, key) => {
-                data.saveDetails[key] = '';
+                if (data.userDetails[key].type === 'boolean') {
+                    data.saveDetails[key] = false;
+                } else {
+                    data.saveDetails[key] = '';
+                }
             });
         }
 
