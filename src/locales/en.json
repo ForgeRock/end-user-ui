@@ -75,6 +75,11 @@
             "UNIQUE": "%{property} must be unique",
             "VALID_USERNAME": "Invalid username",
             "IS_NEW": "Must not be the same as the previous %{historyLength} passwords",
+            "LENGTH_BASED": "Must be at least %{min-password-length} characters and no longer than %{max-password-length} characters",
+            "REPEATED_CHARACTERS": "Cannot contain more than %{max-consecutive-length} repeated consecutive characters",
+            "DICTIONARY": "Cannot contain common passwords",
+            "CHARACTER_SET": "Must contain character(s) from the character set",
+            "ATTRIBUTE_VALUE": "Cannot be found in another attribute of the object",
             "test": "succeed",
             "policyServiceError": {
                 "registration": "Unable to register. Please try again later.",
