@@ -13,7 +13,7 @@
     "find-copyright-problems": "echo 'Listing all files which do not contain a valid copyright header for this year - some files do not qualify \n' && cd src && git grep -L --word-regexp \"Copyright (c) $(date +\"%Y\")\""
   },
   "dependencies": {
-    "axios": "0.19.0",
+    "axios": "0.21.1",
     "bootstrap": "4.3.1",
     "bootstrap-vue": "2.1.0",
     "core-js": "3.1.4",
