@@ -80,6 +80,9 @@
             "DICTIONARY": "Cannot contain common passwords",
             "CHARACTER_SET": "Must contain character(s) from the character set",
             "ATTRIBUTE_VALUE": "Cannot be found in another attribute of the object",
+            "HISTORY": "Cannot have been used recently",
+            "UNKNOWN": "Unable to create or modify %{property-name} due to an unknown configuration issue",
+            "EXTENDED_FIELD_POLICY": "%{property-name} is not valid",
             "test": "succeed",
             "policyServiceError": {
                 "registration": "Unable to register. Please try again later.",
