@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2021 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -81,7 +81,7 @@ of the MIT license. See the LICENSE file for details.
         <div slot="modal-footer" class="w-100">
             <div class="float-right">
                 <b-btn variant="outline-secondary mr-2" @click="hideModal">{{$t('common.form.cancel')}}</b-btn>
-                <b-btn type="button" variant="primary" @click="saveForm" :disabled="formFields.length === 0">{{$t('common.form.save')}}</b-btn>
+                <b-btn type="button" variant="primary" @click="saveForm" :disabled="disabled || formFields.length === 0">{{$t('common.form.save')}}</b-btn>
             </div>
         </div>
     </b-modal>
@@ -152,7 +152,8 @@ export default {
             formFields: tempFormFields,
             passwordCheck: tempPasswordCheck,
             passwordInputType: 'password',
-            showPassword: true
+            showPassword: true,
+            disabled: false
         };
     },
     methods: {
@@ -165,33 +166,38 @@ export default {
                 if (valid) {
                     let saveData = this.cleanData(_.clone(this.formFields));
 
-                    idmInstance.post(`${this.resourceType}/${this.resourceName}?_action=create`, saveData).then(() => {
-                        this.$emit('refreshGrid');
-                        this.$refs.observer.reset();
-                        this.hideModal();
+                    this.disabled = true;
+                    idmInstance.post(`${this.resourceType}/${this.resourceName}?_action=create`, saveData)
+                        .then(() => {
+                            this.$emit('refreshGrid');
+                            this.$refs.observer.reset();
+                            this.hideModal();
 
-                        this.displayNotification('success', this.$t('pages.access.successCreate', { resource: _.capitalize(this.resourceName) }));
-                    },
-                    (error) => {
-                        let generatedErrors = this.findPolicyError(error.response, this.createProperties);
+                            this.displayNotification('success', this.$t('pages.access.successCreate', { resource: _.capitalize(this.resourceName) }));
+                        })
+                        .catch((error) => {
+                            let generatedErrors = this.findPolicyError(error.response, this.createProperties);
 
-                        if (generatedErrors.length > 0) {
-                            let tempDisplayErrors = {};
+                            if (generatedErrors.length > 0) {
+                                let tempDisplayErrors = {};
 
-                            _.each(generatedErrors, (generatedError) => {
-                                if (generatedError.exists) {
-                                    if (tempDisplayErrors[generatedError.field] !== undefined) {
-                                        tempDisplayErrors[generatedError.field].push(generatedError.msg);
-                                    } else {
-                                        tempDisplayErrors[generatedError.field] = [generatedError.msg];
+                                _.each(generatedErrors, (generatedError) => {
+                                    if (generatedError.exists) {
+                                        if (tempDisplayErrors[generatedError.field] !== undefined) {
+                                            tempDisplayErrors[generatedError.field].push(generatedError.msg);
+                                        } else {
+                                            tempDisplayErrors[generatedError.field] = [generatedError.msg];
+                                        }
                                     }
-                                }
-                            });
-                            this.$refs.observer.setErrors(tempDisplayErrors);
-                        } else {
-                            this.displayNotification('error', this.$t('pages.access.invalidCreate'));
-                        }
-                    });
+                                });
+                                this.$refs.observer.setErrors(tempDisplayErrors);
+                            } else {
+                                this.displayNotification('error', this.$t('pages.access.invalidCreate'));
+                            }
+                        })
+                        .finally(() => {
+                            this.disabled = false;
+                        });
                 } else {
                     this.displayNotification('error', this.$t('pages.access.invalidCreate'));
                 }
