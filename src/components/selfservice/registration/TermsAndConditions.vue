@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2021 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -13,14 +13,14 @@ of the MIT license. See the LICENSE file for details.
 
         <b-modal id="termsModal" hide-footer :title="$t('pages.selfservice.registration.termsAndConditions.title')">
             <div class="d-block text-center">
-                <p v-html="selfServiceDetails.requirements.terms">{{selfServiceDetails.requirements.terms}}</p>
+                <p v-html="terms"></p>
             </div>
         </b-modal>
     </div>
     <div v-else>
         <h3>{{$t("pages.selfservice.registration.termsAndConditions.title")}}</h3>
         <div class="d-block text-center">
-            <p v-html="selfServiceDetails.requirements.terms">{{selfServiceDetails.requirements.terms}}</p>
+            <p v-html="terms"></p>
         </div>
 
         <b-button v-if="inline === false" @click="save" :block="true" size="lg" variant="primary">
@@ -30,6 +30,7 @@ of the MIT license. See the LICENSE file for details.
 </template>
 
 <script>
+import sanitizeHtml from 'sanitize-html';
 /**
  * @description Selfservice stage for terms and conditions depending on all in one displays as a dialog or inline text depending at allinone
  *
@@ -41,6 +42,11 @@ export default {
         inline: {
             required: false,
             default: false
+        }
+    },
+    computed: {
+        terms () {
+            return sanitizeHtml(this.selfServiceDetails.requirements.terms);
         }
     },
     methods: {

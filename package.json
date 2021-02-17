@@ -20,6 +20,7 @@
     "es6-promise": "4.2.4",
     "lodash": "4.17.21",
     "moment": "2.22.2",
+    "sanitize-html": "2.3.2",
     "vee-validate": "3.3.2",
     "vue": "2.6.10",
     "vue-i18n": "8.0.0",
