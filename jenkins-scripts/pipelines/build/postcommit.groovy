@@ -6,7 +6,6 @@
 
 import com.forgerock.pipeline.Build
 import com.forgerock.pipeline.whitesource.ScanResult
-import com.forgerock.pipeline.scp.ScpHost
 import java.text.SimpleDateFormat
 
 def build() {
@@ -60,47 +59,17 @@ def build() {
     stage ('Whitesource Scan') {
       try {
         def repoName = scmUtils.getRepoName()
-        def projectVersion = env.BRANCH_NAME
-        def mavenJvmOptions = '-XX:MaxPermSize=256m -Xmx2g'
+        def branchName = env.BRANCH_NAME
 
-        // Remove spaces from branch name, and build a clean branch name for the folder and log names (without /)
-        def gitBranchNameForLogAndFolder = projectVersion.replaceAll("\\s","")
-                .replaceAll("/","-")
-
-        // Target security folder on Abondance FR
-        def scpHost = ScpHost.ABONDANCE_FR
-        def scpRemotePathRoot = "security/whitesource/${repoName}/${gitBranchNameForLogAndFolder}/${SHORT_GIT_COMMIT}"
-        def scpRemotePath = "/export/${scpRemotePathRoot}"
-        scp.checkCanCopyToPath(scpHost, scpRemotePath, false)
-        def riskReportName = 'whitesource-scan-result.pdf'
-
-        def productToken = whitesourceUtils.getWhitesourceToken(repoName, projectVersion)
         ScanResult whitesourceScanResult
 
         withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
                  "MAVEN_OPTS=${mavenBuildOptions}",
                  "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-
-          def scanArgs = [
-                  productToken:   productToken,
-                  projectVersion: projectVersion,
-          ]
-
-          whitesourceScanResult = whitesourceUtils.performWhitesourceScan(scanArgs, riskReportName)
+          whitesourceScanResult = whitesourceUtils.performWhitesourceScan(repoName, branchName, SHORT_GIT_COMMIT)
         }
 
         if (!whitesourceScanResult.scanPassed) {
-          scpRemotePath += '_CVE'
-        }
-
-        scp.scpToRemoteDirectory(riskReportName, scpHost, scpRemotePath)
-        scp.scpToRemoteDirectory('whitesource/*', scpHost, "${scpRemotePath}/log")
-
-        echo "Whitesource scan result: ${whitesourceScanResult.resultDescription}"
-
-        if (whitesourceScanResult.scanPassed) {
-          currentBuild.result = 'SUCCESS'
-        } else {
           currentBuild.result = 'FAILURE'
         }
       } catch (exception) {
