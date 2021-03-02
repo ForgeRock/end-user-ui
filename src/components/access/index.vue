@@ -159,7 +159,7 @@ export default {
                     // Generate create list for create resource dialog
                     _.each(privilege.data.CREATE.properties, (createProp) => {
                         const propType = schema.data.properties[createProp].type;
-                        if (propType === 'string' || propType === 'number' || propType === 'boolean' || propType === 'relationship') {
+                        if (propType === 'string' || propType === 'number' || propType === 'boolean' || propType === 'relationship' || (propType === 'array' && schema.data.properties[createProp].items.type === 'relationship')) {
                             schema.data.properties[createProp].key = createProp;
 
                             _.each(schema.data.required, (requiredKey) => {

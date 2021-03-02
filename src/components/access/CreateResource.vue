@@ -30,7 +30,16 @@ of the MIT license. See the LICENSE file for details.
                                     <b-form-invalid-feedback>{{ validationContext.errors[0] }}</b-form-invalid-feedback>
                                 </ValidationProvider>
                             </b-form-group>
-
+                            <!-- for relationhip array values -->
+                            <b-form-group
+                              :key="'createResource' +index"
+                              v-if="field.type === 'array' && field.items.type === 'relationship'">
+                              <fr-relationship-edit
+                                  :relationshipProperty='field'
+                                  :index="index"
+                                  :setValue="setRelationshipArrayValue"
+                                  :newResource="true" />
+                            </b-form-group>
                             <!-- for boolean values -->
                             <b-form-group :key="'createResource' +index" v-if="field.type === 'boolean'">
                                 <div class="d-flex flex-column">
@@ -45,14 +54,16 @@ of the MIT license. See the LICENSE file for details.
                                     </b-form-checkbox>
                                 </div>
                             </b-form-group>
-
-                            <!-- for singletonRelationhip values -->
-                            <fr-relationship-edit v-if="field.type === 'relationship'"
-                                :relationshipProperty='field'
-                                :index="index"
-                                :key="'createResource' +index"
-                                :setValue="setSingletonRelationshipValue"
-                                :newResource="true" />
+                            <!-- for singleton relationhip values -->
+                            <b-form-group
+                              :key="'createResource' +index"
+                              v-if="field.type === 'relationship'">
+                              <fr-relationship-edit
+                                  :relationshipProperty='field'
+                                  :index="index"
+                                  :setValue="setSingletonRelationshipValue"
+                                  :newResource="true" />
+                            </b-form-group>
                         </template>
 
                         <!-- Special logic for password -->
@@ -138,6 +149,8 @@ export default {
                 tempFormFields[prop.key] = '';
             } else if (prop.type === 'relationship') {
                 tempFormFields[prop.key] = null;
+            } else if (prop.type === 'array' && prop.items.type === 'relationship') {
+                tempFormFields[prop.key] = [];
             } else {
                 tempFormFields[prop.key] = false;
             }
@@ -236,10 +249,10 @@ export default {
                 this.showPassword = true;
             }
         },
-        // Remove optional fields to not save with empty string
+        // Remove optional fields and array type fields with empty arrays to not save with empty string or array
         cleanData (data) {
             _.each(data, (value, key) => {
-                if (_.isString(value) && value.length === 0) {
+                if ((_.isString(value) && value.length === 0) || (_.isArray(value) && value.length === 0)) {
                     delete data[key];
                 }
             });
@@ -257,6 +270,12 @@ export default {
         },
         setSingletonRelationshipValue (property, value) {
             this.formFields[property] = value;
+        },
+        setRelationshipArrayValue (property, value) {
+            let field = this.formFields[property];
+            if (value && field && _.findIndex(field, { _ref: value._ref }) === -1) {
+                field.push(value);
+            }
         }
     }
 };
