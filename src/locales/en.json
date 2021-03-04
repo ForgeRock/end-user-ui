@@ -150,7 +150,7 @@
                 },
                 "reset": {
                     "title": "Reset Password",
-                    "description": "Verify You\"re Human",
+                    "description": "Verify You're Human",
                     "emailSent": "An email has been sent to your inbox with instructions on how to reset your password."
                 }
             },
@@ -175,7 +175,7 @@
                 "emailValidation": "An email has been sent to the address you entered. Click the link in that email to proceed.",
                 "completeRegistration": "Complete Registration",
                 "stageTitle": {
-                    "captcha": "Verify You\"re Human",
+                    "captcha": "Verify You're Human",
                     "consent": "",
                     "emailValidation": "",
                     "kbaSecurityAnswerDefinitionStage": "Create Security Questions",
