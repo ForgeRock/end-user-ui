@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2021 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -82,6 +82,7 @@ import _ from 'lodash';
 import pluralize from 'pluralize';
 import axios from 'axios';
 import CreateResource from '@/components/access/CreateResource';
+import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 
 /**
  * @description Controlling component for delegated admin, allows for listing available resources and connects to the create, delete and edit features.
@@ -96,6 +97,9 @@ export default {
     components: {
         'fr-create-resource': CreateResource
     },
+    mixins: [
+        ResourceMixin
+    ],
     data () {
         return {
             name: this.$route.params.resourceName,
@@ -254,47 +258,6 @@ export default {
             this.lastPage = false;
 
             this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, null, 1);
-        },
-        generateSearch (filter, displayFields, schemaProps) {
-            let filterUrl = '';
-
-            if (filter.length > 0) {
-                filter = encodeURIComponent(filter);
-                _.each(displayFields, (field, index) => {
-                    let type = 'string';
-
-                    if (!_.isUndefined(schemaProps)) {
-                        type = schemaProps[field].type;
-                    }
-
-                    if (type === 'number' && !_.isNaN(_.toNumber(filter))) {
-                        // Search based on number and proper number value
-                        if ((index + 1) < displayFields.length) {
-                            filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
-                        } else {
-                            filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
-                        }
-                    } else if (type === 'boolean' && (filter === 'true' || filter === 'false')) {
-                        // Search based on boolean and proper boolean true/false
-                        if ((index + 1) < displayFields.length) {
-                            filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
-                        } else {
-                            filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
-                        }
-                    } else {
-                        // Fallback to general string search if all other criteria fails
-                        if ((index + 1) < displayFields.length) {
-                            filterUrl = `${filterUrl}${field}+sw+"${filter}"+OR+`;
-                        } else {
-                            filterUrl = `${filterUrl}${field}+sw+"${filter}"`;
-                        }
-                    }
-                });
-            } else {
-                filterUrl = 'true';
-            }
-
-            return filterUrl;
         },
         clear () {
             this.filter = '';

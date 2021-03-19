@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2021 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -79,6 +79,54 @@ export default {
             }
 
             return error;
+        },
+        /**
+         * Builds API URL using value in search box
+         *
+         * @param {string} filterString - Required current value of search box
+         * @param {array} displayFields - Required array of field names that we want to query on
+         * @param {object} schemaProps - Required metadata of current schema
+         */
+        generateSearch (filter, displayFields, schemaProps) {
+            let filterUrl = '';
+
+            if (filter.length > 0) {
+                filter = encodeURIComponent(filter);
+                _.each(displayFields, (field, index) => {
+                    let type = 'string';
+
+                    if (!_.isUndefined(schemaProps)) {
+                        type = schemaProps[field].type;
+                    }
+
+                    if (type === 'number' && !_.isNaN(_.toNumber(filter))) {
+                        // Search based on number and proper number value
+                        if ((index + 1) < displayFields.length) {
+                            filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
+                        } else {
+                            filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
+                        }
+                    } else if (type === 'boolean' && (filter === 'true' || filter === 'false')) {
+                        // Search based on boolean and proper boolean true/false
+                        if ((index + 1) < displayFields.length) {
+                            filterUrl = `${filterUrl}${field}+eq+ ${filter}+OR+`;
+                        } else {
+                            filterUrl = `${filterUrl}${field}+eq+ ${filter}`;
+                        }
+                    } else {
+                        // Fallback to general string search if all other criteria fails
+                        if ((index + 1) < displayFields.length) {
+                            filterUrl = `${filterUrl}${field}+sw+"${filter}"+OR+`;
+                        } else {
+                            filterUrl = `${filterUrl}${field}+sw+"${filter}"`;
+                        }
+                    }
+                });
+            } else {
+                filterUrl = 'true';
+            }
+
+            return filterUrl;
         }
     }
 };
