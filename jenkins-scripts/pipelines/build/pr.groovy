@@ -42,11 +42,11 @@ def build() {
                "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
 
         withCredentials([
-                string(credentialsId: 'whitesource-key-openidm-enduser', variable: 'WS_PRODUCT_KEY'),
                 string(credentialsId: 'whitesource-ci-user-key', variable: 'WS_USER_KEY'),
         ]) {
+          def whitesourceProductToken = whitesourceUtils.getWhitesourceToken(scmUtils.getRepoName(), env.CHANGE_TARGET)
           sh "mvn -B -e -U clean verify -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
-                  " -Dwhitesource.product.key=${env.WS_PRODUCT_KEY} -Dwhitesource.user.key=${env.WS_USER_KEY}"
+                  " -Dwhitesource.product.key=${whitesourceProductToken} -Dwhitesource.user.key=${env.WS_USER_KEY}"
         }
       }
     }

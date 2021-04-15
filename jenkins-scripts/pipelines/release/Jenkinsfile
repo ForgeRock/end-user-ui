@@ -4,7 +4,7 @@
 // Release pipeline for IDM EndUser UI
 //====================================
 
-@Library('forgerock-pipeline-libs')
+@Library('forgerock-pipeline-libs@ba6d0372a4dce9fb03b873ed0753122113372cba')
 import com.forgerock.pipeline.MavenReleaseBuild
 
 def jobProperties = [buildDiscarder(logRotator(numToKeepStr: '10'))]
@@ -71,7 +71,6 @@ timestamps {
       }
 
       withCredentials([
-              string(credentialsId: 'whitesource-key-openidm-enduser', variable: 'WS_PRODUCT_KEY'),
               string(credentialsId: 'whitesource-ci-user-key', variable: 'WS_USER_KEY'),
       ]) {
         stage ('Maven release build') {
@@ -86,9 +85,10 @@ timestamps {
             'production-build'
           ]
 
+          def whitesourceProductToken = whitesourceUtils.getWhitesourceToken(scmUtils.getRepoName(), env.BRANCH_NAME)
           def properties = [
             'ci.scm.revision'        : SHORT_GIT_COMMIT,
-            'whitesource.product.key': env.WS_PRODUCT_KEY,
+            'whitesource.product.key': whitesourceProductToken,
             'whitesource.user.key'   : env.WS_USER_KEY,
           ]
 
