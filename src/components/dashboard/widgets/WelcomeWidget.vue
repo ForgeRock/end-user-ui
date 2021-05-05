@@ -9,7 +9,7 @@ of the MIT license. See the LICENSE file for details.
     <b-jumbotron class="text-center">
         <template slot="header">
             <b-img :src="require('@/assets/images/profile-default.png')" rounded="circle" width="112" height="112" alt="img" class="m-1 mb-3" />
-            <div>{{$t('pages.dashboard.widgets.welcome.greeting')}}, {{fullName}}</div>
+            <div>{{$t('pages.dashboard.widgets.welcome.greeting')}}, <span class="text-capitalize">{{fullName}}</span></div>
         </template>
         <template slot="lead">
             <div>
@@ -23,8 +23,6 @@ of the MIT license. See the LICENSE file for details.
 </template>
 
 <script>
-import _ from 'lodash';
-
 /**
  * @description Widget that provides a welcome message for the managed resource, also provides a button to directly access editing the resources profile.
  *
@@ -46,7 +44,7 @@ export default {
             let fullName = '';
 
             if (this.userDetails.givenName.length > 0 || this.userDetails.sn.length > 0) {
-                fullName = _.startCase(this.userDetails.givenName + ' ' + this.userDetails.sn);
+                fullName = this.userDetails.givenName + ' ' + this.userDetails.sn;
             } else {
                 fullName = this.userDetails.userId;
             }
