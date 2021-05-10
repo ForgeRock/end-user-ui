@@ -183,21 +183,24 @@ export default {
                         this.displayNotification('success', this.$t('pages.access.successEdited', { resource: _.capitalize(this.name) }));
                     },
                     (error) => {
-                        const generatedErrors = this.findPolicyError(error.response, this.displayProperties);
-
-                        this.$refs.observer.reset();
+                        let generatedErrors = this.findPolicyError(error.response, this.displayProperties);
 
                         if (generatedErrors.length > 0) {
-                            generatedErrors.forEach((generatedError) => {
+                            let tempDisplayErrors = {};
+
+                            _.each(generatedErrors, (generatedError) => {
                                 if (generatedError.exists) {
-                                    const newError = {};
-                                    newError[generatedError.field] = [generatedError.msg];
-                                    this.$refs.observer.setErrors(newError);
+                                    if (tempDisplayErrors[generatedError.field] !== undefined) {
+                                        tempDisplayErrors[generatedError.field].push(generatedError.msg);
+                                    } else {
+                                        tempDisplayErrors[generatedError.field] = [generatedError.msg];
+                                    }
                                 }
                             });
+                            this.$refs.observer.setErrors(tempDisplayErrors);
+                        } else {
+                            this.displayNotification('error', this.$t('pages.access.invalidEdit'));
                         }
-
-                        this.displayNotification('error', this.$t('pages.access.invalidEdit'));
                     });
                 } else {
                     this.displayNotification('error', this.$t('pages.access.invalidEdit'));
