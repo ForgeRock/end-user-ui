@@ -213,10 +213,16 @@ export default {
             this.showPassword = true;
 
             _.each(this.formFields, (value, key) => {
+                const propertySchema = _.find(this.createProperties, { key: key });
+
                 if (_.isString(value) || _.isNumber(value)) {
                     this.formFields[key] = '';
-                } else {
+                } else if (_.isArray(value)) {
+                    this.formFields[key] = [];
+                } else if (propertySchema.type === 'boolean') {
                     this.formFields[key] = false;
+                } else {
+                    this.formFields[key] = null;
                 }
             });
         },
