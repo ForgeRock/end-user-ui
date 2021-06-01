@@ -38,7 +38,7 @@ of the MIT license. See the LICENSE file for details.
                     v-model="selected"
                     :id="relationshipProperty.key + index"
                     :options="options"
-                    :placeholder="'Type to search for ' + this.resourceCollection.label"
+                    :placeholder="searchPlaceholder"
                     openDirection="bottom"
                     :show-labels="false"
                     :searchable="true"
@@ -161,7 +161,8 @@ export default {
             resourceCollections: [],
             isRelationshipArray: false,
             loading: true,
-            debounceHandleSearchChange: debounce(this.handleSearchChange, 1000)
+            debounceHandleSearchChange: debounce(this.handleSearchChange, 1000),
+            queryThreshold: null
         };
     },
     mounted () {
@@ -181,9 +182,20 @@ export default {
             this.setResourceCollectionType();
         }
     },
+    computed: {
+        searchPlaceholder () {
+            if (this.queryThreshold) {
+                return this.$t('pages.access.typeAtLeastToSearchFor', { resource: this.resourceCollection.label, numChars: this.queryThreshold });
+            }
+            return this.$t('pages.access.typeToSearchFor', { resource: this.resourceCollection.label });
+        }
+    },
     methods: {
         setResourceCollectionType (rescourceCollectionType) {
-            let index = 0;
+            const managedObjectSettings = this.$root.applicationStore.state.managedObjectSettings;
+
+            let index = 0,
+                resourceCollectionObjectName;
 
             if (rescourceCollectionType) {
                 index = rescourceCollectionType.index;
@@ -195,6 +207,12 @@ export default {
             this.resourceCollection = this.allResourceCollections[index];
 
             this.showResourceType = this.allResourceCollections.length > 1;
+
+            resourceCollectionObjectName = this.resourceCollection.path.split('/')[1];
+
+            if (managedObjectSettings && managedObjectSettings[resourceCollectionObjectName]) {
+                this.queryThreshold = managedObjectSettings[resourceCollectionObjectName].minimumUIFilterLength;
+            }
 
             /* istanbul ignore next */
             return this.getSchema(this.resourceCollection.path).then((schema) => {
@@ -218,8 +236,8 @@ export default {
             if (!query && !this.selected && this.value) {
                 this.selected = { value: this.value._ref, resource: this.value, displayFields };
             }
-
-            if (query) {
+            // send the request if there is a query and no queryThreshold or if the query's length is at least queryThreshold
+            if ((query && !this.queryThreshold) || (query && query.length >= this.queryThreshold)) {
                 this.isLoading = true;
                 queryFilter = map(displayFields, (field) => { return `/${field} sw "${query}"`; }).join(' or ');
 
