@@ -10,10 +10,10 @@ of the MIT license. See the LICENSE file for details.
         <div class="card mt-4">
             <div class="card-header py-2">
                 <b-row>
-                    <b-col md="7" class="my-1">
+                    <b-col md="3" class="my-1">
                         <b-btn v-if="createProperties.length > 0" type="button" variant="primary" v-b-modal.createResourceModal><i class="fa fa-plus mr-3"></i>{{$t("common.form.new")}} {{this.name}}</b-btn>
                     </b-col>
-                    <b-col md="5" class="my-1">
+                    <b-col md="9" class="my-1">
                         <div class="d-flex">
                             <b-input-group>
                                 <b-input-group-prepend>
@@ -21,7 +21,7 @@ of the MIT license. See the LICENSE file for details.
                                         <i class='fa fa-search'></i>
                                     </div>
                                 </b-input-group-prepend>
-                                <b-form-input v-model="filter" @keyup.native.enter="search" :placeholder="this.$t('pages.access.typeSearch')" class="inset-left inset-right"></b-form-input>
+                                <b-form-input v-model="filter" @keyup.native.enter="search" :placeholder="searchPlaceholder" class="inset-left inset-right"></b-form-input>
                                 <b-input-group-append>
                                     <b-btn variant="outline-default" :disabled="!filter" @click="clear" class="inset clear"><i class="fa fa-times-circle"></i></b-btn>
                                 </b-input-group-append>
@@ -46,7 +46,7 @@ of the MIT license. See the LICENSE file for details.
                         @row-clicked="resourceClicked"
                         @sort-changed="sortingChanged"
                         :busy="isLoading"
-                        :class="[{'hide-header': isLoading }]">
+                        :class="[{'hide-header': isLoading || !gridData.length }]">
                         <template v-slot:table-busy>
                             <div class="text-center p-5">
                             <b-spinner class="align-middle spinner-large text-primary my-4"></b-spinner>
@@ -118,15 +118,41 @@ export default {
             filter: '',
             createProperties: [],
             userCanUpdate: false,
-            isLoading: true
+            isLoading: true,
+            queryThreshold: null
         };
     },
     mounted () {
         this.loadData();
     },
+    watch: {
+        gridData () {
+            // disallow sorting if there is a queryThreshold and the filter doesn't have at least the same number of chars as queryThreshold
+            this.columns = this.columns.map((col) => {
+                if (col.key !== 'actions') {
+                    col.sortable = !this.queryThreshold || (this.filter.length >= this.queryThreshold);
+                }
+
+                return col;
+            });
+        }
+    },
+    computed: {
+        searchPlaceholder () {
+            if (this.queryThreshold) {
+                return this.$t('pages.access.typeAtLeastAndEnterToSearch', { numChars: this.queryThreshold });
+            }
+            return this.$t('pages.access.typeAndEnterToSearch');
+        }
+    },
     methods: {
         loadData () {
-            const idmInstance = this.getRequestService();
+            const idmInstance = this.getRequestService(),
+                managedObjectSettings = this.$root.applicationStore.state.managedObjectSettings;
+
+            if (managedObjectSettings && managedObjectSettings[this.name]) {
+                this.queryThreshold = managedObjectSettings[this.name].minimumUIFilterLength;
+            }
 
             /* istanbul ignore next */
             axios.all([
@@ -211,8 +237,10 @@ export default {
                 // If there is no sortField default to sorting on the first column.
                 sortField = fields[0];
             }
-
-            resourceUrl = `${resourceUrl}&_sortKeys=${sortField}`;
+            // do not add _sortKeys when there is a queryThreshold and no filter
+            if (!(this.queryThreshold && this.filter === '')) {
+                resourceUrl = `${resourceUrl}&_sortKeys=${sortField}`;
+            }
 
             if (fields.length) {
                 resourceUrl = `${resourceUrl}&_fields=${fields.join(',')}`;
@@ -256,8 +284,10 @@ export default {
             this.sortDesc = false;
             this.currentPage = 1;
             this.lastPage = false;
-
-            this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, null, 1);
+            // only send search request if no queryThreshold is defined or the filter is empty or the filter has at least the same number of chars as queryThreshold
+            if (!this.queryThreshold || !this.filter.length || this.filter.length >= this.queryThreshold) {
+                this.loadGrid(this.generateSearch(this.filter, this.displayFields, this.schemaProperties), this.displayFields, null, 1);
+            }
         },
         clear () {
             this.filter = '';
