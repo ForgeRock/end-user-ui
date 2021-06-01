@@ -34,7 +34,7 @@ of the MIT license. See the LICENSE file for details.
                                     <i class='fa fa-search'></i>
                                 </div>
                             </b-input-group-prepend>
-                            <b-form-input v-model="filter" @keyup.native.enter="search" :placeholder="this.$t('pages.access.typeSearch')" class="inset-left inset-right"></b-form-input>
+                            <b-form-input v-model="filter" @keyup.native.enter="search" :placeholder="this.$t('pages.access.typeAndEnterToSearch')" class="inset-left inset-right"></b-form-input>
                             <b-input-group-append>
                                 <b-btn variant="outline-default" :disabled="!filter" @click="clear" class="inset clear"><i class="fa fa-times-circle"></i></b-btn>
                             </b-input-group-append>
@@ -62,7 +62,8 @@ of the MIT license. See the LICENSE file for details.
             selected-variant="active"
             @row-clicked="resourceClicked"
             @row-selected="onRowSelected"
-            @sort-changed="sortingChanged">
+            @sort-changed="sortingChanged"
+            :class="[{'hide-header': !gridData.length }]">
                 <template slot="HEAD_selected">
                     <div
                         v-show="gridData.length > 0"
@@ -462,6 +463,10 @@ export default {
 
         .cursor-pointer {
             cursor: pointer;
+        }
+
+        .hide-header > thead {
+            display:none !important;
         }
     }
 

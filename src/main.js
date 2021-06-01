@@ -324,9 +324,14 @@ var startApp = function () {
 
         axios.all([
             idmInstance.get('/info/uiconfig'),
-            idmInstance.get('info/features?_queryFilter=true')]).then(axios.spread((uiConfig, availability) => {
-            if (uiConfig.data.configuration.lang) {
-                i18n.locale = uiConfig.data.configuration.lang;
+            idmInstance.get('info/features?_queryFilter=true')]).then(axios.spread((uiConfigurationResponse, availability) => {
+            const uiConfig = uiConfigurationResponse.data.configuration;
+            if (uiConfig.lang) {
+                i18n.locale = uiConfig.lang;
+            }
+
+            if (_.has(uiConfig, 'platformSettings.managedObjectsSettings')) {
+                ApplicationStore.setManagedObjectSettings(uiConfig.platformSettings.managedObjectsSettings);
             }
 
             ApplicationStore.setEnduserSelfservice(availability.data.result);
