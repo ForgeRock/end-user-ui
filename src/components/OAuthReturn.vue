@@ -53,10 +53,10 @@ export default {
         const socialInstance = this.getRequestService({
                 headers: _.extend(this.getAnonymousHeaders(), {
                     'X-OpenIDM-NoSession': 'true',
-                    'X-OpenIDM-DataStoreToken': localStorage.getItem('dataStoreToken')
+                    'X-OpenIDM-DataStoreToken': atob(localStorage.getItem('dataStoreToken'))
                 })
             }),
-            linkedProvider = localStorage.getItem('linkedProvider');
+            linkedProvider = atob(localStorage.getItem('linkedProvider'));
 
         /* istanbul ignore next */
         localStorage.removeItem('dataStoreToken');
@@ -66,7 +66,7 @@ export default {
         socialInstance.post('/identityProviders?_action=handlePostAuth', queryParams)
             .then((response) => {
                 let dataStoreToken = response.data.token,
-                    originalToken = localStorage.getItem('accountClaimingToken');
+                    originalToken = atob(localStorage.getItem('accountClaimingToken'));
 
                 localStorage.removeItem('accountClaimingToken');
 
