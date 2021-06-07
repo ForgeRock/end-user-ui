@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2021 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -23,18 +23,18 @@ of the MIT license. See the LICENSE file for details.
 
         <b-card-body slot="center-card-body">
             <fr-floating-label-input v-if="passwordVerification"
-                                     v-model="password"
-                                     :label="$t('pages.login.password')"
-                                     :reveal="true"
-                                     type="password"
-                                     fieldName="password"></fr-floating-label-input>
+                v-model="password"
+                :label="$t('pages.login.password')"
+                :reveal="true"
+                type="password"
+                fieldName="password"></fr-floating-label-input>
 
             <fr-social-buttons v-if="socialVerification" :filterProviders="providers" :filterProvidersObjects="providersObjects" signin></fr-social-buttons>
 
             <button v-if="passwordVerification"
-                    v-on:click="claimAccount"
-                    class="btn btn-lg btn-primary btn-block mb-3"
-                    type="button">{{$t("pages.login.signIn")}}</button>
+                v-on:click="claimAccount"
+                class="btn btn-lg btn-primary btn-block mb-3"
+                type="button">{{$t("pages.login.signIn")}}</button>
         </b-card-body>
 
         <b-card-footer slot="center-card-footer">
@@ -79,7 +79,7 @@ export default {
     props: ['clientToken', 'originalToken', 'returnParams'],
     mounted () {
         if (localStorage.getItem('accountClaimingToken')) {
-            let accountClaimingToken = localStorage.getItem('accountClaimingToken');
+            let accountClaimingToken = atob(localStorage.getItem('accountClaimingToken'));
 
             localStorage.removeItem('accountClaimingToken');
 
@@ -159,7 +159,7 @@ export default {
                             'clientToken': this.originalToken
                         });
                     } else {
-                        localStorage.setItem('accountClaimingToken', this.clientToken);
+                        localStorage.setItem('accountClaimingToken', btoa(this.clientToken));
                         this.providers = _.map(details.requirements.definitions.providers.items.oneOf, 'provider');
                         this.providersObjects = details.requirements.definitions.providers.items.oneOf;
                         this.socialVerification = true;
