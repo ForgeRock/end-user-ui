@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2021 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -9,11 +9,11 @@ of the MIT license. See the LICENSE file for details.
     <div v-if="this.providers.length > 0">
         <fr-list-group :title="$t('pages.profile.socialSignIn.title')" :subtitle="$t('pages.profile.socialSignIn.subtitle')">
             <fr-list-item
-                    v-for="(provider, index) in providers"
-                    :key="index"
-                    :collapsible="provider._id !== undefined"
-                    :panelShown="false"
-                    :hoverItem="true">
+                v-for="(provider, index) in providers"
+                :key="index"
+                :collapsible="provider._id !== undefined"
+                :panelShown="false"
+                :hoverItem="true">
                 <div slot="list-item-header" class="d-inline-flex w-100">
                     <div class="flex-grow-1">
                         <b-img v-if="provider.uiConfig.buttonImage" :src="'static/' + provider.uiConfig.buttonImage" width="24" height="24" class="mr-3"/>
@@ -193,8 +193,8 @@ export default {
                 'landingPage': `${window.location.protocol}/#/${window.location.host}/login?_oauthReturn=true&provider=${provider}&gotoURL=profile`
             })
                 .then((response) => {
-                    localStorage.setItem('linkedProvider', provider);
-                    localStorage.setItem('dataStoreToken', response.data.token);
+                    localStorage.setItem('linkedProvider', btoa(provider));
+                    localStorage.setItem('dataStoreToken', btoa(response.data.token));
                     window.location.href = response.data.redirect;
                 })
                 .catch((error) => {
