@@ -192,7 +192,7 @@ export default {
     },
     methods: {
         setResourceCollectionType (rescourceCollectionType) {
-            const managedObjectSettings = this.$root.applicationStore.state.managedObjectSettings;
+            const managedObjectsSettings = this.$root.applicationStore.state.managedObjectsSettings;
 
             let index = 0,
                 resourceCollectionObjectName;
@@ -210,8 +210,8 @@ export default {
 
             resourceCollectionObjectName = this.resourceCollection.path.split('/')[1];
 
-            if (managedObjectSettings && managedObjectSettings[resourceCollectionObjectName]) {
-                this.queryThreshold = managedObjectSettings[resourceCollectionObjectName].minimumUIFilterLength;
+            if (managedObjectsSettings && managedObjectsSettings[resourceCollectionObjectName]) {
+                this.queryThreshold = managedObjectsSettings[resourceCollectionObjectName].minimumUIFilterLength;
             }
 
             /* istanbul ignore next */

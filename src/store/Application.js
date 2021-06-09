@@ -16,7 +16,7 @@ import _ from 'lodash';
  *      @param {boolean} registration - Flag to allow the UI to know the registration feature is available
  *      @param {string} idmBaseURL - Location of IDM
  *      @param {string} theme - Current theme set for the application
- *      @param {object} managedObjectSettings - Settings for displaying grids and search results and for building query requests with large data sets
+ *      @param {object} managedObjectsSettings - Settings for displaying grids and search results and for building query requests with large data sets
  */
 export default {
     state: {
@@ -26,7 +26,7 @@ export default {
         registration: false,
         idmBaseURL: '/openidm',
         theme: 'default',
-        managedObjectSettings: null
+        managedObjectsSettings: null
     },
 
     setEnvironment (env) {
@@ -85,8 +85,8 @@ export default {
         });
     },
 
-    setManagedObjectSettings (managedObjectSettings) {
-        this.state.managedObjectSettings = managedObjectSettings;
+    setManagedObjectSettings (managedObjectsSettings) {
+        this.state.managedObjectsSettings = managedObjectsSettings;
     },
 
     clearEnduserSelfservice () {

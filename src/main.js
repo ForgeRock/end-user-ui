@@ -330,8 +330,8 @@ var startApp = function () {
                 i18n.locale = uiConfig.lang;
             }
 
-            if (_.has(uiConfig, 'platformSettings.managedObjectSettings')) {
-                ApplicationStore.setManagedObjectSettings(uiConfig.platformSettings.managedObjectSettings);
+            if (_.has(uiConfig, 'platformSettings.managedObjectsSettings')) {
+                ApplicationStore.setManagedObjectSettings(uiConfig.platformSettings.managedObjectsSettings);
             }
 
             ApplicationStore.setEnduserSelfservice(availability.data.result);
