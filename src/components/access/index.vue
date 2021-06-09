@@ -148,10 +148,10 @@ export default {
     methods: {
         loadData () {
             const idmInstance = this.getRequestService(),
-                managedObjectSettings = this.$root.applicationStore.state.managedObjectSettings;
+                managedObjectsSettings = this.$root.applicationStore.state.managedObjectsSettings;
 
-            if (managedObjectSettings && managedObjectSettings[this.name]) {
-                this.queryThreshold = managedObjectSettings[this.name].minimumUIFilterLength;
+            if (managedObjectsSettings && managedObjectsSettings[this.name]) {
+                this.queryThreshold = managedObjectsSettings[this.name].minimumUIFilterLength;
             }
 
             /* istanbul ignore next */
