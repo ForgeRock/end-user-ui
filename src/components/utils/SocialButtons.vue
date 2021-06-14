@@ -1,14 +1,14 @@
 <template>
     <div v-if="providers.length">
         <button class="btn btn-lg btn-light btn-block fr-btn-social mb-3"
-                type="button"
-                v-for="(provider, index) in providers"
-                v-if="provider.uiConfig"
-                :key="index"
-                :style="socialButtonStyles[index]"
-                @click="goToIDP(provider.provider)"
-                @mouseover="hover(index, provider.uiConfig.buttonCustomStyleHover)"
-                @mouseout="hover(index, provider.uiConfig.buttonCustomStyle)">
+            type="button"
+            v-for="(provider, index) in providers"
+            v-if="provider.uiConfig"
+            :key="index"
+            :style="socialButtonStyles[index]"
+            @click="goToIDP(provider.provider)"
+            @mouseover="hover(index, provider.uiConfig.buttonCustomStyleHover)"
+            @mouseout="hover(index, provider.uiConfig.buttonCustomStyle)">
 
             <img v-if="provider.uiConfig.buttonImage" :src="'static/' + provider.uiConfig.buttonImage"/>
             <i v-else :class="['fa fa-lg', provider.uiConfig.iconClass]"></i>
@@ -123,7 +123,7 @@
                         .then((response) => {
                             let redirect = response.data.redirect;
                             // check for redirectUriOverride
-                            const redirectUriOverride = localStorage.getItem('redirectUriOverride');
+                            const redirectUriOverride = atob(localStorage.getItem('redirectUriOverride'));
                             if (redirectUriOverride) {
                                 // remove the localStorage item
                                 localStorage.removeItem('redirectUriOverride');
@@ -132,7 +132,7 @@
                                 // reset redirect with this new url
                                 redirect = newRedirectUrl.href;
                             }
-                            localStorage.setItem('dataStoreToken', response.data.token);
+                            localStorage.setItem('dataStoreToken', btoa(response.data.token));
                             window.location.href = redirect;
                         })
                         .catch((error) => {

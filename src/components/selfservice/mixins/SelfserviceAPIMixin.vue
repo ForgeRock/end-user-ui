@@ -79,7 +79,7 @@
                     // decode the encoded returnParams
                     const returnParams = new URLSearchParams(decodeURIComponent(data.returnParams)),
                         redirectUriOverride = returnParams.get('goto');
-                    localStorage.setItem('redirectUriOverride', redirectUriOverride);
+                    localStorage.setItem('redirectUriOverride', btoa(redirectUriOverride));
                 }
                 /* istanbul ignore next */
                 selfServiceInstance.post(`/selfservice/${this.apiType}?_action=submitRequirements`, saveData)
