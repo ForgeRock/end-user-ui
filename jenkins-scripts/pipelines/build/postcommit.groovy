@@ -5,6 +5,7 @@
 //====================================
 
 import com.forgerock.pipeline.Build
+import com.forgerock.pipeline.whitesource.ScanResult
 import java.text.SimpleDateFormat
 
 def build() {
@@ -52,6 +53,47 @@ def build() {
           sh "mvn -B -e -U clean deploy -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
                   " -Dwhitesource.product.key=${env.WS_PRODUCT_KEY} -Dwhitesource.user.key=${env.WS_USER_KEY}"
         }
+      }
+    }
+
+    stage ('Whitesource Scan') {
+      try {
+        def repoName = scmUtils.getRepoName()
+        def branchName = env.BRANCH_NAME
+
+        ScanResult whitesourceScanResult
+
+        withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
+                 "MAVEN_OPTS=${mavenBuildOptions}",
+                 "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
+          whitesourceScanResult = whitesourceUtils.performWhitesourceScan(repoName, branchName, SHORT_GIT_COMMIT)
+        }
+
+        if (!whitesourceScanResult.scanPassed) {
+          currentBuild.result = 'FAILURE'
+          error 'Whitesource scan failure'
+        }
+      } catch (exception) {
+        emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('WhiteSource', exception.message)
+        currentBuild.result = 'UNSTABLE'
+      }
+    }
+
+    stage ('Build and push Docker image') {
+
+      stageErrorMessage = 'Docker image creation failed, please check the console output'
+
+      def versionPrefix = ENDUSER_VERSION.substring(0, ENDUSER_VERSION.lastIndexOf("-")) // e.g. '6.0.0'
+
+      withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
+               "MAVEN_OPTS=${mavenBuildOptions}",
+               "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
+
+        // The *-SNAPSHOT tag will be created by default, and comes from the project version provided to Maven
+        sh """mvn -B docker:build docker:push \
+            -Ddocker.tags.0=${versionPrefix}-postcommit-latest \
+            -Ddocker.tags.1=${versionPrefix}-${SHORT_GIT_COMMIT}
+          """
       }
     }
 
