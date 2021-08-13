@@ -5,6 +5,7 @@
 //====================================
 
 import com.forgerock.pipeline.Build
+import com.forgerock.pipeline.whitesource.ScanResult
 import java.text.SimpleDateFormat
 
 def build() {
@@ -52,6 +53,29 @@ def build() {
           sh "mvn -B -e -U clean deploy -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
                   " -Dwhitesource.product.key=${env.WS_PRODUCT_KEY} -Dwhitesource.user.key=${env.WS_USER_KEY}"
         }
+      }
+    }
+
+    stage ('Whitesource Scan') {
+      try {
+        def repoName = scmUtils.getRepoName()
+        def branchName = env.BRANCH_NAME
+
+        ScanResult whitesourceScanResult
+
+        withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
+                 "MAVEN_OPTS=${mavenBuildOptions}",
+                 "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
+          whitesourceScanResult = whitesourceUtils.performWhitesourceScan(repoName, branchName, SHORT_GIT_COMMIT)
+        }
+
+        if (!whitesourceScanResult.scanPassed) {
+          currentBuild.result = 'FAILURE'
+          error 'Whitesource scan failure'
+        }
+      } catch (exception) {
+        emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('WhiteSource', exception.message)
+        currentBuild.result = 'UNSTABLE'
       }
     }
 
