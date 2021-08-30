@@ -114,7 +114,7 @@ of the MIT license. See the LICENSE file for details.
                         </goals>
                         <phase>initialize</phase>
                         <configuration>
-                            <arguments>install</arguments>
+                            <arguments>install --ignore-scripts</arguments>
                         </configuration>
                     </execution>
                     <execution>
