@@ -10,7 +10,8 @@
     "lint": "vue-cli-service lint",
     "dev": "vue-cli-service serve",
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
-    "find-copyright-problems": "echo 'Listing all files which do not contain a valid copyright header for this year - some files do not qualify \n' && cd src && git grep -L --word-regexp \"Copyright (c) $(date +\"%Y\")\""
+    "find-copyright-problems": "echo 'Listing all files which do not contain a valid copyright header for this year - some files do not qualify \n' && cd src && git grep -L --word-regexp \"Copyright (c) $(date +\"%Y\")\"",
+    "preinstall": "npx npm-force-resolutions"
   },
   "dependencies": {
     "axios": "0.21.4",
@@ -48,6 +49,7 @@
     "moxios": "0.4.0 ",
     "mutationobserver-shim": "0.3.3",
     "node-sass": "4.14.1",
+    "npm-force-resolutions": "0.0.10",
     "popper.js": "1.15.0",
     "portal-vue": "2.1.4",
     "sass-loader": "7.1.0",
@@ -55,6 +57,10 @@
     "style-resources-loader": "1.2.1",
     "vue-cli-plugin-i18n": "0.6.0",
     "vue-template-compiler": "2.6.10"
+  },
+  "resolutions": {
+    "ansi-regex": "5.0.1",
+    "path-parse": "1.0.7"
   },
   "eslintConfig": {
     "root": true,
