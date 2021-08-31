@@ -149,6 +149,9 @@ export default {
                     });
 
                     idmInstance.post(`policy/${this.$root.userStore.state.managedResource}/${this.$root.userStore.state.userId}?_action=validateObject`, policyFields).then((policyResult) => {
+                        // reject any failedPolicyRequirements on properties that don't exist in this.formFields
+                        policyResult.data.failedPolicyRequirements = _.remove(policyResult.data.failedPolicyRequirements, (policy) => !_.map(this.formFields, 'name').includes(policy.property));
+
                         if (policyResult.data.failedPolicyRequirements.length === 0) {
                             this.$emit('updateProfile', this.generateUpdatePatch(this.originalFormFields, this.formFields));
                             this.errors.clear();
