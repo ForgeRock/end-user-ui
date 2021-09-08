@@ -57,24 +57,23 @@ def build() {
     }
 
     stage ('Whitesource Scan') {
+      ScanResult whitesourceScanResult
       try {
         def repoName = scmUtils.getRepoName()
         def branchName = env.BRANCH_NAME
-
-        ScanResult whitesourceScanResult
 
         withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
                  "MAVEN_OPTS=${mavenBuildOptions}",
                  "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
           whitesourceScanResult = whitesourceUtils.performWhitesourceScan(repoName, branchName, SHORT_GIT_COMMIT)
         }
-
-        if (!whitesourceScanResult.scanPassed) {
-          currentBuild.result = 'FAILURE'
-        }
       } catch (exception) {
         emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('WhiteSource', exception.message)
         currentBuild.result = 'UNSTABLE'
+      }
+
+      if (!whitesourceScanResult.scanPassed) {
+        error 'WhiteSource scan failure'
       }
     }
 
