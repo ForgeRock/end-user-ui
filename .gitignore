@@ -8,7 +8,6 @@ yarn-error.log*
 .idea
 *.iml
 .gitkeep
-package-lock.json
 node
 target
 
