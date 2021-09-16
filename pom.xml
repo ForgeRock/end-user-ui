@@ -22,8 +22,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <frontendMavenPlugin.version>1.6</frontendMavenPlugin.version>
-        <node.version>v9.5.0</node.version>
-        <npm.version>5.6.0</npm.version>
+        <node.version>v14.4.0</node.version>
+        <npm.version>7.5.4</npm.version>
     </properties>
 
 		<repositories>
