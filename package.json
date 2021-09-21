@@ -19,7 +19,7 @@
     "bootstrap-vue": "2.1.0",
     "core-js": "3.6.5",
     "es6-promise": "4.2.4",
-    "lodash": "4.17.20",
+    "lodash": "4.17.21",
     "moment": "2.20.1",
     "sanitize-html": "1.27.5",
     "vee-validate": "2.0.8",
