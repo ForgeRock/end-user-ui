@@ -60,7 +60,7 @@
     "vue-template-compiler": "2.6.10"
   },
   "resolutions": {
-    "follow-redirects": "1.14.7"
+    "follow-redirects": "1.14.8"
   },
   "eslintConfig": {
     "root": true,
