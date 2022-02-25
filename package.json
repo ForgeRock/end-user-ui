@@ -15,7 +15,7 @@
     "preinstall": "npx force-resolutions --silent"
   },
   "dependencies": {
-    "axios": "0.24.0",
+    "axios": "0.26.0",
     "bootstrap": "4.3.1",
     "bootstrap-vue": "2.21.2",
     "core-js": "3.6.5",
@@ -106,8 +106,7 @@
   },
   "resolutions": {
     "ansi-regex": "5.0.1",
-    "path-parse": "1.0.7",
-    "follow-redirects": "1.14.7"
+    "path-parse": "1.0.7"
   },
   "engines": {
     "node": ">= 9.0.0",
