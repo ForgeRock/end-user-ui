@@ -16,7 +16,7 @@ jobProperties.add(parameters([
 properties(jobProperties)
 
 def javaVersion = '8'
-def mavenVersion = '3.2.5'
+def mavenVersion = '3.6.0'
 def mavenOpts = ''
 def mvnProfiles
 def mvnProperties
