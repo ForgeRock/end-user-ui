@@ -26,7 +26,7 @@ def releaseBuild = new MavenReleaseBuild(steps, env, currentBuild,
                         params.RELEASE_VERSION, params.NEXT_DEVELOPMENT_VERSION,
                         mavenVersion, javaVersion, mavenOpts)
 
-def slackChannel = '#sustaining-idm'
+def slackChannel = '#sustaining-idm-notifications'
 def emailNotificationMailingList = ['idm-sustaining@forgerock.com']
 releaseBuild.setBuildFailureEmailNotificationPolicy([ brokenBuildSuspects(), requestor() ])
 def stageErrorMessage
