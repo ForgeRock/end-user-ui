@@ -30,7 +30,7 @@
         <repository>
             <id>forgerock-internal-releases</id>
             <name>ForgeRock Internal Releases Repository</name>
-            <url>http://maven.forgerock.org/repo/internal-releases</url>
+            <url>https://maven.forgerock.org/repo/internal-releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -38,7 +38,7 @@
         <repository>
             <id>forgerock-internal-snapshots</id>
             <name>ForgeRock Internal Snapshots Repository</name>
-            <url>http://maven.forgerock.org/repo/internal-snapshots</url>
+            <url>https://maven.forgerock.org/repo/internal-snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
