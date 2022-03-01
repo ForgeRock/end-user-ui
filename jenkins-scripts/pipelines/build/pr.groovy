@@ -22,7 +22,7 @@ def build() {
   bitbucketCommentId = ''
 
   def javaVersion = '8'
-  def mavenVersion = '3.2.5'
+  def mavenVersion = '3.6.0'
   def mavenBuildOptions = ''
 
   try {
