@@ -14,8 +14,8 @@ def build() {
 
   postcommitBuild = new Build(steps, env, currentBuild)
 
-  slackChannel = '#idm-ui'
-  emailNotificationMailingList = ['openidm-dev@forgerock.com, jason.browne@forgerock.com, brendan.miller@forgerock.com']
+  slackChannel = '#sustaining-idm-notifications'
+  emailNotificationMailingList = ['idm-sustaining@forgerock.com']
   postcommitBuild.setBuildFailureEmailNotificationPolicy([ brokenBuildSuspects() ])
 
   def javaVersion = '8'
