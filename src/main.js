@@ -403,8 +403,8 @@ var startApp = function () {
                     i18n.locale = uiConfig.lang;
                 }
 
-                if (uiConfig.data.configuration.amDataEndpoints) {
-                    ApplicationStore.setAmDataEndpointsAction(uiConfig.data.configuration.amDataEndpoints);
+                if (uiConfig.amDataEndpoints) {
+                    ApplicationStore.setAmDataEndpointsAction(uiConfig.amDataEndpoints);
                 }
 
                 if (_.has(uiConfig, 'platformSettings.managedObjectsSettings')) {
