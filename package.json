@@ -20,7 +20,7 @@
     "core-js": "3.6.5",
     "es6-promise": "4.2.4",
     "lodash": "4.17.21",
-    "moment": "2.22.2",
+    "moment": "2.29.2",
     "sanitize-html": "^2.3.3",
     "vee-validate": "3.3.2",
     "vue": "2.6.10",
