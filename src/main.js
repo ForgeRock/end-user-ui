@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright (c) 2020 ForgeRock. All rights reserved.
+ * Copyright (c) 2022 ForgeRock. All rights reserved.
  *
  * This software may be modified and distributed under the terms
  * of the MIT license. See the LICENSE file for details.
@@ -69,14 +69,14 @@ router.beforeEach((to, from, next) => {
     }
 
     if (_.has(to, 'meta.authenticate') && to.meta.authenticate === true) {
-        if (_.isNull(UserStore.state.userId)) {
-            let tempHeaders = _.extend({
-                    'content-type': 'application/json; charset=utf-8',
-                    'cache-control': 'no-cache',
-                    'x-requested-with': 'XMLHttpRequest'
-                }, {}),
-                authInstance;
+        let tempHeaders = _.extend({
+                'content-type': 'application/json; charset=utf-8',
+                'cache-control': 'no-cache',
+                'x-requested-with': 'XMLHttpRequest'
+            }, {}),
+            authInstance;
 
+        if (_.isNull(UserStore.state.userId)) {
             authInstance = axios.create({
                 baseURL: idmContext,
                 timeout: 5000,
@@ -87,6 +87,13 @@ router.beforeEach((to, from, next) => {
                 UserStore.setUserIdAction(userDetails.data.authorization.id);
                 UserStore.setManagedResourceAction(userDetails.data.authorization.component);
                 UserStore.setRolesAction(userDetails.data.authorization.roles);
+
+                // anonymous internal user should not be allowed access
+                if (userDetails.data.authorization.roles.includes('internal/role/openidm-reg')) {
+                    authInstance.post('/authentication?_action=logout').then(() => {
+                        next({ name: 'Login' });
+                    });
+                }
 
                 // Check for progressive profiling.
                 if (
@@ -122,7 +129,20 @@ router.beforeEach((to, from, next) => {
                 next({ name: 'Login' });
             });
         } else {
-            next();
+            // anonymous internal user should not be allowed access
+            if (UserStore.state.roles.includes('internal/role/openidm-reg')) {
+                authInstance = axios.create({
+                    baseURL: idmContext,
+                    timeout: 5000,
+                    headers: tempHeaders
+                });
+
+                authInstance.post('/authentication?_action=logout').then(() => {
+                    next({ name: 'Login' });
+                });
+            } else {
+                next();
+            }
         }
     } else {
         next();
