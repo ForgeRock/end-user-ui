@@ -13,9 +13,9 @@
 
 ## Table of contents
 
+- [Table of contents](#table-of-contents)
 - [Quick start](#quick-start)
 - [Development server](#development-server)
-- [Development server tools](#development-server-tools)
 - [Testing](#testing)
 - [Testing tools](#testing-tools)
 - [Application structure](#application-structure)
@@ -25,7 +25,14 @@
 - [Theming](#theming)
 - [Build command summary](#build-command-summary)
 - [Browser support](#browser-support)
-- [Common questions](#common-questions)
+- [Common Questions](#common-questions)
+  - [Who this project is for](#who-this-project-is-for)
+  - [How to Add a Self-Service Stage to the UI](#how-to-add-a-self-service-stage-to-the-ui)
+  - [How to Replace IDM End User](#how-to-replace-idm-end-user)
+  - [How to Add Additional Registration Flows](#how-to-add-additional-registration-flows)
+  - [How to Configure Notification Polling](#how-to-configure-notification-polling)
+  - [How to Configure REST Call Timeouts](#how-to-configure-rest-call-timeouts)
+  - [What has Changed with Workflow](#what-has-changed-with-workflow)
 
 <a name="quick-start"></a>
 ## Quick start
@@ -34,37 +41,28 @@
 - Check that you have the latest npm with `npm install npm@latest -g`
 - Clone or download the repo: `https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser` or `https://github.com/ForgeRock/end-user-ui`
 - Navigate to your `openidm-enduser` directory and install dependencies with npm: `npm install`
-- Update `proxyTable:target` in `/config/index.js` to point to your target IDM
+- Update `proxy:target` in `/vue.config.js` to point to your target IDM
 - Start up target IDM (default startup is `http://localhost:8080`)
 - Start development server with npm: `npm run dev`
 
 <a name="development-server"></a>
 ## Development server
 
-`npm run dev` starts up a standalone node server primarily for ease of development. This development server also provides an easy way to test and understand various identity management features.
+`npm run dev` starts up a standalone server primarily for ease of development. This development server also provides an easy way to test and understand various identity management features.
 
 - Uses port `8080` by default, and auto-increments the port if `8080` is not available
 - Assumes `openidm` is the context for the rest service (e.g. http://localhost:8080/openidm/info). If this is not the case, change idmContext `/src/main.js`, or context `/index.html`.
 - Supports hot reloading and error display when code is changed
-- Includes its own [testing](#testing)
-- Built off [Vue Webpack Template](http://vuejs-templates.github.io/webpack/)
-
-<a name="development-server-tools"></a>
-## Development server tools
-
-- [Node](https://nodejs.org/en/download/) - Version 9.0.0 or newer (ForgeRock development verified 9.5.0)
-- [NPM](https://www.npmjs.com/) - Version 5.0.0 or newer (ForgeRock development verified 6.4.1)
 
 <a name="testing"></a>
 ## Testing
 
 - Run tests with npm: `npm test`
-
-Running tests provides a console display with test results and generates a viewable testing result report for browser display `test/unit/coverage/lcov-report`.
-
 - Run tests for browser debugging: `npm run unit:watch`
 
-This command runs two copies of the tests - one in the phantom JS headless browser and another at `localhost:9876` that can be used to watch or debug on your local browser.
+This command runs the tests used to watch or debug on your local browser.
+
+Running tests provides a console display with test results.
 
 <a name="testing-tools"></a>
 ## Testing tools
@@ -73,10 +71,8 @@ The following testing tools are installed when you install the project dependenc
 
 - [Vue testing utils](https://vue-test-utils.vuejs.org/) - Testing util library for Vue components
 - [Sinon](https://sinonjs.org/) - Testing util library (stubs and spies)
-- [Karma](https://karma-runner.github.io/2.0/index.html) - Testing harness
 - [Mocha](https://mochajs.org/) - Testing framework
 - [Chai](http://chaijs.com/) - Assertion library
-- [PhantomJS](https://github.com/ariya/phantomjs) - Headless browser
 
 <a name="application-structure"></a>
 ## Application structure
@@ -84,7 +80,13 @@ The following testing tools are installed when you install the project dependenc
 To help you with navigation, the application has the following basic layout:
 
 ```
+public/ - Static assets not processed by webpack
+│    ├── css/ - venfor css
+│    └── webfonts/ - fontawesome assets
 src/
+├── assets/ - Processed by webpack loaders for consumption
+│    ├── images/ - svg files
+│    └── scss/ - SCSS / CSS styling files
 ├── components/ - General application components
 │    ├── access/ - Delegated admin components
 │    ├── dashboard/ - Dashboard widgets and workflow integration
@@ -167,9 +169,9 @@ The following theming tools are installed when you install the project dependenc
 Theming makes use of two concepts:
 
 - Theming follows the basic [Bootstrap theming guidelines](https://getbootstrap.com/docs/4.0/getting-started/theming/) and relies on SCSS variable overrides.
-- The theme file is loaded with an optional flag when running the dev server or distribution build. For example, `npm run dev --theme=red` or `npm run build --theme=red`.
+- The theme file is loaded with an optional flag when running the dev server or distribution build. For example, `npm run dev --theme=rock` or `npm run build --theme=rock`.
 
-When you include the theme flag, the `node` build scripts attempt to locate a corresponding file in `src/scss`. The file must also contain a `-theme.scss` moniker, for example, `red-theme.scss`.
+When you include the theme flag, the `node` build scripts attempt to locate a corresponding file in `src/assets/scss`. The file must also contain a `-theme.scss` moniker, for example, `rock-theme.scss`.
 
 The default project includes three themes:
 - ForgeRock default theme
@@ -195,16 +197,13 @@ npm install
 npm run dev
 
 # server with theme loaded
-npm run dev --theme=red
+npm run dev --theme=rock
 
 # build for production with minification
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
-
 # build with theme loaded
-npm run build --theme=red
+npm run build --theme=rock
 
 # run all tests
 npm test
@@ -221,13 +220,26 @@ npm test
 <a name="common-questions"></a>
 ## Common Questions
 
-- [Who this project is for](#who-this-project-is-for)
-- [How to Add a Self-Service Stage to the UI](#how-to-add-a-self-service-stage-to-the-ui)
-- [How to Replace IDM End User files](#how-to-replace-a-idm-enduser)
-- [How to Add Additional Registration Flows](#how-to-add-additional-registration-flows)
-- [How to Configure Notification Polling](#how-to-configure-notification-polling)
-- [How to Configure REST Call Timeouts](#how-to-configure-rest-call-timeouts)
-- [What has Changed with Workflow](#what-has-changed-with-workflow)
+- [Table of contents](#table-of-contents)
+- [Quick start](#quick-start)
+- [Development server](#development-server)
+- [Testing](#testing)
+- [Testing tools](#testing-tools)
+- [Application structure](#application-structure)
+- [Application tools](#application-tools)
+- [Translations and Text](#translations-and-text)
+- [Deployment](#deployment)
+- [Theming](#theming)
+- [Build command summary](#build-command-summary)
+- [Browser support](#browser-support)
+- [Common Questions](#common-questions)
+  - [Who this project is for](#who-this-project-is-for)
+  - [How to Add a Self-Service Stage to the UI](#how-to-add-a-self-service-stage-to-the-ui)
+  - [How to Replace IDM End User](#how-to-replace-idm-end-user)
+  - [How to Add Additional Registration Flows](#how-to-add-additional-registration-flows)
+  - [How to Configure Notification Polling](#how-to-configure-notification-polling)
+  - [How to Configure REST Call Timeouts](#how-to-configure-rest-call-timeouts)
+  - [What has Changed with Workflow](#what-has-changed-with-workflow)
 
 <a name="who-this-project-is-for"></a>
 ### Who this project is for

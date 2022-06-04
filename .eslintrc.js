@@ -1,32 +1,25 @@
-// https://eslint.org/docs/user-guide/configuring
-
 module.exports = {
-    root: true,
-    parser: 'babel-eslint',
-    parserOptions: {
-        sourceType: 'module'
+  root: true,
+  env: {
+    node: true,
+  },
+  extends: ["plugin:vue/essential", "eslint:recommended"],
+  parserOptions: {
+    parser: "babel-eslint",
+  },
+  rules: {
+    "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
+    "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+  },
+  overrides: [
+    {
+      files: [
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)",
+      ],
+      env: {
+        mocha: true,
+      },
     },
-    env: {
-        browser: true,
-    },
-    // https://github.com/standard/standard/blob/master/docs/RULES-en.md
-    extends: 'standard',
-    // required to lint *.vue files
-    plugins: [
-        'html'
-    ],
-    // add your custom rules here
-    'rules': {
-        // allow paren-less arrow functions
-        'arrow-parens': 0,
-        // allow async-await
-        'semi': [2, 'always'],
-        'indent': ['error', 4],
-        //single var
-        'one-var': ['error', 'always'],
-        //semicolons always
-        'generator-star-spacing': 0,
-        // allow debugger during development
-        'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
-    }
+  ],
 };

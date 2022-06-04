@@ -1,0 +1,115 @@
+import Vue from "vue";
+import Login from "@/components/Login";
+import VueI18n from "vue-i18n";
+import moxios from "moxios";
+import axios from "axios";
+import BootstrapVue from "bootstrap-vue";
+import translations from "@/translations";
+import { shallowMount } from "@vue/test-utils";
+import { expect } from "chai";
+
+describe("Login.vue", () => {
+  Vue.use(VueI18n);
+  Vue.use(BootstrapVue);
+
+  beforeEach(() => {
+    moxios.install();
+  });
+
+  afterEach(() => {
+    moxios.uninstall();
+  });
+
+  const i18n = new VueI18n({
+      locale: "en",
+      messages: translations,
+    }),
+    applicationStore = {
+      state: {
+        workflow: false,
+        passwordReset: false,
+        usernameRecovery: false,
+        registration: false,
+      },
+    };
+
+  it("Login page loaded", () => {
+    const wrapper = shallowMount(Login, {
+      i18n,
+      mocks: {
+        applicationStore,
+      },
+      stubs: {
+        "router-link": true,
+      },
+    });
+
+    expect(wrapper.name()).to.equal("Login");
+  });
+
+  it("Login shows error when given bad credentials", (done) => {
+    const wrapper = shallowMount(Login, {
+      i18n,
+      stubs: {
+        "router-link": true,
+      },
+      mocks: {
+        getAnonymousHeaders: () => {
+          return {};
+        },
+        applicationStore,
+      },
+    });
+
+    wrapper.setMethods({
+      getRequestService: function (obj) {
+        if (obj) {
+          return axios.create(obj);
+        } else {
+          return axios.create({
+            baseURL: "/openidm",
+            timeout: 1000,
+            headers: {
+              "X-OpenIDM-Username": "openidm-admin",
+              "X-OpenIDM-Password": "openidm-admin",
+              "content-type": "application/json",
+            },
+          });
+        }
+      },
+      getAnonymousHeaders: function () {
+        return {
+          "X-OpenIDM-NoSession": true,
+          "X-OpenIDM-Password": "anonymous",
+          "X-OpenIDM-Username": "anonymous",
+        };
+      },
+      encodeRFC5987IfNecessary: function (s) {
+        return s;
+      },
+    });
+
+    wrapper.vm.submit();
+
+    moxios.wait(() => {
+      const request = moxios.requests.mostRecent();
+      request
+        .respondWith({
+          status: 200,
+          response: [],
+        })
+        .then(() => {
+          const request = moxios.requests.mostRecent();
+          request
+            .respondWith({
+              status: 401,
+              response: [],
+            })
+            .then(() => {
+              expect(wrapper.vm.wrongPasswordSubmitted).to.equal(true);
+              done();
+            });
+        });
+    });
+  });
+});
