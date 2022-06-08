@@ -14,7 +14,7 @@
         <div slot="list-item-header" class="d-inline-flex w-100">
           <div class="d-flex mr-3 align-self-top">
             <img
-              :src="application.logo_uri || 'static/images/authorized-app.svg'"
+              :src="application.logo_uri || 'src/assets/images/authorized-app.svg'"
               width="25"
             />
           </div>
