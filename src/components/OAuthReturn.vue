@@ -10,7 +10,7 @@
 
 <script>
 import { BounceLoader } from "vue-spinner/dist/vue-spinner.min.js";
-import styles from "@/assets/scss/main.scss";
+import * as styles from "@/assets/scss/main.scss";
 import _ from "lodash";
 
 /**

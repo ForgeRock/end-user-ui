@@ -29,11 +29,11 @@ export default {
         })
         .catch((error) => {
           /*
-                            If we are in progressive profiling mode we need to route back to login.
-                            This can happen if a user reloads the progressive profile page while
-                            in fullStack mode. We need to hit the login route again to start the
-                            process over.
-                        */
+              If we are in progressive profiling mode we need to route back to login.
+              This can happen if a user reloads the progressive profile page while
+              in fullStack mode. We need to hit the login route again to start the
+              process over.
+          */
           if (_.has(this.$router.currentRoute, "params.profileProcess")) {
             this.$router.push("/login");
           } else {
@@ -110,26 +110,26 @@ export default {
     },
     parseQueryParams(queryParams) {
       /*
-                    example =>
-                    queryParams = '&token=MY_TOKEN&code=MY_CODE'
-                    returns {
-                        token: 'MY_TOKEN',
-                        code: 'MY_CODE'
-                    }
-                */
+          example =>
+          queryParams = '&token=MY_TOKEN&code=MY_CODE'
+          returns {
+              token: 'MY_TOKEN',
+              code: 'MY_CODE'
+          }
+      */
       if (!queryParams.match("returnParams")) {
         return JSON.parse(
           `{
-                            ${
-                              decodeURI(
-                                '"' +
-                                  queryParams
-                                    .slice(1)
-                                    .replace(/&/g, '","')
-                                    .replace(/=/g, '":"')
-                              ) + '"'
-                            }
-                        }`
+            ${
+              decodeURI(
+                '"' +
+                  queryParams
+                    .slice(1)
+                    .replace(/&/g, '","')
+                    .replace(/=/g, '":"')
+              ) + '"'
+            }
+          }`
         );
       } else {
         return {

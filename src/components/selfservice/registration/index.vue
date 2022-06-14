@@ -45,7 +45,7 @@
 <script>
 import _ from "lodash";
 import { BounceLoader } from "vue-spinner/dist/vue-spinner.min.js";
-import styles from "@/assets/scss/main.scss";
+import * as styles from "@/assets/scss/main.scss";
 import CenterCard from "@/components/utils/CenterCard";
 import AllInOneRegistration from "@/components/selfservice/registration/AllInOneRegistration";
 import Captcha from "@/components/selfservice/common/Captcha";

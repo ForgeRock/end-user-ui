@@ -25,7 +25,7 @@
 import _ from "lodash";
 import { ClipLoader } from "vue-spinner/dist/vue-spinner.min.js";
 import GenericTask from "@/components/dashboard/widgets/workflow/GenericTask";
-import styles from "@/assets/scss/main.scss";
+import * as styles from "@/assets/scss/main.scss";
 
 /**
  * @description Dashboard widget that displays the specific details of a task

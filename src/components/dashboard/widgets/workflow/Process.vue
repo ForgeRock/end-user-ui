@@ -24,7 +24,7 @@
 <script>
 import { ClipLoader } from "vue-spinner/dist/vue-spinner.min.js";
 import GenericProcess from "@/components/dashboard/widgets/workflow/GenericProcess";
-import styles from "@/assets/scss/main.scss";
+import * as styles from "@/assets/scss/main.scss";
 
 /**
  * @description Dashboard widget that displays the details of a specific process

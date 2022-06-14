@@ -67,7 +67,7 @@ import CenterCard from "@/components/utils/CenterCard";
 import FloatingLabelInput from "@/components/utils/FloatingLabelInput";
 import SelfserviceAPI from "@/components/selfservice/mixins/SelfserviceAPIMixin";
 import SocialButtons from "@/components/utils/SocialButtons";
-import styles from "@/assets/scss/main.scss";
+import * as styles from "@/assets/scss/main.scss";
 
 export default {
   components: {
@@ -185,8 +185,6 @@ export default {
               clientToken: this.originalToken,
             });
           } else {
-            console.log("accountClaiming", btoa(this.clientToken));
-
             localStorage.setItem(
               "accountClaimingToken",
               btoa(this.clientToken)

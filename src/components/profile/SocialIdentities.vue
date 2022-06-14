@@ -251,7 +251,6 @@ export default {
           landingPage: `${window.location.protocol}/#/${window.location.host}/login?_oauthReturn=true&provider=${provider}&gotoURL=profile`,
         })
         .then((response) => {
-          console.log('socialIdentities', "linkedProvider", btoa(provider), "dataStoreToken", btoa(response.data.token));
           localStorage.setItem("linkedProvider", btoa(provider));
           localStorage.setItem(
             "dataStoreToken",

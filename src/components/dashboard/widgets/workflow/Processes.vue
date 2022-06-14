@@ -51,7 +51,7 @@
 import _ from "lodash";
 import ListGroup from "@/components/utils/ListGroup";
 import ListItem from "@/components/utils/ListItem";
-import styles from "@/assets/scss/main.scss";
+import * as styles from "@/assets/scss/main.scss";
 import Process from "./Process";
 
 /**

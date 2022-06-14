@@ -39,7 +39,7 @@
 
 <script>
 import _ from "lodash";
-import styles from "@/assets/scss/main.scss";
+import * as styles from "@/assets/scss/main.scss";
 import { BounceLoader } from "vue-spinner/dist/vue-spinner.min.js";
 import axios from "axios";
 import CenterCard from "@/components/utils/CenterCard";
