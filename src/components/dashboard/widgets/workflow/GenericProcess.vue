@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2022 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -62,10 +62,9 @@ export default {
         // Establish type and default values
         _.each(this.workflowDetails, (detail) => {
             let detailKey = _.lowerCase(detail.name);
-
             tempFormFields.push({
                 name: detail.name,
-                key: detailKey,
+                key: detail._id,
                 type: detail.type.name,
                 value: detail.type.value
             });
