@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020-2021 ForgeRock. All rights reserved.
+Copyright (c) 2020-2022 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -37,7 +37,12 @@ export default {
         };
     },
     created () {
-        let queryParams;
+        let queryParams,
+            linkedProvider = localStorage.getItem('linkedProvider');
+
+        if (linkedProvider) {
+            linkedProvider = atob(linkedProvider);
+        }
 
         queryParams = window.location.search.replace('?', '').split('&').reduce(function (map, item) {
             let parts = item.split('='),
@@ -51,12 +56,11 @@ export default {
 
         /* istanbul ignore next */
         const socialInstance = this.getRequestService({
-                headers: _.extend(this.getAnonymousHeaders(), {
-                    'X-OpenIDM-NoSession': 'true',
-                    'X-OpenIDM-DataStoreToken': atob(localStorage.getItem('dataStoreToken'))
-                })
-            }),
-            linkedProvider = atob(localStorage.getItem('linkedProvider'));
+            headers: _.extend(this.getAnonymousHeaders(), {
+                'X-OpenIDM-NoSession': 'true',
+                'X-OpenIDM-DataStoreToken': atob(localStorage.getItem('dataStoreToken'))
+            })
+        });
 
         /* istanbul ignore next */
         localStorage.removeItem('dataStoreToken');
@@ -66,7 +70,11 @@ export default {
         socialInstance.post('/identityProviders?_action=handlePostAuth', queryParams)
             .then((response) => {
                 let dataStoreToken = response.data.token,
-                    originalToken = atob(localStorage.getItem('accountClaimingToken'));
+                    originalToken = localStorage.getItem('accountClaimingToken');
+
+                if (originalToken) {
+                    originalToken = atob(originalToken);
+                }
 
                 localStorage.removeItem('accountClaimingToken');
 
