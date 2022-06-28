@@ -34,14 +34,16 @@ export default {
   name: "PolicyPanel",
   props: ["policies", "policyFailures"],
   data() {
-    return {};
+    return {
+      clonedFailures: _.cloneDeep(this.policyFailures),
+    };
   },
   computed: {
     isValid() {
-      return _.isArray(this.policyFailures) && _.isEmpty(this.policyFailures);
+      return _.isArray(this.clonedFailures) && _.isEmpty(this.clonedFailures);
     },
     isLoading() {
-      return this.policyFailures === "loading" || this.policyFailures === false;
+      return this.clonedFailures === "loading" || this.clonedFailures === false;
     },
   },
   methods: {
@@ -53,8 +55,8 @@ export default {
     includes: _.includes,
   },
   watch: {
-    policyFailures(value) {
-      this.policyFailures = value;
+    clonedFailures(value) {
+      this.clonedFailures = value;
     },
   },
 };

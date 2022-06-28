@@ -5,7 +5,7 @@
         <b-card no-body class="mt-4">
           <b-list-group flush>
             <b-list-group-item
-              v-for="(request, index) in requests"
+              v-for="(request, index) in requestsClone"
               :key="index"
             >
               <div class="d-sm-flex">
@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import moment from "moment";
 import FallbackImage from "@/components/utils/FallbackImage";
 
@@ -89,6 +90,11 @@ export default {
     "fr-fallback-image": FallbackImage,
   },
   props: ["requests"],
+  data() {
+    return {
+      requestsClone: _.cloneDeep(this.requests),
+    }
+  },
   filters: {
     formatTime(dateString) {
       let eventDate = moment(dateString);
@@ -102,13 +108,13 @@ export default {
   },
   methods: {
     finalizeAccess(request, index, action) {
-      this.requests[index].decision = true;
+      this.requestsClone[index].decision = true;
 
       this.$emit("finalizeResourceAccess", request._id, action, {
         scopes: request.permissions,
         onSuccess: () => {
           if (action === "approve") {
-            this.requests[index].allowed = true;
+            this.requestsClone[index].allowed = true;
           }
         },
       });

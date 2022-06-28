@@ -75,7 +75,7 @@ export default {
   computed: {
     activityGroups() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-      let sortedHistory = this.umaHistory
+      let sortedHistory = _.cloneDeep(this.umaHistory)
           .sort((a, b) => a.eventTime - b.eventTime)
           .reverse(),
         groups = _.groupBy(sortedHistory, (event) => {
