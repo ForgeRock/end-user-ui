@@ -1,3 +1,11 @@
+/**
+ * @license
+ * Copyright (c) 2020-2022 ForgeRock. All rights reserved.
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license. See the LICENSE file for details.
+ */
+
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import "mutationobserver-shim";
@@ -71,17 +79,16 @@ router.beforeEach((to, from, next) => {
   }
 
   if (_.has(to, "meta.authenticate")) {
-    if (_.isNull(UserStore.state.userId)) {
-      let tempHeaders = _.extend(
-          {
-            "content-type": "application/json",
-            "cache-control": "no-cache",
-            "x-requested-with": "XMLHttpRequest",
-          },
-          ApplicationStore.state.authHeaders || {}
-        ),
-        amLogin = false,
-        authInstance;
+    let tempHeaders = _.extend(
+      {
+        "content-type": "application/json",
+        "cache-control": "no-cache",
+        "x-requested-with": "XMLHttpRequest",
+      },
+        ApplicationStore.state.authHeaders || {}
+      ),
+      amLogin = false,
+      authInstance;
 
       /*
                 If we are in working with OpenAM to prevent extra redirects and timeouts we have to catch
@@ -101,11 +108,12 @@ router.beforeEach((to, from, next) => {
         amLogin = true;
       }
 
-      authInstance = axios.create({
-        baseURL: idmContext,
-        timeout: 5000,
-        headers: tempHeaders,
-      });
+      if (_.isNull(UserStore.state.userId)) {
+          authInstance = axios.create({
+            baseURL: idmContext,
+            timeout: 5000,
+            headers: tempHeaders,
+          });
 
       authInstance.post("/authentication?_action=login").then(
         (userDetails) => {
@@ -128,6 +136,13 @@ router.beforeEach((to, from, next) => {
             userDetails.data.authorization.component
           );
           UserStore.setRolesAction(userDetails.data.authorization.roles);
+
+          // anonymous internal user should not be allowed access
+          if (userDetails.data.authorization.roles.includes('internal/role/openidm-reg')) {
+              authInstance.post('/authentication?_action=logout').then(() => {
+                  next({ name: 'Login' });
+              });
+          }
 
           // Check for progressive profiling.
           if (
@@ -187,7 +202,20 @@ router.beforeEach((to, from, next) => {
         }
       );
     } else {
-      next();
+        // anonymous internal user should not be allowed access
+        if (UserStore.state.roles.includes('internal/role/openidm-reg')) {
+            authInstance = axios.create({
+                baseURL: idmContext,
+                timeout: 5000,
+                headers: tempHeaders
+            });
+
+            authInstance.post('/authentication?_action=logout').then(() => {
+                next({ name: 'Login' });
+            });
+       } else {
+            next();
+       }
     }
   } else {
     next();
