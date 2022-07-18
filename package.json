@@ -50,7 +50,7 @@
     "force-resolutions": "1.0.10",
     "moxios": "0.4.0 ",
     "mutationobserver-shim": "0.3.3",
-    "node-sass": "4.14.1",
+    "node-sass": "7.0.0",
     "popper.js": "1.15.0",
     "portal-vue": "2.1.4",
     "sass-loader": "7.1.0",
