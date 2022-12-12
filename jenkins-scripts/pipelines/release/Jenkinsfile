@@ -4,7 +4,7 @@
 // Release pipeline for IDM EndUser UI
 //====================================
 
-@Library('forgerock-pipeline-libs@d202188a060d44cf1f0e5675418a971a53323fe7')
+@Library('forgerock-pipeline-libs@ea988b52a8b1fc6bc4c9eed4ff06a7c958190ad9')
 import com.forgerock.pipeline.MavenReleaseBuild
 
 def jobProperties = [buildDiscarder(logRotator(numToKeepStr: '10'))]
