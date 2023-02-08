@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020-2021 ForgeRock. All rights reserved.
+Copyright (c) 2020-2023 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -64,19 +64,21 @@ of the MIT license. See the LICENSE file for details.
             @row-selected="onRowSelected"
             @sort-changed="sortingChanged"
             :class="[{'hide-header': !gridData.length }]">
-                <template slot="HEAD_selected">
+                <template #head(selected)>
                     <div
                         v-show="gridData.length > 0"
-                        class="cursor-pointer"
-                        @click="toggleSelectAll">
-                            <b-form-checkbox class="pl-4" disabled v-model="allRowsSelected"/>
+                        class="cursor-pointer">
+                            <b-form-checkbox
+                                class="pl-4"
+                                v-model="allRowsSelected"
+                                @change="toggleSelectAll"/>
                     </div>
                 </template>
-                <template v-slot:cell(selected)="data">
+                <template #cell(selected)="data">
                     <b-form-checkbox
                         class="pl-4"
-                        :id="'rowSelectCheckbox_' + relationshipArrayProperty.key + data.index"
-                        @change="onCheckboxClicked(data)"
+                        :id="`rowSelectCheckbox_${relationshipArrayProperty.key}${data.index}`"
+                        @change="onSelectRowCheckboxClicked($event, data.index)"
                         v-model="data.rowSelected"/>
                 </template>
                 <template v-slot:cell(_relationshipDetails)="data">
@@ -163,7 +165,6 @@ import {
     find,
     toArray,
     pick,
-    times,
     map,
     has,
     isNull
@@ -337,17 +338,13 @@ export default {
         onRowSelected (items) {
             this.selected = items;
 
-            this.allRowsSelected = items.length === this.gridPageSize;
+            this.allRowsSelected = items.length === this.gridData.length;
         },
-        toggleSelectAll () {
-            const grid = this.$refs.relationshipArrayGrid;
-
-            this.allRowsSelected = !this.allRowsSelected;
-
-            if (!this.allRowsSelected) {
-                grid.selectedRows = [];
+        toggleSelectAll (toggle) {
+            if (toggle) {
+                this.$refs.relationshipArrayGrid.selectAllRows();
             } else {
-                grid.selectedRows = times(this.gridPageSize, () => { return true; });
+                this.$refs.relationshipArrayGrid.clearSelected();
             }
         },
         saveNewRelationships () {
@@ -436,11 +433,11 @@ export default {
 
             this.loadGrid(1);
         },
-        onCheckboxClicked (row) {
-            if (!row.rowSelected) {
-                this.$refs.relationshipArrayGrid.selectRow(row.index);
+        onSelectRowCheckboxClicked (rowSelected, index) {
+            if (rowSelected) {
+                this.$refs.relationshipArrayGrid.selectRow(index);
             } else {
-                this.$refs.relationshipArrayGrid.unselectRow(row.index);
+                this.$refs.relationshipArrayGrid.unselectRow(index);
             }
         }
     }
