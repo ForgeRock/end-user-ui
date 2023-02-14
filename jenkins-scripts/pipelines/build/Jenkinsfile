@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-@Library(value=['forgerock-pipeline-libs@ba6d0372a4dce9fb03b873ed0753122113372cba', 'QaUtils'], changelog=false)
+@Library(value=['forgerock-pipeline-libs@cce5d62335a8a2806d05c3891733bd334380662e', 'QaUtils'], changelog=false)
 
 def pipeline
 
