@@ -9,7 +9,7 @@ of the MIT license. See the LICENSE file for details.
     <div class="card mt-3">
         <div v-show="!relationshipArrayProperty.isReadOnly" class="px-4 py-2">
             <b-row>
-                <b-col md="7" class="my-1">
+                <b-col md="5" class="my-1">
                     <b-btn
                         type="button"
                         variant="primary"
@@ -26,7 +26,7 @@ of the MIT license. See the LICENSE file for details.
                             <i class="fa fa-trash mr-3"></i>{{$t("common.form.remove")}}
                     </b-button>
                 </b-col>
-                <b-col v-if="showFilter" md="5" class="my-1">
+                <b-col v-if="showFilter && !disableSortAndSearch" md="7" class="my-1">
                     <div class="d-flex">
                         <b-input-group>
                             <b-input-group-prepend>
@@ -34,7 +34,7 @@ of the MIT license. See the LICENSE file for details.
                                     <i class='fa fa-search'></i>
                                 </div>
                             </b-input-group-prepend>
-                            <b-form-input v-model="filter" @keyup.native.enter="search" :placeholder="this.$t('pages.access.typeAndEnterToSearch')" class="inset-left inset-right"></b-form-input>
+                            <b-form-input v-model="filter" @keyup.native.enter="search" :placeholder="searchPlaceholder" class="inset-left inset-right"></b-form-input>
                             <b-input-group-append>
                                 <b-btn variant="outline-default" :disabled="!filter" @click="clear" class="inset clear"><i class="fa fa-times-circle"></i></b-btn>
                             </b-input-group-append>
@@ -165,6 +165,7 @@ import {
     find,
     toArray,
     pick,
+    last,
     map,
     has,
     isNull
@@ -212,8 +213,36 @@ export default {
             removeModalId: `delete_${this.relationshipArrayProperty.propName}_modal`,
             newRelationships: [],
             selected: [],
-            showFilter: false
+            showFilter: false,
+            queryThreshold: null,
+            disableSortAndSearch: false,
+            requiredProps: [
+                '_ref',
+                '_refResourceCollection',
+                '_refResourceId',
+                '_refProperties'
+            ]
         };
+    },
+    watch: {
+        gridData () {
+            // disallow sorting if there is a queryThreshold and the filter doesn't have at least the same number of chars as queryThreshold
+            this.columns = this.columns.map((col) => {
+                if (col.key !== 'actions') {
+                    col.sortable = (!this.disableSortAndSearch && !this.queryThreshold) || (this.filter.length >= this.queryThreshold);
+                }
+
+                return col;
+            });
+        }
+    },
+    computed: {
+        searchPlaceholder () {
+            if (this.queryThreshold) {
+                return this.$t('pages.access.typeAtLeastAndEnterToSearch', { numChars: this.queryThreshold });
+            }
+            return this.$t('pages.access.typeAndEnterToSearch');
+        }
     },
     mounted () {
         this.loadGrid(1);
@@ -221,6 +250,8 @@ export default {
     methods: {
         loadGrid (page) {
             const idmInstance = this.getRequestService(),
+                gridManagedObject = this.relationshipArrayProperty.items.resourceCollection[0].path.split('/')[1],
+                managedObjectsSettings = this.$root.applicationStore.state.managedObjectsSettings,
                 doLoad = (resourceCollectionSchema) => {
                     /* istanbul ignore next */
                     idmInstance.get(this.buildGridUrl(page, resourceCollectionSchema)).then((resourceData) => {
@@ -261,7 +292,14 @@ export default {
                     });
                 };
 
+            if (managedObjectsSettings && managedObjectsSettings[gridManagedObject]) {
+                this.queryThreshold = managedObjectsSettings[gridManagedObject].minimumUIFilterLength;
+            }
+
             if (has(this.relationshipArrayProperty, 'items.resourceCollection') && this.relationshipArrayProperty.items.resourceCollection.length === 1) {
+                const resourceCollection = this.relationshipArrayProperty.items.resourceCollection[0];
+                this.setDisableSortAndSearch(resourceCollection);
+
                 this.getSchema(this.relationshipArrayProperty.items.resourceCollection[0].path).then((response) => {
                     this.showFilter = true;
                     doLoad(response.data);
@@ -270,28 +308,92 @@ export default {
                 doLoad();
             }
         },
+        setDisableSortAndSearch (resourceCollection) {
+            const managedObjectsSettings = this.$root.applicationStore.state.managedObjectsSettings,
+                resourceType = resourceCollection.path.split('/')[0];
+            let resourceName = resourceCollection.path.split('/')[1];
+            // special case for internal/role
+            if (resourceName === 'role' && resourceType === 'internal') {
+                resourceName = 'internalrole';
+            }
+            this.disableSortAndSearch = !this.isOpenidmAdmin && has(managedObjectsSettings, resourceName) ? managedObjectsSettings[resourceName].disableRelationshipSortAndSearch : false;
+        },
         setGridData (relationships, schema) {
-            relationships.forEach((relationship) => {
-                let resourceCollectionSchema = find(schema.items.resourceCollection, { path: relationship._refResourceCollection });
+            const addRows = () => {
+                relationships.forEach((relationship) => {
+                    // eslint-disable-next-line no-underscore-dangle
+                    const resourceCollectionSchema = find(schema.items.resourceCollection, { path: relationship._refResourceCollection });
+                    // special display logic for internal user
+                    if (resourceCollectionSchema && has(resourceCollectionSchema, 'path') && resourceCollectionSchema.path === 'internal/user') {
+                        // _ref looks "internal/user/openidm-admin"
+                        // here we are grabbing the last part of the path to display "userName" which is also the internal user's "_id"
+                        // eslint-disable-next-line no-underscore-dangle
+                        relationship._relationshipDetails = [last(relationship._ref.split('/'))];
+                    } else if (resourceCollectionSchema) {
+                        // eslint-disable-next-line no-underscore-dangle
+                        relationship._relationshipDetails = toArray(pick(relationship, resourceCollectionSchema.query.fields));
+                    } else {
+                        // if no schema information for resourceCollection just show the object's _id
+                        // eslint-disable-next-line no-underscore-dangle
+                        relationship._relationshipDetails = [relationship._id];
+                    }
 
-                relationship._relationshipDetails = toArray(pick(relationship, resourceCollectionSchema.query.fields));
+                    this.gridData.push(relationship);
+                });
+            };
 
-                this.gridData.push(relationship);
-            });
+            if (this.disableSortAndSearch) {
+                const promises = [];
+                // When we disable sort and search the list of relationships does not include the related object's data.
+                // In this case to retrieve the data needed to fill in grid columns we need to loop over each relationship
+                // record and do a get on the _ref ('managed/user/USER_GUUID').
+                relationships.forEach((relationship, index) => {
+                    // eslint-disable-next-line no-underscore-dangle
+                    const resourceCollectionSchema = find(schema.items.resourceCollection, { path: relationship._refResourceCollection });
+                    promises.push(
+                        this.getRelationshipFieldsData(relationship, resourceCollectionSchema.query.fields).then((fieldsData) => {
+                            // once we get fields data merge it with the existing relationship data
+                            relationships[index] = { ...relationship, ...fieldsData };
+                        })
+                    );
+                });
+
+                Promise.all(promises).then(() => {
+                    addRows();
+                });
+            } else {
+                addRows();
+            }
+        },
+        getRelationshipFieldsData (relationship, fields) {
+            return this.getRequestService().get(`${relationship._ref}?_fields=${fields}`).then((response) => pick(response.data, fields));
         },
         buildGridUrl (page, resourceCollectionSchema) {
-            let resourceUrl = `${this.parentResource}/${this.parentId}/${this.relationshipArrayProperty.propName}?_pageSize=${this.gridPageSize}&_fields=`;
+            const currentResourceCollection = find(this.relationshipArrayProperty.items.resourceCollection, { path: resourceCollectionSchema ? resourceCollectionSchema.resourceCollection : null }),
+                resourcePath = this.additionalQueryFilter
+                    ? this.parentResource
+                    : `${this.parentResource}/${this.parentId}/${this.relationshipArrayProperty.propName}`,
+                filter = this.filter
+                    ? this.generateSearch(this.filter, currentResourceCollection.query.fields, resourceCollectionSchema.properties)
+                    : '';
+            let resourceUrl = `${resourcePath}?_pageSize=${this.gridPageSize}&_totalPagedResultsPolicy=ESTIMATE`;
 
-            if (this.filter) {
-                resourceUrl = `${resourceUrl}&_queryFilter=${this.generateSearch(this.filter, this.relationshipArrayProperty.items.resourceCollection[0].query.fields, resourceCollectionSchema.properties)}`;
+            if (filter) {
+                resourceUrl = `${resourceUrl}&_queryFilter=${filter}`;
             } else {
                 resourceUrl = `${resourceUrl}&_queryFilter=true`;
             }
 
-            if (page > 1) {
-                // Pagination starts at 1 and we need to go back an additional one to get the previous page
-                let offsetCalc = (page - 1) * this.gridPageSize;
+            // Add required fields, query fields, and prop-passed fields to grid query
+            if (!this.disableSortAndSearch && currentResourceCollection) {
+                const requiredProps = this.requiredProps.join(','),
+                    resourceCollectionFields = currentResourceCollection.query.fields.join(',');
 
+                resourceUrl = `${resourceUrl}&_fields=${requiredProps},${resourceCollectionFields}`;
+            }
+
+            if (page > 1) {
+                const offsetCalc = (page) * this.gridPageSize;
                 resourceUrl = `${resourceUrl}&_pagedResultsOffset=${offsetCalc}`;
             }
 
@@ -431,7 +533,10 @@ export default {
             this.sortDesc = false;
             this.currentPage = 1;
 
-            this.loadGrid(1);
+            // only send search request if no queryThreshold is defined or the filter is empty or the filter has at least the same number of chars as queryThreshold
+            if (!this.queryThreshold || !this.filter.length || this.filter.length >= this.queryThreshold) {
+                this.loadGrid(1);
+            }
         },
         onSelectRowCheckboxClicked (rowSelected, index) {
             if (rowSelected) {
