@@ -4,19 +4,14 @@
 // Postcommit pipeline for IDM Enduser
 //====================================
 
-import com.forgerock.pipeline.Build
 import com.forgerock.pipeline.whitesource.ScanResult
-import java.text.SimpleDateFormat
 
 def build() {
 
   properties([buildDiscarder(logRotator(daysToKeepStr: '', numToKeepStr: '10'))])
 
-  postcommitBuild = new Build(steps, env, currentBuild)
-
   slackChannel = '#idm-ui'
   emailNotificationMailingList = ['openidm-dev@forgerock.com, jason.browne@forgerock.com, brendan.miller@forgerock.com']
-  postcommitBuild.setBuildFailureEmailNotificationPolicy([ brokenBuildSuspects() ])
 
   def javaVersion = '8'
   def mavenVersion = '3.6.0'
@@ -35,7 +30,7 @@ def build() {
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE', matching: 'LINE'
 
       // Set build description
-      postcommitBuild.setBuildNameAndDescription("${env.BRANCH_NAME} - ${SHORT_GIT_COMMIT}")
+      currentBuild.displayName = "#${env.BUILD_NUMBER} - ${SHORT_GIT_COMMIT}"
 
     }
 
@@ -100,13 +95,18 @@ def build() {
 
     // Send a 'build is back to normal' notification if the previous build was not good
     if (buildIsBackToNormal()) {
-      postcommitBuild.sendBuildBackToNormalSlackNotification(slackChannel)
+      slackUtils.sendBackToNormalMessage(slackChannel)
     }
 
   } catch (exception) {
     currentBuild.result = 'FAILURE'
-    postcommitBuild.sendSlackNotification(slackChannel)
-    postcommitBuild.sendEmailNotification(emailNotificationMailingList, stageErrorMessage, exception.message)
+    slackUtils.sendNoisyStatusMessage(slackChannel)
+    emailUtils.sendFailureNotification(
+            emailNotificationMailingList,
+            headlineMessage: "Stage failure message: ${stageErrorMessage}",
+            detailedMessage: exception.message,
+            notifyCulprits: true
+    )
     throw exception
   }
 }
