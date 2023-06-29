@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2023 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -34,8 +34,8 @@ of the MIT license. See the LICENSE file for details.
 
                                 <!-- for boolean values -->
                                 <b-form-group :key="index" v-if="field.type === 'boolean'">
-                                    <div class="d-flex flex-column">
-                                        <label class="mr-auto" :for="field.title">{{field.title}}</label>
+                                    <div v-if="field.userEditable" class="d-flex flex-column">
+                                        <label class="mr-auto" :for="field.title">{{field.title}}<small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small></label>
                                         <b-form-checkbox
                                             switch
                                             size="lg"
