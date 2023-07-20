@@ -19,11 +19,12 @@ of the MIT license. See the LICENSE file for details.
                     <ValidationObserver ref="observer" slim>
                         <b-form style="flex-direction: column;" v-if="formFields.length > 0" class="mb-3 fr-edit-personal-form" name="edit-personal-form">
                         <template v-for="(field, index) in formFields">
-                                <b-form-group style="min-width: 200px;" :key="index" v-if="(field.type === 'string' || field.type === 'number') && field.userEditable">
+                                <b-form-group style="min-width: 200px;" :key="index" v-if="(field.type === 'string' || field.type === 'number') && field.viewable">
                                     <label :for="field.title">{{field.title}}</label>
                                     <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
                                     <ValidationProvider :rules="`${field.required ? 'required' : ''}`"  :name="field.name" v-slot="validationContext">
                                         <b-input
+                                            :disabled="!field.userEditable"
                                             :name="field.name"
                                             :type="field.type === 'string' ? 'text' : field.type"
                                             :state="getValidationState(validationContext)"
@@ -34,12 +35,13 @@ of the MIT license. See the LICENSE file for details.
 
                                 <!-- for boolean values -->
                                 <b-form-group :key="index" v-if="field.type === 'boolean'">
-                                    <div v-if="field.userEditable" class="d-flex flex-column">
+                                    <div v-if="field.viewable" class="d-flex flex-column">
                                         <label class="mr-auto" :for="field.title">{{field.title}}<small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small></label>
                                         <b-form-checkbox
                                             switch
                                             size="lg"
                                             class="fr-toggle-primary"
+                                            :disabled="!field.userEditable"
                                             v-model="formFields[index].value">
                                             {{ formFields[index].value ? $t('common.form.yes') : $t('common.form.no') }}
                                         </b-form-checkbox>
@@ -111,6 +113,7 @@ export default {
                         key: name,
                         title: properties[name].title,
                         userEditable: properties[name].userEditable,
+                        viewable: properties[name].viewable,
                         value: this.profile[name] || null,
                         type: properties[name].type,
                         required: _.includes(required, name)
@@ -209,5 +212,9 @@ export default {
             }
         }
 
+    }
+
+    .form-control:disabled {
+        background-color: $gray-100;
     }
 </style>
