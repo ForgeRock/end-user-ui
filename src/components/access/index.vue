@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020-2021 ForgeRock. All rights reserved.
+Copyright (c) 2020-2023 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -10,12 +10,15 @@ of the MIT license. See the LICENSE file for details.
         <div class="card mt-4">
             <div class="card-header py-2">
                 <b-row>
-                    <b-col md="3" class="my-1">
-                        <b-btn v-if="createProperties.length > 0" type="button" variant="primary" v-b-modal.createResourceModal><i class="fa fa-plus mr-3"></i>{{$t("common.form.new")}} {{this.name}}</b-btn>
+                    <b-col md="6" class="my-1">
+                        <div class="float-left">
+                            <b-btn v-if="createProperties.length > 0" type="button" variant="primary" class="mr-3" v-b-modal.createResourceModal><i class="fa fa-plus mr-2 pr-1"></i>{{$t("common.form.new")}} {{this.name}}</b-btn>
+                            <b-btn v-if="userCanDelete && this.selected.length" type="button" variant="outline-secondary" v-b-modal.deleteModal><i class="fa fa-trash mr-3"></i>{{$t("common.form.delete")}}</b-btn>
+                        </div>
                     </b-col>
-                    <b-col md="9" class="my-1">
+                    <b-col md="6" class="my-1">
                         <div class="d-flex">
-                            <b-input-group>
+                            <b-input-group class="ml-auto pr-0">
                                 <b-input-group-prepend>
                                     <div class="input-group-text inset">
                                         <i class='fa fa-search'></i>
@@ -34,6 +37,8 @@ of the MIT license. See the LICENSE file for details.
                 <b-table show-empty
                         table-responsive
                         stacked="lg"
+                        ref="managedArrayGrid"
+                        selectable
                         :items="gridData"
                         :fields="columns"
                         :per-page="0"
@@ -43,10 +48,28 @@ of the MIT license. See the LICENSE file for details.
                         :no-local-sorting="true"
                         class="mb-0"
                         :sort-direction="sortDirection"
+                        @row-selected="onRowSelected"
                         @row-clicked="resourceClicked"
                         @sort-changed="sortingChanged"
                         :busy="isLoading"
                         :class="[{'hide-header': isLoading || !gridData.length }]">
+                        <template #head(selected)>
+                            <div
+                                v-show="gridData.length > 0 && userCanDelete"
+                                class="cursor-pointer">
+                                    <b-form-checkbox
+                                        class="pl-4"
+                                        v-model="allRowsSelected"
+                                        @change="toggleSelectAll"/>
+                            </div>
+                        </template>
+                        <template #cell(selected)="data">
+                            <b-form-checkbox
+                                class="pl-4"
+                                :id="`rowSelectCheckbox_${data.index}`"
+                                @change="onSelectRowCheckboxClicked($event, data.index)"
+                                v-model="data.rowSelected"/>
+                        </template>
                         <template v-slot:table-busy>
                             <div class="text-center p-5">
                             <b-spinner class="align-middle spinner-large text-primary my-4"></b-spinner>
@@ -74,6 +97,21 @@ of the MIT license. See the LICENSE file for details.
         </div>
 
         <fr-create-resource v-if="createProperties.length > 0" @refreshGrid="clear" :resourceName="name" :resourceType="resource" :createProperties="createProperties"></fr-create-resource>
+        <b-modal id="deleteModal"
+                 ref="deleteModal"
+                 :title="modalTitle">
+
+            <div class="pb-5">
+                {{modalBody}}
+            </div>
+
+            <div slot="modal-footer" class="w-100">
+                <div class="float-right">
+                    <b-btn type="button" variant="btn-link text-danger" @click="$bvModal.hide('deleteModal')">{{$t('common.form.cancel')}}</b-btn>
+                    <b-btn type="button" variant="danger" @click="deleteResource">{{$t('common.form.delete')}}</b-btn>
+                </div>
+            </div>
+        </b-modal>
     </b-container>
 </template>
 
@@ -118,8 +156,11 @@ export default {
             filter: '',
             createProperties: [],
             userCanUpdate: false,
+            userCanDelete: false,
             isLoading: true,
-            queryThreshold: null
+            queryThreshold: null,
+            selected: [],
+            allRowsSelected: false
         };
     },
     mounted () {
@@ -129,7 +170,7 @@ export default {
         gridData () {
             // disallow sorting if there is a queryThreshold and the filter doesn't have at least the same number of chars as queryThreshold
             this.columns = this.columns.map((col) => {
-                if (col.key !== 'actions') {
+                if (col.key !== 'actions' && col.key !== 'selected') {
                     col.sortable = !this.queryThreshold || (this.filter.length >= this.queryThreshold);
                 }
 
@@ -143,6 +184,12 @@ export default {
                 return this.$t('pages.access.typeAtLeastAndEnterToSearch', { numChars: this.queryThreshold });
             }
             return this.$t('pages.access.typeAndEnterToSearch');
+        },
+        modalTitle () {
+            return this.$t('pages.access.deleteManagedModalTitle', { 'managedName': this.name });
+        },
+        modalBody () {
+            return this.$tc('pages.access.deleteManagedConfirm', this.selected.length, { count: this.selected.length, name: this.name });
         }
     },
     methods: {
@@ -158,12 +205,24 @@ export default {
             axios.all([
                 this.getSchema(`${this.resource}/${this.name}`),
                 idmInstance.get(`privilege/${this.resource}/${this.name}`)]).then(axios.spread((schema, privilege) => {
+                if (privilege.data.DELETE.allowed) {
+                    // Generate checkbox column for delete
+                    this.columns.push({
+                        key: 'selected',
+                        label: '',
+                        class: 'checkbox-column'
+                    });
+
+                    this.userCanDelete = true;
+                }
+
                 if (privilege.data.VIEW.allowed) {
                     // Generate columns for display and filtering for read/query
                     _.each(privilege.data.VIEW.properties, (readProp) => {
                         let propSchema = schema.data.properties[readProp];
+
                         if (
-                            this.columns.length <= 3 &&
+                            (this.columns.length <= 3 || (this.userCanDelete && this.columns.length <= 4)) &&
                                     _.isUndefined(propSchema.encryption) &&
                                     _.includes(['string', 'boolean', 'number'], propSchema.type)
                         ) {
@@ -202,7 +261,6 @@ export default {
                         }
                     });
                 }
-
                 this.loadGrid('true', this.displayFields, this.displayFields[0], 1);
             }))
                 .catch((error) => {
@@ -216,14 +274,18 @@ export default {
 
             /* istanbul ignore next */
             idmInstance.get(this.buildGridUrl(filter, fields, sortField, page)).then((resourceData) => {
-                // this.totalRows = resourceData.data.totalPagedResults;
+                this.gridData = _.map(resourceData.data.result, (item) => {
+                    item.rowSelected = false;
+
+                    return item;
+                });
+
                 if (resourceData.data.pagedResultsCookie) {
                     this.lastPage = false;
                 } else {
                     this.lastPage = true;
                 }
 
-                this.gridData = resourceData.data.result;
                 this.isLoading = false;
             }).catch((error) => {
                 this.isLoading = false;
@@ -313,6 +375,40 @@ export default {
         },
         plural (txt) {
             return pluralize(txt);
+        },
+        onRowSelected (items) {
+            this.selected = items;
+
+            this.allRowsSelected = items.length === this.gridData.length;
+        },
+        toggleSelectAll (toggle) {
+            if (toggle) {
+                this.$refs.managedArrayGrid.selectAllRows();
+            } else {
+                this.$refs.managedArrayGrid.clearSelected();
+            }
+        },
+        onSelectRowCheckboxClicked (rowSelected, index) {
+            if (rowSelected) {
+                this.$refs.managedArrayGrid.selectRow(index);
+            } else {
+                this.$refs.managedArrayGrid.unselectRow(index);
+            }
+        },
+        deleteResource () {
+            const idmInstance = this.getRequestService(),
+                deleteArray = _.map(this.selected, (managed) => {
+                    return idmInstance.delete(`managed/${this.name}/${managed._id}`);
+                });
+
+            axios.all(deleteArray).then(() => {
+                this.$refs.deleteModal.hide();
+                this.displayNotification('success', this.$t('pages.access.deleteResource'));
+
+                this.loadData();
+            }).catch((error) => {
+                this.displayNotification('error', error.response.data.message);
+            });
         }
     }
 };
@@ -320,6 +416,13 @@ export default {
 
 <style lang="scss" scoped>
     /deep/ {
+        .checkbox-column {
+            width: 1px;
+            padding-right: 0px;
+            padding-left: 25px;
+            vertical-align: middle;
+        }
+
         .fr-resource-paginator {
             a[role="menuitemradio"] {
                 display: none !important;
