@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright (c) 2020-2021 ForgeRock. All rights reserved.
+Copyright (c) 2020-2023 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -36,7 +36,7 @@ of the MIT license. See the LICENSE file for details.
         <repository>
             <id>forgerock-internal-releases</id>
             <name>ForgeRock Internal Releases Repository</name>
-            <url>https://maven.forgerock.org/repo/internal-releases</url>
+            <url>https://maven.forgerock.org/artifactory/internal-releases</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -44,7 +44,7 @@ of the MIT license. See the LICENSE file for details.
         <repository>
             <id>forgerock-internal-snapshots</id>
             <name>ForgeRock Internal Snapshots Repository</name>
-            <url>https://maven.forgerock.org/repo/internal-snapshots</url>
+            <url>https://maven.forgerock.org/artifactory/internal-snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -102,8 +102,8 @@ of the MIT license. See the LICENSE file for details.
                         <configuration>
                             <nodeVersion>${node.version}</nodeVersion>
                             <npmVersion>${npm.version}</npmVersion>
-                            <downloadRoot>http://maven.forgerock.org/repo/forgerock-third-party-virtual/</downloadRoot>
-                            <npmDownloadRoot>http://maven.forgerock.org/repo/api/npm/npm-virtual/npm/-/
+                            <downloadRoot>https://maven.forgerock.org/artifactory/forgerock-third-party-virtual/</downloadRoot>
+                            <npmDownloadRoot>https://maven.forgerock.org/artifactory/api/npm/npm-virtual/npm/-/
                             </npmDownloadRoot>
                         </configuration>
                     </execution>
