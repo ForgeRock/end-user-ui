@@ -114,6 +114,15 @@ timestamps {
         releaseBuild.mvn("-B docker:build docker:push")
       }
 
+      stage('Promote Docker image') {
+        stageErrorMessage = 'Docker image promotion failed, please check the console output'
+        def image = 'gcr.io/forgerock-io/end-user-ui'
+        dockerUtils.retagGcrImage(
+                "${image}/docker-build:${params.NEXT_DEVELOPMENT_VERSION}",
+                "${image}:${params.RELEASE_VERSION}"
+        )
+      }
+
       stage ('Final notification') {
         currentBuild.result = 'SUCCESS'
         releaseBuild.setBitbucketBuildStatus(commitShaForNotifications) // send an additional status for the 'release' commit
