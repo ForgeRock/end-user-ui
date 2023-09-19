@@ -4,7 +4,7 @@
 // Postcommit pipeline for IDM Enduser
 //====================================
 
-import com.forgerock.pipeline.whitesource.ScanResult
+import com.forgerock.pipeline.mend.ScanResult
 
 def build() {
 
