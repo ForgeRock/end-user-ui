@@ -104,21 +104,21 @@ timestamps {
         releaseBuild.gitTag(params.RELEASE_VERSION)
       }
 
-      stage ('Set version number for next development') {
-        stageErrorMessage = 'Failed to update next development number during release build, please check the console output'
-        releaseBuild.setAndPushNextDevelopmentVersionNumber()
-      }
-
       stage('Build and push Docker image') {
         stageErrorMessage = 'Docker image creation failed, please check the console output'
         releaseBuild.mvn("-B docker:build docker:push")
+      }
+
+      stage ('Set version number for next development') {
+        stageErrorMessage = 'Failed to update next development number during release build, please check the console output'
+        releaseBuild.setAndPushNextDevelopmentVersionNumber()
       }
 
       stage('Promote Docker image') {
         stageErrorMessage = 'Docker image promotion failed, please check the console output'
         def image = 'gcr.io/forgerock-io/end-user-ui'
         dockerUtils.retagGcrImage(
-                "${image}/docker-build:${params.NEXT_DEVELOPMENT_VERSION}",
+                "${image}/docker-build:${params.RELEASE_VERSION}",
                 "${image}:${params.RELEASE_VERSION}"
         )
       }
