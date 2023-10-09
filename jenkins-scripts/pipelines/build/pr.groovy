@@ -46,7 +46,7 @@ def build() {
         ]) {
           def whitesourceProductToken = whitesourceUtils.getWhitesourceToken(scmUtils.getRepoName(), env.CHANGE_TARGET)
           sh "mvn -B -e -U clean verify -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
-                  " -Dwhitesource.product.key=${whitesourceProductToken} -Dwhitesource.user.key=${env.WS_USER_KEY}"
+                  " -Dmend.product.key=${whitesourceProductToken} -Dmend.user.key=${env.WS_USER_KEY}"
         }
       }
     }

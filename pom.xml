@@ -24,6 +24,9 @@ of the MIT license. See the LICENSE file for details.
         <frontendMavenPlugin.version>1.6</frontendMavenPlugin.version>
         <node.version>v14.18.1</node.version>
         <npm.version>8.1.1</npm.version>
+        <!-- ForgeRock Release Engineering Maven Plugin
+                https://wikis.forgerock.org/confluence/display/REPLAN/ForgeRock+Release+Engineering+Maven+Plugin -->
+        <forgerockReleaseEngineeringMavenPluginVersion>2.0.1</forgerockReleaseEngineeringMavenPluginVersion>
         <!-- properties read by docker-maven-plugin -->
         <docker.push.registry>gcr.io</docker.push.registry>
         <docker.promotion.folder>docker-build</docker.promotion.folder>

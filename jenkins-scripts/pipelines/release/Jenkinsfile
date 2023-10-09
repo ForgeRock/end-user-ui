@@ -87,9 +87,9 @@ timestamps {
 
           def whitesourceProductToken = whitesourceUtils.getWhitesourceToken(scmUtils.getRepoName(), env.BRANCH_NAME)
           def properties = [
-            'ci.scm.revision'        : SHORT_GIT_COMMIT,
-            'whitesource.product.key': whitesourceProductToken,
-            'whitesource.user.key'   : env.WS_USER_KEY,
+            'ci.scm.revision' : SHORT_GIT_COMMIT,
+            'mend.product.key': whitesourceProductToken,
+            'mend.user.key'   : env.WS_USER_KEY,
           ]
 
           mvnProfiles = profiles.join(',')
