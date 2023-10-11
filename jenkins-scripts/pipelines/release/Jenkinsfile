@@ -4,7 +4,7 @@
 // Release pipeline for IDM EndUser UI
 //====================================
 
-@Library('forgerock-pipeline-libs@255c7dfa7e4ee18ee9a613b86e6ec874d7f6bdc9')
+@Library('forgerock-pipeline-libs@3d01db87f911d1a9d1d2039aa4f51ace927b374d')
 import com.forgerock.pipeline.MavenReleaseBuild
 
 def jobProperties = [buildDiscarder(logRotator(numToKeepStr: '10'))]
@@ -71,7 +71,7 @@ timestamps {
       }
 
       withCredentials([
-              string(credentialsId: 'whitesource-ci-user-key', variable: 'WS_USER_KEY'),
+              string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY'),
       ]) {
         stage ('Maven release build') {
           stageErrorMessage = 'The Maven build failed, please check the console output'
@@ -89,7 +89,7 @@ timestamps {
           def properties = [
             'ci.scm.revision' : SHORT_GIT_COMMIT,
             'mend.product.key': whitesourceProductToken,
-            'mend.user.key'   : env.WS_USER_KEY,
+            'mend.user.key'   : env.MEND_USER_KEY,
           ]
 
           mvnProfiles = profiles.join(',')
