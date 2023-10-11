@@ -85,10 +85,10 @@ timestamps {
             'production-build'
           ]
 
-          def whitesourceProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.BRANCH_NAME)
+          def mendProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.BRANCH_NAME)
           def properties = [
             'ci.scm.revision' : SHORT_GIT_COMMIT,
-            'mend.product.key': whitesourceProductToken,
+            'mend.product.key': mendProductToken,
             'mend.user.key'   : env.MEND_USER_KEY,
           ]
 

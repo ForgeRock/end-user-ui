@@ -41,12 +41,10 @@ def build() {
                "MAVEN_OPTS=${mavenBuildOptions}",
                "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
 
-        withCredentials([
-                string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY'),
-        ]) {
-          def whitesourceProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.CHANGE_TARGET)
+        withCredentials([ string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY') ]) {
+          def mendProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.CHANGE_TARGET)
           sh "mvn -B -e -U clean verify -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
-                  " -Dmend.product.key=${whitesourceProductToken} -Dmend.user.key=${env.MEND_USER_KEY}"
+                  " -Dmend.product.key=${mendProductToken} -Dmend.user.key=${env.MEND_USER_KEY}"
         }
       }
     }
