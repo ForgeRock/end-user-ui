@@ -41,34 +41,32 @@ def build() {
       withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
                "MAVEN_OPTS=${mavenBuildOptions}",
                "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-        withCredentials([
-                string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY'),
-        ]) {
-          def whitesourceProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.BRANCH_NAME)
+        withCredentials([ string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY') ]) {
+          def mendProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.BRANCH_NAME)
           sh "mvn -B -e -U clean deploy -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
-                  " -Dmend.product.key=${whitesourceProductToken} -Dmend.user.key=${env.MEND_USER_KEY}"
+                  " -Dmend.product.key=${mendProductToken} -Dmend.user.key=${env.MEND_USER_KEY}"
         }
       }
     }
 
-    stage ('Whitesource Scan') {
+    stage ('Mend Scan') {
       try {
         def repoName = scmUtils.getRepoName()
         def branchName = env.BRANCH_NAME
 
-        ScanResult whitesourceScanResult
+        ScanResult mendScanResult
 
         withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
                  "MAVEN_OPTS=${mavenBuildOptions}",
                  "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-          whitesourceScanResult = mendUtils.performScan(repoName, branchName, SHORT_GIT_COMMIT)
+          mendScanResult = mendUtils.performScan(repoName, branchName, SHORT_GIT_COMMIT)
         }
 
-        if (!whitesourceScanResult.scanPassed) {
+        if (!mendScanResult.scanPassed) {
           currentBuild.result = 'FAILURE'
         }
       } catch (exception) {
-        emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('WhiteSource', exception.message)
+        emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('Mend', exception.message)
         currentBuild.result = 'UNSTABLE'
       }
     }
