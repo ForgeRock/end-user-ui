@@ -49,7 +49,7 @@ def build() {
         withCredentials([
                 string(credentialsId: 'whitesource-ci-user-key', variable: 'WS_USER_KEY'),
         ]) {
-          def whitesourceProductToken = whitesourceUtils.getWhitesourceToken(scmUtils.getRepoName(), env.BRANCH_NAME)
+          def whitesourceProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.BRANCH_NAME)
           sh "mvn -B -e -U clean deploy -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
                   " -Dmend.product.key=${whitesourceProductToken} -Dmend.user.key=${env.WS_USER_KEY}"
         }
@@ -66,7 +66,7 @@ def build() {
         withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
                  "MAVEN_OPTS=${mavenBuildOptions}",
                  "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-          whitesourceScanResult = whitesourceUtils.performWhitesourceScan(repoName, branchName, SHORT_GIT_COMMIT)
+          whitesourceScanResult = mendUtils.performScan(repoName, branchName, SHORT_GIT_COMMIT)
         }
 
         if (!whitesourceScanResult.scanPassed) {
