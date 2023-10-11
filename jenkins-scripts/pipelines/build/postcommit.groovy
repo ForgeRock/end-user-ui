@@ -5,7 +5,7 @@
 //====================================
 
 import com.forgerock.pipeline.Build
-import com.forgerock.pipeline.whitesource.ScanResult
+import com.forgerock.pipeline.mend.ScanResult
 import java.text.SimpleDateFormat
 
 def build() {
@@ -46,18 +46,16 @@ def build() {
       withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
                "MAVEN_OPTS=${mavenBuildOptions}",
                "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-        withCredentials([
-                string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY'),
-        ]) {
-          def whitesourceProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.BRANCH_NAME)
+        withCredentials([ string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY') ]) {
+          def mendProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.BRANCH_NAME)
           sh "mvn -B -e -U clean deploy -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
-                  " -Dmend.product.key=${whitesourceProductToken} -Dmend.user.key=${env.MEND_USER_KEY}"
+                  " -Dmend.product.key=${mendProductToken} -Dmend.user.key=${env.MEND_USER_KEY}"
         }
       }
     }
 
-    stage ('Whitesource Scan') {
-      ScanResult whitesourceScanResult
+    stage ('Mend Scan') {
+      ScanResult mendScanResult
       try {
         def repoName = scmUtils.getRepoName()
         def branchName = env.BRANCH_NAME
@@ -65,15 +63,15 @@ def build() {
         withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
                  "MAVEN_OPTS=${mavenBuildOptions}",
                  "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-          whitesourceScanResult = mendUtils.performScan(repoName, branchName, SHORT_GIT_COMMIT)
+          mendScanResult = mendUtils.performScan(repoName, branchName, SHORT_GIT_COMMIT)
         }
       } catch (exception) {
-        emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('WhiteSource', exception.message)
+        emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('Mend', exception.message)
         currentBuild.result = 'UNSTABLE'
       }
 
-      if (!whitesourceScanResult.scanPassed) {
-        error 'WhiteSource scan failure'
+      if (!mendScanResult.scanPassed) {
+        error 'Mend scan failure'
       }
     }
 
