@@ -46,6 +46,7 @@ of the MIT license. See the LICENSE file for details.
                 v-for="(objectTypeProperty) in objectTypeProperties"
                 :title="objectTypeProperty.title"
                 :key="`${objectTypeProperty.propName}_tab`">
+                objectTypeProperty.title {{ objectTypeProperty.title }}
                 <fr-object-type-editor
                     :form-fields="formFields[objectTypeProperty.propName] || {}"
                     :sub-property-name="objectTypeProperty.propName"

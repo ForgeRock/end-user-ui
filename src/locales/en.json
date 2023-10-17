@@ -26,7 +26,8 @@
             "no": "No",
             "delete": "Delete",
             "reset": "Reset",
-            "loading": "Loading"
+            "loading": "Loading",
+            "none": "none"
         },
         "placeholders": {
             "password": "Password",
@@ -111,6 +112,11 @@
                 "failedToRemove": "Failed to remove notification",
                 "failedToClear": "Failed to clear all notifications"
             }
+        },
+        "listTypesShared": {
+            "collapse": "Collapse",
+            "expand": "Click to Expand",
+            "invalidJson": "invalid JSON"
         },
         "notFound": {
             "couldNotFind": "We couldn\"t find the page you were looking for.",
