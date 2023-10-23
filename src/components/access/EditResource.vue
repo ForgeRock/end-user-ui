@@ -397,7 +397,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    /deep/ {
+    ::v-deep {
         .nav-bar-border {
             border-bottom: 1px solid $gray-300;
         }
