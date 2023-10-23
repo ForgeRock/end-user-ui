@@ -415,7 +415,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    /deep/ {
+    ::v-deep {
         .checkbox-column {
             width: 1px;
             padding-right: 0px;
