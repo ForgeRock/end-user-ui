@@ -448,7 +448,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    /deep/ {
+    ::v-deep {
         .fr-resource-paginator {
             a[role="menuitemradio"] {
                 display: none !important;
