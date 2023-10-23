@@ -77,8 +77,7 @@ of the MIT license. See the LICENSE file for details.
                         </template>
                         <template
                             slot="tag"
-                            slot-scope="props"
-                            class="mb-3">
+                            slot-scope="props">
                                 <div class="media">
                                     <div class="media-body p-1 border-bottom border-light">
                                         <div class="text-bold">{{props.option.resource[props.option.displayFields[0]]}}</div>
@@ -269,9 +268,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "~vue-multiselect/dist/vue-multiselect.min.css";
+@import "~vue-multiselect/dist/vue-multiselect.min";
 
-/deep/ {
+::v-deep {
   .multiselect {
     color: $input-color;
 
