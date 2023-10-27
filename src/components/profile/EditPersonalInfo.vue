@@ -47,6 +47,26 @@ of the MIT license. See the LICENSE file for details.
                                         </b-form-checkbox>
                                     </div>
                                 </b-form-group>
+
+                                <!-- for array values -->
+                                    <b-form-group :key="index" v-if="field.type === 'array' && field.items.type !== 'relationship'">
+                                        <div v-if="field.viewable" class="d-flex flex-column">
+                                            <label class="mr-auto" :for="field.title">{{ field.title }}
+                                                <small v-if="!field.required" class="text-muted ml-1">{{ $t('pages.profile.editProfile.optional') }}</small>
+                                            </label>
+                                            <FrListField
+                                                :value="formFields[index].value"
+                                                :description="field.description"
+                                                :items="field.items"
+                                                :label="field.title"
+                                                :name="field.name"
+                                                :required="field.required"
+                                                :index="index"
+                                                :disabled="!field.userEditable"
+                                                v-on="$listeners"
+                                                @input="updateField(index, $event)" />
+                                        </div>
+                                    </b-form-group>
                             </template>
                         </b-form>
                         <template v-else>
@@ -68,6 +88,7 @@ of the MIT license. See the LICENSE file for details.
 
 <script>
 import _ from 'lodash';
+import FrListField from '@/components/utils/ListField';
 import ResourceMixin from '@/components/utils/mixins/ResourceMixin';
 
 /**
@@ -81,7 +102,9 @@ export default {
     mixins: [
         ResourceMixin
     ],
-    components: {},
+    components: {
+        FrListField
+    },
     props: {
         schema: { type: Object, required: true },
         profile: { type: Object, required: true },
@@ -104,8 +127,7 @@ export default {
             let { order, properties, required } = this.schema,
                 filteredOrder = _.filter(order, (propName) => {
                     return properties[propName].viewable &&
-                            properties[propName].type !== 'array' &&
-                            properties[propName].type !== 'object';
+                        properties[propName].type !== 'object';
                 }),
                 formFields = _.map(filteredOrder, (name) => {
                     return {
@@ -116,7 +138,8 @@ export default {
                         viewable: properties[name].viewable,
                         value: this.profile[name] || null,
                         type: properties[name].type,
-                        required: _.includes(required, name)
+                        required: _.includes(required, name),
+                        items: properties[name].items
                     };
                 });
 
@@ -149,7 +172,16 @@ export default {
                         policyResult.data.failedPolicyRequirements = _.remove(policyResult.data.failedPolicyRequirements, (policy) => !_.map(this.formFields, 'name').includes(policy.property));
 
                         if (policyResult.data.failedPolicyRequirements.length === 0) {
-                            this.$emit('updateProfile', this.generateUpdatePatch(this.originalFormFields, this.formFields));
+                            // remove empty array values when the original value is null as this causes incorrect patches to be created
+                            let cleanFormFields = _.map(_.cloneDeep(this.formFields), (field, index) => {
+                                if (field.type === 'array' && field.value) {
+                                    if (this.originalFormFields[index].value === null && field.value.length === 0) {
+                                        field.value = null;
+                                    }
+                                }
+                                return field;
+                            });
+                            this.$emit('updateProfile', this.generateUpdatePatch(this.originalFormFields, cleanFormFields));
                             this.$refs.observer.reset();
                             this.hideModal();
                         } else {
@@ -181,6 +213,16 @@ export default {
                     });
                 }
             });
+        },
+        /**
+         * Update form data model with a new value. Used for editing a list field
+         *
+         * @param {Number} index index of form field
+         * @param {Array} newValue new value of form field
+         */
+        updateField (index, newValue) {
+            this.formFields[index].value = newValue;
+            this.$forceUpdate();
         }
     }
 };
@@ -214,7 +256,7 @@ export default {
 
     }
 
-    .form-control:disabled {
+    .form-control:disabled, .b-form-tags.disabled {
         background-color: $gray-100;
     }
 </style>
