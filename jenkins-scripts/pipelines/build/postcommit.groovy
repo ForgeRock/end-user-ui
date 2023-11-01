@@ -5,8 +5,7 @@
 //====================================
 
 import com.forgerock.pipeline.Build
-import com.forgerock.pipeline.whitesource.ScanResult
-import java.text.SimpleDateFormat
+import com.forgerock.pipeline.mend.ScanResult
 
 def build() {
 
