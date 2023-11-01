@@ -15,7 +15,7 @@ of the MIT license. See the LICENSE file for details.
 
 	<groupId>org.forgerock.openidm</groupId>
     <artifactId>openidm-ui-mirai</artifactId>
-    <version>7.3.1</version>
+    <version>7.3.2-SNAPSHOT</version>
     <name>Mirai UI</name>
     <packaging>pom</packaging>
 
