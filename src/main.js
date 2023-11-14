@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright (c) 2022 ForgeRock. All rights reserved.
+ * Copyright (c) 2022-23 ForgeRock. All rights reserved.
  *
  * This software may be modified and distributed under the terms
  * of the MIT license. See the LICENSE file for details.
@@ -224,11 +224,8 @@ Vue.mixin({
                 return response;
             }, (error) => {
                 if (error.response && error.response.data && error.response.data.code === 401) {
-                    if (this.$route.name !== 'Login') {
-                        ApplicationStore.setLoginRedirect({
-                            name: this.$route.name,
-                            params: this.$route.params
-                        });
+                    if (this.$route.name !== 'Login' && this.$route.path !== '/oauthReturn') {
+                        this.logoutUser();
                     }
 
                     return Promise.reject(error);
