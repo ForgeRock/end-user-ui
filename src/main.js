@@ -224,7 +224,7 @@ Vue.mixin({
                 return response;
             }, (error) => {
                 if (error.response && error.response.data && error.response.data.code === 401) {
-                    if (this.$route.name !== 'Login') {
+                    if (this.$route.name !== 'Login' && this.$route.path !== '/oauthReturn') {
                         this.logoutUser();
                     }
 
