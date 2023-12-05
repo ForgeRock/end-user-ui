@@ -23,7 +23,14 @@ of the MIT license. See the LICENSE file for details.
                                     <label :for="field.title">{{field.title}}</label>
                                     <small v-if="!field.required" class="text-muted ml-1">{{$t('pages.profile.editProfile.optional')}}</small>
                                     <ValidationProvider :rules="`${field.required ? 'required' : ''}`"  :name="field.name" v-slot="validationContext">
+                                        <b-select
+                                            v-if="field.options.length"
+                                            :name="field.name"
+                                            :state="getValidationState(validationContext)"
+                                            :options="field.options"
+                                            v-model.trim="formFields[index].value"/>
                                         <b-input
+                                            v-else
                                             :disabled="!field.userEditable"
                                             :name="field.name"
                                             :type="field.type === 'string' ? 'text' : field.type"
@@ -139,7 +146,8 @@ export default {
                         value: this.profile[name] || null,
                         type: properties[name].type,
                         required: _.includes(required, name),
-                        items: properties[name].items
+                        items: properties[name].items,
+                        options: this.PopulateSelectList(properties[name])
                     };
                 });
 
@@ -223,6 +231,24 @@ export default {
         updateField (index, newValue) {
             this.formFields[index].value = newValue;
             this.$forceUpdate();
+        },
+        /** @param { object } property Data from IDM managed user object schema
+         * @return { Array<{ text: string, value: string }>} Data to render a select list
+        */
+        PopulateSelectList (property) {
+            let selectList = [];
+            if (property.enum && property.enum.length) {
+                selectList = _.map(property.enum, (value, index) => {
+                    // if no enum_titles are provided, 'value' will be substituted
+                    return {
+                        text: property.options && property.options.enum_titles
+                            ? property.options.enum_titles[index] : value,
+                        value: value
+                    };
+                });
+            }
+
+            return selectList;
         }
     }
 };
