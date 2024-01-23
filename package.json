@@ -62,7 +62,8 @@
     "vue-template-compiler": "2.6.10"
   },
   "resolutions": {
-    "ansi-regex": "5.0.1"
+    "ansi-regex": "5.0.1",
+    "follow-redirects": "1.15.5"
   },
   "eslintConfig": {
     "root": true,
