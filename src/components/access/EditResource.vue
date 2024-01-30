@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020-2023 ForgeRock. All rights reserved.
+Copyright (c) 2020-2024 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -62,6 +62,23 @@ of the MIT license. See the LICENSE file for details.
                     <fr-relationship-array :parentResource='resource + "/" + name' :parentId='id' :relationshipArrayProperty='relationshipProperty'/>
                 </b-tab>
             </template>
+            <b-tab
+                v-if="showLinkedToTab"
+                key="linkedSystems_tab"
+                :title="$t('pages.linkedSystems.tabName')">
+                <b-form-select v-model="linkedSelect" :options="selectOptions"
+                    v-on:change="filterSelect" class="mb-3 w-25" />
+                <div
+                    class='linked-system-card'
+                    v-for="(linkedSystem, key) in filteredLinkedSystems" :key="key">
+                        <h5 class='mt-4 ml-2 mb-2 text-muted'>{{ key }}</h5>
+                        <fr-object-type-editor
+                            :form-fields="linkedSystem"
+                            :display-properties="linkedSystemsDisplayProperties[key]"
+                            :disable-save-button="true"
+                        />
+                </div>
+            </b-tab>
         </b-tabs>
 
         <b-modal v-if="canDelete" id="deleteModal"
@@ -151,7 +168,13 @@ export default {
             formFields: {},
             oldFormFields: {},
             objectTypeProperties: {},
-            relationshipProperties: {}
+            relationshipProperties: {},
+            linkedSystems: {},
+            filteredLinkedSystems: {},
+            linkedSystemsDisplayProperties: {},
+            showLinkedToTab: false,
+            selectOptions: [ this.$t('pages.linkedSystems.defaultDropdown') ],
+            linkedSelect: this.$t('pages.linkedSystems.defaultDropdown')
         };
     },
     mounted () {
@@ -164,7 +187,8 @@ export default {
             /* istanbul ignore next */
             axios.all([
                 this.getSchema(`${this.resource}/${this.name}`),
-                idmInstance.get(`privilege/${this.resource}/${this.name}/${this.id}`)]).then(axios.spread((schema, privilege) => {
+                idmInstance.get(`privilege/${this.resource}/${this.name}/${this.id}`)
+            ]).then(axios.spread((schema, privilege) => {
                 let resourceUrl = '';
 
                 this.objectTypeProperties = this.getObjectTypeProperties(schema.data, privilege.data);
@@ -174,13 +198,67 @@ export default {
 
                 idmInstance.get(resourceUrl).then((resourceDetails) => {
                     this.generateDisplay(schema.data, privilege.data, resourceDetails.data);
+
+                    // attempt to get linked resources
+                    idmInstance.post(`sync?_action=getLinkedResources&resourceName=managed/${this.name}/${this.id}`).then((linkedResource) => {
+                        this.getLinkedSystemProperties(linkedResource.data);
+                    }).catch((error) => {
+                        // if access to the linked resources endpoint is not configured - fail gracefully
+                        if (error.response && error.response.status && error.response.status !== 403) {
+                            this.displayNotification('error', error.response.data.message);
+                        };
+                    });
                 }).catch((error) => {
                     this.displayNotification('error', error.response.data.message);
                 });
-            }))
-                .catch((error) => {
-                    this.displayNotification('error', error.response.data.message);
+            })).catch((error) => {
+                this.displayNotification('error', error.response.data.message);
+            });
+        },
+        /** This method determines whether to display the linked system tab
+         *  and creates the display properties array as this does not come from schema for linked systems
+         **/
+        getLinkedSystemProperties (linkedResourceData) {
+            if (linkedResourceData.length) {
+                this.showLinkedToTab = true;
+
+                _.forEach(linkedResourceData, (linkedObj) => {
+                    const name = linkedObj.resourceName.split('/')[1];
+
+                    this.selectOptions.push(name);
+                    this.linkedSystems[name] = linkedObj.content;
+                    this.linkedSystemsDisplayProperties[name] = [];
+
+                    _.forEach(Object.keys(this.linkedSystems[name]), (displayKey) => {
+                        // we do not want to show the _id for any linked system
+                        if (displayKey !== '_id') {
+                            // convert all property values to strings.  These fields are not editable so type is not important
+                            this.linkedSystems[name][displayKey] = _.toString(this.linkedSystems[name][displayKey]);
+                            this.linkedSystemsDisplayProperties[name].push({
+                                title: _.startCase(displayKey),
+                                key: displayKey,
+                                propName: displayKey,
+                                readOnly: true,
+                                type: 'string',
+                                userEditable: false,
+                                viewable: true
+                            });
+                        }
+                    });
+
+                    this.filteredLinkedSystems = this.linkedSystems;
                 });
+            }
+        },
+        // Filter linked systems data based on user selection - default is to show all
+        filterSelect (systemName) {
+            if (systemName === this.$t('pages.linkedSystems.defaultDropdown')) {
+                this.filteredLinkedSystems = this.linkedSystems;
+            } else {
+                const newFilterObj = {};
+                newFilterObj[systemName] = this.linkedSystems[systemName];
+                this.filteredLinkedSystems = newFilterObj;
+            }
         },
         buildResourceUrl () {
             let url = `${this.resource}/${this.name}/${this.id}?_fields=*`;

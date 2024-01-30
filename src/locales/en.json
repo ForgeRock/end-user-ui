@@ -96,6 +96,10 @@
         }
     },
     "pages": {
+        "linkedSystems": {
+            "tabName": "Linked Systems",
+            "defaultDropdown": "All Linked Resources"
+        },
         "app": {
             "profile": "Profile",
             "dashboard": "Dashboard",
