@@ -132,7 +132,7 @@
             "widgets": {
                 "welcome": {
                     "greeting": "Hello",
-                    "welcomeMessage": "The ForgeRock End User UI helps users manage their account data, consent, workflows, and shared resources.",
+                    "welcomeMessage": "The Ping Identity End User UI helps users manage their account data, consent, workflows, and shared resources.",
                     "editProfile": "Edit Your Profile"
                 }
             }

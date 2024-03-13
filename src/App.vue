@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2024 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -12,7 +12,7 @@ of the MIT license. See the LICENSE file for details.
                 <ul class="sidebar-nav">
                     <li class="sidebar-brand">
                         <router-link class="d-flex" active-class=""  :to="{ name: 'Dashboard'}">
-                            <img :src="require('@/assets/images/horizontal-logo-white.svg')" :alt="$t('common.form.logo')" style="width:131px;" class="align-self-center sidebar-brand-logo" />
+                            <img :src="require('@/assets/images/horizontal-logo-white.svg')" :alt="$t('common.form.logo')" style="width:142px;" class="ml-1 align-self-center sidebar-brand-logo" />
                             <img :src="require('@/assets/images/vertical-logo-white.svg')" :alt="$t('common.form.logo')"  style="height:28px;" class="align-self-center sidebar-brand-mark" />
                         </router-link>
                     </li>
@@ -346,7 +346,7 @@ export default {
                     color: $fr-sidebar-nav-link-color;
                     width: 100%;
                     height: 100%;
-                    padding: 0 20px 0 17px;
+                    padding: 0 20px 0 12px;
 
                     &:hover {
                         color: $fr-sidebar-nav-link-hover-color;
