@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2024 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
@@ -232,7 +232,8 @@ export default {
                         'X-OpenIDM-Jwt': jwt,
                         'X-OpenIDM-NoSession': false,
                         'X-OpenIDM-Password': null,
-                        'X-OpenIDM-Username': null
+                        'X-OpenIDM-Username': null,
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 }),
                 idmInstance = this.getRequestService({
