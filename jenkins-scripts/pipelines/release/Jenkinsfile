@@ -4,7 +4,7 @@
 // Release pipeline for IDM EndUser UI
 //====================================
 
-@Library('forgerock-pipeline-libs@378695572aa171194938fc806c0d447ac78f3fa6')
+@Library('forgerock-pipeline-libs@f4fbc550d40f5b77ece76487889399772fb88ed7')
 import com.forgerock.pipeline.MavenReleaseBuild
 
 def jobProperties = [buildDiscarder(logRotator(numToKeepStr: '10'))]
@@ -27,7 +27,9 @@ def releaseBuild = new MavenReleaseBuild(steps, env, currentBuild,
                         mavenVersion, javaVersion, mavenOpts)
 
 def slackChannel = '#idm,#engineering-releases'
-def emailNotificationMailingList = ['openidm-dev@forgerock.com, oliver.bradley@forgerock.com, brendan.miller@forgerock.com']
+// Go here to manage the approvers:
+// https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/settings/reviewer-groups
+def emailNotificationMailingList = ['openidm-dev@forgerock.com'] + bitbucketUtils.getReleaseApproversEmails('OPENIDM', 'openidm-enduser')
 releaseBuild.setBuildFailureEmailNotificationPolicy([ brokenBuildSuspects(), requestor() ])
 def stageErrorMessage
 
