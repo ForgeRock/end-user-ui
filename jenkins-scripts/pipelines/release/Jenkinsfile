@@ -29,7 +29,7 @@ def releaseBuild = new MavenReleaseBuild(steps, env, currentBuild,
 def slackChannel = '#idm,#engineering-releases'
 // Go here to manage the approvers:
 // https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/settings/reviewer-groups
-def emailNotificationMailingList = ['openidm-dev@forgerock.com'] + bitbucketUtils.getReleaseApproversEmails('OPENIDM', 'openidm-enduser')
+def emailNotificationMailingList = ['openidm-dev@pingidentity.com'] + bitbucketUtils.getReleaseApproversEmails('OPENIDM', 'openidm-enduser')
 releaseBuild.setBuildFailureEmailNotificationPolicy([ brokenBuildSuspects(), requestor() ])
 def stageErrorMessage
 
@@ -58,7 +58,7 @@ timestamps {
           currentBuild.description = "Release version ${params.RELEASE_VERSION} cannot be used; this version of the " +
                                      "product has already been released"
           error "IDM EndUser UI ${params.RELEASE_VERSION} has already been released; please use a different version number.\n" +
-                "If you believe ${params.RELEASE_VERSION} was released in error, please contact releng@forgerock.com" +
+                "If you believe ${params.RELEASE_VERSION} was released in error, please contact releng@pingidentity.com" +
                 ", requesting that the corresponding release tag and build artifacts be deleted"
         }
       }

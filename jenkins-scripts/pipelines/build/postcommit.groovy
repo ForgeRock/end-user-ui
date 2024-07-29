@@ -12,7 +12,7 @@ def build() {
   properties([buildDiscarder(logRotator(daysToKeepStr: '', numToKeepStr: '10'))])
 
   slackChannel = '#idm'
-  emailNotificationMailingList = ['openidm-dev@forgerock.com, oliver.bradley@forgerock.com, brendan.miller@forgerock.com']
+  emailNotificationMailingList = ['openidm-dev@pingidentity.com, oliver.bradley@pingidentity.com, brendan.miller@pingidentity.com']
 
   def javaVersion = '8'
   def mavenVersion = '3.6.0'
