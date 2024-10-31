@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright (c) 2020 ForgeRock. All rights reserved.
+ * Copyright (c) 2020-2024 ForgeRock. All rights reserved.
  *
  * This software may be modified and distributed under the terms
  * of the MIT license. See the LICENSE file for details.
@@ -52,6 +52,16 @@ module.exports = {
             // entry for the page
             entry: './src/main.js'
         }
+    },
+    configureWebpack: function (config) {
+        // Always use the runtime build of Vue.js
+        config.resolve.alias = {
+            'vue$': 'vue/dist/vue.runtime.esm.js',
+            '@': require('path').resolve(__dirname, 'src') // Ensure the alias for @ is set to src
+        };
+
+        // Call getPlugins and add the plugins to the config
+        config.plugins = (config.plugins || []).concat(getPlugins(process.env));
     },
     devServer: {
         host: 'localhost',

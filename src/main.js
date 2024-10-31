@@ -365,8 +365,7 @@ var startApp = function () {
             el: '#app',
             router,
             i18n,
-            template: '<App/>',
-            components: { App },
+            render: h => h(App), // Use render function instead of template
             data: {
                 userStore: UserStore,
                 applicationStore: ApplicationStore
