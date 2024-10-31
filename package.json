@@ -64,7 +64,7 @@
   "resolutions": {
     "ansi-regex": "5.0.1",
     "braces": "3.0.3",
-    "follow-redirects": "1.15.5"
+    "follow-redirects": "1.15.9"
   },
   "eslintConfig": {
     "root": true,
