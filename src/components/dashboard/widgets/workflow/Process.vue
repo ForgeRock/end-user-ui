@@ -1,29 +1,9 @@
 <!--
-Copyright (c) 2020 ForgeRock. All rights reserved.
+Copyright (c) 2020-2024 ForgeRock. All rights reserved.
 
 This software may be modified and distributed under the terms
 of the MIT license. See the LICENSE file for details.
 -->
-
-<template>
-    <transition name="fade" mode="out-in" duration="250">
-        <component
-                v-if="processDefinition !== null && startForm !== null"
-                :is="startForm"
-                @submit="submit"
-                @cancel="cancel"
-                :processDefinition="processDefinition"
-                ref="startFormComponent"
-                :isTask="task"></component>
-        <GenericProcess v-else-if="processDefinition !== null"
-                        @submit="submit"
-                        @cancel="cancel"
-                        :id="processDefinition._id"
-                        :workflow-details="processDefinition.formProperties"
-                        ref="startFormComponent"></GenericProcess>
-        <clip-loader v-else class="m-auto" :color="loadingColor"></clip-loader>
-    </transition>
-</template>
 
 <script>
 import { ClipLoader } from 'vue-spinner/dist/vue-spinner.min.js';
@@ -65,6 +45,27 @@ export default {
                 return null;
             }
         }
+    },
+    render (createElement) {
+        const renderStartForm = () => createElement(this.startForm, {
+                ref: 'startFormComponent',
+                props: { processDefinition: this.processDefinition, isTask: this.task },
+                on: { submit: this.submit, cancel: this.cancel }
+            }),
+            renderGenericProcess = () => createElement(GenericProcess, {
+                ref: 'startFormComponent',
+                props: { id: this.processDefinition._id, workflowDetails: this.processDefinition.formProperties },
+                on: { submit: this.submit, cancel: this.cancel }
+            }),
+            renderLoader = () => createElement(ClipLoader, { class: 'm-auto', props: { color: this.loadingColor } });
+
+        return createElement('transition', { props: { name: 'fade', mode: 'out-in', duration: 250 } }, [
+            this.processDefinition && this.startForm
+                ? renderStartForm()
+                : this.processDefinition
+                    ? renderGenericProcess()
+                    : renderLoader()
+        ]);
     },
     methods: {
         cancel () {
