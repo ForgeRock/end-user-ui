@@ -33,10 +33,8 @@ def build() {
       currentBuild.displayName = "#${env.BUILD_NUMBER} - ${SHORT_GIT_COMMIT}"
     }
 
-    withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
-             "MAVEN_OPTS=${mavenBuildOptions}",
-             "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-      privateWorkspace.withCopyOfWorkspace {
+    dockerUtils.insideMavenImage( withCopyOfHostWorkspace: true ) {
+      withEnv(["MAVEN_OPTS=${mavenBuildOptions}"]) {
         stage('Maven build') {
           stageErrorMessage = 'The Maven build failed, please check the console output'
           withCredentials([string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY')]) {
