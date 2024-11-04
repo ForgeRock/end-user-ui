@@ -1,12 +1,12 @@
 #!/usr/bin/env groovy
 
-@Library(value=['forgerock-pipeline-libs@3d01db87f911d1a9d1d2039aa4f51ace927b374d', 'QaUtils'], changelog=false)
+@Library(value=['forgerock-pipeline-libs@378695572aa171194938fc806c0d447ac78f3fa6', 'QaUtils'], changelog=false)
 
 def pipeline
 
 timestamps {
 
-  node('build&&linux') {
+  node('gce-vm-idm') {
 
     stage ('Clone repo') {
 

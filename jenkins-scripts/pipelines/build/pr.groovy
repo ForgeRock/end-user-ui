@@ -21,8 +21,6 @@ def build() {
 
   bitbucketCommentId = ''
 
-  def javaVersion = '8'
-  def mavenVersion = '3.6.0'
   def mavenBuildOptions = ''
 
   try {
@@ -36,15 +34,13 @@ def build() {
     }
 
     stage ('Maven build') {
-
-      withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
-               "MAVEN_OPTS=${mavenBuildOptions}",
-               "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-
-        withCredentials([ string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY') ]) {
-          def mendProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.CHANGE_TARGET)
-          sh "mvn -B -e -U clean verify -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
-                  " -Dmend.product.key=${mendProductToken} -Dmend.user.key=${env.MEND_USER_KEY}"
+      dockerUtils.insideMavenImage( withCopyOfHostWorkspace: true ) {
+        withEnv(["MAVEN_OPTS=${mavenBuildOptions}"]) {
+          withCredentials([ string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY') ]) {
+            def mendProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.CHANGE_TARGET)
+            sh "mvn -B -e -U clean verify -Psource-copyright,thirdpartylicensing -Dci.scm.revision=${SHORT_GIT_COMMIT}" +
+                    " -Dmend.product.key=${mendProductToken} -Dmend.user.key=${env.MEND_USER_KEY}"
+          }
         }
       }
     }
