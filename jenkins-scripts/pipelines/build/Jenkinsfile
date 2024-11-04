@@ -6,7 +6,7 @@ def pipeline
 
 timestamps {
 
-  node('build&&linux') {
+  node('gce-vm-idm') {
 
     stage ('Clone repo') {
 
