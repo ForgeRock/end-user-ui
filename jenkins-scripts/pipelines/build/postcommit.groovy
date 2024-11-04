@@ -12,10 +12,8 @@ def build() {
   properties([buildDiscarder(logRotator(daysToKeepStr: '', numToKeepStr: '10'))])
 
   slackChannel = '#idm'
-  emailNotificationMailingList = ['openidm-dev@forgerock.com, oliver.bradley@forgerock.com, brendan.miller@forgerock.com']
+  emailNotificationMailingList = ['openidm-dev@pingidentity.com, oliver.bradley@pingidentity.com, brendan.miller@pingidentity.com']
 
-  def javaVersion = '8'
-  def mavenVersion = '3.6.0'
   def mavenBuildOptions = ''
 
   try {
@@ -33,10 +31,8 @@ def build() {
       currentBuild.displayName = "#${env.BUILD_NUMBER} - ${SHORT_GIT_COMMIT}"
     }
 
-    withEnv(["JAVA_HOME=" + tool("JDK${javaVersion}"),
-             "MAVEN_OPTS=${mavenBuildOptions}",
-             "PATH+MAVEN=" + tool("Maven ${mavenVersion}") + "/bin"]) {
-      privateWorkspace.withCopyOfWorkspace {
+    dockerUtils.insideMavenImage( withCopyOfHostWorkspace: true ) {
+      withEnv(["MAVEN_OPTS=${mavenBuildOptions}"]) {
         stage('Maven build') {
           stageErrorMessage = 'The Maven build failed, please check the console output'
           withCredentials([string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY')]) {
@@ -56,10 +52,12 @@ def build() {
             """
         }
       }
+    }
 
-      stage('Mend Scan') {
-        stageErrorMessage = 'The Mend scan failed, please check the console output'
-        privateWorkspace.withCopyOfWorkspace {
+    dockerUtils.insideMavenImage( withCopyOfHostWorkspace: true ) {
+      withEnv(["MAVEN_OPTS=${mavenBuildOptions}"]) {
+        stage('Mend Scan') {
+          stageErrorMessage = 'The Mend scan failed, please check the console output'
           runMendScan()
         }
       }
