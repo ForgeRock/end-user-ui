@@ -57,9 +57,7 @@ def build() {
 
       stage('Mend Scan') {
         stageErrorMessage = 'The Mend scan failed, please check the console output'
-        privateWorkspace.withCopyOfWorkspace {
-          runMendScan()
-        }
+        runMendScan()
       }
     }
 
