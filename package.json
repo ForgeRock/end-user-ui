@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "axios": "1.7.4",
+    "babel-loader": "9.2.1",
     "bootstrap": "4.3.1",
     "bootstrap-vue": "2.21.2",
     "core-js": "3.6.5",
@@ -22,7 +23,7 @@
     "lodash": "4.17.21",
     "moment": "2.29.4",
     "prismjs": "1.27.0",
-    "sanitize-html": "2.7.1",
+    "sanitize-html": "2.13.1",
     "sass": "1.69.4",
     "vee-validate": "3.3.2",
     "vue": "2.6.10",
