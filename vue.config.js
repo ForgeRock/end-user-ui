@@ -64,7 +64,21 @@ module.exports = {
         }
     },
     configureWebpack: {
-        plugins: getPlugins(process.env)
+        plugins: getPlugins(process.env),
+        module: {
+            rules: [
+                {
+                    test: /\.m?js$/,
+                    exclude: /node_modules\/(?!(sanitize-html|htmlparser2|domelementtype|domutils)\/).*/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-env']
+                        }
+                    }
+                }
+            ]
+        }
     },
     css: {
         loaderOptions: {
