@@ -66,6 +66,7 @@
     "ansi-regex": "5.0.1",
     "braces": "3.0.3",
     "dom-iterator": "1.0.1",
+    "nth-check": "2.0.1",
     "follow-redirects": "1.15.9"
   },
   "eslintConfig": {
