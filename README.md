@@ -1,13 +1,16 @@
 <p align="center">
   <b>Identity Management (End User) - UI</b>
+  <p align="center">
+    The End-User UI is no longer supported in PingIDM 8.0. Follow the documentation and guidance in this README.
+    <br>
 
   <p align="center">
     Easy to integrate, standalone UI to demonstrate ForgeRock Identity Management.
     <br>
-    <a href="https://backstage.forgerock.com/docs/"><strong>Explore ForgeRock docs »</strong></a>
+ 
   </p>
   <p align="center">
-    The purpose of this readme is to help users setup a self contained development environment for the End User UI that can be customized and expanded.
+    The purpose of this readme is to help users set up a self-contained development environment for the End-User UI that can be customized and expanded.
   </p>
 </p>
 
@@ -263,10 +266,19 @@ mvn docker:build docker:push \
 - [Who this project is for](#who-this-project-is-for)
 - [How to Add a Self-Service Stage to the UI](#how-to-add-a-self-service-stage-to-the-ui)
 - [How to Replace IDM End User files](#how-to-replace-a-idm-enduser)
+- [How to Change End-User UI Path](#how-to-change-end-user-ui-path)
+- [How to Provide Logout URL to External Applications](#how-to-provide-logout-url-to-external-applications)
 - [How to Add Additional Registration Flows](#how-to-add-additional-registration-flows)
 - [How to Configure Notification Polling](#how-to-configure-notification-polling)
 - [How to Configure REST Call Timeouts](#how-to-configure-rest-call-timeouts)
 - [What has Changed with Workflow](#what-has-changed-with-workflow)
+- [Where to Find Privacy and Account Information in the End-User UI](#where-to-find-privacy-account-info-end-user-ui)
+- [Where to Find Personal Information in the End-User UI](#where-to-find-personal-info-end-user-ui)
+- [Where to Find Sign-In and Security](#where-to-find-sign-in-and-security)
+- [Where to Find Account Preferences](#where-to-find-account-preferences)
+- [How to Configure Trusted Devices](#how-to-configure-trusted-devices)
+- [How to Control Personal Data Sharing](#how-to-control-personal-data-sharing)
+- [Where to Manage Account Controls](#where-to-manage-account-controls)
 
 <a name="who-this-project-is-for"></a>
 ### Who this project is for
@@ -372,6 +384,32 @@ These instructions apply to registration, password reset, and forgotten username
 
 **If you rebuild IDM you will need to perform these steps again as that process will replace the current zip contents.**
 
+<a name="how-to-change-end-user-ui-path"></a>
+### How to Change End-user UI Path
+
+By default, the End User UI is registered at the root context and is accessible at the URL `{secureHostname}`. To specify a different URL, edit the `project-dir/conf/ui.context-enduser.json` file, setting the `urlContextRoot` property to the new URL.
+
+For example, to change the End User UI URL to `{secureHostname}/exampleui`, edit the file as follows:
+
+```
+"urlContextRoot" : "/exampleui",
+```
+Alternatively, to change the End User UI URL in the admin UI, follow these steps:
+
+1) Log in to the admin UI.
+2) From the navigation bar, click **Configure > System Preferences** and select the **Self-Service UI** tab.
+3) Specify the new context route in the **Relative URL** field.
+4) Click **Save**.
+
+<a name="how-to-provide-logout-url-to-external-applications"></a>
+### How to Provide Logout URL to External Applications
+
+By default, an End-User UI session is invalidated when a user clicks on the Log out link. In certain situations, external applications might require a distinct logout URL to which users can be routed, to terminate their UI session.
+
+The logout URL is `#logout`, appended to the UI URL. For example, `{secureHostname}/#logout/`.
+
+The logout URL effectively performs the same action as clicking on the **Log out** link of the UI.
+
 <a name="how-to-add-additional-registration-flows"></a>
 ### How to Add Additional Registration Flows
 
@@ -423,3 +461,94 @@ REST calls in the End User UI time out after `5000 milliseconds` by default. To 
 
 With the new End User UI the default workflows in IDM have been updated to make use of `Vue JS` as a framework. Previously, these workflows used `JQuery` and `Handlebars`.
 You will need to update any existing workflows to use `Vue JS` in order to use the new End User UI. **Previously formatted workflows are not supported with the new End User UI.**
+
+<a name="where-to-find-privacy-account-info-end-user-ui"></a>
+### Privacy: Account Information in the End User UI
+
+While end users can find their information in the End User UI, you can use REST calls and audit logs to find the same information. Some of the information in this section, such as Trusted Devices and UMA-based sharing, may require integration with PingAM, as described in the [sample platform](https://backstage.forgerock.com/docs/platform/7.3/platform-setup-guide/preface.html) documentation.
+
+What the end user sees upon log in to the End User UI depends on which features are configured.
+
+- When you log in to the End User UI, you'll be taken to the PingIDM Profile page, with at least the following information under the **Settings** tab:
+
+  - **Account Security**
+  - **Preferences**
+  - **Account Controls**
+
+- At a minimum, the left panel displays the **Dashboard** and **Profile** buttons. If you've configured UMA, you'll also refer to a **Sharing** button. To view descriptions, click the **Menu** button.
+
+- When you add features, additional options display on the profile page:
+
+  - **Information in the End-User Profile Page**
+
+    | Title | Description |
+    |-------|-------------|
+    | Account Security | Password and Security Questions, default |
+    | Social Sign-in | Links to Social Identity Provider Accounts |
+    | Authorized Applications | Applications that can access an account |
+    | Trusted Devices | Based on system and browser |
+    | Preferences | Default |
+    | Personal Data Sharing | Provides control |
+    | Account Controls | Includes collected account data (Default) |
+
+<a name="where-to-find-personal-info-end-user-ui"></a>
+### Where to Find Personal Information in the End-User UI
+
+To view account details in the End User UI, go to **Profile > Edit Personal Info**. By default, user information includes at least a Username, First Name, Last Name, and Email Address.
+
+Each user can modify this information as needed, as long as `"userEditable"` is set to `"true"` for the property in your project's `managed.json` file. Learn more in [Create and modify object types](https://docs.pingidentity.com/pingidm/7.5/objects-guide/creating-modifying-managed-objects.html).
+
+<a name="where-to-find-sign-in-and-security"></a>
+### Where to Find Sign-In and Security
+
+Under this tab, end users can change their passwords. They can also add, delete, or modify security questions, and link or unlink supported social identity accounts.
+
+<a name="where-to-find-account-preferences"></a>
+### Where to Find Account Preferences
+
+The preferences tab in the End-User UI allows end users to modify marketing preferences, as defined in the `managed.json` file, and in the **Managed Object User Property Preferences** tab.
+
+End users can toggle marketing preferences. When PingIDM includes a mapping to a marketing database, these preferences are sent to that database. This can help administrators use PingIDM to target marketing campaigns and identify potential leads.
+
+<a name="how-to-configure-trusted-devices"></a>
+### How to Configure Trusted Devices
+
+A _trusted device_ uses PingAM's Device ID (Match) and Device ID (Save) authentication modules. When these modules are configured, end users can add these devices the first time they log in from a new location.
+
+During the login process, when an end user selects **Log In**, that user is prompted for a **Trusted Device Name**. Users refer to their added devices under the **Trusted Devices** tab.
+
+A trusted device entry is paired with a specific browser on a specific system. The next time the same end user logs in from the same browser and system, in the same location, that user should not be prompted to enter a trusted device again.
+
+End users can remove their trusted devices from the tab.
+
+<a name="how-to-control-personal-data-sharing"></a>
+### How to Control Personal Data Sharing
+
+End users who go to the **Personal Data Sharing** section in the End-User UI have control over whether personal data is shared with an external database that might contain marketing leads.
+
+The managed object record for end users who consent to sharing this data is shown in REST output and in the audit activity log as one `consentedMappings` object:
+
+```
+"consentedMappings" : [ {
+   "mapping" : "managedUser_systemLdapAccounts",
+   "consentDate" : "2017-08-25T18:13:08.358Z"
+}
+```
+
+If enabled, end users manage this information in the **Personal Data Sharing** section in their profiles. If they select the **Allow** link, they can see the data properties that would be shared with the external database.
+
+This option supports the right to restrict processing of user personal data.
+
+<a name="where-to-manage-account-controls"></a>
+### Where to Manage Account Controls
+
+The **Account Controls** section allows end users to download their account data (in JSON format) and to delete their accounts from PingIDM.
+
+> **IMPORTANT**: When end users delete their accounts, the change is propagated to external systems by implicit sync. However, it is then up to the administrator of the external system to make sure that any additional user information is purged from that system.
+
+To modify the message associated with the **Delete Your Account** option, refer to [Translations and text](#translations-and-text):
+
+1) Find the `translation.json` file.
+2) Search for the `deleteAccount` code block and edit the information.
+
+The options shown in this section can help meet requirements related to data portability and the right to be forgotten.
