@@ -265,7 +265,7 @@ mvn docker:build docker:push \
 
 - [Who this project is for](#who-this-project-is-for)
 - [How to Add a Self-Service Stage to the UI](#how-to-add-a-self-service-stage-to-the-ui)
-- [How to Replace IDM End User files](#how-to-replace-a-idm-enduser)
+- [How to Replace IDM End-User Files](#how-to-replace-idm-end-user-files)
 - [How to Change End-User UI Path](#how-to-change-end-user-ui-path)
 - [How to Provide Logout URL to External Applications](#how-to-provide-logout-url-to-external-applications)
 - [How to Add Additional Registration Flows](#how-to-add-additional-registration-flows)
@@ -374,8 +374,8 @@ These instructions apply to registration, password reset, and forgotten username
 
 5. When these steps are complete, all that remains is to step through the self-service process with the new stage added and validate that everything is hooked up.
 
-<a name="how-to-replace-a-idm-enduser"></a>
-### How to Replace IDM End User
+<a name="how-to-replace-idm-end-user"></a>
+### How to Replace IDM End-User Files
 
 1) Inside of the End User project Run `npm run build` to generate a distribution copy
 2) Locate your current IDM project folder and navigate to `/path/to/your/openidm/ui/enduser`
@@ -387,14 +387,14 @@ These instructions apply to registration, password reset, and forgotten username
 <a name="how-to-change-end-user-ui-path"></a>
 ### How to Change End-user UI Path
 
-By default, the End User UI is registered at the root context and is accessible at the URL `{secureHostname}`. To specify a different URL, edit the `project-dir/conf/ui.context-enduser.json` file, setting the `urlContextRoot` property to the new URL.
+By default, the End-User UI is registered at the root context and is accessible at the URL `{secureHostname}`. To specify a different URL, edit the `project-dir/conf/ui.context-enduser.json` file, setting the `urlContextRoot` property to the new URL.
 
-For example, to change the End User UI URL to `{secureHostname}/exampleui`, edit the file as follows:
+For example, to change the End-User UI URL to `{secureHostname}/exampleui`, edit the file as follows:
 
 ```
 "urlContextRoot" : "/exampleui",
 ```
-Alternatively, to change the End User UI URL in the admin UI, follow these steps:
+Alternatively, to change the End-User UI URL in the admin UI, follow these steps:
 
 1) Log in to the admin UI.
 2) From the navigation bar, click **Configure > System Preferences** and select the **Self-Service UI** tab.
@@ -414,7 +414,7 @@ The logout URL effectively performs the same action as clicking on the **Log out
 ### How to Add Additional Registration Flows
 
 1. Add multiple `selfservice-registration.json` files, following [these docs](https://backstage.forgerock.com/docs/idm/6/integrators-guide/#uss-registration).
-2. For each additional `selfservice-registration.json` file, clone `Registration.vue` and rename it to match the corresponding new registration file. For example, if you named the configuration file `selfservice-registrationsecondflow.json`, name the vue file `RegistrationSecondFlow.vue`.
+2. For each additional `selfservice-registration.json` file, clone `Registration.vue` and rename it to match the corresponding new registration file. For example, if you named the configuration file `selfservice-registrationsecondflow.json`, name the Vue file `RegistrationSecondFlow.vue`.
 3. In the new Vue file, change the variable `apiType: 'registration'`, to match your `selfservice-` file. For example, if your configuration file is named `selfservice-registrationsecondflow` change the variable to `apiType: 'registrationsecondflow'`.
 4. Locate the router file `router/index.js` and add a route for the new file:
 
@@ -429,47 +429,47 @@ The logout URL effectively performs the same action as clicking on the **Log out
 ```
 
 5. At the top of the `router/index.js` file, import the new Vue file and ensure that it matches the component that you specified in the route: `import RegistrationSecondFlow from '@/components/mains/RegistrationSecondFlow';`
-6. Make sure that your IDM access.js file is configured properly, based on [these docs](https://backstage.forgerock.com/docs/idm/6/integrators-guide/#uss-registration). You will see a forbidden access error if this file isn't configured correctly.
+6. Make sure that your IDM `access.js` file is configured properly, based on [these docs](https://backstage.forgerock.com/docs/idm/6/integrators-guide/#uss-registration). You will see a forbidden access error if this file isn't configured correctly.
 7. Assuming you are on the development sever and have used default settings, you should now be able to navigate through two separate registration flows : `localhost:8081/#/registration` and `localhost:8081/#/registrationsecondflow`.
 
 <a name="how-to-configure-notification-polling"></a>
 ### How to Configure Notification Polling
 
-The End User UI polls for new system notifications every `3000 milliseconds` by default.
+The End-User UI polls for new system notifications every `3000 milliseconds` by default.
 To change the default polling time, follow these steps:
 
-1) Navigate to `src/components/utils/ToolbarNotification.vue`
-2) Locate the function called `StartPolling`
-3) At the top of the function there is a variable `pollingDelay`
+1) Navigate to `src/components/utils/ToolbarNotification.vue`.
+2) Locate the function called `StartPolling`.
+3) At the top of the function there is a variable `pollingDelay`.
 4) Set the `pollingDelay` (in milliseconds) to adjust the notification polling interval.
 
-To turn off polling, comment out or remove the startPolling method and remove any reference to that function.
+To turn off polling, comment out or remove the `startPolling` method and remove any reference to that function.
 This will result in the notifications loading only when the application is first loaded.
 
 <a name="how-to-configure-rest-call-timeouts"></a>
 ### How to Configure REST Call Timeouts
 
-REST calls in the End User UI time out after `5000 milliseconds` by default. To change this timeout, follow these steps:
+REST calls in the End-User UI time out after `5000 milliseconds` by default. To change this timeout, follow these steps:
 
-1) Navigate to `src/main.js`
-2) Locate the function called `getRequestService`
-3) At the top of the function there is a variable `timeout`
+1) Navigate to `src/main.js`.
+2) Locate the function called `getRequestService`.
+3) At the top of the function there is a variable `timeout`.
 4) Set the `timeout` (in milliseconds) to adjust the REST call timeout.
 
 <a name="what-has-changed-with-workflow"></a>
 ### What has Changed with Workflow
 
-With the new End User UI the default workflows in IDM have been updated to make use of `Vue JS` as a framework. Previously, these workflows used `JQuery` and `Handlebars`.
-You will need to update any existing workflows to use `Vue JS` in order to use the new End User UI. **Previously formatted workflows are not supported with the new End User UI.**
+With the new End-User UI, the default workflows in IDM have been updated to make use of `Vue JS` as a framework. Previously, these workflows used `JQuery` and `Handlebars`.
+You will need to update any existing workflows to use `Vue JS` in order to use the new End-User UI. **Previously formatted workflows are not supported with the new End-User UI.**
 
 <a name="where-to-find-privacy-account-info-end-user-ui"></a>
-### Privacy: Account Information in the End User UI
+### Privacy: Account Information in the End-User UI
 
-While end users can find their information in the End User UI, you can use REST calls and audit logs to find the same information. Some of the information in this section, such as Trusted Devices and UMA-based sharing, may require integration with PingAM, as described in the [sample platform](https://backstage.forgerock.com/docs/platform/7.3/platform-setup-guide/preface.html) documentation.
+While end users can find their information in the End-User UI, you can use REST calls and audit logs to find the same information. Some of the information in this section, such as Trusted Devices and UMA-based sharing, may require integration with PingAM, as described in the [sample platform](https://backstage.forgerock.com/docs/platform/7.3/platform-setup-guide/preface.html) documentation.
 
-What the end user sees upon log in to the End User UI depends on which features are configured.
+What the end user sees upon log in to the End-User UI depends on which features are configured.
 
-- When you log in to the End User UI, you'll be taken to the PingIDM Profile page, with at least the following information under the **Settings** tab:
+- When you log in to the End-User UI, you'll be taken to the PingIDM **Profile** page, with at least the following information under the **Settings** tab:
 
   - **Account Security**
   - **Preferences**
@@ -494,7 +494,7 @@ What the end user sees upon log in to the End User UI depends on which features 
 <a name="where-to-find-personal-info-end-user-ui"></a>
 ### Where to Find Personal Information in the End-User UI
 
-To view account details in the End User UI, go to **Profile > Edit Personal Info**. By default, user information includes at least a Username, First Name, Last Name, and Email Address.
+To view account details in the End-User UI, go to **Profile > Edit Personal Info**. By default, user information includes at least a Username, First Name, Last Name, and Email Address.
 
 Each user can modify this information as needed, as long as `"userEditable"` is set to `"true"` for the property in your project's `managed.json` file. Learn more in [Create and modify object types](https://docs.pingidentity.com/pingidm/7.5/objects-guide/creating-modifying-managed-objects.html).
 
