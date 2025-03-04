@@ -389,7 +389,7 @@ These instructions apply to registration, password reset, and forgotten username
 **If you rebuild IDM you will need to perform these steps again as that process will replace the current zip contents.**
 
 <a name="how-to-change-end-user-ui-path"></a>
-### How to Change End-user UI Path
+### How to Change End-User UI Path
 
 > **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
 
