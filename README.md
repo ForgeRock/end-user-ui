@@ -1,13 +1,16 @@
 <p align="center">
   <b>Identity Management (End User) - UI</b>
+  <p align="center">
+    The End-User UI is no longer included in PingIDM 8.0 and later. Follow the documentation and guidance in this README.
+    <br>
 
   <p align="center">
     Easy to integrate, standalone UI to demonstrate ForgeRock Identity Management.
     <br>
-    <a href="https://backstage.forgerock.com/docs/"><strong>Explore ForgeRock docs »</strong></a>
+  <a href="https://docs.pingidentity.com/pingidm/7.5/release-notes/preface.html"><strong>Explore ForgeRock docs »</strong></a> 
   </p>
   <p align="center">
-    The purpose of this readme is to help users setup a self contained development environment for the End User UI that can be customized and expanded.
+    The purpose of this readme is to help users set up a self-contained development environment for the End-User UI that can be customized and expanded.
   </p>
 </p>
 
@@ -262,11 +265,20 @@ mvn docker:build docker:push \
 
 - [Who this project is for](#who-this-project-is-for)
 - [How to Add a Self-Service Stage to the UI](#how-to-add-a-self-service-stage-to-the-ui)
-- [How to Replace IDM End User files](#how-to-replace-a-idm-enduser)
+- [How to Replace IDM End-User Files](#how-to-replace-idm-end-user-files)
+- [How to Change End-User UI Path](#how-to-change-end-user-ui-path)
+- [How to Provide Logout URL to External Applications](#how-to-provide-logout-url-to-external-applications)
 - [How to Add Additional Registration Flows](#how-to-add-additional-registration-flows)
 - [How to Configure Notification Polling](#how-to-configure-notification-polling)
 - [How to Configure REST Call Timeouts](#how-to-configure-rest-call-timeouts)
 - [What has Changed with Workflow](#what-has-changed-with-workflow)
+- [Where to Find Privacy and Account Information in the End-User UI](#where-to-find-privacy-account-info-end-user-ui)
+- [Where to Find Personal Information in the End-User UI](#where-to-find-personal-info-end-user-ui)
+- [Where to Find Sign-In and Security](#where-to-find-sign-in-and-security)
+- [Where to Find Account Preferences](#where-to-find-account-preferences)
+- [How to Configure Trusted Devices](#how-to-configure-trusted-devices)
+- [How to Control Personal Data Sharing](#how-to-control-personal-data-sharing)
+- [Where to Manage Account Controls](#where-to-manage-account-controls)
 
 <a name="who-this-project-is-for"></a>
 ### Who this project is for
@@ -277,7 +289,9 @@ to successfully navigate and understand the code.
 <a name="how-to-add-a-self-service-stage-to-the-ui"></a>
 ### How to Add a Self-Service Stage to the UI
 
-This tutorial assumes you have created the backend portion of the stage and added that stage to the appropriate `selfservice-` file. If you need help with these steps please refer to the [ForgeRock Documentation](https://backstage.forgerock.com/docs/idm/6/self-service-reference/).
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
+This tutorial assumes you have created the backend portion of the stage and added that stage to the appropriate `selfservice-` file. If you need help with these steps please refer to the [ForgeRock Documentation](https://docs.pingidentity.com/pingidm/7.5/self-service-reference/preface.html).
 These instructions apply to registration, password reset, and forgotten username.
 
 1. Create a `.vue` file. Depending on the self-service flow you'll want to add the file to the appropriate location in the file structure. For example, a registration stage would go under `src/selfservice/registration`.
@@ -362,8 +376,10 @@ These instructions apply to registration, password reset, and forgotten username
 
 5. When these steps are complete, all that remains is to step through the self-service process with the new stage added and validate that everything is hooked up.
 
-<a name="how-to-replace-a-idm-enduser"></a>
-### How to Replace IDM End User
+<a name="how-to-replace-idm-end-user"></a>
+### How to Replace IDM End-User Files
+
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
 
 1) Inside of the End User project Run `npm run build` to generate a distribution copy
 2) Locate your current IDM project folder and navigate to `/path/to/your/openidm/ui/enduser`
@@ -372,11 +388,38 @@ These instructions apply to registration, password reset, and forgotten username
 
 **If you rebuild IDM you will need to perform these steps again as that process will replace the current zip contents.**
 
+<a name="how-to-change-end-user-ui-path"></a>
+### How to Change End-User UI Path
+
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
+By default, the End-User UI is registered at the root context and is accessible at the URL `localhost:8080`. To specify a different URL, edit the `project-dir/conf/ui.context-enduser.json` file, setting the `urlContextRoot` property to the new URL.
+
+For example, to change the End-User UI URL to `localhost:8080/exampleui`, edit the file as follows:
+
+``` json
+"urlContextRoot" : "/exampleui",
+```
+
+
+<a name="how-to-provide-logout-url-to-external-applications"></a>
+### How to Provide Logout URL to External Applications
+
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
+By default, an End-User UI session is invalidated when a user clicks on the Log out link. In certain situations, external applications might require a distinct logout URL to which users can be routed, to terminate their UI session.
+
+The logout URL is `#logout`, appended to the UI URL. For example, `localhost:8080/#logout/`.
+
+The logout URL effectively performs the same action as clicking on the **Log out** link of the UI.
+
 <a name="how-to-add-additional-registration-flows"></a>
 ### How to Add Additional Registration Flows
 
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
 1. Add multiple `selfservice-registration.json` files, following [these docs](https://backstage.forgerock.com/docs/idm/6/integrators-guide/#uss-registration).
-2. For each additional `selfservice-registration.json` file, clone `Registration.vue` and rename it to match the corresponding new registration file. For example, if you named the configuration file `selfservice-registrationsecondflow.json`, name the vue file `RegistrationSecondFlow.vue`.
+2. For each additional `selfservice-registration.json` file, clone `Registration.vue` and rename it to match the corresponding new registration file. For example, if you named the configuration file `selfservice-registrationsecondflow.json`, name the Vue file `RegistrationSecondFlow.vue`.
 3. In the new Vue file, change the variable `apiType: 'registration'`, to match your `selfservice-` file. For example, if your configuration file is named `selfservice-registrationsecondflow` change the variable to `apiType: 'registrationsecondflow'`.
 4. Locate the router file `router/index.js` and add a route for the new file:
 
@@ -391,35 +434,140 @@ These instructions apply to registration, password reset, and forgotten username
 ```
 
 5. At the top of the `router/index.js` file, import the new Vue file and ensure that it matches the component that you specified in the route: `import RegistrationSecondFlow from '@/components/mains/RegistrationSecondFlow';`
-6. Make sure that your IDM access.js file is configured properly, based on [these docs](https://backstage.forgerock.com/docs/idm/6/integrators-guide/#uss-registration). You will see a forbidden access error if this file isn't configured correctly.
+6. Make sure that your IDM `access.js` file is configured properly, based on [these docs](https://docs.pingidentity.com/pingidm/7.5/self-service-reference/uss-registration-config.html). You will see a forbidden access error if this file isn't configured correctly.
 7. Assuming you are on the development sever and have used default settings, you should now be able to navigate through two separate registration flows : `localhost:8081/#/registration` and `localhost:8081/#/registrationsecondflow`.
 
 <a name="how-to-configure-notification-polling"></a>
 ### How to Configure Notification Polling
 
-The End User UI polls for new system notifications every `3000 milliseconds` by default.
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
+The End-User UI polls for new system notifications every `3000 milliseconds` by default.
 To change the default polling time, follow these steps:
 
-1) Navigate to `src/components/utils/ToolbarNotification.vue`
-2) Locate the function called `StartPolling`
-3) At the top of the function there is a variable `pollingDelay`
+1) Navigate to `src/components/utils/ToolbarNotification.vue`.
+2) Locate the function called `StartPolling`.
+3) At the top of the function there is a variable `pollingDelay`.
 4) Set the `pollingDelay` (in milliseconds) to adjust the notification polling interval.
 
-To turn off polling, comment out or remove the startPolling method and remove any reference to that function.
+To turn off polling, comment out or remove the `startPolling` method and remove any reference to that function.
 This will result in the notifications loading only when the application is first loaded.
 
 <a name="how-to-configure-rest-call-timeouts"></a>
 ### How to Configure REST Call Timeouts
 
-REST calls in the End User UI time out after `5000 milliseconds` by default. To change this timeout, follow these steps:
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
 
-1) Navigate to `src/main.js`
-2) Locate the function called `getRequestService`
-3) At the top of the function there is a variable `timeout`
+REST calls in the End-User UI time out after `5000 milliseconds` by default. To change this timeout, follow these steps:
+
+1) Navigate to `src/main.js`.
+2) Locate the function called `getRequestService`.
+3) At the top of the function there is a variable `timeout`.
 4) Set the `timeout` (in milliseconds) to adjust the REST call timeout.
 
 <a name="what-has-changed-with-workflow"></a>
 ### What has Changed with Workflow
 
-With the new End User UI the default workflows in IDM have been updated to make use of `Vue JS` as a framework. Previously, these workflows used `JQuery` and `Handlebars`.
-You will need to update any existing workflows to use `Vue JS` in order to use the new End User UI. **Previously formatted workflows are not supported with the new End User UI.**
+With the new End-User UI, the default workflows in IDM have been updated to make use of `Vue JS` as a framework. Previously, these workflows used `JQuery` and `Handlebars`.
+You will need to update any existing workflows to use `Vue JS` in order to use the new End-User UI. **Previously formatted workflows are not supported with the new End-User UI.**
+
+<a name="where-to-find-privacy-account-info-end-user-ui"></a>
+### Privacy: Account Information in the End-User UI
+
+While end users can find their information in the End-User UI, you can use REST calls and audit logs to find the same information. Some of the information in this section, such as Trusted Devices and UMA-based sharing, may require integration with PingAM, as described in the [sample platform](https://backstage.forgerock.com/docs/platform/7.3/platform-setup-guide/preface.html) documentation.
+
+What the end user sees upon log in to the End-User UI depends on which features are configured.
+
+- When you log in to the End-User UI, you'll be taken to the PingIDM **Profile** page, with at least the following information under the **Settings** tab:
+
+  - **Account Security**
+  - **Preferences**
+  - **Account Controls**
+
+- At a minimum, the left panel displays the **Dashboard** and **Profile** buttons. If you've configured UMA, you'll also refer to a **Sharing** button. To view descriptions, click the **Menu** button.
+
+- When you add features, additional options display on the profile page:
+
+  - **Information in the End-User Profile Page**
+
+    | Title | Description |
+    |-------|-------------|
+    | Account Security | Password and Security Questions, default |
+    | Social Sign-in | Links to Social Identity Provider Accounts |
+    | Authorized Applications | Applications that can access an account |
+    | Trusted Devices | Based on system and browser |
+    | Preferences | Default |
+    | Personal Data Sharing | Provides control |
+    | Account Controls | Includes collected account data (Default) |
+
+<a name="where-to-find-personal-info-end-user-ui"></a>
+### Where to Find Personal Information in the End-User UI
+
+To view account details in the End-User UI, go to **Profile > Edit Personal Info**. By default, user information includes at least a Username, First Name, Last Name, and Email Address.
+
+Each user can modify this information as needed, as long as `"userEditable"` is set to `"true"` for the property in your project's `managed.json` file. Learn more in [Create and modify object types](https://docs.pingidentity.com/pingidm/7.5/objects-guide/creating-modifying-managed-objects.html).
+
+<a name="where-to-find-sign-in-and-security"></a>
+### Where to Find Sign-In and Security
+
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
+Under this tab, end users can change their passwords. They can also add, delete, or modify security questions, and link or unlink supported social identity accounts.
+
+<a name="where-to-find-account-preferences"></a>
+### Where to Find Account Preferences
+
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
+The preferences tab in the End-User UI allows end users to modify marketing preferences, as defined in the `managed.json` file, and in the **Managed Object User Property Preferences** tab.
+
+End users can toggle marketing preferences. When PingIDM includes a mapping to a marketing database, these preferences are sent to that database. This can help administrators use PingIDM to target marketing campaigns and identify potential leads.
+
+<a name="how-to-configure-trusted-devices"></a>
+### How to Configure Trusted Devices
+
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
+A _trusted device_ uses PingAM's Device ID (Match) and Device ID (Save) authentication modules. When these modules are configured, end users can add these devices the first time they log in from a new location.
+
+During the login process, when an end user selects **Log In**, that user is prompted for a **Trusted Device Name**. Users refer to their added devices under the **Trusted Devices** tab.
+
+A trusted device entry is paired with a specific browser on a specific system. The next time the same end user logs in from the same browser and system, in the same location, that user should not be prompted to enter a trusted device again.
+
+End users can remove their trusted devices from the tab.
+
+<a name="how-to-control-personal-data-sharing"></a>
+### How to Control Personal Data Sharing
+
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
+End users who go to the **Personal Data Sharing** section in the End-User UI have control over whether personal data is shared with an external database that might contain marketing leads.
+
+The managed object record for end users who consent to sharing this data is shown in REST output and in the audit activity log as one `consentedMappings` object:
+
+``` json
+"consentedMappings" : [ {
+   "mapping" : "managedUser_systemLdapAccounts",
+   "consentDate" : "2017-08-25T18:13:08.358Z"
+}
+```
+
+If enabled, end users manage this information in the **Personal Data Sharing** section in their profiles. If they select the **Allow** link, they can see the data properties that would be shared with the external database.
+
+This option supports the right to restrict processing of user personal data.
+
+<a name="where-to-manage-account-controls"></a>
+### Where to Manage Account Controls
+
+> **IMPORTANT**: This section applies only to PingIDM 7.5 and earlier.
+
+The **Account Controls** section allows end users to download their account data (in JSON format) and to delete their accounts from PingIDM.
+
+> **IMPORTANT**: When end users delete their accounts, the change is propagated to external systems by implicit sync. However, it is then up to the administrator of the external system to make sure that any additional user information is purged from that system.
+
+To modify the message associated with the **Delete Your Account** option, refer to [Translations and text](#translations-and-text):
+
+1) Find the `translation.json` file.
+2) Search for the `deleteAccount` code block and edit the information.
+
+The options shown in this section can help meet requirements related to data portability and the right to be forgotten.
