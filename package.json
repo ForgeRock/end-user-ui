@@ -22,7 +22,7 @@
     "es6-promise": "4.2.4",
     "lodash": "4.17.21",
     "moment": "2.29.4",
-    "prismjs": "1.27.0",
+    "prismjs": "1.30.0",
     "sanitize-html": "2.14.0",
     "sass": "1.69.4",
     "vee-validate": "3.3.2",
