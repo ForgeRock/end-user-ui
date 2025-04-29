@@ -14,7 +14,7 @@
     "preinstall": "npx force-resolutions --silent"
   },
   "dependencies": {
-    "axios": "1.7.9",
+    "axios": "1.8.3",
     "babel-loader": "8.4.1",
     "bootstrap": "4.3.1",
     "bootstrap-vue": "2.21.2",
