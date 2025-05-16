@@ -52,22 +52,16 @@ def build() {
             """
         }
       }
-    }
 
-    dockerUtils.insideMavenImage( withCopyOfHostWorkspace: true ) {
-      withEnv(["MAVEN_OPTS=${mavenBuildOptions}"]) {
-        stage('Mend Scan') {
-          stageErrorMessage = 'The Mend scan failed, please check the console output'
-          runMendScan()
-        }
+      stage('Mend SCA Scan') {
+        stageErrorMessage = 'The Mend SCA scan failed, please check the console output'
+        runMendScaScan()
       }
     }
 
-    stage('Checkmarx scan') {
-      stageErrorMessage = 'The Checkmarx scan failed, please check the console output'
-      privateWorkspace.withCopyOfWorkspace {
-        runCheckmarxScan()
-      }
+    stage('Mend SAST scan') {
+      stageErrorMessage = 'The Mend Sast scan failed, please check the console output'
+        runMendSastScan()
     }
 
     currentBuild.result = 'SUCCESS'
@@ -88,8 +82,8 @@ def build() {
   }
 }
 
-/* Run the Mend scan */
-private void runMendScan() {
+/* Run the Mend SCA scan */
+private void runMendScaScan() {
   def repoName = scmUtils.getRepoName()
   def branchName = env.BRANCH_NAME
   ScanResult mendScanResult
@@ -105,62 +99,69 @@ private void runMendScan() {
   }
 }
 
-/* Run the Checkmarx SAST scan */
-private void runCheckmarxScan() {
-  def CHECKMARX_VULNERABILITY_THRESHOLD = 0 // No high vulnerabilities allowed in codebase.
-  try {
-    step([
-            $class                       : 'CxScanBuilder',
-            sastEnabled                  : true,
-            groupId                      : '6',
-            projectName                  : "UI - IDM EndUser ${env.BRANCH_NAME.replaceAll('/', ' ')}",
-            preset                       : '100004', // ASA-Premium
-            sourceEncoding               : '5', // Multi-language scan
+/* Run the Mend SAST scan */
+private void runMendSastScan() {
+  /**
+   * MEND_SAST_EXCLUDE_FOLDERS
+   * String of relative paths to exclude from scan, delineated by commas. Wildcard characters supported.
+   * See https://docs.mend.io/platform/latest/configure-the-mend-cli-for-sast#ConfiguretheMendCLIforSAST-MendCLISAST-ScanPerformanceparameters
+   */
+  MEND_SAST_EXCLUDE_FOLDERS = "!**/*.sql, ${GlobalConfig.CHECKMARX_EXCLUDE_PATTERNS}"
 
-            //Non-security Settings
-            exclusionSetting             : 'job',
-            excludeFolders               : 'tests',
-            filterPattern                : "!**/*.spec.js, ${GlobalConfig.CHECKMARX_EXCLUDE_PATTERNS}",
-            waitForResultsEnabled        : true,
-            // Incremental scans should only be performed when adding new code to the project.
-            // When changing existing code or adding new code directly affected by the old code, always perform a full scan.
-            incremental                  : false,
+  /**
+   * MEND_SAST_REPORT_LEVEL
+   * The level of detail to include in the report.
+   * Possible values: 'summary', 'short', 'technical'.
+   * See https://docs.mend.io/platform/latest/configure-the-mend-cli-for-sast#ConfiguretheMendCLIforSAST-MendCLISAST-Reportparameters
+   */
+  MEND_SAST_REPORT_LEVEL = 'summary'
 
-            // Use the number of HIGH vulnerabilities (CXSAST_RESULTS_HIGH) as the outcome of this stage.
-            // Enable the vulnerability threshold option to include the scan result in the report PDF.
-            vulnerabilityThresholdEnabled: true,
-            vulnerabilityThresholdResult : 'FAILURE',
-            highThreshold                : 0,
-            failBuildOnNewResults        : false,
-            jobStatusOnError             : 'UNSTABLE',
-    ])
-  } catch (Throwable t) {
-    // The Checkmarx step shouldn't throw an exception; if it did then alert RE so they can investigate.
-    // Don't collect report URL because the report may be unavailable.
-     emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('Checkmarx', t.message)
-    // Mark the stage as unstable, but do not fail the build.
-    unstable('Checkmarx', t.message)
-    return
+  /**
+   * MEND_SAST_THRESHOLD_HIGH
+   * The threshold of how many High CVEs the CLI will detect before sending exit code of 9.
+   * Possible values: integers.
+   * See https://docs.mend.io/platform/latest/configure-the-mend-cli-for-sast#ConfiguretheMendCLIforSAST-MendCLISAST-Thresholdparameters(Policy)
+   */
+  MEND_SAST_THRESHOLD_HIGH = 1
+
+  dockerUtils.insideSecurityScanImage(withCopyOfHostWorkspace: true, dockerfilePath: 'jenkins-scripts/docker/mend-cli') {
+    withCredentials([string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY')]) {
+      withEnv(["MEND_URL=https://saas.whitesourcesoftware.com",
+               "MEND_EMAIL=ci@pingidentity.com",
+               "MEND_SAST_PATH_EXCLUSIONS=${MEND_SAST_EXCLUDE_FOLDERS}",
+               "MEND_SAST_REPORT_LEVEL=${MEND_SAST_REPORT_LEVEL}",
+               "MEND_SAST_THRESHOLD_HIGH=${MEND_SAST_THRESHOLD_HIGH}"
+      ]) {
+        def rootCodePath = "."
+        def reportName = "mendSastReport_${BRANCH_NAME}_${SHORT_GIT_COMMIT}".replace('/','-')
+        def cmd = "mend code --dir ${rootCodePath} --report --filename ${reportName} --formats json,pdf --non-interactive --scope 'OpenIDM Enduser ${BRANCH_NAME}//SAST'"
+        def mendSastExitCode = sh script: cmd, returnStatus: true
+
+        def bucketPath = "gs://forgerock-build-assets-live/security/mend-sast/idm-enduser/"
+        def remoteReportPath = "${bucketPath}${reportName}.pdf"
+        sh "gsutil cp ${reportName}.pdf ${bucketPath}"  // Upload PDF report for view via dashboard
+        sh "gsutil cp ${reportName}.json ${bucketPath}" // Upload JSON report for debugging if needed
+        def httpReportUrl = "https://storage.cloud.google.com/forgerock-build-assets-live/security/mend-sast/idm-enduser/${reportName}.pdf"
+
+        switch (mendSastExitCode) {
+          case 0:
+            // Scan finished, no policy violations.
+            echo "SUCCESS: SAST scan completed with no violations, view report at ${httpReportUrl}"
+          case 9:
+            // Scan finished, policy violations found.
+            error "FAILURE: SAST scan completed with policy violations, view report at ${httpReportUrl}"
+          default:
+            // Scan finished with unhandled exit code or did not finish.
+            def errorMsg = "UNSTABLE: SAST scan encountered an unexpected exit code: ${mendSastExitCode}. " +
+                    "SAST scan was unable to finish. RE will be notified and this build will continue. " +
+                    "See Mend CLI documentation: https://docs.mend.io/bundle/integrations/page/mend_cli_exit_codes.html" +
+                    ""
+            emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('Mend SAST Scan', errorMsg)
+            unstable(errorMsg)
+        }
+      }
+    }
   }
-  archiveArtifacts(allowEmptyArchive: true, artifacts: 'Checkmarx/Reports/Report_CxSAST.html')
-
-  // Requires Checkmarx plugin version 2020.2.20 or later
-  if (!env.CXSAST_RESULTS_HIGH || !env.CXSAST_RESULTS_HIGH.isInteger()) {
-    def errorMsg = "ERROR: Cannot determine Checkmarx high vulnerability count from non-integer value '${env.CXSAST_RESULTS_HIGH}'"
-    echo errorMsg
-    // If number of high vulnerabilities is not set correctly, alert RE so they can investigate.
-     emailUtils.alertReleaseEngineeringAboutExternalServiceIssue('Checkmarx', errorMsg)
-    // Mark the stage as unstable, but do not fail the build.
-    unstable('Checkmarx', errorMsg)
-    return
-  } else if (env.CXSAST_RESULTS_HIGH.toInteger() > CHECKMARX_VULNERABILITY_THRESHOLD) {
-    def errorMsg = "ERROR: Too many vulnerabilities found by Checkmarx scan: " +
-            "'${env.CXSAST_RESULTS_HIGH} (${CHECKMARX_VULNERABILITY_THRESHOLD} allowed)'"
-    echo errorMsg
-    error errorMsg
-  }
-  echo "PASS: Checkmarx found HIGH vulnerabilities: ${env.CXSAST_RESULTS_HIGH} " +
-          "(${CHECKMARX_VULNERABILITY_THRESHOLD} allowed)"
 }
 
 return this
