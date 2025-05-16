@@ -4,14 +4,14 @@
 // Release pipeline for IDM EndUser UI
 //====================================
 
-@Library('forgerock-pipeline-libs@f4fbc550d40f5b77ece76487889399772fb88ed7')
+@Library('forgerock-pipeline-libs@ab923a879190a9f2f871934d930664af3c1b906b')
 import com.forgerock.pipeline.MavenReleaseBuild
 
 def jobProperties = [buildDiscarder(logRotator(numToKeepStr: '10'))]
 
 jobProperties.add(parameters([
-  string(defaultValue: '', description: 'Ex: 6.5.0', name: 'RELEASE_VERSION'),
-  string(defaultValue: '', description: 'Ex: 6.5.1-SNAPSHOT. If left blank, the current Maven version will be used', name: 'NEXT_DEVELOPMENT_VERSION'),
+        string(defaultValue: '', description: 'Ex: 6.5.0', name: 'RELEASE_VERSION'),
+        string(defaultValue: '', description: 'Ex: 6.5.1-SNAPSHOT. If left blank, the current Maven version will be used', name: 'NEXT_DEVELOPMENT_VERSION'),
 ]))
 properties(jobProperties)
 
@@ -22,15 +22,15 @@ def mvnProfiles
 def mvnProperties
 
 def releaseBuild = new MavenReleaseBuild(steps, env, currentBuild,
-                        scm.getUserRemoteConfigs()[0].getUrl(), env.BRANCH_NAME,
-                        params.RELEASE_VERSION, params.NEXT_DEVELOPMENT_VERSION,
-                        mavenVersion, javaVersion, mavenOpts)
+        scm.getUserRemoteConfigs()[0].getUrl(), env.BRANCH_NAME,
+        params.RELEASE_VERSION, params.NEXT_DEVELOPMENT_VERSION,
+        mavenVersion, javaVersion, mavenOpts)
 
 def slackChannel = '#idm,#engineering-releases'
 // Go here to manage the approvers:
 // https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/settings/reviewer-groups
-def emailNotificationMailingList = ['openidm-dev@forgerock.com'] + bitbucketUtils.getReleaseApproversEmails('OPENIDM', 'openidm-enduser')
-releaseBuild.setBuildFailureEmailNotificationPolicy([ brokenBuildSuspects(), requestor() ])
+def emailNotificationMailingList = ['openidm-dev@pingidentity.com'] + bitbucketUtils.getReleaseApproversEmails('OPENIDM', 'openidm-enduser')
+releaseBuild.setBuildFailureEmailNotificationPolicy([brokenBuildSuspects(), requestor()])
 def stageErrorMessage
 
 currentBuild.displayName = "#${env.BUILD_NUMBER} - IDM EndUser UI ${params.RELEASE_VERSION}"
@@ -39,86 +39,101 @@ currentBuild.displayName = "#${env.BUILD_NUMBER} - IDM EndUser UI ${params.RELEA
 if (isPR()) {
   currentBuild.result = 'ABORTED'
   error "Please check your Multibranch Pipeline configuration for this job - it should not include " +
-        "settings that allow this build to be run from a PR."
+          "settings that allow this build to be run from a PR."
 }
 
 timestamps {
-  node('build&&linux') {
+  node('gce-vm-idm') {
     try {
-      stage ('Clone the repo/branch') {
+      stage('Clone the repo/branch') {
         stageErrorMessage = 'The Git clone command failed, please check the console output'
         checkout scm
       }
 
-      stage ('Check release version number is unique') {
+      stage('Check release version number is unique') {
         stageErrorMessage = 'The version number chosen for the release has already been used, please check the console output'
         sh 'git fetch --tags'
         def existingTags = sh(script: "git tag", returnStdout: true).split()
         if (existingTags.contains(params.RELEASE_VERSION)) {
           currentBuild.description = "Release version ${params.RELEASE_VERSION} cannot be used; this version of the " +
-                                     "product has already been released"
+                  "product has already been released"
           error "IDM EndUser UI ${params.RELEASE_VERSION} has already been released; please use a different version number.\n" +
-                "If you believe ${params.RELEASE_VERSION} was released in error, please contact releng@forgerock.com" +
-                ", requesting that the corresponding release tag and build artifacts be deleted"
+                  "If you believe ${params.RELEASE_VERSION} was released in error, please contact releng@pingidentity.com" +
+                  ", requesting that the corresponding release tag and build artifacts be deleted"
         }
       }
 
-      stage ('Set version number for release') {
-        stageErrorMessage = 'Failed to update version numbers for release build, please check the console output'
-        echo "Current project version: ${releaseBuild.getProjectVersion()}"
-        commitShaForNotifications = releaseBuild.setReleaseVersionNumber()
-        echo "Project version for release: ${releaseBuild.getProjectVersion()}"
-        echo "Release commit SHA: ${commitShaForNotifications}"
-        SHORT_GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-      }
+      dockerUtils.insideMavenImage(withCopyOfHostWorkspace: true) {
+        withEnv(["MAVEN_OPTS=${mavenOpts}"]) {
 
-      withCredentials([
-              string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY'),
-      ]) {
-        stage ('Maven release build') {
-          stageErrorMessage = 'The Maven build failed, please check the console output'
+          stage('Set version number for release') {
+            stageErrorMessage = 'Failed to update version numbers for release build, please check the console output'
+            echo "Current project version: ${releaseBuild.getProjectVersion()}"
+            commitShaForNotifications = releaseBuild.setReleaseVersionNumber()
+            echo "Project version for release: ${releaseBuild.getProjectVersion()}"
+            echo "Release commit SHA: ${commitShaForNotifications}"
+            SHORT_GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+          }
 
-          def profiles = [
-            'release',
-            'forgerock-release',
-            'binary-licensing',
-            'thirdpartylicensing',
-            'source-copyright',
-            'production-build'
-          ]
+          withCredentials([
+                  string(credentialsId: 'mend-ci-user-key', variable: 'MEND_USER_KEY'),
+          ]) {
+            stage('Maven release build') {
+              stageErrorMessage = 'The Maven build failed, please check the console output'
 
-          def mendProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.BRANCH_NAME)
-          def properties = [
-            'ci.scm.revision' : SHORT_GIT_COMMIT,
-            'mend.product.key': mendProductToken,
-            'mend.user.key'   : env.MEND_USER_KEY,
-          ]
+              def profiles = [
+                      'release',
+                      'forgerock-release',
+                      'binary-licensing',
+                      'thirdpartylicensing',
+                      'source-copyright',
+                      'production-build'
+              ]
 
-          mvnProfiles = profiles.join(',')
-          mvnProperties = properties.collect { k,v -> "-D${k}=${v}"}
-                                    .join(' ')
-          releaseBuild.mvn("clean deploy -P${mvnProfiles} ${mvnProperties}")
+              def mendProductToken = mendUtils.getProductToken(scmUtils.getRepoName(), env.BRANCH_NAME)
+              def properties = [
+                      'ci.scm.revision' : SHORT_GIT_COMMIT,
+                      'mend.product.key': mendProductToken,
+                      'mend.user.key'   : env.MEND_USER_KEY,
+              ]
+
+              mvnProfiles = profiles.join(',')
+              mvnProperties = properties.collect { k, v -> "-D${k}=${v}" }
+                      .join(' ')
+              sh "mvn clean deploy -P${mvnProfiles} ${mvnProperties}"
+            }
+
+            stage('Create and push release tag') {
+              stageErrorMessage = 'The release tag could not be applied, please check the console output'
+              releaseBuild.gitTag(params.RELEASE_VERSION)
+            }
+
+            stage('Build and push Docker image') {
+              stageErrorMessage = 'Docker image creation failed, please check the console output'
+              releaseBuild.mvn("-B docker:build docker:push")
+            }
+
+            stage('Set version number for next development') {
+              stageErrorMessage = 'Failed to update next development number during release build, please check the console output'
+              releaseBuild.setAndPushNextDevelopmentVersionNumber()
+            }
+
+            stage('Promote Docker image') {
+              stageErrorMessage = 'Docker image promotion failed, please check the console output'
+              def image = 'gcr.io/forgerock-io/end-user-ui'
+              dockerUtils.retagGcrImage(
+                      "${image}/docker-build:${params.RELEASE_VERSION}",
+                      "${image}:${params.RELEASE_VERSION}"
+              )
+            }
+          }
         }
       }
 
-      stage ('Create and push release tag') {
-        stageErrorMessage = 'The release tag could not be applied, please check the console output'
-        releaseBuild.gitTag(params.RELEASE_VERSION)
-      }
-
-      stage ('Set version number for next development') {
-        stageErrorMessage = 'Failed to update next development number during release build, please check the console output'
-        releaseBuild.setAndPushNextDevelopmentVersionNumber()
-      }
-
-      stage('Build and push Docker image') {
-        stageErrorMessage = 'Docker image creation failed, please check the console output'
-        releaseBuild.mvn("-B docker:build docker:push")
-      }
-
-      stage ('Final notification') {
+      stage('Final notification') {
         currentBuild.result = 'SUCCESS'
-        releaseBuild.setBitbucketBuildStatus(commitShaForNotifications) // send an additional status for the 'release' commit
+        releaseBuild.setBitbucketBuildStatus(commitShaForNotifications)
+        // send an additional status for the 'release' commit
         releaseBuild.sendSlackNotification(slackChannel, false, "IDM EndUser UI ${params.RELEASE_VERSION} has been released")
         releaseBuild.sendEmailNotification(emailNotificationMailingList)
       }
