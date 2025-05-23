@@ -12,7 +12,9 @@ timestamps {
 
       checkout scm
 
+      SHORT_GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
       ENDUSER_VERSION = readMavenPom(file: 'pom.xml').version
+      currentBuild.displayName = "#${env.BUILD_NUMBER} - ${SHORT_GIT_COMMIT}"
 
       def jobLocation = "${env.WORKSPACE}/jenkins-scripts/pipelines/build"
 

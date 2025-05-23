@@ -14,8 +14,6 @@ def build() {
   slackChannel = '#idm'
   emailNotificationMailingList = ['openidm-dev@pingidentity.com, oliver.bradley@pingidentity.com, brendan.miller@pingidentity.com']
 
-  def javaVersion = '8'
-  def mavenVersion = '3.6.0'
   def mavenBuildOptions = ''
 
   try {
@@ -23,14 +21,8 @@ def build() {
     stage('Setup') {
       stageErrorMessage = 'Setup failed, please have a look at the console output'
 
-      // Generate a short Git commit
-      SHORT_GIT_COMMIT = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-
       // Git change log
       lastChanges since: 'LAST_SUCCESSFUL_BUILD', format: 'SIDE', matching: 'LINE'
-
-      // Set build description
-      currentBuild.displayName = "#${env.BUILD_NUMBER} - ${SHORT_GIT_COMMIT}"
     }
 
     dockerUtils.insideMavenImage( withCopyOfHostWorkspace: true ) {

@@ -15,22 +15,15 @@ def build() {
   // Abort any active builds relating to the current PR, as they are superseded by this build
   abortMultibranchPrBuilds()
 
-  prBuild = new PullRequestBuild(steps, env, currentBuild, scm)
-  prBuild.setBuildNameAndDescription()
-  //prBuild.disableNotifications()
-
   bitbucketCommentId = ''
 
   def mavenBuildOptions = ''
 
   try {
 
-    stage ('Initial Bitbucket notification; set global variables') {
-
-      bitbucketCommentId = prBuild.commentOnPullRequest(buildStatus: 'IN PROGRESS', excludeCommitHash: true)
-
-      // Generate a short Git commit
-      SHORT_GIT_COMMIT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+    stage ('Setup') {
+      bitbucketCommentId = bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(
+              buildStatus: 'IN PROGRESS')
     }
 
     stage ('Maven build') {
@@ -47,16 +40,16 @@ def build() {
 
     stage ('Final notification') {
       currentBuild.result = 'SUCCESS'
-      prBuild.commentOnPullRequest(originalCommentId: bitbucketCommentId)
+      bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(originalCommentId: bitbucketCommentId)
     }
 
   } catch (FlowInterruptedException ex) {
     currentBuild.result = 'ABORTED'
-    prBuild.commentOnPullRequest(buildStatus: 'ABORTED', originalCommentId: bitbucketCommentId)
+    bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(originalCommentId: bitbucketCommentId)
     throw ex
   } catch (exception) {
     currentBuild.result = 'FAILURE'
-    prBuild.commentOnPullRequest(originalCommentId: bitbucketCommentId)
+    bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(originalCommentId: bitbucketCommentId)
     throw exception
   }
 }
