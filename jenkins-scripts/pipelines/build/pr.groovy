@@ -6,8 +6,6 @@
 
 import org.jenkinsci.plugins.workflow.steps.FlowInterruptedException
 
-import com.forgerock.pipeline.PullRequestBuild
-
 def build() {
 
   properties([buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '3'))])
@@ -22,8 +20,10 @@ def build() {
   try {
 
     stage ('Setup') {
-      bitbucketCommentId = bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(
-              buildStatus: 'IN PROGRESS')
+      if (!scmUtils.isGitHubRepository()) {
+        bitbucketCommentId = bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(
+                buildStatus: 'IN PROGRESS')
+      }
     }
 
     stage ('Maven build') {
@@ -40,16 +40,22 @@ def build() {
 
     stage ('Final notification') {
       currentBuild.result = 'SUCCESS'
-      bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(originalCommentId: bitbucketCommentId)
+      if (!scmUtils.isGitHubRepository()) {
+        bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(originalCommentId: bitbucketCommentId)
+      }
     }
 
   } catch (FlowInterruptedException ex) {
     currentBuild.result = 'ABORTED'
-    bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(originalCommentId: bitbucketCommentId)
+    if (!scmUtils.isGitHubRepository()) {
+      bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(originalCommentId: bitbucketCommentId)
+    }
     throw ex
   } catch (exception) {
     currentBuild.result = 'FAILURE'
-    bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(originalCommentId: bitbucketCommentId)
+    if (!scmUtils.isGitHubRepository()) {
+      bitbucketUtils.postMultibranchBuildStatusCommentOnPullRequest(originalCommentId: bitbucketCommentId)
+    }
     throw exception
   }
 }

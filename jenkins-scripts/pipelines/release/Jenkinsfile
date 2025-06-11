@@ -26,10 +26,18 @@ def releaseBuild = new MavenReleaseBuild(steps, env, currentBuild,
         params.RELEASE_VERSION, params.NEXT_DEVELOPMENT_VERSION,
         mavenVersion, javaVersion, mavenOpts)
 
+def githubCredentials = githubUtils.githubAppCredentials('github-ci-app')
+def githubOrganization = scmUtils.isGitHubRepository() \
+        ? githubUtils.organization(scmUtils.getRepositoryOwnerName(), githubCredentials)
+        : null
+
 def slackChannel = '#idm,#engineering-releases'
 // Go here to manage the approvers:
+// https://github.com/orgs/ping-rocks/teams/pingidm-enduser-release-approvers
 // https://stash.forgerock.org/projects/OPENIDM/repos/openidm-enduser/settings/reviewer-groups
-def emailNotificationMailingList = ['openidm-dev@pingidentity.com'] + bitbucketUtils.getReleaseApproversEmails('OPENIDM', 'openidm-enduser')
+def emailNotificationMailingList = scmUtils.isGitHubRepository()
+        ? ['openidm-dev@pingidentity.com'] + githubOrganization.team("pingidm-enduser-release-approvers").membersEmails()
+        : ['openidm-dev@pingidentity.com'] + bitbucketUtils.getReleaseApproversEmails('OPENIDM', 'openidm-enduser')
 releaseBuild.setBuildFailureEmailNotificationPolicy([brokenBuildSuspects(), requestor()])
 def stageErrorMessage
 
@@ -52,7 +60,9 @@ timestamps {
 
       stage ('Check release version number is unique') {
         stageErrorMessage = 'The version number chosen for the release has already been used, please check the console output'
-        sh 'git fetch --tags'
+        withCredentials([gitUsernamePassword(credentialsId: 'github-ci-app')]) {
+          sh 'git fetch --tags'
+        }
         def existingTags = sh(script: "git tag", returnStdout: true).split()
         if (existingTags.contains(params.RELEASE_VERSION)) {
           currentBuild.description = "Release version ${params.RELEASE_VERSION} cannot be used; this version of the " +
@@ -105,7 +115,9 @@ timestamps {
 
             stage('Create and push release tag') {
               stageErrorMessage = 'The release tag could not be applied, please check the console output'
-              releaseBuild.gitTag(params.RELEASE_VERSION)
+              withCredentials([gitUsernamePassword(credentialsId: 'github-ci-app')]) {
+                releaseBuild.gitTag(params.RELEASE_VERSION)
+              }
             }
 
             stage('Build and push Docker image') {
@@ -132,7 +144,9 @@ timestamps {
 
       stage('Final notification') {
         currentBuild.result = 'SUCCESS'
-        releaseBuild.setBitbucketBuildStatus(commitShaForNotifications)
+        if (!scmUtils.isGitHubRepository()) {
+          releaseBuild.setBitbucketBuildStatus(commitShaForNotifications)
+        }
         // send an additional status for the 'release' commit
         releaseBuild.sendSlackNotification(slackChannel, false, "IDM EndUser UI ${params.RELEASE_VERSION} has been released")
         releaseBuild.sendEmailNotification(emailNotificationMailingList)
